@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.dctimer"
+    android:versionCode="7"
+    android:versionName="0.6" >
+
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="7"/>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>   
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission> 
+    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS"></uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
+    
+    <supports-screens 
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:resizeable="true"
+        android:anyDensity="true" />
+    
+    <application
+        android:icon="@drawable/iclauncher"
+        android:label="@string/app_name" >
+        <activity
+            android:name="DCTimer"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:theme="@style/ContentOverlay"
+        	android:launchMode="singleTask"
+			android:configChanges="keyboardHidden|orientation"                           
+			android:windowSoftInputMode="adjustPan|stateAlwaysVisible"
+			android:name="com.weibo.net.ShareActivity">
+		</activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="tabInd">
+        <item>Timer</item>
+        <item>Times List</item>
+        <item>Settings</item>
+    </array>
+    <array name="cubeStr">
+        <item>2x2x2</item>
+        <item>3x3x3</item>
+        <item>4x4x4</item>
+        <item>5x5x5</item>
+        <item>6x6x6</item>
+        <item>7x7x7</item>
+        <item>Megaminx</item>
+        <item>Pyraminx</item>
+        <item>Square-1</item>
+        <item>Clock</item>
+        <item>15 puzzle</item>
+        <item>LxMxN</item>
+        <item>Cmetrick</item>
+        <item>Gear Cube</item>
+        <item>Siamese Cube</item>
+        <item>Skewb</item>
+        <item>Other</item>
+        <item>3x3x3 subsets</item>
+        <item>Bandaged Cube</item>
+        <item>Megaminx subsets</item>
+        <item>Relays</item>
+    </array>
+    <array name="sel21">
+        <item>random state</item>
+        <item>3-gen</item>
+        <item>6-gen</item>
+    </array>
+    <array name="sel22">
+        <item>old style</item>
+        <item>random state</item>
+        <item>F2L training</item>
+        <item>last layer</item>
+        <item>PLL training</item>
+        <item>edges only</item>
+        <item>corners only</item>
+        <item>last slot+last layer</item>
+        <item>zb last layer</item>
+        <item>edges of last layer</item>
+        <item>corners of last layer</item>
+        <item>last six edges</item>
+        <item>Roux L10P</item>
+    </array>
+    <array name="sel23">
+        <item>WCA</item>
+        <item>random state</item>
+        <item>SiGN</item>
+        <item>YJ</item>
+        <item>edges</item>
+    </array>
+    <array name="sel24">
+        <item>WCA</item>
+        <item>SiGN</item>
+        <item>edges</item>
+    </array>
+    <array name="sel25">
+        <item>WCA</item>
+        <item>SiGN</item>
+        <item>suffix</item>
+        <item>edges</item>
+    </array>
+    <array name="sel26">
+        <item>WCA</item>
+        <item>old style</item>
+    </array>
+    <array name="sel27">
+        <item>random state</item>
+        <item>random moves</item>
+    </array>
+    <array name="sel28">
+        <item>random moves</item>
+        <item>Random state</item>
+    </array>
+    <array name="sel29">
+        <item>Jaap order</item>
+        <item>concise</item>
+    </array>
+    <array name="sel210">
+        <item>piece moves</item>
+        <item>blank moves</item>
+    </array>
+    <array name="sel211">
+        <item>1x3x3</item>
+        <item>Super 1x3x3</item>
+        <item>1x3x3(random state)</item>
+        <item>2x3x3</item>
+        <item>2x3x3(random state)</item>
+        <item>2x2x3</item>
+        <item>3x3x4</item>
+        <item>3x3x5</item>
+        <item>3x3x6</item>
+        <item>3x3x7</item>
+        <item>8x8x8</item>
+        <item>9x9x9</item>
+    </array>
+    <array name="sel212">
+        <item>　</item>
+        <item>Mini</item>
+    </array>
+    <array name="sel213">
+        <item>1x1x3 block</item>
+        <item>1x2x3 block</item>
+        <item>2x2x2 block</item>
+    </array>
+    <array name="sel214">
+        <item>Latch Cube</item>
+        <item>Helicopter</item>
+        <item>Square-2</item>
+        <item>Super SQ1</item>
+        <item>UFO</item>
+        <item>FTO</item>
+    </array>
+    <array name="sel215">
+        <item>2-gen R,U</item>
+        <item>2-gen L,U</item>
+        <item>Roux-gen M,U</item>
+        <item>3-gen F,R,U</item>
+        <item>3-gen R,U,L</item>
+        <item>3-gen R,r,U</item>
+        <item>half turns only</item>
+        <item>LSLL</item>
+    </array>
+    <array name="sel216">
+        <item>Bicube</item>
+        <item>SQ1 /,(1,0)</item>
+    </array>
+    <array name="sel217">
+        <item>2-gen R,U</item>
+        <item>LSLL</item>
+    </array>
+    <array name="sel218">
+        <item>random state</item>
+        <item>3-gen</item>
+    </array>
+    <array name="sel219">
+        <item>random state</item>
+        <item>L R D B</item>
+    </array>
+    <array name="sel220">
+        <item>234 relay</item>
+        <item>2345 relay</item>
+        <item>23456 relay</item>
+        <item>234567 relay</item>
+        <item>lots of 3x3s</item>
+    </array>
+    
+    <array name="rstcon">
+        <item>No penalty</item>
+        <item>"+2"</item>
+        <item>DNF</item>
+    </array>
+    
+    <array name="crsStr">
+        <item>None</item>
+        <item>Cross</item>
+        <item>Xcross</item>
+        <item>EOline</item>
+        <item>Roux S1</item>
+        <item>Petrus S1</item>
+    </array>
+    
+    <array name="clrStr">
+        <item>Western</item>
+        <item>Japanese</item>
+    </array>
+    
+    <array name="mncStr">
+        <item>Mark2</item>
+        <item>mf8</item>
+    </array>
+    
+    <string-array name="list1Str">
+        <item>3</item>
+        <item>5</item>
+        <item>12</item>
+        <item>50</item>
+    </string-array>
+    
+    <string-array name="list2Str">
+        <item>5</item>
+        <item>12</item>
+        <item>50</item>
+        <item>100</item>
+    </string-array>
+    
+    <array name="preStr">
+        <item>0.01 sec</item>
+        <item>0.001 sec</item>
+    </array>
+    
+	<array name="tiwStr">
+        <item>timer</item>
+        <item>typing</item>
+    </array>
+    
+    <array name="grpStr">
+        <item>"1　"</item>
+        <item>"2　"</item>
+        <item>"3　"</item>
+        <item>"4　"</item>
+        <item>"5　"</item>
+        <item>"6　"</item>
+        <item>"7　"</item>
+        <item>"8　"</item>
+        <item>"9　"</item>
+    </array>
+    
+    <array name="faceStr">
+        <item>D(button)</item>
+        <item>U(top)</item>
+        <item>L(left)</item>
+        <item>R(right)</item>
+        <item>F(front)</item>
+        <item>B(back)</item>
+    </array>
+    <array name="sideStr">
+        <item>D(yellow)</item>
+        <item>U(white)</item>
+        <item>L(orange)</item>
+        <item>R(red)</item>
+        <item>F(green)</item>
+        <item>B(blue)</item>
+        <item>Display all</item>
+    </array>
+    <array name="c2lStr">
+        <item>Hide</item>
+        <item>D(yellow)</item>
+        <item>U(white)</item>
+        <item>L(orange)</item>
+        <item>R(red)</item>
+        <item>F(green)</item>
+        <item>B(blue)</item>
+        <item>Display all</item>
+    </array>
+    
+    <string-array name="samprate">
+        <item>48000</item>
+        <item>44100</item>
+        <item>22050</item>
+        <item>16000</item>
+        <item>11025</item>
+    	<item>8000</item>
+    </string-array>
+    
+    <array name="about">
+        <item>Introduction</item>
+        <item>Timer</item>
+        <item>Scramble</item>
+        <item>Statistics</item>
+        <item>Other</item>
+    </array>
+</resources>

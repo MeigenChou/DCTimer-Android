@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="tabInd">
+        <item>計時</item>
+        <item>時間列表</item>
+        <item>設定</item>
+    </array>
+    <array name="cubeStr">
+        <item>2階</item>
+        <item>3階</item>
+        <item>4階</item>
+        <item>5階</item>
+        <item>6階</item>
+        <item>7階</item>
+        <item>五魔術方塊</item>
+        <item>金字塔</item>
+        <item>SQ1</item>
+        <item>魔表</item>
+        <item>15 puzzle</item>
+        <item>LxMxN</item>
+        <item>Cmetrick</item>
+        <item>齒輪魔術方塊</item>
+        <item>Siamese Cube</item>
+        <item>Skewb</item>
+        <item>其他</item>
+        <item>3階子集</item>
+        <item>捆綁魔術方塊</item>
+        <item>五魔子集</item>
+        <item>連擰</item>
+    </array>
+    <array name="sel21">
+        <item>隨機狀態</item>
+        <item>3-gen</item>
+        <item>6-gen</item>
+    </array>
+    <array name="sel22">
+        <item>傳統</item>
+        <item>隨機狀態</item>
+        <item>F2L訓練</item>
+        <item>頂層/OLL訓練</item>
+        <item>PLL訓練</item>
+        <item>稜塊訓練</item>
+        <item>角塊訓練</item>
+        <item>單組F2L訓練</item>
+        <item>ZBLL訓練</item>
+        <item>頂層棱块</item>
+        <item>頂層角块</item>
+        <item>橋式六棱</item>
+        <item>橋式四角</item>
+    </array>
+    <array name="sel23">
+        <item>WCA</item>
+        <item>隨機狀態</item>
+        <item>SiGN</item>
+        <item>YJ</item>
+        <item>對棱訓練</item>
+    </array>
+    <array name="sel24">
+        <item>WCA</item>
+        <item>SiGN</item>
+        <item>對棱訓練</item>
+    </array>
+    <array name="sel25">
+        <item>WCA</item>
+        <item>SiGN</item>
+        <item>suffix</item>
+        <item>對棱訓練</item>
+    </array>
+    <array name="sel26">
+        <item>WCA</item>
+        <item>傳統</item>
+    </array>
+    <array name="sel27">
+        <item>隨機狀態</item>
+        <item>隨機步驟</item>
+    </array>
+    <array name="sel28">
+        <item>隨機步驟</item>
+        <item>隨機狀態</item>
+    </array>
+    <array name="sel29">
+        <item>Jaap order</item>
+        <item>concise</item>
+    </array>
+    <array name="sel210">
+        <item>piece moves</item>
+        <item>blank moves</item>
+    </array>
+    <array name="sel211">
+        <item>1x3x3</item>
+        <item>Super 1x3x3</item>
+        <item>1x3x3(隨機狀態)</item>
+        <item>2x3x3</item>
+        <item>2x3x3(隨機狀態)</item>
+        <item>2x2x3</item>
+        <item>3x3x4</item>
+        <item>3x3x5</item>
+        <item>3x3x6</item>
+        <item>3x3x7</item>
+        <item>8x8x8</item>
+        <item>9x9x9</item>
+    </array>
+    <array name="sel212">
+        <item>　</item>
+        <item>Mini</item>
+    </array>
+    <array name="sel213">
+        <item>1x1x3 block</item>
+        <item>1x2x3 block</item>
+        <item>2x2x2 block</item>
+    </array>
+    <array name="sel214">
+        <item>插銷魔術方塊</item>
+        <item>直昇機</item>
+        <item>Square-2</item>
+        <item>Super SQ1</item>
+        <item>UFO</item>
+        <item>FTO</item>
+    </array>
+    <array name="sel215">
+        <item>2-gen R,U</item>
+        <item>2-gen L,U</item>
+        <item>Roux-gen M,U</item>
+        <item>3-gen F,R,U</item>
+        <item>3-gen R,U,L</item>
+        <item>3-gen R,r,U</item>
+        <item>half turns only</item>
+        <item>LSLL</item>
+    </array>
+    <array name="sel216">
+        <item>Bicube</item>
+        <item>SQ1 /,(1,0)</item>
+    </array>
+    <array name="sel217">
+        <item>2-gen R,U</item>
+        <item>LSLL</item>
+    </array>
+    <array name="sel218">
+        <item>隨機狀態</item>
+        <item>3-gen</item>
+    </array>
+    <array name="sel219">
+        <item>隨機狀態</item>
+        <item>L R D B</item>
+    </array>
+    <array name="sel220">
+        <item>2到4階</item>
+        <item>2到5階</item>
+        <item>2到6階</item>
+        <item>2到7階</item>
+        <item>多個3階</item>
+    </array>
+    
+    <array name="rstcon">
+        <item>無懲罰</item>
+        <item>"+2"</item>
+        <item>DNF</item>
+    </array>
+    
+    <array name="crsStr">
+        <item>不顯示</item>
+        <item>顯示Cross計算</item>
+        <item>顯示Xcross計算</item>
+        <item>顯示EOline計算</item>
+        <item>顯示Roux S1計算</item>
+        <item>顯示Petrus S1計算</item>
+    </array>
+    
+    <array name="clrStr">
+        <item>官方配色</item>
+        <item>日本配色</item>
+    </array>
+    
+    <array name="mncStr">
+        <item>Mark2</item>
+        <item>mf8</item>
+    </array>
+    
+    <array name="list1Str">
+        <item>3次</item>
+        <item>5次</item>
+        <item>12次</item>
+        <item>50次</item>
+    </array>
+    <array name="list2Str">
+        <item>5次</item>
+        <item>12次</item>
+        <item>50次</item>
+        <item>100次</item>
+    </array>
+    <array name="preStr">
+        <item>0.01秒</item>
+        <item>0.001秒</item>
+    </array>
+	<array name="tiwStr">
+        <item>計時器</item>
+        <item>手動輸入</item>
+    </array>
+    <array name="grpStr">
+        <item>"1　"</item>
+        <item>"2　"</item>
+        <item>"3　"</item>
+        <item>"4　"</item>
+        <item>"5　"</item>
+        <item>"6　"</item>
+        <item>"7　"</item>
+        <item>"8　"</item>
+        <item>"9　"</item>
+    </array>
+    <array name="faceStr">
+        <item>D(底)</item>
+        <item>U(頂)</item>
+        <item>L(左)</item>
+        <item>R(右)</item>
+        <item>F(前)</item>
+        <item>B(後)</item>
+    </array>
+    <array name="sideStr">
+        <item>D(黄)</item>
+        <item>U(白)</item>
+        <item>L(橙)</item>
+        <item>R(紅)</item>
+        <item>F(緑)</item>
+        <item>B(藍)</item>
+        <item>全部顯示</item>
+    </array>
+    <array name="c2lStr">
+        <item>不顯示</item>
+        <item>D(黄)</item>
+        <item>U(白)</item>
+        <item>L(橙)</item>
+        <item>R(紅)</item>
+        <item>F(緑)</item>
+        <item>B(藍)</item>
+        <item>全部顯示</item>
+    </array>
+    
+    <string-array name="samprate">
+        <item>48000</item>
+        <item>44100</item>
+        <item>22050</item>
+        <item>16000</item>
+        <item>11025</item>
+    	<item>8000</item>
+    </string-array>
+    
+    <array name="about">
+        <item>簡介</item>
+        <item>計時</item>
+        <item>轉亂</item>
+        <item>統計</item>
+        <item>更多</item>
+    </array>
+</resources>
