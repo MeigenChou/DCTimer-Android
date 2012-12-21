@@ -3,10 +3,15 @@
     <string name="app_name">DCTimer</string>
 	<string name="scrambling">轉亂中…</string>
 	<string name="initializing">初始化…</string>
+	<string name="solving">計算中…</string>
 	<string name="scramble_view">轉亂狀態</string>
-	<string name="session">分組</string>
+	<string name="session">" 分組 "</string>
 	<string name="clear_session">清除本組</string>
 	<string name="time">" 時間"</string>
+	<string name="no_penalty">无懲罰</string>
+	<string name="penalty_2">"+2"</string>
+	<string name="penalty_dnf">DNF</string>
+	<string name="note">註釋：</string>
 	<string name="session_average">本組平均(</string>
 	<string name="wcainsp">WCA觀察</string>
 	<string name="screenon">非計時下屏幕常亮</string>
@@ -20,8 +25,13 @@
 	<string name="ra1">" 轉動平均1:"</string>
 	<string name="trimmed">"去尾 "</string>
 	<string name="sel_session">更改轉亂類型時自動切換分組 (9組内有效)</string>
+	<string name="mul_phase">分段計時</string>
+	<string name="sesname">" 分組命名"</string>
+	<string name="setting">　設定…　</string>
 	<string name="optcross">" 三階相關求解 "</string>
 	<string name="timer_size">" 計時器字體大小："</string>
+	<string name="timer_font">" 計時器字體："</string>
+	<string name="time_tap">" 啓動觸發延時(秒)："</string>
 	<string name="scrsize">" 轉亂字體大小："</string>
 	<string name="mmxcolor">" 五魔術方塊"</string>
 	<string name="bgcolor">" 背景顔色"</string>
@@ -40,11 +50,12 @@
 	<string name="btn_copy">複製</string>
 	<string name="show_time">時間：</string>
 	<string name="not_support">暫不支持的轉亂類型</string>
+	<string name="copy_scr">複製轉亂</string>
 	<string name="delete_time">刪除該成績</string>
 	<string name="no_times">當前沒有數據可刪除</string>
 	<string name="confirm_clear_session">確認清空成績！</string>
 	<string name="confirm_exit">確認退出！</string>
-	<string name="copy_to_clip">詳細成績已複製到剪切板</string>
+	<string name="copy_to_clip">已複製到剪切板</string>
 	<string name="sta_avg">詳細統計：len次去尾平均</string>
 	<string name="sta_mean">詳細統計：len次平均</string>
 	<string name="sta_session_mean">詳細統計：本組平均</string>
@@ -61,6 +72,7 @@
 	<string name="stat_best">最佳單次：</string>
 	<string name="stat_worst">最差單次：</string>
 	<string name="stat_list">成績列表：</string>
+	<string name="mulp_mean">平均</string>
 	<string name="not_exist">文件不存在</string>
 	<string name="stt_timer">計時</string>
 	<string name="stt_interface">界面</string>
@@ -70,9 +82,11 @@
 	<string name="stt_share">分享</string>
 	<string name="stt_scheme">配色設定</string>
 	<string name="stt_sina">" 新浪微博"</string>
-	<string name="authsina">重置授權信息</string>
-	<string name="con_rsauth">確認重置？</string>
-	<string name="rsauth">重置成功</string>
+	<string name="login">　登錄　</string>
+	<string name="logout">　註銷　</string>
+	<string name="login_success">登錄成功</string>
+	<string name="con_rsauth">確認註銷？</string>
+	<string name="rsauth">已註銷</string>
 	<string name="sq1shape">顯示SQ1復形求解</string>
 	<string name="cube2_layer">二階底層求解</string>
 	<string name="shape">復形:</string>
@@ -107,4 +121,9 @@
     <string name="scheme_pyrm">金字塔配色設定</string>
     <string name="scheme_sq">"Square-1配色設定"</string>
     <string name="scheme_reset">恢復預設</string>
+    <string name="abt_main">簡介</string>
+    <string name="abt_timer">計時</string>
+    <string name="abt_scr">轉亂</string>
+    <string name="abt_stat">統計</string>
+    <string name="abt_more">更多</string>
 </resources>

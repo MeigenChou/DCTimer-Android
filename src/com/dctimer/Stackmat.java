@@ -133,6 +133,7 @@ public class Stackmat {
 									//readPackage2(temp);
 									byte[] data=readPackage(temp);
 									if(isValid){
+										//System.out.println(data[0]);
 										int time=(int)data[5]*10+data[4]*100+data[3]*1000+data[2]*10000+data[1]*60000+(isMsec?data[6]:0);
 	                					switch(state){
 	                					case 0:	//off

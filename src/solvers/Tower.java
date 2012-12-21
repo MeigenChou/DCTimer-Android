@@ -13,7 +13,8 @@ public class Tower {
     private static String[] suff={"'", "2", ""};
     
     private static int[] fact={1,1,2,6,24,120,720,5040};
-    static void set8Perm(int[] arr, int idx) {
+    
+	static void set8Perm(int[] arr, int idx) {
 		int val = 0x76543210;
 		for (int i=0; i<7; i++) {
 			int p = fact[7-i];

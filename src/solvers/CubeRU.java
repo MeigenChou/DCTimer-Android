@@ -6,7 +6,8 @@ public class CubeRU {
 	private static short[][] cpm=new short[720][2];
 	private static short[][] epm=new short[5040][2];
 	private static short[][] com=new short[243][2];
-	private static byte[] cpd=new byte[720], cod=new byte[243], epd=new byte[5040];
+	private static byte[][] cd=new byte[720][243];
+	private static byte[] epd=new byte[5040];
 	private static void move(int[] arr, int a, int b, int c, int d){
 		int temp=arr[a]; arr[a]=arr[b]; arr[b]=arr[c]; arr[c]=arr[d]; arr[d]=temp;
 	}
@@ -16,69 +17,50 @@ public class CubeRU {
 		int[] arr = new int[6];
 		for(int i=0; i<720; i++){
 			for(int j=0; j<2; j++){
-				indexToPermutation(arr, i, 6);
+				Im.indexToPermutation(arr, i, 6);
 				if(j==0)move(arr, 0, 3, 2, 1);
 				else move(arr, 1, 2, 4, 5);
-				cpm[i][j]=(short) permutationToIndex(arr, 6);
+				cpm[i][j]=(short) Im.permutationToIndex(arr, 6);
 			}
 		}
 		for(int i=0; i<243; i++){
 			for(int j=0; j<2; j++){
-				indexToZeroSumOrientation(arr, i, 3, 6);
+				Im.indexToZeroSumOrientation(arr, i, 3, 6);
 				if(j==0)move(arr, 0, 3, 2, 1);
 				else {
 					move(arr, 1, 2, 4, 5);
 					arr[1]=(arr[1]+1)%3;arr[2]=(arr[2]+2)%3;
 					arr[4]=(arr[4]+1)%3;arr[5]=(arr[5]+2)%3;
 				}
-				com[i][j]=(short) zeroSumOrientationToIndex(arr, 3, 6);
+				com[i][j]=(short) Im.zeroSumOrientationToIndex(arr, 3, 6);
 			}
 		}
 		arr = new int[7];
 		for(int i=0; i<5040; i++){
 			for(int j=0; j<2; j++){
-				indexToPermutation(arr, i, 7);
+				Im.indexToPermutation(arr, i, 7);
 				if(j==0)move(arr, 0, 3, 2, 1);
 				else move(arr, 1, 6, 5, 4);
-				epm[i][j]=(short) permutationToIndex(arr, 7);
+				epm[i][j]=(short) Im.permutationToIndex(arr, 7);
 			}
 		}
-		for(int i=0; i<720; i++) cpd[i]=-1;
-		cpd[0]=0;
+		for(int i=0; i<720; i++)
+			for(int j=0; j<243; j++) cd[i][j]=-1;
+		cd[0][0]=0;
 		int d=0;
 		int c=1;
 		while(c>0){
 			c=0;
 			for(int i=0; i<720; i++){
-					if(cpd[i]==d){
+				for(int j=0; j<243; j++) {
+					if(cd[i][j]==d){
 						for (int k=0; k<2; k++) {
-							for(int y=i, l=0; l<3; l++){
-								y=cpm[y][k];
-								if(cpd[y]<0){
-									cpd[y]=(byte) (d+1);
+							for(int y=i, s=j, l=0; l<3; l++){
+								y=cpm[y][k]; s=com[s][k];
+								if(cd[y][s]<0){
+									cd[y][s]=(byte) (d+1);
 									c++;
 								}
-							}
-						}
-					}
-			}
-			d++;
-			//System.out.println(d+" "+c);
-		}
-		for(int i=0; i<243; i++) cod[i]=-1;
-		cod[0]=0;
-		d=0;
-		c=1;
-		while(c>0){
-			c=0;
-			for(int i=0; i<243; i++){
-				if(cod[i]==d){
-					for (int k=0; k<2; k++) {
-						for(int y=i, l=0; l<3; l++){
-							y=com[y][k];
-							if(cod[y]<0){
-								cod[y]=(byte) (d+1);
-								c++;
 							}
 						}
 					}
@@ -112,53 +94,13 @@ public class CubeRU {
 		
 		ini=true;
 	}
-	public static int permutationToIndex(int[] permutation, int length) {
-        int index = 0;
-        for (int i = 0; i < length - 1; i++) {
-            index *= length - i;
-            for (int j = i + 1; j < length; j++) {
-                if (permutation[i] > permutation[j]) {
-                    index++;
-                }
-            }
-        }
-        return index;
-    }
-	public static void indexToPermutation(int[] permutation, int index, int length) {
-        permutation[length - 1] = 0;
-        for (int i = length - 2; i >= 0; i--) {
-            permutation[i] = index % (length - i);
-            index /= length - i;
-            for (int j = i + 1; j < length; j++) {
-                if (permutation[j] >= permutation[i]) {
-                    permutation[j]++;
-                }
-            }
-        }
-    }
-	public static int zeroSumOrientationToIndex(int[] orientation, int nValues, int length) {
-        int index = 0;
-        for (int i = 0; i < length - 1; i++) {
-            index = nValues * index + orientation[i];
-        }
-        return index;
-    }
-    public static void indexToZeroSumOrientation(int[] orientation, int index, int nValues, int length) {
-        orientation[length - 1] = 0;
-        for (int i = length - 2; i >= 0; i--) {
-            orientation[i] = index % nValues;
-            index /= nValues;
-            orientation[length - 1] += orientation[i];
-        }
-        orientation[length - 1] = (nValues - orientation[length - 1] % nValues) % nValues;
-    }
-    
+	
     private static String[] turn={"U","R"};
 	private static String[] suff={"","2","'"};
 	private static StringBuffer sb=new StringBuffer();
     private static boolean search(int cp, int co, int ep, int depth, int lm) {
     	if (depth == 0) return cp==0 && co==0 && ep==0;
-    	if (cpd[cp]>depth || epd[ep] > depth || cod[co] > depth) return false;
+    	if (cd[cp][co]>depth || epd[ep] > depth) return false;
     	for (int i = 0; i < 2; i++) {
     		if(i!=lm){
     			int d=cp, w=co, y=ep;
@@ -179,13 +121,16 @@ public class CubeRU {
     	int cp, co, ep;
     	int[] c=new int[6], e=new int[7];
     	do{
-    		do cp=r.nextInt(720);
-    		while (cpd[cp]<0);
+    		do {
+    			cp=r.nextInt(720);
+    			co=r.nextInt(243);
+    		}
+    		while (cd[cp][co]<0);
     		ep=r.nextInt(5040);
-    		indexToPermutation(c, cp, 6);
-    		indexToPermutation(e, ep, 7);
+    		Im.indexToPermutation(c, cp, 6);
+    		Im.indexToPermutation(e, ep, 7);
     	} while(permutationSign(c)!=permutationSign(e));
-    	co=r.nextInt(243);
+    	
     	sb=new StringBuffer();
     	for(int d=0; !search(cp, co, ep, d, -1); d++);
     	return sb.toString();

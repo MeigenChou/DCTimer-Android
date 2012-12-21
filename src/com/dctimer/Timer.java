@@ -3,15 +3,15 @@ package com.dctimer;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 
 public class Timer {
 	public int v;	//0-计时中 1-观察中 2-观察中(+2) 3-观察中(DNF)
 	private int state = 0;	//0-停止 1-计时中 2-观察中
 	
-	long time,time0;
+	long time,time0,time1;
 	ClockThread threadS;
 	CountDownThread threadC;
+	TapThread threadT;
 	DCTimer ct;
 	TimeHandler timeh;
 	private int msec = 0;
@@ -20,10 +20,21 @@ public class Timer {
 	private int hour = 0;
 	//String timeshow="";
 
+	protected boolean isTapped;
+	
 	public Timer(DCTimer parent){
 		this.ct = parent;
 		timeh = new TimeHandler();
 	}
+	
+	public void tap(){
+		threadT = new TapThread();
+		threadT.start();
+	}
+	public void stopt(){
+		if(threadT != null && threadT.isAlive())threadT.interrupt();
+	}
+	
 	public void stopi(){
 		if(state==2){
 			state=0;
@@ -39,13 +50,13 @@ public class Timer {
 				ct.mTextView2.setTextColor(ct.cl[1]);
 				if(ct.wca && threadC.isAlive()) threadC.interrupt();
 				threadS = new ClockThread();
-				time0=SystemClock.uptimeMillis();
+				time0=System.currentTimeMillis();
 				threadS.start();
 			}
 			else if(v==1){
 				ct.mTextView2.setTextColor(Color.RED);
 				threadC = new CountDownThread();
-				time0=SystemClock.uptimeMillis();
+				time0=System.currentTimeMillis();
 				threadC.start();
 			}
 		}
@@ -53,9 +64,9 @@ public class Timer {
 			state =0;
 			if(v == 0){
 				if(threadS.isAlive()) {
-					time=SystemClock.uptimeMillis()-time0;
+					time1=System.currentTimeMillis();
+					time=time1-time0;
 					threadS.interrupt();
-					//ct.mTextView2.setText(Mi.distime((int)time));
 				}
 			}
 		}
@@ -71,7 +82,7 @@ public class Timer {
 		public void run(){
 			while(true){
 				v=0;
-				time=SystemClock.uptimeMillis()-time0;
+				time=System.currentTimeMillis()-time0;
 				msec=(int) time%1000;
 				if(DCTimer.spinSel[6]==0)msec=((msec+5)/10)%100;
 				sec=(int) (DCTimer.timmh?(time/1000)%60:time/1000);
@@ -91,7 +102,7 @@ public class Timer {
 	private class CountDownThread extends Thread {
 		public void run(){
 			while(true){
-				time=SystemClock.uptimeMillis()-time0;
+				time=System.currentTimeMillis()-time0;
 				if(time/1000<15) {
 					sec=(int) (15-time/1000);
 					v=1;
@@ -111,10 +122,25 @@ public class Timer {
 			}
 		}
 	}
-
+	private class TapThread extends Thread {
+		public void run(){
+			while(isTapped) {
+				try {
+					ct.canStart = false;
+					sleep(ct.tapTime*50);
+					ct.canStart = true;
+					timeh.sendEmptyMessage(4);
+				} catch (InterruptedException e) {
+					return;
+				}
+				return;
+			}
+		}
+	}
 	private class TimeHandler extends Handler{
 		public void handleMessage (Message msg){
-			if(v==0)ct.mTextView2.setText(Mi.contime(hour, min, sec, msec));
+			if(msg.what==4)ct.mTextView2.setTextColor(Color.GREEN);
+			else if(v==0)ct.mTextView2.setText(Mi.contime(hour, min, sec, msec));
 			else if(v==1)ct.mTextView2.setText(""+sec);
 			else if(v==2)ct.mTextView2.setText("+2");
 			else if(v==3)ct.mTextView2.setText("DNF");

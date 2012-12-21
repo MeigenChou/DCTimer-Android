@@ -1,6 +1,7 @@
 package solvers;
 
 public class PetrusxRoux {
+	private static short[][] Cnk=new short[12][12];
 	private static short[][] epm = new short[1320][6];
 	private static short[][] eom = new short[1760][6];
 	private static byte[][] com = new byte[24][6];
@@ -26,8 +27,8 @@ public class PetrusxRoux {
 		}
 		q=3;
 		for(t=0;t<12;t++)
-			if(c>=Tl.Cnk[11-t][q]){
-				c-=Tl.Cnk[11-t][q--];
+			if(c>=Cnk[11-t][q]){
+				c-=Cnk[11-t][q--];
 				n[t]=s[q]<<1|o&1;
 				o>>=1;
 			}
@@ -49,7 +50,7 @@ public class PetrusxRoux {
 		c=0;q=3;
 		for(t=0;12>t;t++)
 			if(0<=n[t]){
-				c+=Tl.Cnk[11-t][q--];
+				c+=Cnk[11-t][q--];
 				s[q]=n[t]>>1;
 				o|=(n[t]&1)<<2-q;
 			}
@@ -70,8 +71,8 @@ public class PetrusxRoux {
 		s[0]=p%2; s[1]=1-s[0]; s[2]=o/3; s[3]=o%3;
 		q=2;
 		for(t=7;t>=0;t--)
-			if(c>=Tl.Cnk[t][q]){
-				c-=Tl.Cnk[t][q--];
+			if(c>=Cnk[t][q]){
+				c-=Cnk[t][q--];
 				n[t]=s[q];
 				u[t]=s[q+2];
 			}
@@ -83,31 +84,27 @@ public class PetrusxRoux {
 			cir(n,u,4,5,6,7);break;
 		case 2:
 			cir(n,u,0,4,7,3);
-			u[0]=(u[0]%3+2)%3;u[3]=(u[3]%3+1)%3;
-			u[4]=(u[4]%3+1)%3;u[7]=(u[7]%3+2)%3;
+			u[0]+=2;u[3]++;u[4]++;u[7]+=2;
 			break;
 		case 3:
 			cir(n,u,1,2,6,5);
-			u[1]=(u[1]%3+1)%3;u[2]=(u[2]%3+2)%3;
-			u[5]=(u[5]%3+2)%3;u[6]=(u[6]%3+1)%3;
+			u[1]++;u[2]+=2;u[5]+=2;u[6]++;
 			break;
 		case 4:
 			cir(n,u,2,3,7,6);
-			u[2]=(u[2]%3+1)%3;u[3]=(u[3]%3+2)%3;
-			u[6]=(u[6]%3+2)%3;u[7]=(u[7]%3+1)%3;
+			u[2]++;u[3]+=2;u[6]+=2;u[7]++;
 			break;
 		case 5:
 			cir(n,u,0,1,5,4);
-			u[0]=(u[0]%3+1)%3;u[1]=(u[1]%3+2)%3;
-			u[4]=(u[4]%3+2)%3;u[5]=(u[5]%3+1)%3;
+			u[0]++;u[1]+=2;u[4]+=2;u[5]++;
 			break;
 		}
 		c=0;q=2;
 		for(t=7;t>=0;t--)
 			if(0<=n[t]){
-				c+=Tl.Cnk[t][q--];
+				c+=Cnk[t][q--];
 				s[q]=n[t];
-				s[q+2]=u[t];
+				s[q+2]=u[t]%3;
 			}
 		return (c*2+s[0])*9+s[2]*3+s[3];
 	}
@@ -116,6 +113,11 @@ public class PetrusxRoux {
 	public static void init0() {
 		if(ini)return;
 		int i,j;
+		for(i=0;i<12;++i){
+			Cnk[i][0]=1;
+			for(j=Cnk[i][i]=1;j<i;++j)
+				Cnk[i][j]=(short) (Cnk[i-1][j-1]+Cnk[i-1][j]);
+		}
 		for(i=0; i<220; i++){
 			for(j=0; j<8; j++){
 				for(int k=0; k<6; k++){
@@ -146,12 +148,12 @@ public class PetrusxRoux {
 					com[i*3+j][k] = (byte) (p[i][k]*3+(o[i][k]+j)%3);
 		for(i=0; i<1320; i++) epd[i]=-1;
 		epd[132]=0;
-		for(int d=0; d<5; d++){
+		for(int d=0; d<5; d++) {
 			//c=0;
 			for(i=0; i<1320; i++)
 				if (epd[i] == d)
 					for (j = 0; j < 6; j++)
-						for(int y = i, k = 0; k < 3; k++){
+						for(int y = i, k = 0; k < 3; k++) {
 							y = epm[y][j];
 							if (epd[y] < 0) {
 								epd[y] = (byte) (d + 1);
@@ -162,12 +164,12 @@ public class PetrusxRoux {
 		}
 		for(i=0; i<1760; i++) eod[i]=-1;
 		eod[176]=0;
-		for(int d=0; d<5; d++){
+		for(int d=0; d<5; d++) {
 			//c=0;
 			for(i=0; i<1760; i++)
 				if (eod[i] == d)
-					for (j = 0; j < 6; j++)
-						for(int y = i, k = 0; k < 3; k++){
+					for (j=0; j<6; j++)
+						for(int y=i, k=0; k<3; k++) {
 							y = eom[y][j];
 							if (eod[y] < 0) {
 								eod[y] = (byte) (d + 1);
@@ -184,15 +186,13 @@ public class PetrusxRoux {
 		if(inir)return;
 		init0();
 		int i,j;
-		for(i=0; i<28; i++) {
-			for (j = 0; j < 9; j++) {
+		for(i=0; i<28; i++)
+			for (j = 0; j < 9; j++)
 				for (int k = 0; k < 6; k++) {
 					int d = cornersmv(i, j, j, k);
-					if(j < 2)rcpm[i*2+j][k] = (byte) (d/9);
+					if(j < 2)rcpm[(i<<1)+j][k] = (byte) (d/9);
 					rcom[i*9+j][k] = (short)(d/18*9+d%9);
 				}
-			}
-		}
 		for(i=0; i<220; i++)
 			for(j=0; j<48; j++)
 				ed[i][j]=-1;
@@ -205,8 +205,8 @@ public class PetrusxRoux {
 						for(int l=0; l<6; l++){
 							int x=i, y=j;
 							for(int m=0; m<3; m++){
-								y=(epm[x*6+y/8][l]%6)*8+eom[x*8+y%8][l]%8;
-								x=epm[x*6+y/8][l]/6;
+								y=epm[x*6+(y>>3)][l]%6<<3|eom[x<<3|y&7][l]&7;
+								x=epm[x*6+(y>>3)][l]/6;
 								if(ed[x][y]<0){
 									ed[x][y]=(byte) (d+1);
 									//c++;
@@ -227,8 +227,8 @@ public class PetrusxRoux {
 						for(int l=0; l<6; l++){
 							int x=i, y=j;
 							for(int m=0; m<3; m++){
-								y=(rcpm[x*2+y/9][l]%2)*9+rcom[x*9+y%9][l]%9;
-								x=rcpm[x*2+y/9][l]/2;
+								y=(rcpm[(x<<1)+y/9][l]&1)*9+rcom[x*9+y%9][l]%9;
+								x=rcpm[(x<<1)+y/9][l]>>1;
 								if(cd[x][y]<0){
 									cd[x][y]=(byte) (d+1);
 									//c++;
@@ -299,7 +299,7 @@ public class PetrusxRoux {
 	
 	private static boolean idaRoux(int cp, int co, int ep, int eo, int depth, int lm) {
 		if (depth == 0) return (cp==50 && co==225 && ep==312 && eo==416);
-		if (ed[ep/6][(ep%6)*8+eo%8] > depth || cd[cp/2][(cp%2)*9+co%9] > depth) return false;
+		if (ed[ep/6][(ep%6)<<3|eo&7] > depth || cd[cp>>1][(cp&1)*9+co%9] > depth) return false;
 		//if(pd[ep][cp]>depth || od[eo][co]>depth)return false;
 		for (int i = 0; i < 6; i++)
 			if(i!=lm)

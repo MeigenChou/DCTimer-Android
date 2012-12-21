@@ -10,7 +10,8 @@ public class TimesAdapter extends BaseAdapter {
 	private TextView tv;
 	private int[] cl;
 	private int omax, omin;
-	private int h;
+	private int h, col;
+	private boolean isMulp;
 	public TimesAdapter(Context context, String[] times, int[] cl, int omax, int omin, int h) {
 		this.context=context;
 		this.times=times;
@@ -18,6 +19,8 @@ public class TimesAdapter extends BaseAdapter {
 		this.omax=omax;
 		this.omin=omin;
 		this.h=h;
+		col = 3;
+		isMulp = false;
 		if(times!=null)
 			for(int i=0;i<times.length/3;i++) {
 				times[i*3]=Mi.distime(i, false);
@@ -26,6 +29,30 @@ public class TimesAdapter extends BaseAdapter {
 			}
 	}
 
+	public TimesAdapter(Context context, String[] times, int[] para, int h, int col) {
+		this.context=context;
+		this.times=times;
+		this.cl=para;
+		this.omax=para[3];
+		this.omin=para[4];
+		this.h=h;
+		this.col = col;
+		isMulp = true;
+		if(times!=null) {
+			for(int i=0;i<times.length/col-1;i++) {
+				times[i*col]=Mi.distime(i, false);
+				for(int j=1; j<col; j++) {
+					int temp = DCTimer.mulp[j-1][i];
+					times[i*col+j]=temp==0?"-":Mi.distime(temp);
+				}
+			}
+			int temp = times.length/col-1;
+			times[temp*col]=context.getResources().getString(R.string.mulp_mean);
+			for(int j=1; j<col; j++) {
+				times[temp*col+j]=Mi.mulMean(j-1);
+			}
+		}
+	}
 	@Override
 	public int getCount() {
 		if(times!=null)return times.length;
@@ -51,10 +78,16 @@ public class TimesAdapter extends BaseAdapter {
 		else tv = (TextView) convertView;
 		tv.setTextSize(16);
 		tv.setGravity(Gravity.CENTER);
-		if(po/3==omin && po%3==0)tv.setTextColor(cl[1]);
-		else if(po/3==omax && po%3==0)tv.setTextColor(cl[2]);
-		else if(po/3==Mi.bidx[0] && po%3==1)tv.setTextColor(cl[3]);
-		else if(po/3==Mi.bidx[1] && po%3==2)tv.setTextColor(cl[3]);
+		if(po/col==omin && po%col==0)tv.setTextColor(cl[1]);
+		else if(po/col==omax && po%col==0)tv.setTextColor(cl[2]);
+		else if(!isMulp) {
+			if(po/col==Mi.bidx[0] && po%col==1)tv.setTextColor(cl[3]);
+			else if(po/col==Mi.bidx[1] && po%col==2)tv.setTextColor(cl[3]);
+			else tv.setTextColor(cl[0]);
+		}
+		else if(po/col>=DCTimer.resl){
+			tv.setTextColor((cl[0]&0xffffff)|(153<<24));
+		}
 		else tv.setTextColor(cl[0]);
 		tv.setText(times[po]);
 		return tv;

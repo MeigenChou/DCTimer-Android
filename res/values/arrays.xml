@@ -51,10 +51,10 @@
     </array>
     <array name="sel23">
         <item>WCA</item>
-        <item>随机状态</item>
         <item>SiGN</item>
         <item>YJ</item>
         <item>对棱训练</item>
+        <item>R,r,U,u</item>
     </array>
     <array name="sel24">
         <item>WCA</item>
@@ -80,8 +80,9 @@
         <item>随机状态</item>
     </array>
     <array name="sel29">
-        <item>Jaap order</item>
+        <item>Jaap 顺序</item>
         <item>concise</item>
+        <item>高效顺序</item>
     </array>
     <array name="sel210">
         <item>piece moves</item>
@@ -197,17 +198,6 @@
         <item>计时器</item>
         <item>手动输入</item>
     </array>
-    <array name="grpStr">
-        <item>"1　"</item>
-        <item>"2　"</item>
-        <item>"3　"</item>
-        <item>"4　"</item>
-        <item>"5　"</item>
-        <item>"6　"</item>
-        <item>"7　"</item>
-        <item>"8　"</item>
-        <item>"9　"</item>
-    </array>
     <array name="faceStr">
         <item>D(底)</item>
         <item>U(顶)</item>
@@ -245,14 +235,6 @@
     	<item>8000</item>
     </string-array>
     
-    <array name="about">
-        <item>简介</item>
-        <item>计时</item>
-        <item>打乱</item>
-        <item>统计</item>
-        <item>更多</item>
-    </array>
-    
     <array name="fontStr">
         <item>monospace</item>
         <item>serif</item>
@@ -262,11 +244,12 @@
         <item>数码管2</item>
     </array>
     
-    <array name="s_about">
-        <item>"DCTimer是一款安卓系统上的魔方计时器，提供打乱、计时、统计等各种功能\n·计时：除了常规的计时外还支持WCA观察，计时方法有触屏计时、手动输入和使用Stackmat计时，每次计时结束后可确认+2/DNF，计时精确度为0.001秒；\n·打乱：提供所有WCA官方规范打乱（包括打乱状态图查看），以及各种非官方打乱和训练打乱；\n·统计：可显示3次、5次、12次、50次、 100次平均（包括是否去尾）以及各组原始平均，每个平均均可查看详细成绩并复制到剪切板；\n·更多：可求解三阶十字、Xcross以及SQ1复形，分享成绩到微博等"</item>
-        <item>"·正常计时：按下屏幕计时区在抬起的时候开始计时，再次按下计时区（或打乱区或按返回键）停止计时，并记录成绩。\n·WCA观察：提供WCA的15秒倒计时功能，超过15秒在17秒内启动计时会加罚2秒，超过17秒则直接DNF；观察阶段的+2和结束计时阶段的+2可叠加。\n·外部输入：提供手动输入和Stackmat记录时间，其中Stackmat支持二代计时器（包括PRO，可精确到三位小数）\n·确认成绩：每次计时结束后确认无惩罚/+2/DNF，如果不设置确认，则默认按无惩罚记录成绩。\n·计时精度和时间格式：有0.01秒和0.001秒可选，系统内部使用1毫秒的精确度；超过1分钟的时间可显示成(hh:)mm:ss.xy(z)，也可显示成ss.xy(z)。"</item>
-        <item>"提供所有符合WCA要求的打乱，包括二阶、三阶、金字塔、SQ1的随机状态打乱，并且可查看各打乱的打乱状态图；另外还有各种非WCA官方项目的打乱，这些打乱大部分均来自qqtimer、cstimer和PPT (prisma puzzle timer)，包括各种三阶训练、高阶对棱训练、以及各种异形魔方打乱。\n感谢以下提供WCA打乱人员：Jaap Scherphuis (所有打乱), Syoji Takamatsu (金字塔), Lucas Garron (金字塔), Michael Gottlieb (金字塔·SQ1), Tom van der Zanden (2阶), Conrad Rider (2阶), Clément Gallet and Stefan Pochmann (五魔), Herbert Kociemba (三阶魔方) and Shuang Chen(三阶·SQ1)."</item>
-        <item>"·成绩分组：适用于不同魔方的计时，最多有9个组可切换。\n·时间列表：成绩列表的第一列，单次最快和最慢用不同的颜色标出；每个时间均可修改无惩罚/+2/DNF，或者删除。\n·滚动平均0：成绩列表的第二列，可显示3次/5次/12次/50次平均（包括是否去尾）每个平均都可以查看详细的统计信息，并可复制；用不同的颜色标出最快平均。\n·滚动平均1：成绩列表的第三列，可显示5次/12次/50次/100次平均（包括是否去尾）每个平均都可以查看详细的统计信息，并可复制；用不同的颜色标出最快平均。\n·分组平均：成绩列表最下方的按钮显示还原次数、平均及标准差，点击该按钮会显示出详细的统计信息，并可复制。"</item>
-        <item>"·提供三阶十字、Xcross（拓展十字）求解和SQ1的最简复形求解，在设置界面启用后将在下一个打乱生效。\n·可将成绩分享给好友或分享到微博，随时随地分享你的成绩\n·0.6版本（2012.10.22）更新内容\n扩大计时、打乱字体选择范围\n更改成绩分布直方图显示方式，修正bug\n增加三阶Roux左桥，Petrus第一个2x2x2求解\n增加四阶随机状态（需联网），部分三阶子集随机状态打乱\n取消存取外部文件机制\n增加金字塔（传统打乱），1x3x3，2x3x3，2x2x3，Skewb打乱状态\n优化成绩列表删除单个成绩速度\n增加更换打乱时自动切换分组的设置\n增加二阶底层（第一层）求解\n增加连拧打乱\n增加n阶、金字塔、SQ1自定义配色设置"</item>
+    <array name="mulpStr">
+        <item>2　</item>
+        <item>3　</item>
+        <item>4　</item>
+        <item>5　</item>
+        <item>6　</item>
     </array>
+    
 </resources>

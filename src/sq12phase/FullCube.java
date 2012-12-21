@@ -68,6 +68,34 @@ public class FullCube implements Comparable<FullCube> {
 		return f;
 	}
 
+	public static FullCube randomEP() {
+		FullCube f = new FullCube();
+		int shape = Shape.ShapeIdx[f.getShapeIdx() >> 1];
+		int corner = 0x01234567 << 1 | 0x11111111;
+		int edge = 0x01234567 << 1;
+		int n_corner = 8, n_edge = 8;
+		int rnd, m;
+		for (int i=0; i<24; i++) {
+			if (((shape >> i) & 1) == 0) {//edge
+				rnd = r.nextInt(n_edge) << 2;
+				f.setPiece(23-i, (edge >> rnd) & 0xf);
+				m = (1 << rnd) - 1;
+				edge = (edge & m) + ((edge >> 4) & ~m);
+				--n_edge;
+			} else {//corner
+				rnd = r.nextInt(n_corner) << 2;
+				f.setPiece(23-i, (corner >> rnd) & 0xf);
+				f.setPiece(22-i, (corner >> rnd) & 0xf);
+				m = (1 << rnd) - 1;
+				corner = (corner & m) + ((corner >> 4) & ~m);
+				--n_corner;
+				++i;				
+			}
+		}
+		f.ml = r.nextInt(2);
+		return f;
+	}
+
 	void copy(FullCube c) {
 		this.ul = c.ul;
 		this.ur = c.ur;

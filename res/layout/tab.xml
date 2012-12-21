@@ -48,9 +48,9 @@
 
                     <Spinner
                         android:id="@+id/mySpinner"
-                        android:layout_width="wrap_content"
+                        android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.1" >
+                        android:layout_weight="1" >
                     </Spinner>
 
                     <Button
@@ -91,8 +91,9 @@
 
                     <Spinner
                         android:id="@+id/spinner8"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:gravity="center"
                         android:textSize="16dp" />
 
@@ -111,36 +112,11 @@
                         android:textSize="16dp" />
                 </LinearLayout>
 
-                <LinearLayout
+                <GridView
+                    android:id="@+id/gv_title"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        android:id="@+id/tv1"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="@string/time"
-                        android:textSize="16dp" />
-
-                    <TextView
-                        android:id="@+id/tv2"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:textSize="16dp" />
-
-                    <TextView
-                        android:id="@+id/tv3"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:textSize="16dp" />
-                </LinearLayout>
+                    android:stretchMode="columnWidth" />
 
                 <GridView
                     android:id="@+id/myGridView"
@@ -150,8 +126,7 @@
                     android:fastScrollEnabled="true"
                     android:focusable="true"
                     android:numColumns="3"
-                    android:stretchMode="columnWidth"
-                    android:transcriptMode="alwaysScroll" />
+                    android:stretchMode="columnWidth" />
 
                 <Button
                     android:id="@+id/mButtonoa"
@@ -245,6 +220,38 @@
                                 android:layout_weight="1" />
                         </LinearLayout>
                         
+                        <TextView
+                            android:id="@+id/stt31"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/time_tap"
+                            android:textSize="17dp" />
+
+                        <SeekBar
+                            android:id="@+id/seekb5"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dip"
+                            android:layout_marginRight="5dip" />
+                        
+                        <LinearLayout 
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            
+                            <CheckBox
+                                android:id="@+id/check12"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/mul_phase" />
+                            
+                            <Spinner
+                                android:id="@+id/spinner14"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1" />
+                        </LinearLayout>
                     </LinearLayout>
 
                     <TextView
@@ -427,6 +434,25 @@
                             android:text="@string/sel_session"
                             android:textSize="17dp" />
                         
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" >
+
+                            <TextView
+                                android:id="@+id/stt32"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/sesname"
+                                android:textSize="17dp" />
+
+                            <Button
+                                android:id="@+id/btn_ses"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/setting" />
+                        </LinearLayout>
                     </LinearLayout>
 
                     <TextView
@@ -545,7 +571,7 @@
 
                             <TextView
                                 android:id="@+id/stt27"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/stt_csn"
@@ -565,7 +591,7 @@
                             
                             <TextView
                                 android:id="@+id/stt28"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/stt_csp"
@@ -585,7 +611,7 @@
                             
                             <TextView
                                 android:id="@+id/stt29"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/stt_csq"
@@ -635,16 +661,16 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dip"
                         android:background="@drawable/group_back"
-                        android:orientation="vertical" >
+                        android:orientation="horizontal" >
 
-                        <LinearLayout
+                        <!-- <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal" >
+                            android:orientation="horizontal" > -->
 
                             <TextView
                                 android:id="@+id/stt25"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/stt_sina"
@@ -653,10 +679,8 @@
                             <Button
                                 android:id="@+id/auth_sina"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/authsina" />
-                        </LinearLayout>
+                                android:layout_height="wrap_content" />
+                        <!-- </LinearLayout> -->
 
                     </LinearLayout>
 
@@ -685,6 +709,7 @@
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginRight="5dip"
                             android:orientation="horizontal" >
 
                             <TextView

@@ -124,7 +124,6 @@ public class Cube2layer {
 			}
 			else cp[i] = co[i] = 0;
 		}
-		
 		return new State(cp, co);
 	}
 	

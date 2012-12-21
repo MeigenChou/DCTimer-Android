@@ -1,13 +1,6 @@
 ﻿package com.dctimer;
 
-import java.io.*;
 import java.util.Random;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import min2phase.*;
 import scramblers.*;
@@ -46,7 +39,11 @@ public class Mi {
 			scr=OtherScr.megascramble(new String[][][]{{{"U","D"}},{{"R","L"}},{{"F","B"}}}, csuff, 25);viewType=2;
 			if(DCTimer.spinSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spinSel[2]);break;
 		case 3:
-			scr=Cube222.solve(Cube222.randomLastLayer((int)(Math.random()*5)));viewType=2;break;
+			scr=Cube222.solve(Cube222.randomCLL());viewType=2;	//(int)(Math.random()*5)
+			if(DCTimer.spinSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spinSel[2]);break;
+		case 4:
+			scr=Cube222.solve(Cube222.randomEG1());viewType=2;
+			break;
 		case 16: //3阶
 			scr=Cube.scramblestring(3, 25);viewType=3;
 			if(DCTimer.spinSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spinSel[9], DCTimer.spinSel[10]);
@@ -140,50 +137,53 @@ public class Mi {
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 32: //4阶
 			scr=Cube.scramblestring(4, 40);viewType=4;break;
+//		case 33:
+//			if(new File("/mnt/sdcard/DCTimer/Center1").exists() && new File("/mnt/sdcard/DCTimer/Edge3").exists()){
+//				try{
+//					threephase.Search first = new threephase.Search();
+//					scr=first.randomState();
+//				} catch(Exception e){
+//					e.printStackTrace();
+//					scr="Error";
+//				}
+//			}
+//			else {
+//				InputStream is = null;
+//				try{
+//			        HttpClient httpclient = new DefaultHttpClient();
+//			        HttpPost httppost = new HttpPost("http://yunqi.li:8080/scramble/.json?=444*1");
+//			        HttpResponse response = httpclient.execute(httppost);
+//			        HttpEntity entity = response.getEntity();
+//			        is = entity.getContent();
+//			    }catch(Exception e){
+//			        scr="Error: Fail to establish http connection.";
+//			    }
+//				try{
+//			        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+//			        StringBuilder sb = new StringBuilder();
+//			        String line = null;
+//			        while ((line = reader.readLine()) != null) {
+//			            sb.append(line + "\n");
+//			        }
+//			        scr=sb.substring(16, sb.length()-162);
+//			        is.close();
+//			    }catch(Exception e){
+//			    	scr="Error: Fail to convert net stream.";
+//			    }
+//			}
+//			viewType=scr.startsWith("Error")?0:4;break;
 		case 33:
-			if(new File("/mnt/sdcard/DCTimer/Center1").exists() && new File("/mnt/sdcard/DCTimer/Edge3").exists()){
-				try{
-					threephase.Search first = new threephase.Search();
-					scr=first.randomState();
-				} catch(Exception e){
-					e.printStackTrace();
-					scr="Error";
-				}
-			}
-			else {
-				InputStream is = null;
-				try{
-			        HttpClient httpclient = new DefaultHttpClient();
-			        HttpPost httppost = new HttpPost("http://yunqi.li:8080/scramble/.json?=444*1");
-			        HttpResponse response = httpclient.execute(httppost);
-			        HttpEntity entity = response.getEntity();
-			        is = entity.getContent();
-			    }catch(Exception e){
-			        scr="Error: Fail to establish http connection.";
-			    }
-				try{
-			        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-			        StringBuilder sb = new StringBuilder();
-			        String line = null;
-			        while ((line = reader.readLine()) != null) {
-			            sb.append(line + "\n");
-			        }
-			        scr=sb.substring(16, sb.length()-162);
-			        is.close();
-			    }catch(Exception e){
-			    	scr="Error: Fail to convert net stream.";
-			    }
-			}
-			viewType=scr.startsWith("Error")?0:4;break;
-		case 34:
 			turn2=new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}};
 			scr=OtherScr.megascramble(turn2, csuff, 40);viewType=4;break;
-		case 35:
+		case 34:
 			scr=OtherScr.yj4x4();viewType=4;break;
-		case 36:
+		case 35:
 			end=new String[]{"Bw2 Rw'", "Bw2 U2 Rw U2 Rw U2 Rw U2 Rw"};
 			scr=OtherScr.edgescramble("Rw Bw2", end, new String[]{"Uw"});viewType=4;
 			break;
+		case 36:
+			scr=OtherScr.megascramble(new String[][]{{"U","u"},{"R","r"}}, csuff, 40);
+			viewType=4;break;
 		case 48: //5阶
 			scr=Cube.scramblestring(5, 60);viewType=5;break;
 		case 49:
@@ -258,11 +258,18 @@ public class Mi {
 		case 144:  //魔表
 			scr=Clock.scramble();viewType=12;break;
 		case 145:
-			scr="";
-			for (int i=0;i<4;i++) scr+="(" + (int)((Math.random()*12)-5) + ", " + (int)((Math.random()*12)-5) + ") / ";
-			for (int i=0;i<6;i++) scr+="(" + (int)((Math.random()*12)-5) + ") / ";
-			for (int i=0;i<4;i++) scr+=OtherScr.rndEl(new String[]{"d","U"});viewType=0;
+			StringBuffer sclk = new StringBuffer();
+			for (int i=0;i<4;i++) sclk.append("(" + (int)((Math.random()*12)-5) + ", " + (int)((Math.random()*12)-5) + ") / ");
+			for (int i=0;i<6;i++) sclk.append("(" + (int)((Math.random()*12)-5) + ") / ");
+			for (int i=0;i<4;i++) sclk.append(OtherScr.rndEl(new String[]{"d","U"}));
+			scr=sclk.toString();viewType=0;
 			break;
+		case 146:
+			scr="UUUU "+OtherScr.c("u")+" / dUUU "+OtherScr.c("u")+" / dUdU "+OtherScr.c("u")+","+OtherScr.c("d")+" / UUdU "
+			+OtherScr.c("u")+" / UUdd "+OtherScr.c("u")+","+OtherScr.c("d")+" / UUUd "+OtherScr.c("u")+" / UdUd "+OtherScr.c("u")
+			+","+OtherScr.c("d")+" / UdUU "+OtherScr.c("u")+" / ddUU "+OtherScr.c("u")+","+OtherScr.c("d")+" / dddd "+OtherScr.c("d")
+			+" / "+OtherScr.c();
+			viewType=0;break;
 		case 160:	//15puzzles
 			scr=OtherScr.do15puzzle(false);viewType=0;break;
 		case 161:
@@ -400,31 +407,34 @@ public class Mi {
 			turns=new String[][][]{{{"R U R'","R U2 R'","R U' R'","R U2' R'"}},{{"F' U F","F' U2 F","F' U' F","F' U2' F"}},{{"U","U2","U'","U2'"}}};
 			scr=OtherScr.megascramble(turns, suff0, 20);viewType=0;break;
 		case 320:	//连拧
-			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+Cube.scramblestring(3, 25)
+			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40);
 			viewType=0;break;
 		case 321:
-			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+Cube.scramblestring(3, 25)
+			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60);
 			viewType=0;break;
 		case 322:
-			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+Cube.scramblestring(3, 25)
+			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60)
 				+"\n6) "+OtherScr.megascramble(new String[][]{{"U","D","u","d","3u"},{"R","L","r","l","3r"},{"F","B","f","b","3f"}}, csuff, 80);
 			viewType=0;break;
 		case 323:
-			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+Cube.scramblestring(3, 25)
+			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60)
 				+"\n6) "+OtherScr.megascramble(new String[][]{{"U","D","u","d","3u"},{"R","L","r","l","3r"},{"F","B","f","b","3f"}}, csuff, 80)
 				+"\n7) "+OtherScr.megascramble(new String[][]{{"U","D","u","d","3u","3d"},{"R","L","r","l","3r","3l"},{"F","B","f","b","3f","3b"}}, csuff, 100);
 			viewType=0;break;
 		case 324:
-			scr="1) "+Cube.scramblestring(3, 25)+"\n2) "+Cube.scramblestring(3, 25)+"\n3) "+Cube.scramblestring(3, 25)
-				+"\n4) "+Cube.scramblestring(3, 25)+"\n5) "+Cube.scramblestring(3, 25);
-			viewType=0;break;
+			StringBuffer scrb=new StringBuffer();
+			for(int j=0; j<5; j++){
+				scrb.append(j+1+") "+new Search().solution(Tools.randomCube(), 22, 20000, 0, 0));
+				if(j<4)scrb.append("\n");
+			}
+			scr=scrb.toString();viewType=0;break;
 		}
 		return scr;
 	}
@@ -1180,33 +1190,47 @@ public class Mi {
 		return DCTimer.spinSel[6]==0?distime(cavg*10):distime(cavg);
 	}
 	public static String average(){
-		String avg="";
 		double sum=0,sum2=0;
 		omax=-1; omin=-1; oravg=-1;
 		int n=DCTimer.resl;
 		if(n==0)return "0/0): N/A (N/A)";
-		else {
-			for(int i=0;i<DCTimer.resl;i++) {
-				if(DCTimer.resd[i]==0)n--;
-				else {
-					if(omax==-1)omax=i;
-					else if(DCTimer.rest[i]+DCTimer.resp[i]*2000>DCTimer.rest[omax]+DCTimer.resp[omax]*2000)omax=i;
-	                if(omin==-1)omin=i;
-	                else if(DCTimer.rest[i]+DCTimer.resp[i]*2000<=DCTimer.rest[omin]+DCTimer.resp[omin]*2000)omin=i;
-	                if(DCTimer.spinSel[6]==1)sum+=(double)DCTimer.rest[i]+DCTimer.resp[i]*2000;
-	                else sum+=(DCTimer.rest[i]+DCTimer.resp[i]*2000+5)/10;
-	                if(DCTimer.spinSel[6]==1)sum2+=Math.pow(DCTimer.rest[i]+DCTimer.resp[i]*2000, 2);
-	                else sum2+=Math.pow((DCTimer.rest[i]+DCTimer.resp[i]*2000+5)/10, 2);
-				}
-			}
-			if(n==0)avg="0/"+DCTimer.resl+"): N/A (N/A)";
+		for(int i=0;i<DCTimer.resl;i++) {
+			if(DCTimer.resd[i]==0)n--;
 			else {
-				oravg=(int)(sum/n+0.5);
-				orsdv=(int)(Math.sqrt((sum2-sum*sum/n)/n)+(DCTimer.spinSel[6]==1?0:0.5));
-				avg=""+n+"/"+DCTimer.resl+"): "+(DCTimer.spinSel[6]==0?distime(oravg*10):distime(oravg))+" ("+standDev(orsdv)+")";
+				if(omax==-1)omax=i;
+				else if(DCTimer.rest[i]+DCTimer.resp[i]*2000>DCTimer.rest[omax]+DCTimer.resp[omax]*2000)omax=i;
+				if(omin==-1)omin=i;
+				else if(DCTimer.rest[i]+DCTimer.resp[i]*2000<=DCTimer.rest[omin]+DCTimer.resp[omin]*2000)omin=i;
+				if(DCTimer.spinSel[6]==1)sum+=(double)DCTimer.rest[i]+DCTimer.resp[i]*2000;
+				else sum+=(DCTimer.rest[i]+DCTimer.resp[i]*2000+5)/10;
+				if(DCTimer.spinSel[6]==1)sum2+=Math.pow(DCTimer.rest[i]+DCTimer.resp[i]*2000, 2);
+				else sum2+=Math.pow((DCTimer.rest[i]+DCTimer.resp[i]*2000+5)/10, 2);
 			}
 		}
+		String avg;
+		if(n==0)avg="0/"+DCTimer.resl+"): N/A (N/A)";
+		else {
+			oravg=(int)(sum/n+0.5);
+			orsdv=(int)(Math.sqrt((sum2-sum*sum/n)/n)+(DCTimer.spinSel[6]==1?0:0.5));
+			avg=""+n+"/"+DCTimer.resl+"): "+(DCTimer.spinSel[6]==0?distime(oravg*10):distime(oravg))+" ("+standDev(orsdv)+")";
+		}
 		return avg;
+	}
+	public static String mulMean(int p) {
+		double sum=0;
+		int n=0;
+		if(n==DCTimer.resl)return "-";
+		for(int i=0;i<DCTimer.resl;i++) {
+			if(DCTimer.mulp[p][i]!=0) {
+				if(DCTimer.spinSel[6]==1)sum+=(double)DCTimer.mulp[p][i];
+				else sum+=(DCTimer.mulp[p][i]+5)/10;
+				n++;
+			}
+		}
+		if(n==0)return "-";
+		int m=(int)(sum/n+0.5);
+		String mean = DCTimer.spinSel[6]==0?distime(m*10):distime(m);
+		return mean;
 	}
 	public static String standDev(int i) {
 		if(i<0)return "N/A";
@@ -1346,11 +1370,7 @@ public class Mi {
 	    	}
 	    }
 	}
-	public static void setSessionType(int idx, int type){
-		DCTimer.sesType |= 0x7f << (7*idx);
-		DCTimer.sesType ^= (type ^ 0x7f) << (7*idx);
-	}
-	public static int getSessionType(int idx){
-		return (int) ((DCTimer.sesType >> (7*idx)) & 0x7f);
+	public static int getSessionType(long sesType, int idx){
+		return (int) ((sesType >> (7*idx)) & 0x7f);
 	}
 }

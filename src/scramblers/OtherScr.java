@@ -1,7 +1,6 @@
 package scramblers;
 
-public class OtherScr
-{
+public class OtherScr {
 	public static String rndEl(String[] x){
 		return x[(int)(Math.random()*x.length)];
 	}
@@ -473,5 +472,14 @@ public class OtherScr
 			sb.append( move[arr[i][0]] + cubesuff[arr[i][1]-1] + " ");
 		}
 		return sb.toString();
+	}
+	
+	public static String c(String s) {
+		int i = (int) (Math.random()*12);
+		return s+"="+(i-5);
+	}
+	public static String c() {
+		return rndEl(new String[]{"d","U"})+rndEl(new String[]{"d","U"})
+				+rndEl(new String[]{"d","U"})+rndEl(new String[]{"d","U"});
 	}
 }

@@ -32,6 +32,7 @@
         <item>隨機狀態</item>
         <item>3-gen</item>
         <item>6-gen</item>
+        <item>CLL訓練</item>
     </array>
     <array name="sel22">
         <item>傳統</item>
@@ -50,10 +51,10 @@
     </array>
     <array name="sel23">
         <item>WCA</item>
-        <item>隨機狀態</item>
         <item>SiGN</item>
         <item>YJ</item>
         <item>對棱訓練</item>
+        <item>R,r,U,u</item>
     </array>
     <array name="sel24">
         <item>WCA</item>
@@ -79,8 +80,9 @@
         <item>隨機狀態</item>
     </array>
     <array name="sel29">
-        <item>Jaap order</item>
+        <item>Jaap 順序</item>
         <item>concise</item>
+        <item>高效順序</item>
     </array>
     <array name="sel210">
         <item>piece moves</item>
@@ -196,17 +198,6 @@
         <item>計時器</item>
         <item>手動輸入</item>
     </array>
-    <array name="grpStr">
-        <item>"1　"</item>
-        <item>"2　"</item>
-        <item>"3　"</item>
-        <item>"4　"</item>
-        <item>"5　"</item>
-        <item>"6　"</item>
-        <item>"7　"</item>
-        <item>"8　"</item>
-        <item>"9　"</item>
-    </array>
     <array name="faceStr">
         <item>D(底)</item>
         <item>U(頂)</item>
@@ -244,11 +235,12 @@
     	<item>8000</item>
     </string-array>
     
-    <array name="about">
-        <item>簡介</item>
-        <item>計時</item>
-        <item>轉亂</item>
-        <item>統計</item>
-        <item>更多</item>
+    <array name="fontStr">
+        <item>monospace</item>
+        <item>serif</item>
+        <item>sans-serif</item>
+        <item>CCT</item>
+        <item>數碼管1</item>
+        <item>數碼管2</item>
     </array>
 </resources>

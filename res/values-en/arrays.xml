@@ -32,6 +32,7 @@
         <item>random state</item>
         <item>3-gen</item>
         <item>6-gen</item>
+        <item>CLL training</item>
     </array>
     <array name="sel22">
         <item>old style</item>
@@ -50,10 +51,10 @@
     </array>
     <array name="sel23">
         <item>WCA</item>
-        <item>random state</item>
         <item>SiGN</item>
         <item>YJ</item>
         <item>edges</item>
+        <item>R,r,U,u</item>
     </array>
     <array name="sel24">
         <item>WCA</item>
@@ -81,6 +82,7 @@
     <array name="sel29">
         <item>Jaap order</item>
         <item>concise</item>
+        <item>efficient pin order</item>
     </array>
     <array name="sel210">
         <item>piece moves</item>
@@ -200,18 +202,6 @@
         <item>typing</item>
     </array>
     
-    <array name="grpStr">
-        <item>"1　"</item>
-        <item>"2　"</item>
-        <item>"3　"</item>
-        <item>"4　"</item>
-        <item>"5　"</item>
-        <item>"6　"</item>
-        <item>"7　"</item>
-        <item>"8　"</item>
-        <item>"9　"</item>
-    </array>
-    
     <array name="faceStr">
         <item>D(button)</item>
         <item>U(top)</item>
@@ -249,11 +239,12 @@
     	<item>8000</item>
     </string-array>
     
-    <array name="about">
-        <item>Introduction</item>
-        <item>Timer</item>
-        <item>Scramble</item>
-        <item>Statistics</item>
-        <item>Other</item>
+    <array name="fontStr">
+        <item>monospace</item>
+        <item>serif</item>
+        <item>sans-serif</item>
+        <item>CCT</item>
+        <item>lcd1</item>
+        <item>lcd2</item>
     </array>
 </resources>

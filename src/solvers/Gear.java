@@ -99,14 +99,4 @@ public class Gear {
 		for (int d = 3;!search(cp, ep[0], ep[1], ep[2], eo, d, -1); d++);
 		return sb.toString();
 	}
-	
-//	public static void main(String[] args) {
-//		long tm = System.currentTimeMillis();
-//		init();
-//		System.out.println(System.currentTimeMillis()-tm);
-//		tm = System.currentTimeMillis();
-//		for(int i = 0; i < 10; i++)
-//			System.out.println(solve(new Random()));
-//		System.out.println(System.currentTimeMillis()-tm);
-//	}
 }
