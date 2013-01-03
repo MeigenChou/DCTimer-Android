@@ -34,7 +34,7 @@ public class DCTimer extends Activity {
 	public static byte[] spinSel=new byte[14];
 	private ArrayAdapter<String> adapter;
 	public boolean wca;
-	private boolean wcat, opnl, hidscr, conft, isShare, isLogin, isMulp;
+	private boolean wcat, opnl, hidscr, conft, isShare, isLogin, isMulp, canScr=true;
 	public static boolean hidls, timmh, l1am, l2am;
 	private static int selold,sel2;
 	public static int[] rest;	//成绩列表
@@ -71,7 +71,7 @@ public class DCTimer extends Activity {
 	private Button csCube, csPyrm, csSQ1, sesMang;
 	private ColorPicker dialog;
 	private SeekBar skb1, skb2, skb3, skb4, skb5;
-	private int ttsize, stsize;
+	private int ttsize, stsize, intv;
 	private TextView[] stt = new TextView[33];
 	private int sttlen=stt.length;
 	private TextView tvl;
@@ -224,6 +224,7 @@ public class DCTimer extends Activity {
 		picPath=share.getString("picpath", null);
 		tapTime=share.getInt("tapt", 0);
 		isMulp=share.getBoolean("ismulp", false);
+		intv=share.getInt("intv", 30);
 		edit = share.edit();
 		for(int i=0; i<15; i++){
 			sestp[i]=(short) share.getInt("sestp"+i, -1);
@@ -473,34 +474,21 @@ public class DCTimer extends Activity {
 		if(invs)chkb[10].setChecked(true);
 		getSession(spinSel[8]);
 		oriavg.setText(getResources().getString(R.string.session_average)+Mi.average());
+		setGvTitle();
 		if(isMulp){
 			chkb[13].setChecked(true);
 			String[] temp = null;
-			mulp = new int[spinSel[13]+2][rest.length];
-			multemp = new long[spinSel[13]+3];
+			multemp = new long[7];
 			if(resl!=0){
-				Cursor c = dbh.query(spinSel[8]);
-				for(int i=0; i<resl; i++) {
-					c.moveToPosition(i);
-					for(int j=0; j<spinSel[13]+2; j++){
-						mulp[j][i] = c.getInt(7+j);
-					}
-				}
-				c.close();
 				temp = new String[(spinSel[13]+3)*(resl+1)];
 			}
-			aryAdapter = new TimesAdapter(DCTimer.this, temp, new int[]{cl[1],
-					cl[2],cl[3],Mi.omax, Mi.omin}, share.getInt("intv", 30), spinSel[13]+3);
-			myGridView.setNumColumns(spinSel[13]+3);
-			myGridView.setAdapter(aryAdapter);
+			setGridView(temp);
 		}
 		else {
 			spinner[13].setEnabled(false);
-			aryAdapter=new TimesAdapter (this, times, new int[]{cl[1],cl[2],cl[3],cl[4]}, 
-					Mi.omax, Mi.omin, share.getInt("intv", 30));
-			myGridView.setAdapter(aryAdapter);
+			setGridView(times);
 		}
-		setGvTitle();
+		
 		if(usess){
 			chkb[11].setChecked(true);spinner[10].setEnabled(false);
 			if(!stm.isStart)stm.start();
@@ -626,10 +614,8 @@ public class DCTimer extends Activity {
 				if(spinSel[4]!=arg2) {
 					spinSel[4]=(byte)arg2;
 					if(!isMulp) {
-						aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],cl[2],cl[3],cl[4]}, 
-								Mi.omax, Mi.omin, share.getInt("intv", 30));
-						myGridView.setAdapter(aryAdapter);
 						setGvTitle();
+						setGridView(times);
 					}
 					edit.putInt("list1", spinSel[4]);
 					edit.commit();
@@ -663,11 +649,8 @@ public class DCTimer extends Activity {
 				else {edit.putBoolean("prec", true);if(spinSel[7]==0)mTextView2.setText("0.000");}
 				edit.commit();
 				if(resl!=0){
-					if(isMulp)aryAdapter=new TimesAdapter (DCTimer.this, new String[(spinSel[13]+3)*(resl+1)], new int[]{cl[1],cl[2],cl[3], 
-							Mi.omax, Mi.omin}, share.getInt("intv", 30), spinSel[13]+3);
-					else aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],cl[2],cl[3],cl[4]}, 
-						Mi.omax, Mi.omin, share.getInt("intv", 30));
-					myGridView.setAdapter(aryAdapter);
+					if(isMulp)setGridView(new String[(spinSel[13]+3)*(resl+1)]);
+					else setGridView(times);
 					oriavg.setText(getResources().getString(R.string.session_average)+Mi.average());
 				}
 			}
@@ -725,33 +708,17 @@ public class DCTimer extends Activity {
 			}
 			public void onNothingSelected(AdapterView<?> arg0) {}
 		});
-		//分组
+		//分组 TODO
 		spinner[8].setOnItemSelectedListener(new Spinner.OnItemSelectedListener() { 
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				arg0.setVisibility(View.VISIBLE);
 				if(spinSel[8]!=arg2) {
 					spinSel[8]=(byte)arg2;
 					//dbh = new DBHelper(DCTimer.this);
-					getSession(spinSel[8]);
+					getSession(arg2);
 					oriavg.setText(getResources().getString(R.string.session_average)+Mi.average());
-					if(isMulp) {
-						if(resl!=0){
-							mulp = new int[spinSel[13]+2][rest.length];
-							Cursor c = dbh.query(spinSel[8]);
-							for(int i=0; i<resl; i++) {
-								c.moveToPosition(i);
-								for(int j=0; j<spinSel[13]+2; j++){
-									mulp[j][i] = c.getInt(7+j);
-								}
-							}
-							c.close();
-						}
-						aryAdapter=new TimesAdapter (DCTimer.this, new String[(spinSel[13]+3)*(resl+1)], new int[]{cl[1],cl[2],cl[3], 
-								Mi.omax, Mi.omin}, share.getInt("intv", 30), spinSel[13]+3);
-					}
-					else aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],cl[2],cl[3],cl[4]}, 
-							Mi.omax, Mi.omin, share.getInt("intv", 30));
-					myGridView.setAdapter(aryAdapter);
+					if(isMulp) setGridView(new String[(spinSel[13]+3)*(resl+1)]);
+					else setGridView(times);
 					edit.putInt("group", spinSel[8]);
 					edit.commit();
 				}
@@ -883,24 +850,9 @@ public class DCTimer extends Activity {
 				arg0.setVisibility(View.VISIBLE);
 				if(spinSel[13]!=arg2) {
 					spinSel[13]=(byte)arg2;
-					myGridView.setNumColumns(arg2+3);
-					if(resl!=0){
-						mulp = new int[arg2+2][rest.length];
-						multemp = new long[arg2+3];
-						Cursor c = dbh.query(spinSel[8]);
-						for(int i=0; i<resl; i++) {
-							c.moveToPosition(i);
-							for(int j=0; j<arg2+2; j++){
-								mulp[j][i] = c.getInt(7+j);
-							}
-						}
-						c.close();
-						aryAdapter = new TimesAdapter(DCTimer.this, new String[(arg2+3)*(resl+1)], new int[]{cl[1],
-								cl[2],cl[3],Mi.omax, Mi.omin}, share.getInt("intv", 30), arg2+3);
-					} else aryAdapter = new TimesAdapter(DCTimer.this, null, new int[]{cl[1],
-							cl[2],cl[3],Mi.omax, Mi.omin}, share.getInt("intv", 30), arg2+3);
-					myGridView.setAdapter(aryAdapter);
 					setGvTitle();
+					if(resl!=0) setGridView(new String[(arg2+3)*(resl+1)]);
+					else setGridView(null);
 					edit.putInt("mulp", arg2);
 					edit.commit();
 				}
@@ -932,6 +884,7 @@ public class DCTimer extends Activity {
 				} else Toast.makeText(DCTimer.this, getResources().getString(R.string.not_support), Toast.LENGTH_SHORT).show();
 			}
 		});
+		//计时器
 		mTextView1.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event){
 				scrt=true;
@@ -939,6 +892,7 @@ public class DCTimer extends Activity {
 				return true;
 			}
 		});
+		//打乱
 		mTextView2.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event){
 				scrt=false;
@@ -963,6 +917,7 @@ public class DCTimer extends Activity {
 				}
 			}
 		});
+		//分组平均
 		oriavg.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				boolean m=false;
@@ -971,6 +926,7 @@ public class DCTimer extends Activity {
 				if(m)showAlertDialog(3, 0);
 			}
 		});
+		//清空成绩
 		clear.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				if(resl==0) {
@@ -988,11 +944,9 @@ public class DCTimer extends Activity {
 							resl=dbLastId=0;
 							times=null;
 							oriavg.setText(getResources().getString(R.string.session_average)+"0/0): N/A (N/A)");
-							if(isMulp)aryAdapter=new TimesAdapter (DCTimer.this, null,
-									new int[]{cl[1],cl[2],cl[3],-1,-1}, share.getInt("intv", 30), spinSel[13]+3);
-							else aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],
-									cl[2],cl[3],cl[4]}, -1, -1, share.getInt("intv", 30));
-							myGridView.setAdapter(aryAdapter);
+							Mi.omax=Mi.omin=-1;
+							if(isMulp)setGridView(new String[spinSel[13]+3]);
+							else setGridView(times);
 							if(sestp[spinSel[8]]!=-1){
 								sestp[spinSel[8]]=-1;
 								edit.remove("sestp"+spinSel[8]);
@@ -1005,6 +959,7 @@ public class DCTimer extends Activity {
 				}
 			}
 		});
+		//时间分布
 		hist.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				int width = dm.widthPixels;
@@ -1026,6 +981,7 @@ public class DCTimer extends Activity {
 				.setView(popView).setNegativeButton(getResources().getString(R.string.btn_close), null).show();
 			}
 		});
+		//恢复默认设置
 		reset.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				new AlertDialog.Builder(DCTimer.this).setTitle(getResources().getString(R.string.confirm_reset))
@@ -1056,12 +1012,10 @@ public class DCTimer extends Activity {
 						for(int i=0;i<13;i++)chkb[i].setTextColor(cl[1]);
 						mTextView1.setTextColor(cl[1]);
 						mTextView2.setTextColor(cl[1]);
+						intv=30;
 						if(resl!=0){
-							if(isMulp)aryAdapter=new TimesAdapter (DCTimer.this, new String[(spinSel[13]+3)*(resl+1)],
-									new int[]{cl[1],cl[2],cl[3], Mi.omax, Mi.omin}, 30, spinSel[13]+3);
-							else aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{
-									cl[1],cl[2],cl[3],cl[4]}, Mi.omax, Mi.omin, 30);
-							myGridView.setAdapter(aryAdapter);
+							if(isMulp)setGridView(new String[(spinSel[13]+3)*(resl+1)]);
+							else setGridView(times);
 						}
 						releaseWakeLock();
 						screenOn=false;
@@ -1103,6 +1057,7 @@ public class DCTimer extends Activity {
 				}).show();
 			}
 		});
+		//背景颜色
 		bagc.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -1118,6 +1073,7 @@ public class DCTimer extends Activity {
 				dialog.show();
 			}
 		});
+		//背景图片
 		bgpic.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -1127,6 +1083,7 @@ public class DCTimer extends Activity {
 				startActivityForResult(intent, 1);//取得相片后返回本画面
 			}
 		});
+		//文字颜色
 		txtc.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -1140,11 +1097,8 @@ public class DCTimer extends Activity {
 						mTextView2.setTextColor(color);
 						cl[1]=color;
 						if(resl!=0){
-							if(isMulp)aryAdapter=new TimesAdapter (DCTimer.this, new String[(spinSel[13]+3)*(resl+1)], new int[]{
-									cl[1],cl[2],cl[3], Mi.omax, Mi.omin}, share.getInt("intv", 30), spinSel[13]+3);
-							else aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{color,cl[2],cl[3],cl[4]}, 
-									Mi.omax, Mi.omin, share.getInt("intv", 30));
-							myGridView.setAdapter(aryAdapter);
+							if(isMulp)setGridView(new String[(spinSel[13]+3)*(resl+1)]);
+							else setGridView(times);
 						}
 						setGvTitle();
 						edit.putInt("cl1", color);edit.commit();
@@ -1154,6 +1108,7 @@ public class DCTimer extends Activity {
 				dialog.show();
 			}
 		});
+		//最快单次颜色
 		orbc.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -1162,11 +1117,8 @@ public class DCTimer extends Activity {
 					public void colorChanged(int color) {
 						cl[2]=color;
 						if(resl!=0){
-							if(isMulp)aryAdapter=new TimesAdapter (DCTimer.this, new String[(spinSel[13]+3)*(resl+1)], new int[]{
-									cl[1],cl[2],cl[3], Mi.omax, Mi.omin}, share.getInt("intv", 30), spinSel[13]+3);
-							else aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],cl[2],cl[3],cl[4]}, 
-									Mi.omax, Mi.omin, share.getInt("intv", 30));
-							myGridView.setAdapter(aryAdapter);
+							if(isMulp)setGridView(new String[(spinSel[13]+3)*(resl+1)]);
+							else setGridView(times);
 						}
 						edit.putInt("cl2", color);edit.commit();
 					}
@@ -1175,6 +1127,7 @@ public class DCTimer extends Activity {
 				dialog.show();
 			}
 		});
+		//最慢单次颜色
 		orwc.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -1183,11 +1136,8 @@ public class DCTimer extends Activity {
 					public void colorChanged(int color) {
 						cl[3]=color;
 						if(resl!=0){
-							if(isMulp)aryAdapter=new TimesAdapter (DCTimer.this, new String[(spinSel[13]+3)*(resl+1)], new int[]{
-									cl[1],cl[2],cl[3], Mi.omax, Mi.omin}, share.getInt("intv", 30), spinSel[13]+3);
-							else aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],cl[2],color,cl[4]}, 
-									Mi.omax, Mi.omin, share.getInt("intv", 30));
-							myGridView.setAdapter(aryAdapter);
+							if(isMulp)setGridView(new String[(spinSel[13]+3)*(resl+1)]);
+							else setGridView(times);
 						}
 						edit.putInt("cl3", color);edit.commit();
 					}
@@ -1196,6 +1146,7 @@ public class DCTimer extends Activity {
 				dialog.show();
 			}
 		});
+		//最快平均颜色
 		avbc.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -1203,11 +1154,7 @@ public class DCTimer extends Activity {
 					@Override
 					public void colorChanged(int color) {
 						cl[4]=color;
-						if(resl!=0 && !isMulp){
-							aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],
-									cl[2],cl[3],color}, Mi.omax, Mi.omin, share.getInt("intv", 30));
-							myGridView.setAdapter(aryAdapter);
-						}
+						if(resl!=0 && !isMulp) setGridView(times);
 						edit.putInt("cl4", color);edit.commit();
 					}
 				});
@@ -1215,6 +1162,7 @@ public class DCTimer extends Activity {
 				dialog.show();
 			}
 		});
+		//微博授权
 		rsauth.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -1239,6 +1187,7 @@ public class DCTimer extends Activity {
 				}
 			}
 		});
+		//配色NxN
 		csCube.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -1255,6 +1204,7 @@ public class DCTimer extends Activity {
 				dialog.show();
 			}
 		});
+		//配色金字塔
 		csPyrm.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -1271,6 +1221,7 @@ public class DCTimer extends Activity {
 				dialog.show();
 			}
 		});
+		//配色SQ
 		csSQ1.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -1287,6 +1238,7 @@ public class DCTimer extends Activity {
 				dialog.show();
 			}
 		});
+		//分组管理
 		sesMang.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -1331,7 +1283,7 @@ public class DCTimer extends Activity {
 								mItems[j]=j+1+(sesname[j].equals("")?"　":": "+sesname[j]);
 							adapter = new ArrayAdapter<String>(DCTimer.this, android.R.layout.simple_spinner_item, mItems);
 							adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-							spinner[8].setAdapter(adapter);
+							spinner[8].setAdapter(adapter);//TODO
 							spinner[8].setSelection(spinSel[8]);
 						}
 					}
@@ -1376,13 +1328,11 @@ public class DCTimer extends Activity {
 				edit.putInt("stsize", seekBar.getProgress()+12);
 				mTextView1.setTextSize(seekBar.getProgress()+12);
 			} else if(seekBar.getId()==R.id.seekb3){
-				stt[10].setText(getResources().getString(R.string.row_spacing)+ (seekBar.getProgress()+20));
+				intv=seekBar.getProgress()+20;
+				stt[10].setText(getResources().getString(R.string.row_spacing)+ intv);
 				if(resl!=0){
-					if(isMulp)aryAdapter=new TimesAdapter (DCTimer.this, new String[(spinSel[13]+3)*(resl+1)], new int[]{
-							cl[1],cl[2],cl[3], Mi.omax, Mi.omin}, seekBar.getProgress()+20, spinSel[13]+3);
-					else aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],cl[2],cl[3],cl[4]}, 
-							Mi.omax, Mi.omin, seekBar.getProgress()+20);
-					myGridView.setAdapter(aryAdapter);
+					if(isMulp)setGridView(new String[(spinSel[13]+3)*(resl+1)]);
+					else setGridView(times);
 				}
 				edit.putInt("intv", seekBar.getProgress()+20);
 			} else if(seekBar.getId()==R.id.seekb4){
@@ -1420,11 +1370,8 @@ public class DCTimer extends Activity {
 				if(isChecked){timmh=true;edit.putBoolean("timmh", true);}
 				else {timmh=false;edit.putBoolean("timmh", false);}
 				if(resl>0){
-					if(isMulp)aryAdapter=new TimesAdapter (DCTimer.this, new String[(spinSel[13]+3)*(resl+1)], new int[]{
-							cl[1],cl[2],cl[3], Mi.omax, Mi.omin}, share.getInt("intv", 30), spinSel[13]+3);
-					else aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],cl[2],cl[3],cl[4]}, 
-							Mi.omax, Mi.omin, share.getInt("intv", 30));
-					myGridView.setAdapter(aryAdapter);
+					if(isMulp)setGridView(new String[(spinSel[13]+3)*(resl+1)]);
+					else setGridView(times);
 				}
 			} else if(buttonView.getId()==R.id.check7) {
 				if(isChecked) {
@@ -1476,34 +1423,25 @@ public class DCTimer extends Activity {
 				if(isChecked){
 					isMulp=true; spinner[13].setEnabled(true);
 					edit.putBoolean("ismulp", true);
-					myGridView.setNumColumns(spinSel[13]+3);
-					multemp = new long[spinSel[13]+3];
+					multemp = new long[7];
+					mulp = new int[6][rest.length];
 					if(resl>0){
-						mulp = new int[spinSel[13]+2][rest.length];
 						Cursor c = dbh.query(spinSel[8]);
 						for(int i=0; i<resl; i++) {
 							c.moveToPosition(i);
-							for(int j=0; j<spinSel[13]+2; j++){
+							for(int j=0; j<6; j++)
 								mulp[j][i] = c.getInt(7+j);
-							}
 						}
 						c.close();
-						aryAdapter = new TimesAdapter(DCTimer.this, new String[(spinSel[13]+3)*(resl+1)], new int[]{cl[1],
-								cl[2],cl[3],Mi.omax, Mi.omin}, share.getInt("intv", 30), spinSel[13]+3);
-					} else aryAdapter = new TimesAdapter(DCTimer.this, null, new int[]{cl[1],
-							cl[2],cl[3],Mi.omax, Mi.omin}, share.getInt("intv", 30), spinSel[13]+3);
-					myGridView.setAdapter(aryAdapter);
+					}
+					setGridView(new String[(spinSel[13]+3)*(resl+1)]);
 				} else {
 					isMulp=false; spinner[13].setEnabled(false);
 					edit.putBoolean("ismulp", false);
-					myGridView.setNumColumns(3);
-					mulp = null;
-					if(resl>0){
-						aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],cl[2],cl[3],cl[4]}, 
-								Mi.omax, Mi.omin, share.getInt("intv", 30));
-					} else aryAdapter=new TimesAdapter (DCTimer.this, null, new int[]{cl[1],cl[2],cl[3],cl[4]}, 
-							Mi.omax, Mi.omin, share.getInt("intv", 30));
-					myGridView.setAdapter(aryAdapter);
+					mulp = null; multemp = null;
+					System.gc();
+					if(resl>0)setGridView(times);
+					else setGridView(null);
 				}
 				setGvTitle();
 			} else if(buttonView.getId()==R.id.lcheck1) {
@@ -1514,11 +1452,7 @@ public class DCTimer extends Activity {
 					l1am=false;edit.putBoolean("l1am", false);
 					if(!isMulp)setGvTitle();
 				}
-				if(resl>0 && !isMulp){
-					aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],
-							cl[2],cl[3],cl[4]}, Mi.omax, Mi.omin, share.getInt("intv", 30));
-					myGridView.setAdapter(aryAdapter);
-				}
+				if(resl>0 && !isMulp) setGridView(times);
 			} else if(buttonView.getId()==R.id.lcheck2) {
 				if(isChecked){
 					l2am=true;edit.putBoolean("l2am", true);
@@ -1527,11 +1461,7 @@ public class DCTimer extends Activity {
 					l2am=false;edit.putBoolean("l2am", false);
 					if(!isMulp)setGvTitle();
 				}
-				if(resl>0 && !isMulp){
-					aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],cl[2],cl[3],cl[4]}, 
-							Mi.omax, Mi.omin, share.getInt("intv", 30));
-					myGridView.setAdapter(aryAdapter);
-				}
+				if(resl>0 && !isMulp) setGridView(times);
 			}
 			edit.commit();
 		}
@@ -1539,27 +1469,27 @@ public class DCTimer extends Activity {
 	private String[] set2ndsel() {
 		String[] s = null;
 		switch(spinSel[0]){
-		case 0:s=getResources().getStringArray(R.array.sel21);break;
-		case 1:s=getResources().getStringArray(R.array.sel22);break;
-		case 2:s=getResources().getStringArray(R.array.sel23);break;
-		case 3:s=getResources().getStringArray(R.array.sel24);break;
-		case 4:s=getResources().getStringArray(R.array.sel25);break;
-		case 5:s=getResources().getStringArray(R.array.sel25);break;
-		case 6:s=getResources().getStringArray(R.array.sel26);break;
-		case 7:s=getResources().getStringArray(R.array.sel27);break;
-		case 8:s=getResources().getStringArray(R.array.sel28);break;
-		case 9:s=getResources().getStringArray(R.array.sel29);break;
-		case 10:s=getResources().getStringArray(R.array.sel210);break;
-		case 11:s=getResources().getStringArray(R.array.sel211);break;
-		case 12:s=getResources().getStringArray(R.array.sel212);break;
-		case 13:s=getResources().getStringArray(R.array.sel218);break;
-		case 14:s=getResources().getStringArray(R.array.sel213);break;
-		case 15:s=getResources().getStringArray(R.array.sel219);break;
-		case 16:s=getResources().getStringArray(R.array.sel214);break;
-		case 17:s=getResources().getStringArray(R.array.sel215);break;
-		case 18:s=getResources().getStringArray(R.array.sel216);break;
-		case 19:s=getResources().getStringArray(R.array.sel217);break;
-		case 20:s=getResources().getStringArray(R.array.sel220);break;
+		case 0:s=getResources().getStringArray(R.array.scr222);break;
+		case 1:s=getResources().getStringArray(R.array.scr333);break;
+		case 2:s=getResources().getStringArray(R.array.scr444);break;
+		case 3:s=getResources().getStringArray(R.array.scr555);break;
+		case 4:
+		case 5:s=getResources().getStringArray(R.array.scr666);break;
+		case 6:s=getResources().getStringArray(R.array.scrMinx);break;
+		case 7:s=getResources().getStringArray(R.array.scrPrym);break;
+		case 8:s=getResources().getStringArray(R.array.scrSq1);break;
+		case 9:s=getResources().getStringArray(R.array.scrClk);break;
+		case 10:s=getResources().getStringArray(R.array.scr15p);break;
+		case 11:s=getResources().getStringArray(R.array.scrMxN);break;
+		case 12:s=getResources().getStringArray(R.array.scrCmt);break;
+		case 13:s=getResources().getStringArray(R.array.scrGear);break;
+		case 14:s=getResources().getStringArray(R.array.scrSmc);break;
+		case 15:s=getResources().getStringArray(R.array.scrSkw);break;
+		case 16:s=getResources().getStringArray(R.array.scrOth);break;
+		case 17:s=getResources().getStringArray(R.array.scr3sst);break;
+		case 18:s=getResources().getStringArray(R.array.scrBdg);break;
+		case 19:s=getResources().getStringArray(R.array.scrMsst);break;
+		case 20:s=getResources().getStringArray(R.array.scrRly);break;
 		}
 		if(sel2>=s.length){
 			sndscr.setText(s[0]);
@@ -1636,6 +1566,23 @@ public class DCTimer extends Activity {
 		}
 		return true;
 	}
+	private void setGridView(final String[] time) {
+		//new Thread() {
+			//public void run() {
+				if(!isMulp){
+					aryAdapter=new TimesAdapter (DCTimer.this, time, new int[]{
+							cl[1],cl[2],cl[3],cl[4]}, Mi.omax, Mi.omin, intv);
+					myGridView.setNumColumns(3);
+				} else {
+					aryAdapter = new TimesAdapter(DCTimer.this,	time, new int[]{cl[1],
+							cl[2], cl[3], Mi.omax, Mi.omin}, intv, spinSel[13]+3);
+					myGridView.setNumColumns(spinSel[13]+3);
+				}
+				myGridView.setAdapter(aryAdapter);
+				// TODO
+			//}
+		//}.start();
+	}
 	private void setGvTitle() {
 		if(isMulp){
 			String[] title = new String[spinSel[13]+3];
@@ -1665,26 +1612,27 @@ public class DCTimer extends Activity {
 		String[] mItems=getResources().getStringArray(R.array.cubeStr);
 		String[] s = null;
 		switch(spinSel[0]){
-		case 0:s=getResources().getStringArray(R.array.sel21);break;
-		case 1:s=getResources().getStringArray(R.array.sel22);break;
-		case 2:s=getResources().getStringArray(R.array.sel23);break;
-		case 3:s=getResources().getStringArray(R.array.sel24);break;
-		case 4:s=getResources().getStringArray(R.array.sel25);break;
-		case 5:s=getResources().getStringArray(R.array.sel25);break;
-		case 6:s=getResources().getStringArray(R.array.sel26);break;
-		case 7:s=getResources().getStringArray(R.array.sel27);break;
-		case 8:s=getResources().getStringArray(R.array.sel28);break;
-		case 9:s=getResources().getStringArray(R.array.sel29);break;
-		case 10:s=getResources().getStringArray(R.array.sel210);break;
-		case 11:s=getResources().getStringArray(R.array.sel211);break;
-		case 12:s=getResources().getStringArray(R.array.sel212);break;
-		case 13:s=getResources().getStringArray(R.array.sel218);break;
-		case 14:s=getResources().getStringArray(R.array.sel213);break;
-		case 15:s=getResources().getStringArray(R.array.sel219);break;
-		case 16:s=getResources().getStringArray(R.array.sel214);break;
-		case 17:s=getResources().getStringArray(R.array.sel215);break;
-		case 18:s=getResources().getStringArray(R.array.sel216);break;
-		case 19:s=getResources().getStringArray(R.array.sel217);break;
+		case 0:s=getResources().getStringArray(R.array.scr222);break;
+		case 1:s=getResources().getStringArray(R.array.scr333);break;
+		case 2:s=getResources().getStringArray(R.array.scr444);break;
+		case 3:s=getResources().getStringArray(R.array.scr555);break;
+		case 4:
+		case 5:s=getResources().getStringArray(R.array.scr666);break;
+		case 6:s=getResources().getStringArray(R.array.scrMinx);break;
+		case 7:s=getResources().getStringArray(R.array.scrPrym);break;
+		case 8:s=getResources().getStringArray(R.array.scrSq1);break;
+		case 9:s=getResources().getStringArray(R.array.scrClk);break;
+		case 10:s=getResources().getStringArray(R.array.scr15p);break;
+		case 11:s=getResources().getStringArray(R.array.scrMxN);break;
+		case 12:s=getResources().getStringArray(R.array.scrCmt);break;
+		case 13:s=getResources().getStringArray(R.array.scrGear);break;
+		case 14:s=getResources().getStringArray(R.array.scrSmc);break;
+		case 15:s=getResources().getStringArray(R.array.scrSkw);break;
+		case 16:s=getResources().getStringArray(R.array.scrOth);break;
+		case 17:s=getResources().getStringArray(R.array.scr3sst);break;
+		case 18:s=getResources().getStringArray(R.array.scrBdg);break;
+		case 19:s=getResources().getStringArray(R.array.scrMsst);break;
+		case 20:s=getResources().getStringArray(R.array.scrRly);break;
 		}
 		return mItems[spinSel[0]]+"-"+s[sel2];
 	}
@@ -1908,9 +1856,9 @@ public class DCTimer extends Activity {
 			}
 			scrst=scr2;resp=rp2;resd=rd2;rest=res2;
 			if(isMulp) {
-				int[][] mulp2 = new int[mulp.length][rest.length];
+				int[][] mulp2 = new int[6][rest.length];
 				for(int i=0;i<resl-1;i++) {
-					for(int j=0; j<mulp.length; j++){
+					for(int j=0; j<6; j++){
 						mulp2[j][i]=mulp[j][i];
 					}
 				}
@@ -1937,27 +1885,17 @@ public class DCTimer extends Activity {
 		cv.put("resd", d);
 		cv.put("scr", cscrs);
 		cv.put("time", formatter.format(new Date()));
-		if(isMulp){
-			if(spinSel[13]>3)cv.put("p6", mulp[5][resl-1]);
-			if(spinSel[13]>2)cv.put("p5", mulp[4][resl-1]);
-			if(spinSel[13]>1)cv.put("p4", mulp[3][resl-1]);
-			if(spinSel[13]>0)cv.put("p3", mulp[2][resl-1]);
-			if(spinSel[13]>=0){
-				cv.put("p2", mulp[1][resl-1]);
-				cv.put("p1", mulp[0][resl-1]);
-			}
-		}
+		if(isMulp)
+			for(int i=0; i<6; i++)
+				cv.put("p"+(i+1), mulp[i][resl-1]);
 		DBHelper helper = new DBHelper(getApplicationContext());
 		helper.insert(spinSel[8], cv);
 		helper.close();
 		if(times==null) times=new String[3];
 		else times=new String[times.length+3];
 		oriavg.setText(getResources().getString(R.string.session_average)+Mi.average());
-		if(isMulp)aryAdapter=new TimesAdapter (DCTimer.this, new String[(spinSel[13]+3)*(resl+1)], new int[]{
-				cl[1],cl[2],cl[3], Mi.omax, Mi.omin}, share.getInt("intv", 30), spinSel[13]+3);
-		else aryAdapter=new TimesAdapter (this, times, new int[]{cl[1],cl[2],cl[3],cl[4]}, 
-				Mi.omax, Mi.omin, share.getInt("intv", 30));
-		myGridView.setAdapter(aryAdapter);
+		if(isMulp)setGridView(new String[(spinSel[13]+3)*(resl+1)]);
+		else setGridView(times);
 		if(selSes && sestp[spinSel[8]] != scrType) {
 			sestp[spinSel[8]]=(short) scrType;
 			edit.putInt("sestp"+spinSel[8], scrType);
@@ -1978,11 +1916,8 @@ public class DCTimer extends Activity {
 			dbh.update(spinSel[8], id, p, d);
 			//dbh.close();
 			oriavg.setText(getResources().getString(R.string.session_average)+Mi.average());
-			if(isMulp)aryAdapter=new TimesAdapter (DCTimer.this, new String[(spinSel[13]+3)*(resl+1)], new int[]{cl[1],cl[2],cl[3], 
-					Mi.omax, Mi.omin}, share.getInt("intv", 30), spinSel[13]+3);
-			else aryAdapter=new TimesAdapter (this, times, new int[]{cl[1],cl[2],cl[3],cl[4]},
-					Mi.omax, Mi.omin, share.getInt("intv", 30));
-			myGridView.setAdapter(aryAdapter);
+			if(isMulp)setGridView(new String[(spinSel[13]+3)*(resl+1)]);
+			else setGridView(times);
 		}
 	}
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -2086,21 +2021,25 @@ public class DCTimer extends Activity {
 	}
 	private void newScr() {
 		if((spinSel[0]==0 && spinSel[2]!=0) || (spinSel[0]==1 && (sel2!=0 || (spinSel[1]!=0 && (sel2==0 || sel2==1 || sel2==5)))) ||
-				(spinSel[0]==8 && (sel2==1 || sqshp)) ||
-				(spinSel[0]==11 && (sel2==4 || sel2==5)) ||
+				(spinSel[0]==8 && (sel2==2 || sqshp)) ||
+				(spinSel[0]==11 && (sel2>3 && sel2<7)) ||
 				(spinSel[0]==17 && (sel2==0 || sel2==1 || sel2==6)) ||
 				spinSel[0]==20) {
-			new Thread() {
-				public void run() {
-					handler.sendEmptyMessage(2);
-					cscrs=Mi.SetScr((spinSel[0]<<4)|sel2);
-					if((spinSel[0]==0 && spinSel[2]!=0) ||
-							(spinSel[1]!=0 && spinSel[0]==1 && (sel2==0 || sel2==1 || sel2==5)))
-						handler.sendEmptyMessage(3);
-					else if(spinSel[0]==8 && sqshp)handler.sendEmptyMessage(1);
-					else handler.sendEmptyMessage(0);
-				}
-			}.start();
+			if(canScr){
+				new Thread() {
+					public void run() {
+						canScr=false;
+						handler.sendEmptyMessage(2);
+						cscrs=Mi.SetScr((spinSel[0]<<4)|sel2);
+						if((spinSel[0]==0 && spinSel[2]!=0) ||
+								(spinSel[1]!=0 && spinSel[0]==1 && (sel2==0 || sel2==1 || sel2==5)))
+							handler.sendEmptyMessage(3);
+						else if(spinSel[0]==8 && sqshp)handler.sendEmptyMessage(1);
+						else handler.sendEmptyMessage(0);
+						canScr=true;
+					}
+				}.start();
+			}
 		} else {
 			cscrs=Mi.SetScr((spinSel[0]<<4)|sel2);
 			mTextView1.setText(cscrs);
@@ -2331,13 +2270,14 @@ public class DCTimer extends Activity {
 			wakeLock =null;
 		}
 	}
-	private void getSession(int i) {
+	private void getSession(int i) { //TODO
 		Cursor c = dbh.query(i);
 		resl = c.getCount();
 		rest = new int[resl+12];
 		resp = new byte[resl+12];
 		resd = new byte[resl+12];
 		scrst = new String[resl+12];
+		if(isMulp)mulp = new int[6][resl+12];
 		if(resl!=0) {
 			c.moveToFirst();
 			for(int k=0; k<resl; k++){
@@ -2345,6 +2285,11 @@ public class DCTimer extends Activity {
 				resp[k]=(byte)c.getInt(2);
 				resd[k]=(byte)c.getInt(3);
 				scrst[k]=c.getString(4);
+				if(isMulp){
+					for(int j=0; j<6; j++){
+						mulp[j][k] = c.getInt(7+j);
+					}
+				}
 				c.moveToNext();
 			}
 			c.moveToLast();
@@ -2410,6 +2355,11 @@ public class DCTimer extends Activity {
 				if(p/col!=resl-1) {
 					for(int i=p/col;i<resl-1;i++) {
 						rest[i]=rest[i+1];resp[i]=resp[i+1];resd[i]=resd[i+1];scrst[i]=scrst[i+1];
+						if(isMulp){
+							for(int j=0; j<spinSel[13]+2; j++){
+								mulp[j][i]=mulp[j][i+1];
+							}
+						}
 					}
 					c.moveToPosition(p/col);
 					delId=c.getInt(0);
@@ -2433,11 +2383,7 @@ public class DCTimer extends Activity {
 					edit.commit();
 				}
 				oriavg.setText(getResources().getString(R.string.session_average)+Mi.average());
-				if(isMulp)aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],cl[2],cl[3], 
-						Mi.omax, Mi.omin}, share.getInt("intv", 30), col);
-				else aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],cl[2],cl[3],cl[4]}, 
-						Mi.omax, Mi.omin, share.getInt("intv", 30));
-				myGridView.setAdapter(aryAdapter);
+				setGridView(times);
 				d.dismiss();
 			}
 		}).show();

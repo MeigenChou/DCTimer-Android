@@ -161,7 +161,6 @@ public class OtherScr {
 //		}
 //		return s;
 //	}
-	
 	public static String ssq1t_scramble(){
 		byte[][][] seq=new byte[2][40][2];
 		int i;

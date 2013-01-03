@@ -11,7 +11,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Paint.FontMetrics;
 
 public class Mi {
-	public static long stime=0L;
+	//public static long stime=0L;
 	public static int[] bavg={0, 0};
 	public static int[] bidx={0, 0};
 	public static int oravg = -1;
@@ -240,13 +240,14 @@ public class Mi {
 			viewType=11;
 			break;
 		case 128:  //SQ1
-			scr=SQ1.scramblestring();if(DCTimer.sqshp){
-				stime=System.currentTimeMillis();
-				sc=" "+Sq1Shape.solve(scr);
-				stime=System.currentTimeMillis()-stime;
-			}
+			scr=SQ1.scramblestring();
+			if(DCTimer.sqshp) sc=" "+Sq1Shape.solve(scr);
 			viewType=1;mis=(SQ1.count%2==0);break;
 		case 129:
+			scr=OtherScr.sq1_scramble(0);
+			if(DCTimer.sqshp) sc=" "+Sq1Shape.solve(scr);
+			viewType=0; break;
+		case 130:
 			if(!ini) {
 				Shape.init();Square.init();
 				new SqSearch().solution(new FullCube(""));
@@ -276,7 +277,7 @@ public class Mi {
 			scr=OtherScr.do15puzzle(true);viewType=0;break;
 		case 176:	//MxNxL
 			turn2=new String[][]{{"R","L"},{"U","D"}};
-			scr=OtherScr.megascramble(turn2, new String[]{"2"}, 25);viewType=13;break;
+			scr=OtherScr.megascramble(turn2, new String[]{"2"}, 15);viewType=13;break;
 		case 177:
 			turn2=new String[][]{{"R","L"},{"U","D"}};
 			scr=OtherScr.megascramble(turn2, new String[]{"","2","'"}, 25);viewType=0;break;
@@ -291,22 +292,24 @@ public class Mi {
 		case 181:
 			scr=Tower.solve(new Random());viewType=15;break;
 		case 182:
+			scr=RTower.solve();viewType=0; break;
+		case 183:
 			turns=new String[][][]{{{"U","U'","U2", "u", "u'", "u2", "U u", "U u'", "U u2", "U' u", "U' u'", "U' u2", "U2 u", "U2 u'", "U2 u2"}},{{"R2","L2","M2"}},{{"F2","B2","S2"}}};
 			scr=OtherScr.megascramble(turns, suff0, 40);viewType=0;break;
-		case 183:
+		case 184:
 			turns=new String[][][]{{{"U","U'","U2"}, {"D", "D'", "D2"}},{{"R2","R2"},{"L2","L2"}},{{"F2","F2"},{"B2","B2"}}};
 			scr=OtherScr.megascramble(turns, suff0, 25)+"/ "+Cube.scramblestring(3, 25);viewType=0;
 			break;
-		case 184:
+		case 185:
 			turns=new String[][][]{{{"U","U'","U2","u","u'","u2","U u","U u'","U u2","U' u","U' u'","U' u2","U2 u","U2 u'","U2 u2","3u","3u'","3u2","U 3u","U' 3u","U2 3u","u 3u","u' 3u","u2 3u","U u 3u","U u' 3u","U u2 3u","U' u 3u","U' u' 3u","U' u2 3u","U2 u 3u","U2 u' 3u","U2 u2 3u","U 3u'","U' 3u'","U2 3u'","u 3u'","u' 3u'","u2 3u'","U u 3u'","U u' 3u'","U u2 3u'","U' u 3u'","U' u' 3u'","U' u2 3u'","U2 u 3u'","U2 u' 3u'","U2 u2 3u'","U 3u2","U' 3u2","U2 3u2","u 3u2","u' 3u2","u2 3u2","U u 3u2","U u' 3u2","U u2 3u2","U' u 3u2","U' u' 3u2","U' u2 3u2","U2 u 3u2","U2 u' 3u2","U2 u2 3u2"}},{{"R2","L2","M2"}},{{"F2","B2","S2"}}};
 			scr=OtherScr.megascramble(turns, suff0, 40);viewType=0;break;
-		case 185:
+		case 186:
 			turns=new String[][][]{{{"U","U'","U2","u","u'","u2","U u","U u'","U u2","U' u","U' u'","U' u2","U2 u","U2 u'","U2 u2"}, {"D","D'","D2","d","d'","d2","D d","D d'","D d2","D' d","D' d'","D' d2","D2 d","D2 d'","D2 d2"}},{{"R2","R2"},{"L2","L2"}},{{"F2","F2"},{"B2","B2"}}};
 			scr=OtherScr.megascramble(turns, suff0, 40)+"/ "+Cube.scramblestring(3, 25);viewType=0;
 			break;
-		case 186:
-			scr=Cube.scramblestring(8, 120);viewType=8;break;
 		case 187:
+			scr=Cube.scramblestring(8, 120);viewType=8;break;
+		case 188:
 			scr=Cube.scramblestring(9, 140);viewType=9;break;
 		case 192:	//Cmetrick
 			turns=new String[][][]{{{"U<","U>","U2"},{"E<","E>","E2"},{"D<","D>","D2"}},{{"R^","Rv","R2"},{"M^","Mv","M2"},{"L^","Lv","L2"}}};

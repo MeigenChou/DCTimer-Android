@@ -247,9 +247,7 @@ public class Cross {
 	}
 	
 	public static String cross(String q2, int face, int side) {
-		long tm =System.currentTimeMillis();
 		initc();
-		tm=System.currentTimeMillis()-tm;
 		String[] q=q2.split(" ");
 		if(side==6){
 			StringBuffer cross=new StringBuffer();
@@ -268,7 +266,7 @@ public class Cross {
 			}
 		sb=new StringBuffer();
 		for(C=0;9>C&&!idacross(D,s,C,-1,face);C++);
-		return "\n"+color[side]+rotIdx[face][side]+sb.toString()+" "+tm;
+		return "\n"+color[side]+rotIdx[face][side]+sb.toString();
 	}
 	public static String solve(String s, int face) {
 		String[] scr = s.split(" ");
@@ -300,8 +298,7 @@ public class Cross {
 		initx();
 		if (face < 6) return solve(scr, face);
 		StringBuffer s = new StringBuffer();
-		long tm=System.currentTimeMillis();
 		for (int i = 0; i < 6; i++) s.append(solve(scr, i));
-		return s.toString()+"("+(System.currentTimeMillis()-tm)+")";
+		return s.toString();
 	}
 }

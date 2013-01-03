@@ -28,13 +28,13 @@
         <item>五魔子集</item>
         <item>连拧</item>
     </array>
-    <array name="sel21">
+    <array name="scr222">
         <item>随机状态</item>
         <item>3-gen</item>
         <item>6-gen</item>
         <item>CLL训练</item>
     </array>
-    <array name="sel22">
+    <array name="scr333">
         <item>传统打乱</item>
         <item>随机状态</item>
         <item>F2L训练</item>
@@ -49,52 +49,54 @@
         <item>桥式六棱</item>
         <item>桥式四角</item>
     </array>
-    <array name="sel23">
+    <array name="scr444">
         <item>WCA</item>
         <item>SiGN</item>
         <item>YJ</item>
         <item>对棱训练</item>
         <item>R,r,U,u</item>
     </array>
-    <array name="sel24">
+    <array name="scr555">
         <item>WCA</item>
         <item>SiGN</item>
         <item>对棱训练</item>
     </array>
-    <array name="sel25">
+    <array name="scr666">
         <item>WCA</item>
         <item>SiGN</item>
         <item>suffix</item>
         <item>对棱训练</item>
     </array>
-    <array name="sel26">
+    <array name="scrMinx">
         <item>WCA</item>
         <item>传统</item>
     </array>
-    <array name="sel27">
+    <array name="scrPrym">
         <item>随机状态</item>
         <item>随机步骤</item>
     </array>
-    <array name="sel28">
-        <item>随机步骤</item>
+    <array name="scrSq1">
+        <item>face turn metric</item>
+        <item>twist metric</item>
         <item>随机状态</item>
     </array>
-    <array name="sel29">
+    <array name="scrClk">
         <item>Jaap 顺序</item>
         <item>concise</item>
         <item>高效顺序</item>
     </array>
-    <array name="sel210">
+    <array name="scr15p">
         <item>piece moves</item>
         <item>blank moves</item>
     </array>
-    <array name="sel211">
+    <array name="scrMxN">
         <item>1x3x3</item>
         <item>Super 1x3x3</item>
         <item>1x3x3(随机状态)</item>
         <item>2x3x3</item>
         <item>2x3x3(随机状态)</item>
         <item>2x2x3</item>
+        <item>2x2x4</item>
         <item>3x3x4</item>
         <item>3x3x5</item>
         <item>3x3x6</item>
@@ -102,16 +104,16 @@
         <item>8x8x8</item>
         <item>9x9x9</item>
     </array>
-    <array name="sel212">
+    <array name="scrCmt">
         <item>　</item>
         <item>Mini</item>
     </array>
-    <array name="sel213">
+    <array name="scrSmc">
         <item>1x1x3 block</item>
         <item>1x2x3 block</item>
         <item>2x2x2 block</item>
     </array>
-    <array name="sel214">
+    <array name="scrOth">
         <item>插销魔方</item>
         <item>直升机</item>
         <item>Square-2</item>
@@ -119,7 +121,7 @@
         <item>UFO</item>
         <item>FTO</item>
     </array>
-    <array name="sel215">
+    <array name="scr3sst">
         <item>2-gen R,U</item>
         <item>2-gen L,U</item>
         <item>Roux-gen M,U</item>
@@ -129,23 +131,23 @@
         <item>half turns only</item>
         <item>LSLL</item>
     </array>
-    <array name="sel216">
+    <array name="scrBdg">
         <item>Bicube</item>
         <item>SQ1 /,(1,0)</item>
     </array>
-    <array name="sel217">
+    <array name="scrMsst">
         <item>2-gen R,U</item>
         <item>LSLL</item>
     </array>
-    <array name="sel218">
+    <array name="scrGear">
         <item>随机状态</item>
         <item>3-gen</item>
     </array>
-    <array name="sel219">
+    <array name="scrSkw">
         <item>随机状态</item>
         <item>L R D B</item>
     </array>
-    <array name="sel220">
+    <array name="scrRly">
         <item>2到4阶</item>
         <item>2到5阶</item>
         <item>2到6阶</item>
