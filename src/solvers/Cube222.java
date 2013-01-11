@@ -43,12 +43,10 @@ public class Cube222 {
 	}
 	
 	public static int[] randomEG1() {
-		int i = 8;//r.nextInt(12);
-		//int j=0;
+		int i = r.nextInt(4);
 		int iq, it;
 		do {
 			randomLastLayer(i);
-			//Log.v("p", p[0]+" "+p[1]+" "+p[2]+" "+p[3]+" "+p[4]+" "+p[5]+" "+p[6]);
 			switch(i) {
 			case 0:
 				switch((int)(Math.random()*2)) {
@@ -76,17 +74,36 @@ public class Cube222 {
 				case 3: Tl.cir(p, 3, 1); break;
 				}
 				break;
-			case 4:
-			case 8:
-			case 10:
-				
-				break;
 			}
-			//Log.v("p", p[0]+" "+p[1]+" "+p[2]+" "+p[3]+" "+p[4]+" "+p[5]+" "+p[6]);
 			iq = prmToIdx(p); it = twsToIdx(t);
 		} while (iq==0 && it==0);
 		return new int[]{iq, it};
 	}
+	
+	public static int[] randomEG2() {
+		int i = r.nextInt(4);
+		int iq, it;
+		do {
+			randomLastLayer(i);
+			switch(i) {
+			case 0:
+				p[5]=6; p[6]=5; break;
+			case 1:
+				p[3]=6; p[6]=3; break;
+			case 2:
+				p[3]=5; p[5]=3; break;
+			case 3:
+				switch((int)(Math.random()*2)) {
+				case 0: Tl.cir(p, 0, 3); break;
+				case 1: Tl.cir(p, 1, 2); break;
+				}
+				break;
+			}
+			iq = prmToIdx(p); it = twsToIdx(t);
+		} while (iq==0 && it==0);
+		return new int[]{iq, it};
+	}
+	
 	private static int[] p, t;
 	public static void randomLastLayer(int type){
 		p=new int[]{0,1,2,3,4,5,6};
@@ -177,7 +194,7 @@ public class Cube222 {
 			}
 			break;
 		}
-	}	
+	}
 	public static String solve(int[] state){
 		if(!ini){
 			calcperm();

@@ -84,9 +84,9 @@ public class Timer {
 				v=0;
 				time=System.currentTimeMillis()-time0;
 				msec=(int) time%1000;
-				if(DCTimer.spinSel[6]==0)msec=((msec+5)/10)%100;
+				if(DCTimer.spSel[6]==0)msec=((msec+5)/10)%100;
 				sec=(int) (DCTimer.timmh?(time/1000)%60:time/1000);
-				if(DCTimer.spinSel[6]==0 && time%1000>994)sec++;
+				if(DCTimer.spSel[6]==0 && time%1000>994)sec++;
 				min=(int) (DCTimer.timmh?(time/60000)%60:0);
 				hour=(int) (DCTimer.timmh?time/3600000:0);
 				timeh.sendEmptyMessage(0);

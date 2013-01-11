@@ -31,37 +31,35 @@ public class Mi {
 		switch(n){
 		case 0: //2阶
 			scr=Cube222.solve(Cube222.randomState());viewType=2;
-			if(DCTimer.spinSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spinSel[2]);break;
+			if(DCTimer.spSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spSel[2]);break;
 		case 1:
 			scr=Cube.scramblestring(2, 25);viewType=2;
-			if(DCTimer.spinSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spinSel[2]);break;
+			if(DCTimer.spSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spSel[2]);break;
 		case 2:
 			scr=OtherScr.megascramble(new String[][][]{{{"U","D"}},{{"R","L"}},{{"F","B"}}}, csuff, 25);viewType=2;
-			if(DCTimer.spinSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spinSel[2]);break;
+			if(DCTimer.spSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spSel[2]);break;
 		case 3:
-			scr=Cube222.solve(Cube222.randomCLL());viewType=2;	//(int)(Math.random()*5)
-			if(DCTimer.spinSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spinSel[2]);break;
+			scr=Cube222.solve(Cube222.randomCLL());viewType=2; break;
 		case 4:
-			scr=Cube222.solve(Cube222.randomEG1());viewType=2;
-			break;
+			scr=Cube222.solve(Cube222.randomEG1());viewType=2; break;
+		case 5:
+			scr=Cube222.solve(Cube222.randomEG2());viewType=2; break;
 		case 16: //3阶
 			scr=Cube.scramblestring(3, 25);viewType=3;
-			if(DCTimer.spinSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spinSel[9], DCTimer.spinSel[10]);
-			//if(DCTimer.spinSel[1]==1)sc="\n"+EOline.solve_eoline(scr);
-			else if(DCTimer.spinSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spinSel[10]);
-			//else if(DCTimer.spinSel[1]==2)sc="\n"+ECnew.solve_xcross(scr);
-			else if(DCTimer.spinSel[1]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spinSel[10]);
-			else if(DCTimer.spinSel[1]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spinSel[10]);
-			else if(DCTimer.spinSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spinSel[10]);
+			if(DCTimer.spSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[9], DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[10]);
 			break;
 		case 17:
 			scr = new Search().solution(Tools.randomCube(), 21, 100000, 0, 0);
 			viewType=scr.startsWith("Error")?0:3;
-			if(DCTimer.spinSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spinSel[9], DCTimer.spinSel[10]);
-			else if(DCTimer.spinSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spinSel[10]);
-			else if(DCTimer.spinSel[1]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spinSel[10]);
-			else if(DCTimer.spinSel[1]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spinSel[10]);
-			else if(DCTimer.spinSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spinSel[10]);
+			if(DCTimer.spSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[9], DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[10]);
 			break;
 		case 18:
 			scr = new Search().solution(Tools.randomCrossSolved(), 21, 100000, 0,0);
@@ -77,11 +75,11 @@ public class Mi {
 			cube=Tools.randomCornerSolved();
 			cube = new Search().solution(cube, 21, 100000, 0,0);
 			scr=cube;viewType=scr.startsWith("Error")?0:3;
-			if(DCTimer.spinSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spinSel[9], DCTimer.spinSel[10]);
-			else if(DCTimer.spinSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spinSel[10]);
-			else if(DCTimer.spinSel[1]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spinSel[10]);
-			else if(DCTimer.spinSel[1]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spinSel[10]);
-			else if(DCTimer.spinSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spinSel[10]);
+			if(DCTimer.spSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[9], DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[10]);
 			break;
 		case 22:
 			cube=Tools.randomEdgeSolved();
@@ -218,11 +216,11 @@ public class Mi {
 			scr=OtherScr.edgescramble("3r r 3b b", end, new String[]{"u","3u","3d","d"});viewType=7;
 			break;
 		case 96: //五魔
-			scr=Megaminx.scramblestring();viewType=10;break;
+			scr=Megaminx.scramblestring();viewType=18;break;
 		case 97:
 			scr=OtherScr.oldminxscramble();viewType=0;break;
 		case 112: //金字塔
-			scr=Pyraminx.scramble();viewType=11;break;
+			scr=Pyraminx.scramble();viewType=17;break;
 		case 113:
 			turn2=new String[][]{{"U"},{"L"},{"R"},{"B"}};
 			suff=new String[]{"!","'"};
@@ -237,7 +235,7 @@ public class Mi {
 			scr=scr.substring(0,scr.length()-3*cnt);
 			scr=ss[0][rnd[0]]+ss[1][rnd[1]]+ss[2][rnd[2]]+ss[3][rnd[3]]+scr;
 			scr=scr.replace("!","");
-			viewType=11;
+			viewType=17;
 			break;
 		case 128:  //SQ1
 			scr=SQ1.scramblestring();
@@ -311,6 +309,10 @@ public class Mi {
 			scr=Cube.scramblestring(8, 120);viewType=8;break;
 		case 188:
 			scr=Cube.scramblestring(9, 140);viewType=9;break;
+		case 189:
+			scr=Cube.scramblestring(10, 140);viewType=10;break;
+		case 190:
+			scr=Cube.scramblestring(11, 140);viewType=11;break;
 		case 192:	//Cmetrick
 			turns=new String[][][]{{{"U<","U>","U2"},{"E<","E>","E2"},{"D<","D>","D2"}},{{"R^","Rv","R2"},{"M^","Mv","M2"},{"L^","Lv","L2"}}};
 			scr=OtherScr.megascramble(turns, suff0, 25);viewType=0;break;
@@ -482,10 +484,10 @@ public class Mi {
 					c.drawRect(3+(j+3)*a, sty+5+(i+4)*a, 2+(j+4)*a, sty+4+(i+5)*a, p);
 				}
 		}
-		else if(viewType==10) {
+		else if(viewType==18) {
 			float edgeFrac = (float) ((1+Math.sqrt(5))/4);
 			float centerFrac = 0.5F;
-			if(DCTimer.spinSel[3]==0)colors=new int[] {Color.WHITE,Color.rgb(0, 0, 136),Color.rgb(0, 136, 0),Color.rgb(0, 255, 255),Color.rgb(136, 34, 34),Color.rgb(136, 170, 255),
+			if(DCTimer.spSel[3]==0)colors=new int[] {Color.WHITE,Color.rgb(0, 0, 136),Color.rgb(0, 136, 0),Color.rgb(0, 255, 255),Color.rgb(136, 34, 34),Color.rgb(136, 170, 255),
 					Color.RED,Color.BLUE,Color.rgb(255, 0, 255),Color.GREEN,Color.rgb(255, 136, 0),Color.YELLOW};
 			else colors=new int[] {Color.WHITE,Color.RED,Color.rgb(0, 161, 0),Color.rgb(123, 0, 123),Color.YELLOW,Color.BLUE,
 					Color.rgb(255, 255, 132),Color.rgb(66, 221, 255),Color.rgb(255, 127, 38),Color.GREEN,Color.rgb(255, 128, 255),Color.GRAY};
@@ -542,7 +544,7 @@ public class Mi {
 				drawPolygon(p,c,colors[img[d++]],arys[0],arys[1],true);
 			}
 		}
-		else if(viewType==11) {
+		else if(viewType==17) {
 			byte[] imst;
 			if(sel2==0)imst=Pyraminx.imageString();
 			else imst=Pyraminx.imageString(DCTimer.cscrs);
@@ -938,12 +940,12 @@ public class Mi {
 			int a=width/(viewType*4),i,j,d=0,b=viewType;
 			byte[] imst;
 			if(viewType==3){
-				if(DCTimer.spinSel[0]==1 && sel2==0)imst=Cube.imagestring();
+				if(DCTimer.spSel[0]==1 && sel2==0)imst=Cube.imagestring();
 				else {
 					Cube.parse(3);imst=OtherScr.imagestr(DCTimer.cscrs);
 				}
 			}
-			else if(viewType==8 || viewType==9) {
+			else if(viewType>7) {
 				imst=Cube.imagestring();
 			}
 			else if(sel2==0)imst=Cube.imagestring();
@@ -1065,7 +1067,7 @@ public class Mi {
 			if(sec<10)time.append(":0"+sec);
 			else time.append(":"+sec);
 		}
-		if(DCTimer.spinSel[6]==1){
+		if(DCTimer.spSel[6]==1){
 			if(msec<10)time.append(".00"+msec);
 			else if(msec<100)time.append(".0"+msec);
 			else time.append("."+msec);}
@@ -1078,9 +1080,9 @@ public class Mi {
 	public static String distime(int i){
 		if(i<0)return "N/A";
 		if(i==0)return "DNF";
-		if(DCTimer.spinSel[6]==0)i+=5;
+		if(DCTimer.spSel[6]==0)i+=5;
 		int msec=i%1000;
-		if(DCTimer.spinSel[6]==0)msec/=10;
+		if(DCTimer.spSel[6]==0)msec/=10;
 		int sec=DCTimer.timmh?(i/1000)%60:i/1000;
 		int min=DCTimer.timmh?(i/60000)%60:0;
 		int hour=DCTimer.timmh?i/3600000:0;
@@ -1102,9 +1104,9 @@ public class Mi {
 			else return "DNF";
 		}
 		if(DCTimer.resp[idx]==1)i+=2000;
-		if(DCTimer.spinSel[6]==0)i+=5;
+		if(DCTimer.spSel[6]==0)i+=5;
 		int msec=i%1000;
-		if(DCTimer.spinSel[6]==0)msec/=10;
+		if(DCTimer.spSel[6]==0)msec/=10;
 		int sec=DCTimer.timmh?(i/1000)%60:i/1000;
 		int min=DCTimer.timmh?(i/60000)%60:0;
 		int hour=DCTimer.timmh?i/3600000:0;
@@ -1132,7 +1134,7 @@ public class Mi {
 			}
 			for (int j=i-n+1;j<=i;j++) {
 				if(j!=max && j!=min){
-					if(DCTimer.spinSel[6]==1)sum+=DCTimer.rest[j]+DCTimer.resp[j]*2000;
+					if(DCTimer.spSel[6]==1)sum+=DCTimer.rest[j]+DCTimer.resp[j]*2000;
 					else sum+=(DCTimer.rest[j]+DCTimer.resp[j]*2000+5)/10;
 				}
 			}
@@ -1146,7 +1148,7 @@ public class Mi {
 			}
 			quickSort(data, 0, n-dnf-1);
 			for(int j=trim;j<n-trim;j++) {
-				if(DCTimer.spinSel[6]==1)sum+=data[j];
+				if(DCTimer.spSel[6]==1)sum+=data[j];
 				else sum+=(data[j]+5)/10;
 			}
 			cavg=(int) (sum/(n-2*trim)+0.5);
@@ -1154,7 +1156,7 @@ public class Mi {
 		if(i==n-1){bavg[l]=cavg;bidx[l]=i;}
 		if(bavg[l]==0){bavg[l]=cavg;bidx[l]=i;}
 		else if(cavg<=bavg[l]){bavg[l]=cavg;bidx[l]=i;}
-		return DCTimer.spinSel[6]==0?distime(cavg*10):distime(cavg);
+		return DCTimer.spSel[6]==0?distime(cavg*10):distime(cavg);
 	}
 	public static void quickSort(int[] a, int lo0, int hi0) {
 		int lo = lo0, hi = hi0;
@@ -1183,14 +1185,14 @@ public class Mi {
 		}
 		if(dnf>0){cavg=0;if(i==n-1)bavg[l]=0;return "DNF";}
 		for (int j=i-n+1;j<=i;j++) {
-			if(DCTimer.spinSel[6]==1)sum+=DCTimer.rest[j]+DCTimer.resp[j]*2000;
+			if(DCTimer.spSel[6]==1)sum+=DCTimer.rest[j]+DCTimer.resp[j]*2000;
 			else sum+=(DCTimer.rest[j]+DCTimer.resp[j]*2000+5)/10;
 		}
 		cavg=(int) (sum/n+0.5);
 		if(i==n-1){bavg[0]=cavg;bidx[l]=i;}
 		if(bavg[l]==0){bavg[l]=cavg;bidx[l]=i;}
 		else {if(cavg<=bavg[l]){bavg[l]=cavg;bidx[l]=i;}}
-		return DCTimer.spinSel[6]==0?distime(cavg*10):distime(cavg);
+		return DCTimer.spSel[6]==0?distime(cavg*10):distime(cavg);
 	}
 	public static String average(){
 		double sum=0,sum2=0;
@@ -1204,9 +1206,9 @@ public class Mi {
 				else if(DCTimer.rest[i]+DCTimer.resp[i]*2000>DCTimer.rest[omax]+DCTimer.resp[omax]*2000)omax=i;
 				if(omin==-1)omin=i;
 				else if(DCTimer.rest[i]+DCTimer.resp[i]*2000<=DCTimer.rest[omin]+DCTimer.resp[omin]*2000)omin=i;
-				if(DCTimer.spinSel[6]==1)sum+=(double)DCTimer.rest[i]+DCTimer.resp[i]*2000;
+				if(DCTimer.spSel[6]==1)sum+=(double)DCTimer.rest[i]+DCTimer.resp[i]*2000;
 				else sum+=(DCTimer.rest[i]+DCTimer.resp[i]*2000+5)/10;
-				if(DCTimer.spinSel[6]==1)sum2+=Math.pow(DCTimer.rest[i]+DCTimer.resp[i]*2000, 2);
+				if(DCTimer.spSel[6]==1)sum2+=Math.pow(DCTimer.rest[i]+DCTimer.resp[i]*2000, 2);
 				else sum2+=Math.pow((DCTimer.rest[i]+DCTimer.resp[i]*2000+5)/10, 2);
 			}
 		}
@@ -1214,8 +1216,8 @@ public class Mi {
 		if(n==0)avg="0/"+DCTimer.resl+"): N/A (N/A)";
 		else {
 			oravg=(int)(sum/n+0.5);
-			orsdv=(int)(Math.sqrt((sum2-sum*sum/n)/n)+(DCTimer.spinSel[6]==1?0:0.5));
-			avg=""+n+"/"+DCTimer.resl+"): "+(DCTimer.spinSel[6]==0?distime(oravg*10):distime(oravg))+" ("+standDev(orsdv)+")";
+			orsdv=(int)(Math.sqrt((sum2-sum*sum/n)/n)+(DCTimer.spSel[6]==1?0:0.5));
+			avg=""+n+"/"+DCTimer.resl+"): "+(DCTimer.spSel[6]==0?distime(oravg*10):distime(oravg))+" ("+standDev(orsdv)+")";
 		}
 		return avg;
 	}
@@ -1225,19 +1227,19 @@ public class Mi {
 		if(n==DCTimer.resl)return "-";
 		for(int i=0;i<DCTimer.resl;i++) {
 			if(DCTimer.mulp[p][i]!=0) {
-				if(DCTimer.spinSel[6]==1)sum+=(double)DCTimer.mulp[p][i];
+				if(DCTimer.spSel[6]==1)sum+=(double)DCTimer.mulp[p][i];
 				else sum+=(DCTimer.mulp[p][i]+5)/10;
 				n++;
 			}
 		}
 		if(n==0)return "-";
 		int m=(int)(sum/n+0.5);
-		String mean = DCTimer.spinSel[6]==0?distime(m*10):distime(m);
+		String mean = DCTimer.spSel[6]==0?distime(m*10):distime(m);
 		return mean;
 	}
 	public static String standDev(int i) {
 		if(i<0)return "N/A";
-		if(DCTimer.spinSel[6]==1)i=(i+5)/10;
+		if(DCTimer.spSel[6]==1)i=(i+5)/10;
 		StringBuffer s=new StringBuffer(""+i/100+".");
 		if(i%100<10)s.append("0");
 		s.append(""+i%100);
@@ -1317,8 +1319,8 @@ public class Mi {
 	    	intervalStart = 17000;
             intervalEnd = 23000;
 	    } else {
-	    	int stddev = orsdv*(DCTimer.spinSel[6]==1?1:10);
-	    	long mean = oravg*(DCTimer.spinSel[6]==1?1:10);
+	    	int stddev = orsdv*(DCTimer.spSel[6]==1?1:10);
+	    	long mean = oravg*(DCTimer.spSel[6]==1?1:10);
 	    	intervalStart = mean - 3 * Math.max(50, stddev);
 	    	intervalEnd = mean + 3 * Math.max(50, stddev);
 	    }

@@ -180,11 +180,10 @@ public class RTower {
         int ep = r.nextInt(40320);
         int cp = r.nextInt(40320);
         sb=new StringBuffer();
-        long tm = System.currentTimeMillis();
         for (int depth = 0; ; depth++) {
         	if(search(ep, eo, depth, -1)) {
         		//System.out.print(sb.toString()+".");
-        		return solve2(cp)+(System.currentTimeMillis()-tm);
+        		return solve2(cp);
         	}
         }
     }
@@ -215,7 +214,6 @@ public class RTower {
     		}
     	}
     }
-    
     
 //	public static void main(String[] args) {
 //		long tm = System.currentTimeMillis();

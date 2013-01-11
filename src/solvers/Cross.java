@@ -1,5 +1,7 @@
 package solvers;
 
+import java.io.*;
+
 public class Cross {
 	private static short[][] Cnk=new short[12][12],
 			eom=new short[7920][6], epm=new short[11880][6];
@@ -88,60 +90,58 @@ public class Cross {
 //		}
 		return 24*c+i<<4|o;
 	}
-//	private static int getEpm(int ep, int h) {
-//		int g=cm[ep/24][h];
-//		return 24*(g/384)+pmv[ep%24][(g>>4)%24];
-//	}
-//	private static int getEom(int eo, int h) {
-//		int g=cm[eo>>4][h];
-//		return (g/384)<<4|fmv[eo&15][g&15];
-//	}
+	private static void read(short[][] arr, InputStream in) throws IOException {
+		int len = arr.length;
+		byte[] buf = new byte[len * 2];
+		for (int i=0; i<6; i++) {
+			in.read(buf);
+			for (int j=0; j<len; j++) {
+				arr[j][i] = (short) (buf[j*2]&0xff | (buf[j*2+1]<<8)&0xff00);
+			}
+		}	
+	}
+	private static void write(short[][] arr, OutputStream out) throws IOException {
+		int len=arr.length;
+		byte[] buf = new byte[len * 2];
+		for (int i=0; i<6; i++) {
+			int idx = 0;
+			for (int j=0; j<len; j++) {
+				buf[idx++] = (byte)(arr[j][i] & 0xff);
+				buf[idx++] = (byte)((arr[j][i]>>>8) & 0xff);
+			}
+			out.write(buf);
+		}	
+	}
 	private static void initc(){
-		if(inic)return;
 		int i,j,D,y,C;
 		for(i=0;i<12;++i){
 			Cnk[i][0]=1;
 			for(j=Cnk[i][i]=1;j<i;++j)
 				Cnk[i][j]=(short) (Cnk[i-1][j-1]+Cnk[i-1][j]);
 		}
-		for(i=0;495>i;i++){
-//			for(int s=0;6>s;s++){
-//				cm[i][s]=getmv(i,0,0,s);
-//			}
-			for(j=0;24>j;j++){
-				for(int s=0;6>s;s++){
-					D=getmv(i,j,j,s);
-					epm[24*i+j][s]=(short) (D>>4);
-					if(16>j)eom[16*i+j][s]=(short) (((D>>4)/24)<<4|D&15);
+		if(inic)return;
+		try {
+			InputStream in = new BufferedInputStream(new FileInputStream("/data/data/com.dctimer/databases/cross.dat"));
+			read(epm, in);
+			read(eom, in);
+			in.close();
+		} catch (Exception e) {
+			for(i=0;495>i;i++){
+				for(j=0;24>j;j++){
+					for(int s=0;6>s;s++){
+						D=getmv(i,j,j,s);
+						epm[24*i+j][s]=(short) (D>>4);
+						if(16>j)eom[16*i+j][s]=(short) (((D>>4)/24)<<4|D&15);
+					}
 				}
 			}
+			try {
+				OutputStream out = new BufferedOutputStream(new FileOutputStream("/data/data/com.dctimer/databases/cross.dat"));
+				write(epm, out);
+				write(eom, out);
+				out.close();
+			} catch (Exception e1) { }
 		}
-//		int[] u=new int[4], v=new int[4], w=new int[4];
-//		for(i=0; i<24; i++){
-//			for(j=0; j<24; j++){
-//				idxToPerm(u, i); idxToPerm(v, j);
-//				for(int k=0; k<4; k++) {
-//					w[k]=v[u[k]];
-//				}
-//				pmv[i][j]=(byte) permToIdx(w);
-//			}
-//		}
-//		fmv=new byte[][] {{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15},
-//				{1,0,3,2,5,4,7,6,9,8,11,10,13,12,15,14},
-//				{2,3,0,1,6,7,4,5,10,11,8,9,14,15,12,13},
-//				{3,1,2,0,7,5,6,4,11,9,10,8,15,13,14,12},
-//				{4,5,6,7,0,1,2,3,12,13,14,15,8,9,10,11},
-//				{5,7,1,3,4,6,0,2,13,15,9,11,12,14,8,10},
-//				{6,7,2,3,4,5,0,1,14,15,10,11,12,13,8,9},
-//				{7,6,3,2,5,4,1,0,15,14,11,10,13,12,9,8},
-//				{8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7},
-//				{9,11,13,15,1,3,5,7,8,10,12,14,0,2,4,6},
-//				{10,11,14,15,2,3,6,7,8,9,12,13,0,1,4,5},
-//				{11,10,15,14,3,2,7,6,9,8,13,12,1,0,5,4},
-//				{12,13,14,15,4,5,6,7,8,9,10,11,0,1,2,3},
-//				{13,15,12,14,5,7,4,6,9,11,8,10,1,3,0,2},
-//				{14,10,15,11,6,2,7,3,12,8,13,9,4,0,5,1},
-//				{15,11,14,10,7,3,6,2,13,9,12,8,5,1,4,0},};
 		for(i=0;11880>i;i++)epd[i]=-1;
 		epd[0]=0;i=1;
 		for(j=0;5>=j;j++)

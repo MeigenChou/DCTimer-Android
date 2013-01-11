@@ -1,5 +1,6 @@
 package min2phase;
 
+import java.io.*;
 import java.util.Random;
 
 /**
@@ -15,6 +16,72 @@ public class Tools implements Runnable {
 	
 	private static int[] initState = new int[2];
 	private static int[] require = {0x0, 0x1, 0x2, 0x2,  0x2, 0x7, 0xa, 0x3,  0x13, 0x13, 0x3, 0x6e,  0xca, 0xa6, 0x612, 0x512};
+	
+	private static void read(char[] arr, InputStream in) throws IOException {
+		int len = arr.length;
+		byte[] buf = new byte[len * 2];
+		in.read(buf);
+		for (int i=0; i<len; i++) {
+			arr[i] = (char) (buf[i*2]&0xff | (buf[i*2+1]<<8)&0xff00);
+		}
+	}
+	
+	private static void read(int[] arr, InputStream in) throws IOException {
+		int len = arr.length;
+		byte[] buf = new byte[len * 4];
+		in.read(buf);
+		for (int i=0; i<len; i++) {
+			arr[i] = buf[i*4]&0xff | (buf[i*4+1]<<8)&0xff00 | (buf[i*4+2]<<16)&0xff0000 | (buf[i*4+3]<<24)&0xff000000;
+		}
+	}
+	
+	private static void read(char[][] arr, InputStream in) throws IOException {
+		int len = arr[0].length;
+		byte[] buf = new byte[len * 2];
+		for (int i=0, leng=arr.length; i<leng; i++) {
+			in.read(buf);
+			for (int j=0; j<len; j++) {
+				arr[i][j] = (char) (buf[j*2]&0xff | (buf[j*2+1]<<8)&0xff00);
+			}
+		}	
+	}
+	
+	private static void write(char[] arr, OutputStream out) throws IOException {
+		int len = arr.length;
+		byte[] buf = new byte[len * 2];
+		int idx = 0;
+		for (int i=0; i<len; i++) {
+			buf[idx++] = (byte)(arr[i] & 0xff);
+			buf[idx++] = (byte)((arr[i]>>>8) & 0xff);
+		}
+		out.write(buf);
+	}
+	
+	private static void write(int[] arr, OutputStream out) throws IOException {
+		int len=arr.length;
+		byte[] buf = new byte[len * 4];
+		int idx = 0;
+		for (int i=0; i<len; i++) {
+			buf[idx++] = (byte)(arr[i] & 0xff);
+			buf[idx++] = (byte)((arr[i]>>>8) & 0xff);
+			buf[idx++] = (byte)((arr[i]>>>16) & 0xff);
+			buf[idx++] = (byte)((arr[i]>>>24) & 0xff);
+		}
+		out.write(buf);
+	}
+	
+	private static void write(char[][] arr, OutputStream out) throws IOException {
+		int len=arr[0].length;
+		byte[] buf = new byte[len * 2];
+		for (int i=0, leng=arr.length; i<leng; i++) {
+			int idx = 0;
+			for (int j=0; j<len; j++) {
+				buf[idx++] = (byte)(arr[i][j] & 0xff);
+				buf[idx++] = (byte)((arr[i][j]>>>8) & 0xff);
+			}
+			out.write(buf);
+		}
+	}
 	
 	public static void initIdx(int idx) {
 		switch (idx) {
@@ -105,13 +172,57 @@ public class Tools implements Runnable {
 		if (inited) {
 			return;
 		}
-		/**
-		 * Can be replaced by:
-		 *     new Tools().run();
-		 */
-		//initParallel(Runtime.getRuntime().availableProcessors());
-		initParallel(2);
-		
+		try {
+			InputStream in = new BufferedInputStream(new FileInputStream("/data/data/com.dctimer/databases/rp3.dat"));
+			read(CubieCube.FlipS2R, in);
+			read(CubieCube.TwistS2R, in);
+			read(CubieCube.EPermS2R, in);
+			read(CubieCube.MtoEPerm, in);
+			read(CoordCube.TwistMove, in);
+			read(CoordCube.FlipMove, in);
+			read(CoordCube.UDSliceMove, in);
+			read(CoordCube.UDSliceConj, in);
+			read(CoordCube.CPermMove, in);
+			read(CoordCube.EPermMove, in);
+			read(CoordCube.MPermMove, in);
+			read(CoordCube.MPermConj, in);
+			read(CoordCube.UDSliceTwistPrun, in);
+			read(CoordCube.UDSliceFlipPrun, in);
+			read(CoordCube.MCPermPrun, in);
+			read(CoordCube.MEPermPrun, in);
+			if (USE_TWIST_FLIP_PRUN) {
+				read(CoordCube.TwistFlipPrun, in);
+			}
+			in.close();
+			CubieCube.initMove();
+			CubieCube.initSym();
+		} catch (Exception e) {
+			// Can be replaced by: new Tools().run();
+			initParallel(2);
+			try {
+				OutputStream out = new BufferedOutputStream(new FileOutputStream("/data/data/com.dctimer/databases/rp3.dat"));
+				write(CubieCube.FlipS2R, out);			//       672 Bytes
+				write(CubieCube.TwistS2R, out);			// +     648 Bytes
+				write(CubieCube.EPermS2R, out);			// +   5, 536 Bytes
+				write(CubieCube.MtoEPerm, out);			// +  80, 640 Bytes
+				write(CoordCube.TwistMove, out);		// +  11, 664 Bytes
+				write(CoordCube.FlipMove, out);			// +  12, 096 Bytes
+				write(CoordCube.UDSliceMove, out);		// +  17, 820 Bytes
+				write(CoordCube.UDSliceConj, out);		// +   7, 920 Bytes
+				write(CoordCube.CPermMove, out);		// +  99, 648 Bytes
+				write(CoordCube.EPermMove, out);		// +  55, 360 Bytes
+				write(CoordCube.MPermMove, out);		// +     480 Bytes
+				write(CoordCube.MPermConj, out);		// +     768 Bytes
+				write(CoordCube.UDSliceTwistPrun, out);	// +  80, 192 Bytes
+				write(CoordCube.UDSliceFlipPrun, out);	// +  83, 160 Bytes
+				write(CoordCube.MCPermPrun, out);		// +  33, 216 Bytes
+				write(CoordCube.MEPermPrun, out);
+				if (USE_TWIST_FLIP_PRUN) {
+					write(CoordCube.TwistFlipPrun, out);// + 435, 456 Bytes
+				}
+				out.close();
+			} catch (Exception e1) { }
+		}
 		inited = true;
 	}
 	

@@ -14,7 +14,8 @@
             android:id="@android:id/tabs"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true" />
+            android:layout_alignParentTop="true"
+             />
 
         <FrameLayout
             android:id="@android:id/tabcontent"
@@ -48,7 +49,7 @@
 
                     <Spinner
                         android:id="@+id/mySpinner"
-                        android:layout_width="80dp"
+                        android:layout_width="90dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" >
                     </Spinner>
@@ -115,7 +116,7 @@
                 <GridView
                     android:id="@+id/gv_title"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:stretchMode="columnWidth" />
 
                 <GridView

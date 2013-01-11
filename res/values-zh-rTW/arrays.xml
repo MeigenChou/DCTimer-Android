@@ -33,6 +33,8 @@
         <item>3-gen</item>
         <item>6-gen</item>
         <item>CLL訓練</item>
+        <item>EG1訓練</item>
+        <item>EG2訓練</item>
     </array>
     <array name="scr333">
         <item>傳統</item>
@@ -103,6 +105,8 @@
         <item>3x3x7</item>
         <item>8x8x8</item>
         <item>9x9x9</item>
+        <item>10x10x10</item>
+        <item>11x11x11</item>
     </array>
     <array name="scrCmt">
         <item>　</item>
