@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">DCTimer</string>
 	<string name="scrambling">轉亂中…</string>
-	<string name="initializing">初始化…</string>
 	<string name="solving">計算中…</string>
 	<string name="scramble_view">轉亂狀態</string>
 	<string name="session">" 分組 "</string>
@@ -109,6 +108,7 @@
     <string name="send_sucess">分享成功！</string>
     <string name="send_failed">分享失敗！</string>
     <string name="del_pic">是否刪除圖片？</string>
+    <string name="menu_inscr">匯入轉亂</string>
     <string name="menu_share">推薦好友</string>
     <string name="menu_weibo">分享到微博</string>
     <string name="menu_about">關於</string>
@@ -121,6 +121,11 @@
     <string name="scheme_pyrm">金字塔配色設定</string>
     <string name="scheme_sq">"Square-1配色設定"</string>
     <string name="scheme_reset">恢復預設</string>
+    <string name="outscr_mun">"轉亂數量(1~100):"</string>
+    <string name="scr_path">"保存路徑:"</string>
+    <string name="scr_filename">"檔案名:"</string>
+    <string name="def_fname">"塼亂.txt"</string>
+    <string name="path_dupl">"已存在該檔案，是否覆蓋？"</string>
     <string name="abt_main">簡介</string>
     <string name="abt_timer">計時</string>
     <string name="abt_scr">轉亂</string>

@@ -136,7 +136,7 @@ public class CubeRU {
     	return sb.toString();
     }
     
-    private static boolean permutationSign(int[] permutation) {
+    protected static boolean permutationSign(int[] permutation) {
         int nInversions = 0;
         for (int i = 0; i < permutation.length; i++) {
             for (int j = i + 1; j < permutation.length; j++) {

@@ -243,6 +243,8 @@ public class OtherScr {
 		for(int i=0;i<s.length;i++) {
 			k=0;
 			switch(s[i].charAt(0)){
+			case '5':k=4;break;
+			case '4':k=3;break;
 			case '3':k=2;break;
 			case '2':k=1;break;
 			case 'R':Cube.seq[i]=16;break;

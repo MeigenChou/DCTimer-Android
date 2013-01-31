@@ -92,7 +92,7 @@
 
                     <Spinner
                         android:id="@+id/spinner8"
-                        android:layout_width="0dp"
+                        android:layout_width="90dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
@@ -102,6 +102,7 @@
                         android:id="@+id/mButtonClr"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/clear_session"
                         android:textSize="16dp" />
                     
@@ -109,6 +110,7 @@
                         android:id="@+id/mButtonHist"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/time_histogram"
                         android:textSize="16dp" />
                 </LinearLayout>

@@ -21,12 +21,14 @@ public class TimesAdapter extends BaseAdapter {
 		this.h=h;
 		col = 3;
 		isMulp = false;
-		if(times!=null)
-			for(int i=0;i<times.length/3;i++) {
+		if(times!=null) {
+			int len = times.length/3;
+			for(int i=0;i<len;i++) {
 				times[i*3]=Mi.distime(i, false);
 				times[i*3+1]=DCTimer.l1am?Mi.avg(DCTimer.listnum[DCTimer.spSel[4]], i, 0):Mi.mean(DCTimer.listnum[DCTimer.spSel[4]], i, 0);
 				times[i*3+2]=DCTimer.l2am?Mi.avg(DCTimer.listnum[DCTimer.spSel[5]+1], i, 1):Mi.mean(DCTimer.listnum[DCTimer.spSel[5]+1], i, 1);
 			}
+		}
 	}
 
 	public TimesAdapter(Context context, String[] times, int[] para, int h, int col) {

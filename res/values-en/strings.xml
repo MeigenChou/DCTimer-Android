@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">DCTimer</string>
 	<string name="scrambling">scrambling…</string>
-	<string name="initializing">initializing…</string>
 	<string name="solving">solving…</string>
 	<string name="scramble_view">scramble view</string>
 	<string name="session">" Session "</string>
@@ -109,6 +108,8 @@
     <string name="send_sucess">Share succeed!</string>
     <string name="send_failed">Share failed!</string>
     <string name="del_pic">Delete this picture?</string>
+    <string name="menu_inscr">Inport Scrambles</string>
+    <string name="menu_outscr">Export Scrambles</string>
     <string name="menu_share">Recommend to friends</string>
     <string name="menu_weibo">Share to Weibo</string>
     <string name="menu_about">About</string>
@@ -121,6 +122,11 @@
     <string name="scheme_pyrm">Pyraminx Color Schemes</string>
     <string name="scheme_sq">"Square-1 Color Schemes"</string>
     <string name="scheme_reset">Reset</string>
+    <string name="outscr_mun">"Number of scramble(1~100):"</string>
+    <string name="scr_path">"Path:"</string>
+    <string name="scr_filename">"File name:"</string>
+    <string name="def_fname">"scramble.txt"</string>
+    <string name="path_dupl">"已存在该文件，是否覆盖？"</string>
     <string name="abt_main">Introduction</string>
     <string name="abt_timer">Timer</string>
     <string name="abt_scr">Scramble</string>

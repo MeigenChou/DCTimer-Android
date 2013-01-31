@@ -113,13 +113,13 @@ public class Cross {
 		}	
 	}
 	private static void initc(){
+		if(inic)return;
 		int i,j,D,y,C;
 		for(i=0;i<12;++i){
 			Cnk[i][0]=1;
 			for(j=Cnk[i][i]=1;j<i;++j)
 				Cnk[i][j]=(short) (Cnk[i-1][j-1]+Cnk[i-1][j]);
 		}
-		if(inic)return;
 		try {
 			InputStream in = new BufferedInputStream(new FileInputStream("/data/data/com.dctimer/databases/cross.dat"));
 			read(epm, in);

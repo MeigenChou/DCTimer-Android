@@ -3,11 +3,12 @@ package solvers;
 import java.util.Random;
 
 public class Domino {
-	private static char[][] epm = new char[40320][6];
+	private static char[][] epm = new char[40320][5];
 	private static byte[] epd = new byte[40320];
 	private static StringBuffer sb;
-    private static byte[] faces = {3, 3, 1, 1, 1, 1};
-    private static String[] turn = {"U", "D", "L", "R", "F", "B"};
+    private static byte[] faces = {3, 1, 1, 1, 1};
+    private static byte[] idx = {0, 2, 3, 4, 5};
+    private static String[] turn = {"U", "L", "R", "F", "B"};
     private static String[] suff = {"'", "2", ""};
 
     private static boolean ini=false;
@@ -16,17 +17,17 @@ public class Domino {
     	Tower.init0();
     	int[] arr = new int[8];
     	for (int i = 0; i < 40320; i++) {
-    		for (int j = 0; j < 6; j++) {
-    			Tower.set8Perm(arr, i);
+    		for (int j = 0; j < 5; j++) {
+    			Tl.set8Perm(arr, i);
     			switch(j){
     			case 0:Tl.cir(arr, 0, 3, 2, 1);break;	//U
-    			case 1:Tl.cir(arr, 4, 5, 6, 7);break;	//D
-    			case 2:Tl.cir(arr, 3, 7);break;	//L
-    			case 3:Tl.cir(arr, 1, 5);break;	//R
-    			case 4:Tl.cir(arr, 2, 6);break;	//F
-    			case 5:Tl.cir(arr, 0, 4);break;	//B
+    			//case 1:Tl.cir(arr, 4, 5, 6, 7);break;	//D
+    			case 1:Tl.cir(arr, 3, 7);break;	//L
+    			case 2:Tl.cir(arr, 1, 5);break;	//R
+    			case 3:Tl.cir(arr, 2, 6);break;	//F
+    			case 4:Tl.cir(arr, 0, 4);break;	//B
     			}
-    			epm[i][j]=(char) Tower.get8Perm(arr);
+    			epm[i][j]=(char) Tl.get8Perm(arr);
     		}
     	}
     	for (int i = 1; i < 40320; i++)
@@ -34,11 +35,11 @@ public class Domino {
     	epd[0]=0;
     	
         //int nVisited = 1;
-        for (int d = 0; d < 8; d++) {
+        for (int d = 0; d < 11; d++) {
         	//nVisited = 0;
         	for (int i = 0; i < 40320; i++)
         		if (epd[i] == d)
-        			for (int k = 0; k < 6; k++)
+        			for (int k = 0; k < 5; k++)
         				for(int y = i, m = 0; m < faces[k]; m++) {
         					y = epm[y][k];
         					if (epd[y] < 0) {
@@ -54,13 +55,13 @@ public class Domino {
     	if (depth == 0) return cp == 0 && ep == 0;
     	if (Tower.cpd[cp] > depth || epd[ep] > depth) return false;
     	int y, s;
-    	for (int i = 0; i < 6; i++)
+    	for (int i = 0; i < 5; i++)
     		if(i != lastFace){
     			y = cp; s = ep;
     			for(int k = 0; k < faces[i]; k++){
-    				y = Tower.cpm[y][i]; s = epm[s][i];
+    				y = Tower.cpm[y][idx[i]]; s = epm[s][i];
     				if(search(y, s, depth - 1, i)){
-    					sb.append(turn[i]+(i<2?suff[k]:"2")+" ");
+    					sb.append(turn[i]+(i<1?suff[k]:"2")+" ");
     					return true;
     				}
     			}
@@ -73,9 +74,7 @@ public class Domino {
     	int ep = r.nextInt(40320);
     	
     	sb=new StringBuffer();
-    	
     	for (int depth = 0; !search(cp, ep, depth, -1); depth++);
-    	
     	return sb.toString();
     }
     

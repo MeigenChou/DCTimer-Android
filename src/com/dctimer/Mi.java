@@ -373,16 +373,16 @@ public class Mi {
 		case 272:	//3x3x3 subsets
 //			turn2=new String[][]{{"U"},{"R"}};
 //			scr=OtherScr.megascramble(turn2, csuff, 25);
-			scr=CubeRU.solve(new Random());
-			viewType=3;break;
+			scr=CubeRU.solve(new Random()); viewType=3;break;
 		case 273:
 //			turn2=new String[][]{{"U"},{"L"}};
 //			scr=OtherScr.megascramble(turn2, csuff, 25);
 			scr=CubeRU.solve(new Random()).replace('R', 'L');
 			viewType=3;break;
 		case 274:
-			turn2=new String[][]{{"U"},{"M"}};
-			scr=OtherScr.megascramble(turn2, csuff, 25);viewType=3;break;
+			//turn2=new String[][]{{"U"},{"M"}};
+			//scr=OtherScr.megascramble(turn2, csuff, 25);
+			scr=RouxMU.solve(new Random()); viewType=3;break;
 		case 275:
 			turn2=new String[][]{{"U"},{"R"},{"F"}};
 			scr=OtherScr.megascramble(turn2, csuff, 25);viewType=3;break;
@@ -546,7 +546,7 @@ public class Mi {
 		}
 		else if(viewType==17) {
 			byte[] imst;
-			if(sel2==0)imst=Pyraminx.imageString();
+			if(!DCTimer.isInScr && sel2==0)imst=Pyraminx.imageString();
 			else imst=Pyraminx.imageString(DCTimer.cscrs);
 			width=(int) (width*0.9);
 			int a=(width-2)/6-1,b=(int) (a*Math.sqrt(3)/2),d=(int) ((width/0.9-(a*6+4))/2);
@@ -939,7 +939,10 @@ public class Mi {
 		else {
 			int a=width/(viewType*4),i,j,d=0,b=viewType;
 			byte[] imst;
-			if(viewType==3){
+			if(DCTimer.isInScr) {
+				Cube.parse(viewType);imst=OtherScr.imagestr(DCTimer.cscrs);
+			}
+			else if(viewType==3){
 				if(DCTimer.spSel[0]==1 && sel2==0)imst=Cube.imagestring();
 				else {
 					Cube.parse(3);imst=OtherScr.imagestr(DCTimer.cscrs);
@@ -1098,6 +1101,7 @@ public class Mi {
 	}
 	public static String distime(int idx, boolean b) {
 		if(idx<0)return "N/A";
+		if(idx>=DCTimer.rest.length)return "";
 		int i=DCTimer.rest[idx];
 		if(DCTimer.resd[idx]==0){
 			if(b)return "DNF ("+distime(i)+")";
@@ -1116,7 +1120,7 @@ public class Mi {
 	public static String avg(int n, int i, int l){
 		if(i<n-1){bidx[l]=-1;return "N/A";}
 		int min,max,dnf=0,dnidx,cavg;
-		int trim=n/20;if(n%20!=0)trim++;
+		int trim=(int) Math.ceil(n/20.0);
 		double sum=0;
 		max=min=dnidx=i-n+1;
 		boolean m=false;
@@ -1194,7 +1198,7 @@ public class Mi {
 		else {if(cavg<=bavg[l]){bavg[l]=cavg;bidx[l]=i;}}
 		return DCTimer.spSel[6]==0?distime(cavg*10):distime(cavg);
 	}
-	public static String average(){
+	public static String sesMean(){
 		double sum=0,sum2=0;
 		omax=-1; omin=-1; oravg=-1;
 		int n=DCTimer.resl;
@@ -1212,14 +1216,31 @@ public class Mi {
 				else sum2+=Math.pow((DCTimer.rest[i]+DCTimer.resp[i]*2000+5)/10, 2);
 			}
 		}
-		String avg;
-		if(n==0)avg="0/"+DCTimer.resl+"): N/A (N/A)";
+		String mean;
+		if(n==0)mean="0/"+DCTimer.resl+"): N/A (N/A)";
 		else {
 			oravg=(int)(sum/n+0.5);
 			orsdv=(int)(Math.sqrt((sum2-sum*sum/n)/n)+(DCTimer.spSel[6]==1?0:0.5));
-			avg=""+n+"/"+DCTimer.resl+"): "+(DCTimer.spSel[6]==0?distime(oravg*10):distime(oravg))+" ("+standDev(orsdv)+")";
+			mean=""+n+"/"+DCTimer.resl+"): "+(DCTimer.spSel[6]==0?distime(oravg*10):distime(oravg))+" ("+standDev(orsdv)+")";
 		}
-		return avg;
+		return mean;
+	}
+	public static String sesAvg(){
+		int n=DCTimer.resl;
+		if(n<3)return "N/A";
+		int[] temp = new int[n];
+		double sum = 0;
+		int count = 0;
+		int trimed=(int) Math.ceil(n/20.0);
+		for(int i=0;i<DCTimer.resl;i++) {
+			if(DCTimer.resd[i]==0)n--;
+			else {
+				if(DCTimer.spSel[6]==1)temp[count++]=DCTimer.rest[i]+DCTimer.resp[i]*2000;
+				else temp[count++]=(DCTimer.rest[i]+DCTimer.resp[i]*2000+5)/10;
+			}
+		}
+		if(n<DCTimer.resl-2*trimed)return "DNF";
+		return null;
 	}
 	public static String mulMean(int p) {
 		double sum=0;

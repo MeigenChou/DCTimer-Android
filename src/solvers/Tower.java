@@ -12,40 +12,13 @@ public class Tower {
     private static String[] turn = {"U", "D", "L", "R", "F", "B"};
     private static String[] suff={"'", "2", ""};
     
-    private static int[] fact={1,1,2,6,24,120,720,5040};
-    
-	static void set8Perm(int[] arr, int idx) {
-		int val = 0x76543210;
-		for (int i=0; i<7; i++) {
-			int p = fact[7-i];
-			int v = idx / p;
-			idx -= v*p;
-			v <<= 2;
-			arr[i] = (val >> v) & 07;
-			int m = (1 << v) - 1;
-			val = (val & m) + ((val >> 4) & ~m);
-		}
-		arr[7] = val;
-	}
-
-	static int get8Perm(int[] arr) {
-		int idx = 0;
-		int val = 0x76543210;
-		for (int i=0; i<7; i++) {
-			int v = arr[i] << 2;
-			idx = (8 - i) * idx + ((val >> v) & 07);
-			val -= 0x11111110 << v;
-		}
-		return idx;
-	}
-	
     private static boolean ini0=false;
     public static void init0(){
     	if(ini0)return;
     	int[] arr = new int[8];
     	for (int i = 0; i < 40320; i++) {
     		for (int j = 0; j < 6; j++) {
-    			set8Perm(arr, i);
+    			Tl.set8Perm(arr, i);
     			switch(j){
     			case 0:Tl.cir(arr, 0, 3, 2, 1);break;	//U
     			case 1:Tl.cir(arr, 4, 5, 6, 7);break;	//D
@@ -54,7 +27,7 @@ public class Tower {
     			case 4:Tl.cir2(arr, 3, 6, 2, 7);break;	//F
     			case 5:Tl.cir2(arr, 0, 5, 1, 4);break;	//B
     			}
-    			cpm[i][j]=(char) get8Perm(arr);
+    			cpm[i][j]=(char) Tl.get8Perm(arr);
     		}
     	}
     	

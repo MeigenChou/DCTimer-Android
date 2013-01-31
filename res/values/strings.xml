@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">DCTimer</string>
 	<string name="scrambling">打乱中…</string>
-	<string name="initializing">初始化…</string>
 	<string name="solving">计算中…</string>
 	<string name="scramble_view">打乱状态</string>
 	<string name="session">" 分组 "</string>
@@ -109,6 +108,8 @@
     <string name="send_sucess">分享成功！</string>
     <string name="send_failed">分享失败！</string>
     <string name="del_pic">是否删除图片？</string>
+    <string name="menu_inscr">导入打乱</string>
+    <string name="menu_outscr">导出打乱</string>
     <string name="menu_share">推荐好友</string>
     <string name="menu_weibo">分享到微博</string>
     <string name="menu_about">关于</string>
@@ -121,6 +122,11 @@
     <string name="scheme_pyrm">金字塔配色设置</string>
     <string name="scheme_sq">"Square-1配色设置"</string>
     <string name="scheme_reset">恢复默认</string>
+    <string name="outscr_mun">"打乱数量(1~100):"</string>
+    <string name="scr_path">"保存路径:"</string>
+    <string name="scr_filename">"文件名:"</string>
+    <string name="def_fname">"打乱.txt"</string>
+    <string name="path_dupl">"已存在该文件，是否覆盖？"</string>
     <string name="abt_main">简介</string>
     <string name="abt_timer">计时</string>
     <string name="abt_scr">打乱</string>
