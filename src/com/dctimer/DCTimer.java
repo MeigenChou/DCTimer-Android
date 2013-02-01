@@ -498,25 +498,6 @@ public class DCTimer extends Activity {
 		for(int i=0;i<14;i++)
 		chkb[i].setOnCheckedChangeListener(listener);
 		
-//		File file = new File(addstr);
-//		if(!file.exists()){
-//			//Toast.makeText(DCTimer.this, "图片" + addstr + "不存在", Toast.LENGTH_SHORT).show();
-//			try {
-//				InputStream assetsPic = this.getAssets().open("main.png");
-//				OutputStream dbOut = new FileOutputStream(addstr);
-//				byte[] buffer = new byte[1024];
-//				int length;
-//				while ((length = assetsPic.read(buffer)) > 0) {
-//					dbOut.write(buffer, 0, length);
-//				}
-//				dbOut.flush();
-//				dbOut.close();
-//				assetsPic.close();
-//			} catch (IOException e1) {
-//				e1.printStackTrace();
-//			}
-//		}
-		
 		String token=share.getString("token", null);
 		String expires_in=share.getString("expin", null);
 		if(token==null || expires_in==null ||
@@ -541,9 +522,10 @@ public class DCTimer extends Activity {
 				}
 				set2ndsel();
 				setScrType();
-				newScr();
+				newScr(true);
 				if(selSes)searchSesType();
-				arg0.setVisibility(View.VISIBLE); 
+				if(inScr!=null && inScr.size()!=0)inScr=null;
+				arg0.setVisibility(View.VISIBLE);
 			}
 			public void onNothingSelected(AdapterView<?> arg0) {}
 		});
@@ -552,11 +534,14 @@ public class DCTimer extends Activity {
 				final String[] s=set2ndsel();
 				new AlertDialog.Builder(DCTimer.this).setItems(s, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						sel2=which;
-						setScrType();
-						newScr();
-						sndscr.setText(s[sel2]);
-						if(selSes)searchSesType();
+						if(sel2!=which){
+							sel2=which;
+							setScrType();
+							newScr(true);
+							sndscr.setText(s[sel2]);
+							if(selSes)searchSesType();
+							if(inScr!=null && inScr.size()!=0)inScr=null;
+						}
 					}
 				}).show();
 			}
@@ -632,7 +617,7 @@ public class DCTimer extends Activity {
 					spSel[5]=(byte)arg2;
 					if(!isMulp) {
 						aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],cl[2],cl[3],cl[4]}, 
-								Mi.omax, Mi.omin, share.getInt("intv", 30));
+								Mi.smax, Mi.smin, share.getInt("intv", 30));
 						setGvTitle();
 					}
 					edit.putInt("list2", spSel[5]);
@@ -938,13 +923,11 @@ public class DCTimer extends Activity {
 					new AlertDialog.Builder(DCTimer.this).setTitle(getResources().getString(R.string.confirm_clear_session))
 					.setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialoginterface, int j){
-							//DBHelper helper = new DBHelper(getApplicationContext());
 							dbh.clear(spSel[8]);
-							//dbh.close();
 							resl=dbLastId=0;
 							times=null;
 							oriavg.setText(getResources().getString(R.string.session_average)+"0/0): N/A (N/A)");
-							Mi.omax=Mi.omin=-1;
+							Mi.smax=Mi.smin=-1;
 							if(isMulp)setGridView(new String[spSel[13]+3]);
 							else setGridView(times);
 							if(sestp[spSel[8]]!=-1){
@@ -1208,8 +1191,8 @@ public class DCTimer extends Activity {
 		csPyrm.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				int[] colors={share.getInt("csp1", 0xff009900), share.getInt("csp2", 0xffff0000),
-						share.getInt("csp3", 0xffffff00), share.getInt("csp4", 0xff0000ff)};
+				int[] colors={share.getInt("csp1", 0xffff0000), share.getInt("csp2", 0xff009900),
+						share.getInt("csp3", 0xff0000ff), share.getInt("csp4", 0xffffff00)};
 				ColorScheme dialog = new ColorScheme(context, 2, colors, new ColorScheme.OnSchemeChangedListener(){
 					@Override
 					public void schemeChanged(int idx, int color) {
@@ -1500,7 +1483,7 @@ public class DCTimer extends Activity {
 	private void setInScr(String scrs) {
 		String[] scr = scrs.split("\n");
 		for(int i=0; i<scr.length; i++){
-			String cscr = scr[i].replace("^\\s*((\\(?\\d+\\))|(\\d+\\.))\\s*", "");
+			String cscr = scr[i].replaceFirst("^\\s*((\\(?\\d+\\))|(\\d+\\.))\\s*", "");
 			if(!cscr.equals(""))inScr.add(cscr);
 		}
 	}
@@ -1522,12 +1505,11 @@ public class DCTimer extends Activity {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					// TODO Auto-generated method stub
 					proDlg.dismiss();
 				}
 			}.start();
 		}
-		else Toast.makeText(DCTimer.this, "路径不存在", Toast.LENGTH_SHORT);
+		else Toast.makeText(DCTimer.this, "路径不存在", Toast.LENGTH_SHORT).show();
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -1544,7 +1526,6 @@ public class DCTimer extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
-		//factory = null;
 		switch(item.getItemId()) {
 		case 0://TODO
 			LayoutInflater factory = LayoutInflater.from(DCTimer.this);
@@ -1557,7 +1538,7 @@ public class DCTimer extends Activity {
 					inScr = new ArrayList<String>();
 					inScrLen = 0;
 					setInScr(scrs);
-					if(inScr.size()>0) newScr();
+					if(inScr.size()>0) newScr(false);
 				}
 			}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface d, int which) {d.dismiss();}
@@ -1585,7 +1566,7 @@ public class DCTimer extends Activity {
 					}
 					final String fileName=et3.getText().toString();
 					File file = new File(path+fileName);
-					if(file.isDirectory())Toast.makeText(DCTimer.this, "路径输入无效", Toast.LENGTH_SHORT);
+					if(file.isDirectory())Toast.makeText(DCTimer.this, "路径输入无效", Toast.LENGTH_SHORT).show();
 					else if(file.exists()){
 						new AlertDialog.Builder(DCTimer.this).setMessage(getResources().getString(R.string.path_dupl))
 						.setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
@@ -1643,30 +1624,23 @@ public class DCTimer extends Activity {
 			}).show();
 			break;
 		case 5:
-			new AlertDialog.Builder(DCTimer.this).setMessage(getResources().getString(R.string.confirm_exit))
-			.setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialoginterface, int j){
-					dbh.close();
-					edit.putInt("sel", spSel[0]);
-					if(spSel[0]==11 && sel2==4)edit.putInt("sel2", 3);
-					else edit.putInt("sel2", sel2);
-					edit.commit();
-					android.os.Process.killProcess(android.os.Process.myPid());
-				}
-			}).setNegativeButton(getResources().getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialoginterface, int i){ }
-			}).show();
+			dbh.close();
+			edit.putInt("sel", spSel[0]);
+			if(spSel[0]==11 && sel2==4)edit.putInt("sel2", 3);
+			else edit.putInt("sel2", sel2);
+			edit.commit();
+			android.os.Process.killProcess(android.os.Process.myPid());
 		}
 		return true;
 	}
 	private void setGridView(final String[] time) {
 		if(!isMulp){
 			aryAdapter=new TimesAdapter (DCTimer.this, time, new int[]{
-					cl[1],cl[2],cl[3],cl[4]}, Mi.omax, Mi.omin, intv);
+					cl[1],cl[2],cl[3],cl[4]}, Mi.smax, Mi.smin, intv);
 			myGridView.setNumColumns(3);
 		} else {
 			aryAdapter = new TimesAdapter(DCTimer.this,	time, new int[]{cl[1],
-					cl[2], cl[3], Mi.omax, Mi.omin}, intv, spSel[13]+3);
+					cl[2], cl[3], Mi.smax, Mi.smin}, intv, spSel[13]+3);
 			myGridView.setNumColumns(spSel[13]+3);
 		}
 		myGridView.setAdapter(aryAdapter);
@@ -1691,10 +1665,10 @@ public class DCTimer extends Activity {
 	}
 	private String getShareContext(){
 		String s1=getResources().getString(R.string.share_c1).replace("$len", ""+resl).replace("$scrtype", getScrName())
-				.replace("打乱打乱", "打乱").replace("$best", Mi.distime(Mi.omin, false)).
-				replace("$mean", spSel[6]==0?Mi.distime(Mi.oravg*10):Mi.distime(Mi.oravg));
+				.replace("打乱打乱", "打乱").replace("$best", Mi.distime(Mi.smin, false)).
+				replace("$mean", Mi.distime(Mi.sesMean));
 		String s2=(resl>listnum[spSel[4]])?getResources().getString(R.string.share_c2).replace("$flen", ""+listnum[spSel[4]]).
-				replace("$favg", spSel[6]==0?Mi.distime(Mi.bavg[0]*10):Mi.distime(Mi.bavg[0])):"";
+				replace("$favg", Mi.distime(Mi.bavg[0])):"";
 		String s3=getResources().getString(R.string.share_c3);
 		return s1+s2+s3;
 	}
@@ -1742,7 +1716,6 @@ public class DCTimer extends Activity {
 		}
 		if(type==2 || (sestp[spSel[8]] != -1 && type == 1)){
 			spinner[8].setSelection(idx);
-			//dbh = new DBHelper(DCTimer.this);
 			getSession(idx);
 			edit.putInt("group", idx);
 			edit.commit();
@@ -1838,7 +1811,7 @@ public class DCTimer extends Activity {
 			break;
 		case MotionEvent.ACTION_UP:
 			if(timk==0){
-				if(scrt)newScr();
+				if(scrt)newScr(false);
 				else {
 					if(tapTime ==0 || canStart) {
 						if(wca)timer.v=1;
@@ -1880,7 +1853,7 @@ public class DCTimer extends Activity {
 								}
 							}).setNegativeButton(getResources().getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface d, int which) {
-									d.dismiss();newScr();
+									d.dismiss();newScr(false);
 								}
 							}).show();
 						else record((int)timer.time,(byte)0,(byte)0);
@@ -1931,9 +1904,10 @@ public class DCTimer extends Activity {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					String time = Mi.convStr(editText.getText().toString());
-					if(time.equals("Error") || Mi.convTime(time)==0)Toast.makeText(DCTimer.this, getResources().getString(R.string.illegal), Toast.LENGTH_SHORT).show();
+					if(time.equals("Error") || Mi.convTime(time)==0)
+						Toast.makeText(DCTimer.this, getResources().getString(R.string.illegal), Toast.LENGTH_SHORT).show();
 					else record(Mi.convTime(time), (byte) 0, (byte) 1);
-					newScr();
+					newScr(false);
 				}
 			}).setNegativeButton(getResources().getString(R.string.btn_cancel), null).show();
 		}
@@ -1980,9 +1954,7 @@ public class DCTimer extends Activity {
 		if(isMulp)
 			for(int i=0; i<6; i++)
 				cv.put("p"+(i+1), mulp[i][resl-1]);
-		DBHelper helper = new DBHelper(getApplicationContext());
-		helper.insert(spSel[8], cv);
-		helper.close();
+		dbh.insert(spSel[8], cv);
 		if(times==null) times=new String[3];
 		else times=new String[times.length+3];
 		oriavg.setText(getResources().getString(R.string.session_average)+Mi.sesMean());
@@ -1993,20 +1965,18 @@ public class DCTimer extends Activity {
 			edit.putInt("sestp"+spSel[8], scrType);
 			edit.commit();
 		}
-		newScr();
+		newScr(false);
 	}
 	void change(int idx, byte p, byte d) {
 		if(resp[idx]==p && resd[idx]==d);
 		else {
 			resp[idx]=p;
 			resd[idx]=d;
-			//DBHelper helper=new DBHelper(getApplicationContext());
 			Cursor c = dbh.query(spSel[8]);
 			c.moveToPosition(idx);
 			int id=c.getInt(0);
 			c.close();
 			dbh.update(spSel[8], id, p, d);
-			//dbh.close();
 			oriavg.setText(getResources().getString(R.string.session_average)+Mi.sesMean());
 			if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)]);
 			else setGridView(times);
@@ -2041,7 +2011,7 @@ public class DCTimer extends Activity {
 							}
 						}).setNegativeButton(getResources().getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface d, int which) {
-								d.dismiss();newScr();
+								d.dismiss();newScr(false);
 							}
 						}).show();
 					else record((int)timer.time,(byte)0,(byte)0);
@@ -2082,7 +2052,60 @@ public class DCTimer extends Activity {
 				}).show();
 			}
 		}
+		else if(keyCode == KeyEvent.KEYCODE_Q) {
+			chScr(8, 2);
+		}
+		else if(keyCode == KeyEvent.KEYCODE_W) {
+			chScr(0, 0);
+		}
+		else if(keyCode == KeyEvent.KEYCODE_E) {
+			chScr(1, 1);
+		}
+		else if(keyCode == KeyEvent.KEYCODE_R) {
+			chScr(2, 0);
+		}
+		else if(keyCode == KeyEvent.KEYCODE_T) {
+			chScr(3, 0);
+		}
+		else if(keyCode == KeyEvent.KEYCODE_Y) {
+			chScr(4, 0);
+		}
+		else if(keyCode == KeyEvent.KEYCODE_U) {
+			chScr(5, 0);
+		}
+		else if(keyCode == KeyEvent.KEYCODE_M) {
+			chScr(6, 0);
+		}
+		else if(keyCode == KeyEvent.KEYCODE_P) {
+			chScr(7, 0);
+		}
+		else if(keyCode == KeyEvent.KEYCODE_K) {
+			chScr(9, 0);
+		}
+		else if(keyCode == KeyEvent.KEYCODE_N) {
+			newScr(false);
+		}
+		//TODO
 		return false;
+	}
+	private void chScr(int s1, int s2) {
+		boolean c1=false, c2=false;
+		if(spSel[0]!=s1){
+			c1=true;
+			spinner[0].setSelection(s1);
+			spSel[0] = (byte) s1;
+			if(spSel[0]!=selold)selold=spSel[0];
+		}
+		if(sel2!=s2){
+			c2=true;
+			sel2=s2;
+		}
+		if(c1||c2) {
+			set2ndsel();
+			setScrType();
+			if(selSes)searchSesType();
+			if(inScr!=null && inScr.size()!=0)inScr=null;
+		}
 	}
 	private void showAlertDialog(int i, int j){
 		String t=null;
@@ -2097,7 +2120,7 @@ public class DCTimer extends Activity {
 			break;
 		case 3:
 			t=getResources().getString(R.string.sta_session_mean);
-			slist=oriAverage();
+			slist=sesMean();
 			break;
 		}
 		new AlertDialog.Builder(DCTimer.this).setTitle(t).setMessage(slist)
@@ -2111,8 +2134,8 @@ public class DCTimer extends Activity {
 			public void onClick(DialogInterface dialoginterface, int i){}
 		}).show();
 	}
-	private void newScr() {
-		if(inScr!=null && inScrLen<inScr.size()){
+	private void newScr(boolean ch) {
+		if(!ch && inScr!=null && inScrLen<inScr.size()){
 			if(!isInScr)isInScr=true;
 			cscrs=inScr.get(inScrLen++);
 			if(cscrs.matches("([FRU][2']?\\s*)+"))Mi.viewType=2;
@@ -2143,6 +2166,7 @@ public class DCTimer extends Activity {
 			(spSel[0]==17 && (sel2<3 || sel2==6)) ||
 			spSel[0]==20) {
 			if(isInScr)isInScr=false;
+			if(ch)canScr=true;
 			if(canScr){
 				new Thread() {
 					public void run() {
@@ -2178,13 +2202,13 @@ public class DCTimer extends Activity {
 			})
 			.setNegativeButton(getResources().getString(R.string.btn_cancel),new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface d,int which) {
-					d.dismiss();newScr();
+					d.dismiss();newScr(false);
 				}
 			}).show();
 		else record(time+isp2, (byte)0, (byte)1);
 	}
 	
-	public String oriAverage() {
+	public String sesMean() {
 		StringBuffer sb=new StringBuffer();
 		int n=resl;
 		for(int i=0;i<resl;i++) {
@@ -2192,10 +2216,11 @@ public class DCTimer extends Activity {
 		}
 		sb.append(getResources().getString(R.string.stat_title)+new java.sql.Date(new Date().getTime())+"\n");
 		sb.append(getResources().getString(R.string.stat_solve)+n+"/"+resl+"\n");
-		sb.append(getResources().getString(R.string.stat_mean)+(spSel[6]==0?Mi.distime(Mi.oravg*10):Mi.distime(Mi.oravg))+"\n");
-		sb.append(getResources().getString(R.string.stat_sd)+Mi.standDev(Mi.orsdv)+"\n");
-		sb.append(getResources().getString(R.string.stat_best)+Mi.distime(Mi.omin, false)+"\n");
-		sb.append(getResources().getString(R.string.stat_worst)+Mi.distime(Mi.omax, false)+"\n");
+		sb.append(getResources().getString(R.string.ses_mean)+Mi.distime(Mi.sesMean)+" ");
+		sb.append("(σ = "+Mi.standDev(Mi.sesSD)+")\n");
+		sb.append(getResources().getString(R.string.ses_avg)+Mi.sesAvg()+"\n");
+		sb.append(getResources().getString(R.string.stat_best)+Mi.distime(Mi.smin, false)+"\n");
+		sb.append(getResources().getString(R.string.stat_worst)+Mi.distime(Mi.smax, false)+"\n");
 		sb.append(getResources().getString(R.string.stat_list));
 		if(hidls)sb.append("\n");
 		Cursor c = dbh.query(spSel[8]);
@@ -2267,9 +2292,10 @@ public class DCTimer extends Activity {
 				csdv=(int) Math.sqrt(sum2/(n-trim*2)-sum*sum/Math.pow(n-trim*2, 2));
 			}
 		}
+		if(spSel[6]==0)cavg*=10;
 		sb.append(getResources().getString(R.string.stat_title)+new java.sql.Date(new Date().getTime())+"\n");
-		sb.append(getResources().getString(R.string.stat_avg)+(spSel[6]==0?Mi.distime(cavg*10):Mi.distime(cavg))+"\n");
-		sb.append(getResources().getString(R.string.stat_sd)+Mi.standDev(csdv)+"\n");
+		sb.append(getResources().getString(R.string.stat_avg)+Mi.distime(cavg)+" ");
+		sb.append("(σ = "+Mi.standDev(csdv)+")\n");
 		sb.append(getResources().getString(R.string.stat_best)+Mi.distime(min,false)+"\n");
 		sb.append(getResources().getString(R.string.stat_worst)+Mi.distime(max,false)+"\n");
 		sb.append(getResources().getString(R.string.stat_list));
@@ -2330,9 +2356,10 @@ public class DCTimer extends Activity {
 			cavg=(int) (sum/n+0.5);
 			csdv=(int) (Math.sqrt(sum2/n-sum*sum/n/n)+(spSel[6]==1?0:0.5));
 		}
+		if(spSel[6]==0)cavg*=10;
 		sb.append(getResources().getString(R.string.stat_title)+new java.sql.Date(new Date().getTime())+"\n");
-		sb.append(getResources().getString(R.string.stat_avg)+(spSel[6]==0?Mi.distime(cavg*10):Mi.distime(cavg))+"\n");
-		sb.append(getResources().getString(R.string.stat_sd)+Mi.standDev(csdv)+"\n");
+		sb.append(getResources().getString(R.string.stat_avg)+Mi.distime(cavg)+" ");
+		sb.append("(σ = "+Mi.standDev(csdv)+")\n");
 		sb.append(getResources().getString(R.string.stat_best)+Mi.distime(min,false)+"\n");
 		sb.append(getResources().getString(R.string.stat_worst)+Mi.distime(max,false)+"\n");
 		sb.append(getResources().getString(R.string.stat_list));

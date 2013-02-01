@@ -65,9 +65,10 @@
 	<string name="illegal">非法输入</string>
 	<string name="stat_title">统计信息由DCTimer生成于</string>
 	<string name="stat_solve">完成次数/尝试次数：</string>
-	<string name="stat_avg">平均：</string>
+	<string name="stat_avg">去尾平均：</string>
 	<string name="stat_mean">平均：</string>
-	<string name="stat_sd">标准差：</string>
+	<string name="ses_avg">去尾平均：</string>
+	<string name="ses_mean">总平均：</string>
 	<string name="stat_best">最快单次：</string>
 	<string name="stat_worst">最慢单次：</string>
 	<string name="stat_list">成绩列表：</string>

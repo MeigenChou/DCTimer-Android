@@ -14,9 +14,9 @@ public class Mi {
 	//public static long stime=0L;
 	public static int[] bavg={0, 0};
 	public static int[] bidx={0, 0};
-	public static int oravg = -1;
-	public static int orsdv;
-	public static int omin, omax;
+	public static int sesMean = -1;
+	public static int sesSD;
+	public static int smin, smax;
 	private static boolean ini=false;
 	public static String sc;
 	public static int viewType;
@@ -484,7 +484,7 @@ public class Mi {
 					c.drawRect(3+(j+3)*a, sty+5+(i+4)*a, 2+(j+4)*a, sty+4+(i+5)*a, p);
 				}
 		}
-		else if(viewType==18) {
+		else if(viewType==18) {	//TODO
 			float edgeFrac = (float) ((1+Math.sqrt(5))/4);
 			float centerFrac = 0.5F;
 			if(DCTimer.spSel[3]==0)colors=new int[] {Color.WHITE,Color.rgb(0, 0, 136),Color.rgb(0, 136, 0),Color.rgb(0, 255, 255),Color.rgb(136, 34, 34),Color.rgb(136, 170, 255),
@@ -550,8 +550,8 @@ public class Mi {
 			else imst=Pyraminx.imageString(DCTimer.cscrs);
 			width=(int) (width*0.9);
 			int a=(width-2)/6-1,b=(int) (a*Math.sqrt(3)/2),d=(int) ((width/0.9-(a*6+4))/2);
-			colors = new int[]{DCTimer.share.getInt("csp1", 0xff009900), DCTimer.share.getInt("csp2", 0xffff0000),
-					DCTimer.share.getInt("csp3", 0xffffff00), DCTimer.share.getInt("csp4", 0xff0000ff)};
+			colors = new int[]{DCTimer.share.getInt("csp1", Color.RED), DCTimer.share.getInt("csp2", 0xff009900),
+					DCTimer.share.getInt("csp3", Color.BLUE), DCTimer.share.getInt("csp4", Color.YELLOW)};
 			float[] arx,ary;
 			byte[] layout =
 				{1,2,1,2,1,0,2,0,1,2,1,2,1,
@@ -631,8 +631,8 @@ public class Mi {
 			float[] arrx, arry;
 			int margin = 1;
 			float sidewid=(float) (.15*100/z);
-			int cx = (int) Math.min((width+7)/4,((width*0.75)+7)/2);
-			int cy = (int) (((width*0.75)+7)/2);
+			int cx = 55;//(int) Math.min((width+7)/4,((width*0.75)+7)/2);
+			int cy = 55;//(int) (((width*0.75)+7)/2);
 			//int cz = cy/5;
 			float rd=(cx-margin-sidewid*z)/z;
 			float w = (sidewid+rd)/rd;      // ratio btw total piece width and rd
@@ -651,30 +651,30 @@ public class Mi {
 			if(mis){
 				arrx=new float[]{cx+cos1(1,ag,rd)*w*z, cx+cos1(4,ag,rd)*w*z, cx+cos1(7,ag,rd)*w*z, cx+cos1(10,ag,rd)*w*z};
 				arry=new float[]{cy-sin1(1,ag,rd)*w*z, cy-sin1(4,ag,rd)*w*z, cy-sin1(7,ag,rd)*w*z, cy-sin1(10,ag,rd)*w*z};
-				drawPolygon(p,c,Color.BLACK,arrx,arry,true);
+				drawPolygon(p,c,Color.BLACK,width,arrx,arry);
 				cy += 10;
 				arrx=new float[]{cx+cos1(0,ag,rd)*w, cx+cos1(0,ag,rd)*w, cx+cos1(1,ag,rd)*w*z, cx+cos1(1,ag,rd)*w*z};
 				arry=new float[]{cy-sin1(1,ag,rd)*w*z, cy-sin1(1,ag,rd)*z, cy-sin1(1,ag,rd)*z, cy-sin1(1,ag,rd)*w*z};
-				drawPolygon(p,c,colors[5],arrx,arry,true);
+				drawPolygon(p,c,colors[5],width,arrx,arry);
 				arrx=new float[]{cx+cos1(0,ag,rd)*w, cx+cos1(0,ag,rd)*w, cx+cos1(10,ag,rd)*w*z, cx+cos1(10,ag,rd)*w*z};
 				arry=new float[]{cy-sin1(1,ag,rd)*w*z, cy-sin1(1,ag,rd)*z, cy-sin1(1,ag,rd)*z, cy-sin1(1,ag,rd)*w*z};
-				drawPolygon(p,c,colors[5],arrx,arry,true);
+				drawPolygon(p,c,colors[5],width,arrx,arry);
 				cy -= 10;
 			}
 			else {
 				arrx=new float[]{cx+cos1(1,ag,rd)*w*z, cx+cos1(4,ag,rd)*w*z, cx+cos1(6,ag,rd)*w, cx+cos1(9,ag,rd)*w*z, cx+cos1(11,ag,rd)*w*z, cx+cos1(0,ag,rd)*w};
 				arry=new float[]{cy-sin1(1,ag,rd)*w*z, cy-sin1(4,ag,rd)*w*z, cy-sin1(6,ag,rd)*w, cy+sin1(9,ag,rd)*w*z, cy-sin1(11,ag,rd)*w*z, cy-sin1(0,ag,rd)*w};
-				drawPolygon(p,c,Color.BLACK,arrx,arry,true);
+				drawPolygon(p,c,Color.BLACK,width,arrx,arry);
 				arrx=new float[]{cx+cos1(9,ag,rd)*w*z, cx+cos1(11,ag,rd)*w*z, cx+cos1(11,ag,rd)*w*z, cx+cos1(9,ag,rd)*w*z};
 				arry=new float[]{cy+sin1(9,ag,rd)*w*z-h, cy-sin1(11,ag,rd)*w*z-h, cy-sin1(11,ag,rd)*w*z, cy+sin1(9,ag,rd)*w*z};
-				drawPolygon(p,c,colors[4],arrx,arry,true);
+				drawPolygon(p,c,colors[4],width,arrx,arry);
 				cy += 10;
 				arrx=new float[]{cx+cos1(0,ag,rd)*w, cx+cos1(0,ag,rd)*w, cx+cos1(1,ag,rd)*w*z, cx+cos1(1,ag,rd)*w*z};
 				arry=new float[]{cy-sin1(1,ag,rd)*w*z, cy-sin1(1,ag,rd)*z, cy-sin1(1,ag,rd)*z, cy-sin1(1,ag,rd)*w*z};
-				drawPolygon(p,c,colors[5],arrx,arry,true);
+				drawPolygon(p,c,colors[5],width,arrx,arry);
 				arrx=new float[]{cx+cos1(0,ag,rd)*w, cx+cos1(0,ag,rd)*w, cx+cos1(11,ag,rd)*w*z, cx+cos1(11,ag,rd)*w*z};
 				arry=new float[]{cy-sin1(1,ag,rd)*w*z, cy-sin1(1,ag,rd)*z, cy-sin1(11,ag,rd)*w*z + h, cy-sin1(11,ag,rd)*w*z};
-				drawPolygon(p,c,colors[2],arrx,arry,true);
+				drawPolygon(p,c,colors[2],width,arrx,arry);
 				cy -= 10;
 			}
 			int sc = 0;
@@ -684,22 +684,22 @@ public class Mi {
 				if (a.charAt(foo)=='c'){
 					arrx=new float[]{cx, cx+cos1(sc,ag,rd), cx+cos1(sc+1, ag, rd)*z, cx+cos1(sc+2, ag, rd)};
 					arry=new float[]{cy, cy-sin1(sc,ag,rd), cy-sin1(sc+1, ag, rd)*z, cy-sin1(sc+2, ag, rd)};
-					drawPolygon(p,c,colors[(int)stickers.charAt(foo)-48],arrx,arry,true);
+					drawPolygon(p,c,colors[(int)stickers.charAt(foo)-48],width,arrx,arry);
 					arrx=new float[]{cx+cos1(sc, ag, rd), cx+cos1(sc+1, ag, rd)*z, cx+cos1(sc+1, ag, rd)*w*z, cx+cos1(sc, ag, rd)*w};
 					arry=new float[]{cy-sin1(sc, ag, rd), cy-sin1(sc+1, ag, rd)*z, cy-sin1(sc+1, ag, rd)*w*z, cy-sin1(sc, ag, rd)*w};
-					drawPolygon(p,c,colors[(int)stickers.charAt(16+sc)-48],arrx,arry,true);
+					drawPolygon(p,c,colors[(int)stickers.charAt(16+sc)-48],width,arrx,arry);
 					arrx=new float[]{cx+cos1(sc+2, ag, rd), cx+cos1(sc+1, ag, rd)*z, cx+cos1(sc+1, ag, rd)*w*z, cx+cos1(sc+2, ag, rd)*w};
 					arry=new float[]{cy-sin1(sc+2, ag, rd), cy-sin1(sc+1, ag, rd)*z, cy-sin1(sc+1, ag, rd)*w*z, cy-sin1(sc+2, ag, rd)*w};
-					drawPolygon(p,c,colors[(int)stickers.charAt(17+sc)-48],arrx,arry,true);
+					drawPolygon(p,c,colors[(int)stickers.charAt(17+sc)-48],width,arrx,arry);
 					sc+=2;
 				}
 				if (a.charAt(foo)=='e'){
 					arrx=new float[]{cx, cx+cos1(sc,ag,rd), cx+cos1(sc+1,ag,rd)};
 					arry=new float[]{cy, cy-sin1(sc,ag,rd), cy-sin1(sc+1,ag,rd)};
-					drawPolygon(p,c,colors[(int)stickers.charAt(foo)-48],arrx,arry,true);
+					drawPolygon(p,c,colors[(int)stickers.charAt(foo)-48],width,arrx,arry);
 					arrx=new float[]{cx+cos1(sc,ag,rd), cx+cos1(sc+1,ag,rd), cx+cos1(sc+1,ag,rd)*w, cx+cos1(sc,ag,rd)*w};
 					arry=new float[]{cy-sin1(sc,ag,rd), cy-sin1(sc+1,ag,rd), cy-sin1(sc+1,ag,rd)*w, cy-sin1(sc,ag,rd)*w};
-					drawPolygon(p,c,colors[(int)stickers.charAt(16+sc)-48],arrx,arry,true);
+					drawPolygon(p,c,colors[(int)stickers.charAt(16+sc)-48],width,arrx,arry);
 					sc +=1;
 				}
 			}
@@ -708,30 +708,30 @@ public class Mi {
 			if(mis){
 				arrx=new float[]{cx+cos1(1,ag,rd)*w*z, cx+cos1(4,ag,rd)*w*z, cx+cos1(7,ag,rd)*w*z, cx+cos1(10,ag,rd)*w*z};
 				arry=new float[]{cy+sin1(1,ag,rd)*w*z, cy+sin1(4,ag,rd)*w*z, cy+sin1(7,ag,rd)*w*z, cy+sin1(10,ag,rd)*w*z};
-				drawPolygon(p,c,Color.BLACK,arrx,arry,true);
+				drawPolygon(p,c,Color.BLACK,width,arrx,arry);
 				cy -= 10;
 				arrx=new float[]{cx+cos1(0,ag,rd)*w, cx+cos1(0,ag,rd)*w, cx+cos1(1,ag,rd)*w*z, cx+cos1(1,ag,rd)*w*z};
 				arry=new float[]{cy+sin1(1,ag,rd)*w*z, cy+sin1(1,ag,rd)*z, cy+sin1(1,ag,rd)*z, cy+sin1(1,ag,rd)*w*z};
-				drawPolygon(p,c,colors[5],arrx,arry,true);
+				drawPolygon(p,c,colors[5],width,arrx,arry);
 				arrx=new float[]{cx+cos1(0,ag,rd)*w, cx+cos1(0,ag,rd)*w, cx+cos1(10,ag,rd)*w*z, cx+cos1(10,ag,rd)*w*z};
 				arry=new float[]{cy+sin1(1,ag,rd)*w*z, cy+sin1(1,ag,rd)*z, cy+sin1(1,ag,rd)*z, cy+sin1(1,ag,rd)*w*z};
-				drawPolygon(p,c,colors[5],arrx,arry,true);
+				drawPolygon(p,c,colors[5],width,arrx,arry);
 				cy += 10;
 			}
 			else {
 				arrx=new float[]{cx+cos1(1,ag,rd)*w*z, cx+cos1(4,ag,rd)*w*z, cx+cos1(6,ag,rd)*w, cx+cos1(9,ag,rd)*w*z, cx+cos1(11,ag,rd)*w*z, cx+cos1(0,ag,rd)*w};
 				arry=new float[]{cy+sin1(1,ag,rd)*w*z, cy+sin1(4,ag,rd)*w*z, cy+sin1(6,ag,rd)*w, cy-sin1(9,ag,rd)*w*z, cy+sin1(11,ag,rd)*w*z, cy+sin1(0,ag,rd)*w};
-				drawPolygon(p,c,Color.BLACK,arrx,arry,true);
+				drawPolygon(p,c,Color.BLACK,width,arrx,arry);
 				arrx=new float[]{cx+cos1(9,ag,rd)*w*z, cx+cos1(11,ag,rd)*w*z, cx+cos1(11,ag,rd)*w*z, cx+cos1(9,ag,rd)*w*z};
 				arry=new float[]{cy-sin1(9,ag,rd)*w*z-10, cy+sin1(11,ag,rd)*w*z-10, cy+sin1(11,ag,rd)*w*z, cy-sin1(9,ag,rd)*w*z};
-				drawPolygon(p,c,colors[4],arrx,arry,true);
+				drawPolygon(p,c,colors[4],width,arrx,arry);
 				cy -= 10;
 				arrx=new float[]{cx+cos1(0,ag,rd)*w, cx+cos1(0,ag,rd)*w, cx+cos1(1,ag,rd)*w*z, cx+cos1(1,ag,rd)*w*z};
 				arry=new float[]{cy+sin1(1,ag,rd)*w*z, cy+sin1(1,ag,rd)*z, cy+sin1(1,ag,rd)*z, cy+sin1(1,ag,rd)*w*z};
-				drawPolygon(p,c,colors[5],arrx,arry,true);
+				drawPolygon(p,c,colors[5],width,arrx,arry);
 				arrx=new float[]{cx+cos1(0,ag,rd)*w, cx+cos1(0,ag,rd)*w, cx+cos1(11,ag,rd)*w*z, cx+cos1(11,ag,rd)*w*z};
 				arry=new float[]{cy+sin1(1,ag,rd)*w*z, cy+sin1(1,ag,rd)*z, cy+sin1(11,ag,rd)*w*z+10, cy+sin1(11,ag,rd)*w*z};
-				drawPolygon(p,c,colors[2],arrx,arry,true);
+				drawPolygon(p,c,colors[2],width,arrx,arry);
 				cy += 10;
 			}
 			sc = 0;
@@ -741,22 +741,22 @@ public class Mi {
 				if (a.charAt(foo)=='c'){
 					arrx=new float[]{cx, cx+cos2(sc,ag2,rd), cx+cos2(sc+1,ag2,rd)*z, cx+cos2(sc+2,ag2,rd)};
 					arry=new float[]{cy, cy-sin2(sc,ag2,rd), cy-sin2(sc+1,ag2,rd)*z, cy-sin2(sc+2,ag2,rd)};
-					drawPolygon(p,c,colors[(int)stickers.charAt(foo)-48],arrx,arry,true);
+					drawPolygon(p,c,colors[(int)stickers.charAt(foo)-48],width,arrx,arry);
 					arrx=new float[]{cx+cos2(sc,ag2,rd), cx+cos2(sc+1,ag2,rd)*z, cx+cos2(sc+1,ag2,rd)*w*z, cx+cos2(sc,ag2,rd)*w};
 					arry=new float[]{cy-sin2(sc,ag2,rd), cy-sin2(sc+1,ag2,rd)*z, cy-sin2(sc+1,ag2,rd)*w*z, cy-sin2(sc,ag2,rd)*w};
-					drawPolygon(p,c,colors[(int)stickers.charAt(28+sc)-48],arrx,arry,true);
+					drawPolygon(p,c,colors[(int)stickers.charAt(28+sc)-48],width,arrx,arry);
 					arrx=new float[]{cx+cos2(sc+2,ag2,rd), cx+cos2(sc+1,ag2,rd)*z, cx+cos2(sc+1,ag2,rd)*w*z, cx+cos2(sc+2,ag2,rd)*w};
 					arry=new float[]{cy-sin2(sc+2,ag2,rd), cy-sin2(sc+1,ag2,rd)*z, cy-sin2(sc+1,ag2,rd)*w*z, cy-sin2(sc+2,ag2,rd)*w};
-					drawPolygon(p,c,colors[(int)stickers.charAt(29+sc)-48],arrx,arry,true);
+					drawPolygon(p,c,colors[(int)stickers.charAt(29+sc)-48],width,arrx,arry);
 					sc +=2;
 				}
 				if (a.charAt(foo)=='e'){
 					arrx=new float[]{cx, cx+cos2(sc,ag2,rd), cx+cos2(sc+1,ag2,rd)};
 					arry=new float[]{cy, cy-sin2(sc,ag2,rd), cy-sin2(sc+1,ag2,rd)};
-					drawPolygon(p,c,colors[(int)stickers.charAt(foo)-48],arrx,arry,true);
+					drawPolygon(p,c,colors[(int)stickers.charAt(foo)-48],width,arrx,arry);
 					arrx=new float[]{cx+cos2(sc,ag2,rd), cx+cos2(sc+1,ag2,rd), cx+cos2(sc+1,ag2,rd)*w, cx+cos2(sc,ag2,rd)*w};
 					arry=new float[]{cy-sin2(sc,ag2,rd), cy-sin2(sc+1,ag2,rd), cy-sin2(sc+1,ag2,rd)*w, cy-sin2(sc,ag2,rd)*w};
-					drawPolygon(p,c,colors[(int)stickers.charAt(28+sc)-48],arrx,arry,true);
+					drawPolygon(p,c,colors[(int)stickers.charAt(28+sc)-48],width,arrx,arry);
 					sc +=1;
 				}
 			}
@@ -769,9 +769,9 @@ public class Mi {
 			int face_background_radius = 18;
 			int cx = 56;
 			int cy = 55;
-			p.setColor(0xff000000);
-			drawSideBackground(p, c, width, cx, cy, clock_radius+3,
-					face_background_dist, face_background_radius+3);
+			p.setColor(0xff2a2a2a);
+			drawSideBackground(p, c, width, cx, cy, clock_radius+1,
+					face_background_dist, face_background_radius+1);
 			p.setColor(0xff3366ff);
 			drawSideBackground(p, c, width, cx, cy, clock_radius,
 					face_background_dist, face_background_radius);
@@ -785,9 +785,9 @@ public class Mi {
 		  	drawPeg(p, c, width, cx - face_dist/2, cy + face_dist/2, 1-pegs[2]);
 		  	drawPeg(p, c, width, cx + face_dist/2, cy + face_dist/2, 1-pegs[3]);
 		  	cx = 167;
-		  	p.setColor(0xff000000);
-		  	drawSideBackground(p, c, width, cx, cy, clock_radius+3,
-					face_background_dist, face_background_radius+3);
+		  	p.setColor(0xff2a2a2a);
+		  	drawSideBackground(p, c, width, cx, cy, clock_radius+1,
+					face_background_dist, face_background_radius+1);
 		  	p.setColor(0xff88aaff);
 			drawSideBackground(p, c, width, cx, cy, clock_radius,
 					face_background_dist, face_background_radius);
@@ -921,19 +921,24 @@ public class Mi {
 			byte[] imst=Skewb.image(DCTimer.cscrs);
 			int a=width/8,i,d=0;
 			int stx=(width-8*a)/2, sty=(int) ((width*0.75-6*a)/2);
-			byte[] dxIdx={3,7,5,3,3,1}, dyIdx={5,3,3,1,3,3};
+			byte[] dxi={3,7,5,3,3,1}, dyi={5,3,3,1,3,3};
 			p.setStyle(Paint.Style.FILL);
 			for(i=0; i<6; i++){
-				drawPolygon(p,c,colors[imst[d++]],new float[]{stx+dxIdx[i]+(dxIdx[i]-1)*a, stx+dxIdx[i]+dxIdx[i]*a, stx+dxIdx[i]+(dxIdx[i]-1)*a},
-						new float[]{sty+dyIdx[i]+(dyIdx[i]-1)*a, sty+dyIdx[i]+(dyIdx[i]-1)*a, sty+dyIdx[i]+dyIdx[i]*a},true);
-				drawPolygon(p,c,colors[imst[d++]],new float[]{stx+dxIdx[i]+dxIdx[i]*a, stx+dxIdx[i]+(dxIdx[i]+1)*a, stx+dxIdx[i]+(dxIdx[i]+1)*a},
-						new float[]{sty+dyIdx[i]+(dyIdx[i]-1)*a, sty+dyIdx[i]+(dyIdx[i]-1)*a, sty+dyIdx[i]+dyIdx[i]*a},true);
-				drawPolygon(p,c,colors[imst[d++]],new float[]{stx+dxIdx[i]+(dxIdx[i]+1)*a, stx+dxIdx[i]+(dxIdx[i]+1)*a, stx+dxIdx[i]+dxIdx[i]*a},
-						new float[]{sty+dyIdx[i]+dyIdx[i]*a, sty+dyIdx[i]+(dyIdx[i]+1)*a, sty+dyIdx[i]+(dyIdx[i]+1)*a},true);
-				drawPolygon(p,c,colors[imst[d++]],new float[]{stx+dxIdx[i]+dxIdx[i]*a, stx+dxIdx[i]+(dxIdx[i]-1)*a, stx+dxIdx[i]+(dxIdx[i]-1)*a},
-						new float[]{sty+dyIdx[i]+(dyIdx[i]+1)*a, sty+dyIdx[i]+(dyIdx[i]+1)*a, sty+dyIdx[i]+dyIdx[i]*a},true);
-				drawPolygon(p,c,colors[imst[d++]],new float[]{stx+dxIdx[i]+dxIdx[i]*a, stx+dxIdx[i]+(dxIdx[i]+1)*a, stx+dxIdx[i]+dxIdx[i]*a, stx+dxIdx[i]+(dxIdx[i]-1)*a},
-						new float[]{sty+dyIdx[i]+(dyIdx[i]-1)*a, sty+dyIdx[i]+dyIdx[i]*a, sty+dyIdx[i]+(dyIdx[i]+1)*a, sty+dyIdx[i]+dyIdx[i]*a},true);
+				drawPolygon(p,c,colors[imst[d++]],
+					new float[]{stx+dxi[i]+(dxi[i]-1)*a+1, stx+dxi[i]+dxi[i]*a, stx+dxi[i]+(dxi[i]-1)*a+1},
+					new float[]{sty+dyi[i]+(dyi[i]-1)*a+1, sty+dyi[i]+(dyi[i]-1)*a+1, sty+dyi[i]+dyi[i]*a},true);
+				drawPolygon(p,c,colors[imst[d++]],
+					new float[]{stx+dxi[i]+dxi[i]*a, stx+dxi[i]+(dxi[i]+1)*a-1, stx+dxi[i]+(dxi[i]+1)*a-1},
+					new float[]{sty+dyi[i]+(dyi[i]-1)*a+1, sty+dyi[i]+(dyi[i]-1)*a+1, sty+dyi[i]+dyi[i]*a},true);
+				drawPolygon(p,c,colors[imst[d++]],
+					new float[]{stx+dxi[i]+(dxi[i]+1)*a-1, stx+dxi[i]+(dxi[i]+1)*a-1, stx+dxi[i]+dxi[i]*a},
+					new float[]{sty+dyi[i]+dyi[i]*a, sty+dyi[i]+(dyi[i]+1)*a-1, sty+dyi[i]+(dyi[i]+1)*a-1},true);
+				drawPolygon(p,c,colors[imst[d++]],
+					new float[]{stx+dxi[i]+dxi[i]*a, stx+dxi[i]+(dxi[i]-1)*a+1, stx+dxi[i]+(dxi[i]-1)*a+1},
+					new float[]{sty+dyi[i]+(dyi[i]+1)*a-1, sty+dyi[i]+(dyi[i]+1)*a-1, sty+dyi[i]+dyi[i]*a},true);
+				drawPolygon(p,c,colors[imst[d++]],
+					new float[]{stx+dxi[i]+dxi[i]*a, stx+dxi[i]+(dxi[i]+1)*a-1, stx+dxi[i]+dxi[i]*a, stx+dxi[i]+(dxi[i]-1)*a+1},
+					new float[]{sty+dyi[i]+(dyi[i]-1)*a+1, sty+dyi[i]+dyi[i]*a, sty+dyi[i]+(dyi[i]+1)*a-1, sty+dyi[i]+dyi[i]*a},true);
 			}
 		}
 		else {
@@ -1013,12 +1018,21 @@ public class Mi {
 	}
 	private static void drawClockFace(Paint p, Canvas cv, int w, int cx, int cy, int color, int hour){
 		float[] scaled = scalePoint(w, cx, cy);
+		//p.setColor(Color.BLACK);
+		//drawCircle(p, cv, w, cx, cy, 12);
 		p.setColor(color);
-		drawCircle(p, cv, w, cx, cy, 13);
+		drawCircle(p, cv, w, cx, cy, 11);
 		p.setColor(0xffff0000);
-	    drawCircle(p, cv, w, cx, cy, 4);
-	    float[] arx={scalePoint(w, cx, cy - 12)[0], scalePoint(w, cx + 4, cy - 1)[0], scalePoint(w, cx - 4, cy - 1)[0]},
-	    		ary={scalePoint(w, cx, cy - 12)[1], scalePoint(w, cx + 4, cy - 1)[1], scalePoint(w, cx - 4, cy - 1)[1]};
+	    drawCircle(p, cv, w, cx, cy, 3);
+	    float[] arx={scalePoint(w, cx, cy - 10)[0], scalePoint(w, cx + 3, cy - 1)[0], scalePoint(w, cx - 3, cy - 1)[0]},
+	    		ary={scalePoint(w, cx, cy - 10)[1], scalePoint(w, cx + 3, cy - 1)[1], scalePoint(w, cx - 3, cy - 1)[1]};
+	    p.setColor(color);
+	    cv.save();
+	    for(int i=0; i<12; i++) {
+	    	drawCircle(p, cv, w, cx-13, cy, 1);
+	    	cv.rotate(30, scaled[0], scaled[1]);
+	    }
+	    cv.restore();
 	    cv.save();
 	    cv.rotate(30*hour, scaled[0], scaled[1]);
 	    drawPolygon(p, cv, 0xffff0000, arx, ary, false);
@@ -1033,12 +1047,11 @@ public class Mi {
 	    cv.restore();
 	}
 	private static void drawPeg(Paint p, Canvas c, int w, int cx, int cy, int pegValue) {
-		int pegRadius = 6;
 		int color = pegValue==1?0xffffff00:0xff444400;
-		p.setColor(0xff000000);
-		drawCircle(p, c, w, cx, cy, pegRadius+1);
+		p.setColor(0xff2a2a2a);
+		drawCircle(p, c, w, cx, cy, 5);
 		p.setColor(color);
-		drawCircle(p, c, w, cx, cy, pegRadius);
+		drawCircle(p, c, w, cx, cy, 4);
 	}
 	protected static void drawPolygon(Paint p, Canvas c, int cl, float[] arx, float[] ary, boolean stoke){
 		p.setColor(cl);
@@ -1053,6 +1066,22 @@ public class Mi {
 			p.setColor(Color.BLACK);
 			c.drawPath(path, p);
 		}
+	}
+	protected static void drawPolygon(Paint p, Canvas c, int cl, int w, float[] arx, float[] ary){
+		p.setColor(cl);
+		Path path=new Path();
+		float[] d = scalePoint(w, arx[0], ary[0]);
+		path.moveTo(d[0], d[1]);
+		for(int idx=1;idx<arx.length;idx++) {
+			d = scalePoint(w, arx[idx], ary[idx]);
+			path.lineTo(d[0], d[1]);
+		}
+		path.close();
+		p.setStyle(Paint.Style.FILL);
+		c.drawPath(path, p);
+		p.setStyle(Paint.Style.STROKE);
+		p.setColor(Color.BLACK);
+		c.drawPath(path, p);
 	}
 	public static String contime(int hour, int min, int sec, int msec) {
 		StringBuffer time=new StringBuffer();
@@ -1157,10 +1186,11 @@ public class Mi {
 			}
 			cavg=(int) (sum/(n-2*trim)+0.5);
 		}
+		if(DCTimer.spSel[6]==0)cavg*=10;
 		if(i==n-1){bavg[l]=cavg;bidx[l]=i;}
 		if(bavg[l]==0){bavg[l]=cavg;bidx[l]=i;}
 		else if(cavg<=bavg[l]){bavg[l]=cavg;bidx[l]=i;}
-		return DCTimer.spSel[6]==0?distime(cavg*10):distime(cavg);
+		return distime(cavg);
 	}
 	public static void quickSort(int[] a, int lo0, int hi0) {
 		int lo = lo0, hi = hi0;
@@ -1193,54 +1223,62 @@ public class Mi {
 			else sum+=(DCTimer.rest[j]+DCTimer.resp[j]*2000+5)/10;
 		}
 		cavg=(int) (sum/n+0.5);
+		if(DCTimer.spSel[6]==0)cavg*=10;
 		if(i==n-1){bavg[0]=cavg;bidx[l]=i;}
 		if(bavg[l]==0){bavg[l]=cavg;bidx[l]=i;}
 		else {if(cavg<=bavg[l]){bavg[l]=cavg;bidx[l]=i;}}
-		return DCTimer.spSel[6]==0?distime(cavg*10):distime(cavg);
+		return distime(cavg);
 	}
 	public static String sesMean(){
 		double sum=0,sum2=0;
-		omax=-1; omin=-1; oravg=-1;
+		smax=-1; smin=-1; sesMean=-1;
 		int n=DCTimer.resl;
 		if(n==0)return "0/0): N/A (N/A)";
 		for(int i=0;i<DCTimer.resl;i++) {
 			if(DCTimer.resd[i]==0)n--;
 			else {
-				if(omax==-1)omax=i;
-				else if(DCTimer.rest[i]+DCTimer.resp[i]*2000>DCTimer.rest[omax]+DCTimer.resp[omax]*2000)omax=i;
-				if(omin==-1)omin=i;
-				else if(DCTimer.rest[i]+DCTimer.resp[i]*2000<=DCTimer.rest[omin]+DCTimer.resp[omin]*2000)omin=i;
+				if(smax==-1)smax=i;
+				else if(DCTimer.rest[i]+DCTimer.resp[i]*2000>DCTimer.rest[smax]+DCTimer.resp[smax]*2000)smax=i;
+				if(smin==-1)smin=i;
+				else if(DCTimer.rest[i]+DCTimer.resp[i]*2000<=DCTimer.rest[smin]+DCTimer.resp[smin]*2000)smin=i;
 				if(DCTimer.spSel[6]==1)sum+=(double)DCTimer.rest[i]+DCTimer.resp[i]*2000;
 				else sum+=(DCTimer.rest[i]+DCTimer.resp[i]*2000+5)/10;
 				if(DCTimer.spSel[6]==1)sum2+=Math.pow(DCTimer.rest[i]+DCTimer.resp[i]*2000, 2);
 				else sum2+=Math.pow((DCTimer.rest[i]+DCTimer.resp[i]*2000+5)/10, 2);
 			}
 		}
-		String mean;
-		if(n==0)mean="0/"+DCTimer.resl+"): N/A (N/A)";
-		else {
-			oravg=(int)(sum/n+0.5);
-			orsdv=(int)(Math.sqrt((sum2-sum*sum/n)/n)+(DCTimer.spSel[6]==1?0:0.5));
-			mean=""+n+"/"+DCTimer.resl+"): "+(DCTimer.spSel[6]==0?distime(oravg*10):distime(oravg))+" ("+standDev(orsdv)+")";
-		}
-		return mean;
+		if(n==0)return "0/"+DCTimer.resl+"): N/A (N/A)";
+		sesMean=(int)(sum/n+0.5);
+		if(DCTimer.spSel[6]==0)sesMean*=10;
+		sesSD=(int)(Math.sqrt((sum2-sum*sum/n)/n)+(DCTimer.spSel[6]==1?0:0.5));
+		return ""+n+"/"+DCTimer.resl+"): "+distime(sesMean)+" ("+standDev(sesSD)+")";
 	}
 	public static String sesAvg(){
 		int n=DCTimer.resl;
 		if(n<3)return "N/A";
-		int[] temp = new int[n];
-		double sum = 0;
+		int[] data = new int[n];
 		int count = 0;
-		int trimed=(int) Math.ceil(n/20.0);
+		int trim=(int) Math.ceil(n/20.0);
 		for(int i=0;i<DCTimer.resl;i++) {
 			if(DCTimer.resd[i]==0)n--;
 			else {
-				if(DCTimer.spSel[6]==1)temp[count++]=DCTimer.rest[i]+DCTimer.resp[i]*2000;
-				else temp[count++]=(DCTimer.rest[i]+DCTimer.resp[i]*2000+5)/10;
+				data[count++]=DCTimer.rest[i]+DCTimer.resp[i]*2000;
 			}
 		}
-		if(n<DCTimer.resl-2*trimed)return "DNF";
-		return null;
+		if(n<DCTimer.resl-trim)return "DNF";
+		double sum = 0, sum2 = 0;
+		quickSort(data, 0, n-1);
+		for(int j=trim;j<DCTimer.resl-trim;j++) {
+			if(DCTimer.spSel[6]==1)sum+=data[j];
+			else sum+=(data[j]+5)/10;
+			if(DCTimer.spSel[6]==1)sum2+=Math.pow(data[j], 2);
+			else sum2+=Math.pow((data[j]+5)/10, 2);
+		}
+		int num = DCTimer.resl-2*trim;
+		int savg=(int) (sum/num+0.5);
+		if(DCTimer.spSel[6]==0)savg*=10;
+		int ssd=(int)(Math.sqrt((sum2-sum*sum/num)/num)+(DCTimer.spSel[6]==1?0:0.5));
+		return distime(savg)+" (σ = "+standDev(ssd)+")";
 	}
 	public static String mulMean(int p) {
 		double sum=0;
@@ -1255,8 +1293,8 @@ public class Mi {
 		}
 		if(n==0)return "-";
 		int m=(int)(sum/n+0.5);
-		String mean = DCTimer.spSel[6]==0?distime(m*10):distime(m);
-		return mean;
+		if(DCTimer.spSel[6]==0)m*=10;
+		return distime(m);
 	}
 	public static String standDev(int i) {
 		if(i<0)return "N/A";
@@ -1340,8 +1378,8 @@ public class Mi {
 	    	intervalStart = 17000;
             intervalEnd = 23000;
 	    } else {
-	    	int stddev = orsdv*(DCTimer.spSel[6]==1?1:10);
-	    	long mean = oravg*(DCTimer.spSel[6]==1?1:10);
+	    	int stddev = sesSD*(DCTimer.spSel[6]==1?1:10);
+	    	long mean = sesMean*(DCTimer.spSel[6]==1?1:10);
 	    	intervalStart = mean - 3 * Math.max(50, stddev);
 	    	intervalEnd = mean + 3 * Math.max(50, stddev);
 	    }

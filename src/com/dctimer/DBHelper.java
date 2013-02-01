@@ -20,24 +20,21 @@ public class DBHelper extends SQLiteOpenHelper {
 		this.db = db;
 		db.execSQL("create table resulttb(id integer not null,rest integer not null,resp integer not null,resd integer not null,scr text not null,time text,note text,p1 integer,p2 integer,p3 integer,p4 integer,p5 integer,p6 integer);");
 		for(int i=2;i<16;i++)db.execSQL("create table result"+i+"(id integer not null,rest integer not null,resp integer not null,resd integer not null,scr text not null,time text,note text,p1 integer,p2 integer,p3 integer,p4 integer,p5 integer,p6 integer);");
-		
 	}
 	
 	public void insert(int i, ContentValues values) {
-		SQLiteDatabase db = getWritableDatabase();
+		if (db == null) db = getWritableDatabase();
 		db.insert(TBL_NAME[i], null, values);
-		db.close();
 	}
 	
 	public Cursor query(int i) {
-		SQLiteDatabase db = getWritableDatabase();
+		if (db == null) db = getWritableDatabase();
 		Cursor c = db.query(TBL_NAME[i], null, null, null, null, null, null);
 		return c;
 	}
 	
 	public void del(int i, int id) {
-		if (db == null)
-			db = getWritableDatabase();
+		if (db == null) db = getWritableDatabase();
 		db.delete(TBL_NAME[i], "id=?", new String[] {String.valueOf(id)});
 	}
 	
@@ -46,24 +43,21 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 	
 	public void update(int i, int id, byte resp, byte resd) {
-		SQLiteDatabase db = getWritableDatabase();
+		if (db == null) db = getWritableDatabase();
 		ContentValues cv=new ContentValues();
 		cv.put("resp", resp);
 		cv.put("resd", resd);
 		db.update(TBL_NAME[i], cv, "id=?",new String[] {String.valueOf(id)});
-		db.close();
 	}
 	
 	public void update(int i, int id, String note) {
-		SQLiteDatabase db = getWritableDatabase();
+		if (db == null) db = getWritableDatabase();
 		ContentValues cv=new ContentValues();
 		cv.put("note", note);
 		db.update(TBL_NAME[i], cv, "id=?",new String[] {String.valueOf(id)});
-		db.close();
 	}
 	public void close() {
-		if (db != null)
-			db.close();
+		if (db != null) db.close();
 	}
 	
 	@Override

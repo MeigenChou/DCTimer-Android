@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Path;
 import android.graphics.Shader.TileMode;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -101,28 +102,44 @@ public class ColorPicker extends Dialog {
     	@Override
     	protected void onDraw(Canvas canvas) {
     		//ª≠∆ﬂ≤ Õº
-    		canvas.drawRect(0, 0, (int)(mWidth*0.82), (int)(mHeight*0.67), mPaint);
-    		canvas.drawRect(0, 0, (int)(mWidth*0.82), (int)(mHeight*0.67), mShaderPaint);
+    		canvas.drawRect(0, 0, (float)(mWidth*0.82), (float)(mHeight*0.67), mPaint);
+    		canvas.drawRect(0, 0, (float)(mWidth*0.82), (float)(mHeight*0.67), mShaderPaint);
+    		float dx = (float) (hue*mWidth*0.82/360);
+    		float dy = (float) ((1-saturation)*mHeight*0.67);
+    		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    		paint.setColor(Color.BLACK);
+    		paint.setStyle(Paint.Style.FILL);
+    		canvas.drawRect((float)(dx-mWidth*0.04), dy-1, (float)(dx-mWidth*0.01), dy+1, paint);
+    		canvas.drawRect((float)(dx+mWidth*0.01), dy-1, (float)(dx+mWidth*0.04), dy+1, paint);
+    		canvas.drawRect(dx-1, (float)(dy-mWidth*0.04), dx+1, (float)(dy-mWidth*0.01), paint);
+    		canvas.drawRect(dx-1, (float)(dy+mWidth*0.01), dx+1, (float)(dy+mWidth*0.04), paint);
     		
     		//ª≠¡¡∂»Ãı
     		int x = hslToRgb(hue, saturation, 0.5);
     		mRectColors = new int[] {0xffffffff, x, 0xff000000};
     		float[] op = new float[]{0, 0.5f, 1};
-    		LinearGradient lg = new LinearGradient(0, 0, 0, (int)(mHeight*0.67), mRectColors, op, TileMode.MIRROR);
+    		LinearGradient lg = new LinearGradient(0, 0, 0, (float)(mHeight*0.67), mRectColors, op, TileMode.MIRROR);
     		mRectPaint.setShader(lg);
-    		canvas.drawRect((int)(mWidth*0.84), 0, mWidth, (int)(mHeight*0.67), mRectPaint);
-    		
+    		canvas.drawRect((float)(mWidth*0.84), 0, mWidth, (float)(mHeight*0.67), mRectPaint);
+    		dy = (float) ((1-lum)*mHeight*0.67);
+    		paint.setColor(Color.WHITE);
+    		Path path = new Path();
+    		path.moveTo((float)(mWidth*0.82), (float)(dy-mWidth*0.02));
+    		path.lineTo((float)(mWidth*0.82), (float)(dy+mWidth*0.02));
+    		path.lineTo((float)(mWidth*0.84), dy);
+    		path.close();
+    		canvas.drawPath(path, paint);
     		//ª≠—°‘ÒøÈ
-    		canvas.drawRect(0, (int)(mHeight*0.69), (int)(mWidth*0.49), (int)(mHeight*0.85), mLeftPaint);
-    		canvas.drawRect((int)(mWidth*0.51), (int)(mHeight*0.69), mWidth, (int)(mHeight*0.85), mRightPaint);
+    		canvas.drawRect(0, (float)(mHeight*0.69), (float)(mWidth*0.49), (float)(mHeight*0.85), mLeftPaint);
+    		canvas.drawRect((float)(mWidth*0.51), (float)(mHeight*0.69), mWidth, (float)(mHeight*0.85), mRightPaint);
     		super.onDraw(canvas);
     		Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     		textPaint.setTextSize(mHeight/16);
     		textPaint.setTextAlign(Align.CENTER);
     		textPaint.setColor((0xffffff - mLeftPaint.getColor()&0xffffff)|0xff000000);
-    		canvas.drawText(context.getResources().getString(R.string.btn_ok), mWidth/4, (int)(mHeight*0.79), textPaint);
+    		canvas.drawText(context.getResources().getString(R.string.btn_ok), mWidth/4, (float)(mHeight*0.79), textPaint);
     		textPaint.setColor((0xffffff - mRightPaint.getColor()&0xffffff)|0xff000000);
-    		canvas.drawText(context.getResources().getString(R.string.btn_cancel), mWidth*3/4, (int)(mHeight*0.79), textPaint);
+    		canvas.drawText(context.getResources().getString(R.string.btn_cancel), mWidth*3/4, (float)(mHeight*0.79), textPaint);
     	}
     	
     	@Override

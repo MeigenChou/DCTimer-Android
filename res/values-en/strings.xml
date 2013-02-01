@@ -67,7 +67,6 @@
 	<string name="stat_solve">"Cubes Solved: "</string>
 	<string name="stat_avg">"Average: "</string>
 	<string name="stat_mean">"Mean: "</string>
-	<string name="stat_sd">"Standard Deviation: "</string>
 	<string name="stat_best">"Best Time: "</string>
 	<string name="stat_worst">"Worst Time: "</string>
 	<string name="stat_list">Individual Times:</string>

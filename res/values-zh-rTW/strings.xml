@@ -67,7 +67,6 @@
 	<string name="stat_solve">完成次數/嘗試次數：</string>
 	<string name="stat_avg">平均：</string>
 	<string name="stat_mean">平均：</string>
-	<string name="stat_sd">標準差：</string>
 	<string name="stat_best">最佳單次：</string>
 	<string name="stat_worst">最差單次：</string>
 	<string name="stat_list">成績列表：</string>

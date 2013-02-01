@@ -112,6 +112,7 @@ public class Cube {
 			} else{
 				if(k>0) sb.append(k+1);
 				sb.append("DLBURF".charAt(j));
+				//if(k>0) sb.append("w");
 			}
 			j=seq[i]&3;
 			if(j!=0) sb.append(" 2'".charAt(j));
