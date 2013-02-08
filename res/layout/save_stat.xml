@@ -12,27 +12,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/outscr_mun"
-            android:textSize="16dp" />
-
-        <EditText
-            android:id="@+id/edit_scrnum"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:digits="0123456789"
-            android:inputType="phone"
-            android:text="5" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/scr_path"
             android:textSize="16dp" />
 
@@ -66,8 +45,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="text"
-            android:text="@string/def_fname" />
+            android:inputType="text" />
     </LinearLayout>
 
 </LinearLayout>

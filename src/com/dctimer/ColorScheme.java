@@ -244,7 +244,7 @@ public class ColorScheme extends Dialog {
     						else DCTimer.edit.remove("csq"+i);
     					break;
     				case 2:
-    					color = new int[]{0xff009900, 0xffff0000, 0xffffff00, 0xff0000ff};
+    					color = new int[]{0xffff0000, 0xff009900, 0xff0000ff, 0xffffff00};
     					for(int i=1; i<5; i++) DCTimer.edit.remove("csp"+i);
     					break;
     				}

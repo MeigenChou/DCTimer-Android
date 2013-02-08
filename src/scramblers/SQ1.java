@@ -1,7 +1,8 @@
 package scramblers;
 
+import java.util.regex.*;
+
 public class SQ1 {
-	private static int seqlen=40;
 	private static int[] seq;    // move sequences
 	private static byte[] posit;    // piece array
 	private static StringBuffer sb;
@@ -12,20 +13,16 @@ public class SQ1 {
 		ls=-1;
 		seq=new int[40];
 		f=0;
-		for(i=0; i<seqlen; i++){
+		for(i=0; i<40; i++){
 			do{
 				if(ls==0){
 					j=(int)(Math.random()*22)-11;
 					if(j>=0) j++;
-				}else if(ls==1){
-					j=(int)(Math.random()*12)-11;
-				}else if(ls==2){
-					j=0;
-				}else{
-					j=(int)(Math.random()*23)-11;
-				}
+				}else if(ls==1) j=(int)(Math.random()*12)-11;
+				else if(ls==2) j=0;
+				else j=(int)(Math.random()*23)-11;
 				// if past second twist, restrict bottom layer
-			}while( (f>1 && j>=-6 && j<0) || domove((byte)j) );
+			}while( (f>1 && j>=-6 && j<0) || domove(j) );
 			if(j>0) ls=1;
 			else if(j<0) ls=2;
 			else { ls=0; f++; }
@@ -58,19 +55,18 @@ public class SQ1 {
 		if(l!=0) sb.append(")");
 		return sb.toString();
 	}
-	private static boolean domove(byte m){
-		int i;
-		byte c,f=m;
+	private static boolean domove(int m){
+		int i,c,f=m;
 		byte[] t=new byte[12];
 		//do move f
-		if( f==0 ){
+		if(f==0){
 			for(i=0; i<6; i++){
 				c=posit[i+12];
 				posit[i+12]=posit[i+6];
-				posit[i+6]=c;
+				posit[i+6]=(byte) c;
 			}
 		}else if(f>0){
-			f=(byte) (12-f);
+			f=12-f;
 			if( posit[f]==posit[f-1] ) return true;
 			if( f<6 && posit[f+6]==posit[f+5] ) return true;
 			if( f>6 && posit[f-6]==posit[f-7] ) return true;
@@ -82,7 +78,7 @@ public class SQ1 {
 				if(c==11)c=0; else c++;
 			}
 		}else if(f<0){
-			f=(byte) -f;
+			f=-f;
 			if( posit[f+12]==posit[f+11] ) return true;
 			if( f<6 && posit[f+18]==posit[f+17] ) return true;
 			if( f>6 && posit[f+6]==posit[f+5] ) return true;
@@ -97,6 +93,24 @@ public class SQ1 {
 		return false;
 	}
 	public static byte[] imagestr(){
+		return posit;
+	}
+	public static byte[] imagestr(String[] scr){
+		posit=new byte[]{0,0,1,2,2,3,4,4,5,6,6,7,8,9,9,10,11,11,12,13,13,14,15,15};
+		for(int i=0; i<scr.length; i++) {
+			if(scr[i].equals("/")) domove(0);
+			else {
+				Pattern p = Pattern.compile("\\((-?\\d+),(-?\\d+)\\)");
+	            Matcher matcher = p.matcher(scr[i]);
+	            matcher.find();
+	            int top = Integer.parseInt(matcher.group(1));
+	            if(top>0) domove(top);
+	            else if(top<0) domove(top+12);
+	            int bottom = Integer.parseInt(matcher.group(2));
+	            if(bottom>0) domove(bottom-12);
+	            else if(bottom<0) domove(bottom);
+			}
+		}
 		return posit;
 	}
 }

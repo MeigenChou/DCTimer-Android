@@ -145,7 +145,6 @@ public class SqSearch {
 //				System.out.println(Integer.toHexString(d.ur));
 //				System.out.println(Integer.toHexString(d.dl));
 //				System.out.println(Integer.toHexString(d.dr));
-				sol_string = move2string(i + length1);
 				return true;
 			}
 		}

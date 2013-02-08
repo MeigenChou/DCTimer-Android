@@ -135,41 +135,6 @@ public class Mi {
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 32: //4阶
 			scr=Cube.scramblestring(4, 40);viewType=4;break;
-//		case 33:
-//			if(new File("/mnt/sdcard/DCTimer/Center1").exists() && new File("/mnt/sdcard/DCTimer/Edge3").exists()){
-//				try{
-//					threephase.Search first = new threephase.Search();
-//					scr=first.randomState();
-//				} catch(Exception e){
-//					e.printStackTrace();
-//					scr="Error";
-//				}
-//			}
-//			else {
-//				InputStream is = null;
-//				try{
-//			        HttpClient httpclient = new DefaultHttpClient();
-//			        HttpPost httppost = new HttpPost("http://yunqi.li:8080/scramble/.json?=444*1");
-//			        HttpResponse response = httpclient.execute(httppost);
-//			        HttpEntity entity = response.getEntity();
-//			        is = entity.getContent();
-//			    }catch(Exception e){
-//			        scr="Error: Fail to establish http connection.";
-//			    }
-//				try{
-//			        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-//			        StringBuilder sb = new StringBuilder();
-//			        String line = null;
-//			        while ((line = reader.readLine()) != null) {
-//			            sb.append(line + "\n");
-//			        }
-//			        scr=sb.substring(16, sb.length()-162);
-//			        is.close();
-//			    }catch(Exception e){
-//			    	scr="Error: Fail to convert net stream.";
-//			    }
-//			}
-//			viewType=scr.startsWith("Error")?0:4;break;
 		case 33:
 			turn2=new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}};
 			scr=OtherScr.megascramble(turn2, csuff, 40);viewType=4;break;
@@ -244,7 +209,7 @@ public class Mi {
 		case 129:
 			scr=OtherScr.sq1_scramble(0);
 			if(DCTimer.sqshp) sc=" "+Sq1Shape.solve(scr);
-			viewType=0; break;
+			viewType=1; mis=true; break;
 		case 130:
 			if(!ini) {
 				Shape.init();Square.init();
@@ -602,8 +567,9 @@ public class Mi {
 			String[] col = {"51","1","12","2","24","4","45","5","5","54","4","42","2","21","1","15"};
 			colors = new int[]{DCTimer.share.getInt("csq1", 0xffffff00), DCTimer.share.getInt("csq6", 0xffff8026), DCTimer.share.getInt("csq2", 0xff0000ff),
 					DCTimer.share.getInt("csq4", 0xffffffff), DCTimer.share.getInt("csq3", 0xffff0000), DCTimer.share.getInt("csq5", 0xff009900)};
-			byte[] img=new byte[24];
+			byte[] img;
 			if(sel2==0)img=SQ1.imagestr();
+			else if(sel2==1)img=SQ1.imagestr(DCTimer.cscrs.split(" "));
 			else {
 				img=Mi.img;
 				ty=new String[]{"e","c","e","c","e","c","e","c","e","c","e","c","e","c","e","c"};
@@ -631,11 +597,10 @@ public class Mi {
 			float[] arrx, arry;
 			int margin = 1;
 			float sidewid=(float) (.15*100/z);
-			int cx = 55;//(int) Math.min((width+7)/4,((width*0.75)+7)/2);
-			int cy = 55;//(int) (((width*0.75)+7)/2);
-			//int cz = cy/5;
+			int cx = 55;
+			int cy = 55;
 			float rd=(cx-margin-sidewid*z)/z;
-			float w = (sidewid+rd)/rd;      // ratio btw total piece width and rd
+			float w = (sidewid+rd)/rd;	// ratio btw total piece width and rd
 			float[] ag={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 			float[] ag2={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 			int foo;
@@ -1378,10 +1343,9 @@ public class Mi {
 	    	intervalStart = 17000;
             intervalEnd = 23000;
 	    } else {
-	    	int stddev = sesSD*(DCTimer.spSel[6]==1?1:10);
-	    	long mean = sesMean*(DCTimer.spSel[6]==1?1:10);
-	    	intervalStart = mean - 3 * Math.max(50, stddev);
-	    	intervalEnd = mean + 3 * Math.max(50, stddev);
+	    	long mean = sesMean;
+	    	intervalStart = mean - Math.max(80, sesMean-DCTimer.rest[smin]-DCTimer.resp[smin]*2000+10);
+	    	intervalEnd = mean + Math.max(80, DCTimer.rest[smax]+DCTimer.resp[smax]*2000-sesMean+10);
 	    }
 	    for (int i = 0; i < bins.length; i++) {
             bins[i] = 0;
@@ -1409,8 +1373,6 @@ public class Mi {
 	    float fontHeight = fm.bottom - fm.top;
 	    for (int i = 0; i < bins.length+1; i++) {
 	    	int value = (int)(intervalStart + i * binInterval);
-	    	//c.drawText(""+wi, width/2, width/3, p);
-	    	//Log.v("wi", ""+wi);
 	    	float y = (float) ((i + 0.5) * wBar + fontHeight / 2 - fm.bottom);
 	    	c.drawText(distime2(value), wBase-5, y, p);
 	    }
