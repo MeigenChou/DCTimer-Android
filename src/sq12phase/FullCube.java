@@ -1,6 +1,7 @@
 package sq12phase;
 
 import java.util.*;
+import solvers.Im;
 
 public class FullCube implements Comparable<FullCube> {
 
@@ -43,34 +44,6 @@ public class FullCube implements Comparable<FullCube> {
 		//int test;
 		int shape = Shape.ShapeIdx[r.nextInt(3678)];
 		FullCube f = new FullCube();
-		int corner = 0x01234567 << 1 | 0x11111111;
-		int edge = 0x01234567 << 1;
-		int n_corner = 8, n_edge = 8;
-		int rnd, m;
-		for (int i=0; i<24; i++) {
-			if (((shape >> i) & 1) == 0) {//edge
-				rnd = r.nextInt(n_edge) << 2;
-				f.setPiece(23-i, (edge >> rnd) & 0xf);
-				m = (1 << rnd) - 1;
-				edge = (edge & m) + ((edge >> 4) & ~m);
-				--n_edge;
-			} else {//corner
-				rnd = r.nextInt(n_corner) << 2;
-				f.setPiece(23-i, (corner >> rnd) & 0xf);
-				f.setPiece(22-i, (corner >> rnd) & 0xf);
-				m = (1 << rnd) - 1;
-				corner = (corner & m) + ((corner >> 4) & ~m);
-				--n_corner;
-				++i;				
-			}
-		}
-		f.ml = r.nextInt(2);
-		return f;
-	}
-
-	public static FullCube randomEP() {
-		FullCube f = new FullCube();
-		int shape = Shape.ShapeIdx[f.getShapeIdx() >> 1];
 		int corner = 0x01234567 << 1 | 0x11111111;
 		int edge = 0x01234567 << 1;
 		int n_corner = 8, n_edge = 8;
@@ -217,7 +190,7 @@ public class FullCube implements Comparable<FullCube> {
 		System.out.println(Integer.toHexString(dr));
 	}
 
-	byte[] prm = new byte[8];
+	int[] prm = new int[8];
 
 	void getSquare(Square sq) {
 		//TODO
@@ -226,7 +199,7 @@ public class FullCube implements Comparable<FullCube> {
 			prm[a] = (byte) (pieceAt(a*3+1)>>1);
 		}
 		//convert to number
-		sq.cornperm = Square.get8Perm(prm);
+		sq.cornperm = Im.get8Perm(prm);
 
 		int a, b;
 		//Strip top layer edges
@@ -240,7 +213,7 @@ public class FullCube implements Comparable<FullCube> {
 //		if(pieceAt(12)==pieceAt(13)){ a=14; sq.botEdgeFirst=false; }
 //		else{ a=12; sq.botEdgeFirst=true;  }
 		for( ; b<8; a+=3, b++) prm[b]=(byte)(pieceAt(a)>>1);
-		sq.edgeperm=Square.get8Perm(prm);
+		sq.edgeperm=Im.get8Perm(prm);
 
 
 		sq.ml = ml;

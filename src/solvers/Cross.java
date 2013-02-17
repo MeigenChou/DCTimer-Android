@@ -3,10 +3,7 @@ package solvers;
 import java.io.*;
 
 public class Cross {
-	private static short[][] Cnk=new short[12][12],
-			eom=new short[7920][6], epm=new short[11880][6];
-	//private static int[][] cm = new int[495][6];
-	//private static byte[][] pmv = new byte[24][24], fmv = new byte[16][16];
+	private static short[][] eom=new short[7920][6], epm=new short[11880][6];
 	private static byte[] epd = new byte[11880],eod = new byte[7920];
 	private static byte[][] fcm = new byte[24][6], fem = new byte[24][6];
 	private static byte[][] fecd = new byte[4][576];
@@ -56,8 +53,8 @@ public class Cross {
 		idxToPerm(s, p);
 		q=4;
 		for(t=0;12>t;t++)
-			if(c>=Cnk[11-t][q]){
-				c-=Cnk[11-t][q--];
+			if(c>=Im.Cnk[11-t][q]){
+				c-=Im.Cnk[11-t][q--];
 				n[t]=s[q]<<1|o&1;
 				o>>=1;
 			}
@@ -79,7 +76,7 @@ public class Cross {
 		c=0;q=4;
 		for(t=0;12>t;t++)
 			if(0<=n[t]){
-				c+=Cnk[11-t][q--];
+				c+=Im.Cnk[11-t][q--];
 				s[q]=n[t]>>1;
 			o|=(n[t]&1)<<3-q;
 			}
@@ -115,11 +112,7 @@ public class Cross {
 	private static void initc(){
 		if(inic)return;
 		int i,j,D,y,C;
-		for(i=0;i<12;++i){
-			Cnk[i][0]=1;
-			for(j=Cnk[i][i]=1;j<i;++j)
-				Cnk[i][j]=(short) (Cnk[i-1][j-1]+Cnk[i-1][j]);
-		}
+		Im.init();
 		try {
 			InputStream in = new BufferedInputStream(new FileInputStream("/data/data/com.dctimer/databases/cross.dat"));
 			read(epm, in);

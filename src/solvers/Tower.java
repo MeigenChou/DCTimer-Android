@@ -18,16 +18,16 @@ public class Tower {
     	int[] arr = new int[8];
     	for (int i = 0; i < 40320; i++) {
     		for (int j = 0; j < 6; j++) {
-    			Tl.set8Perm(arr, i);
+    			Im.set8Perm(arr, i);
     			switch(j){
-    			case 0:Tl.cir(arr, 0, 3, 2, 1);break;	//U
-    			case 1:Tl.cir(arr, 4, 5, 6, 7);break;	//D
-    			case 2:Tl.cir2(arr, 0, 7, 3, 4);break;	//L
-    			case 3:Tl.cir2(arr, 1, 6, 2, 5);break;	//R
-    			case 4:Tl.cir2(arr, 3, 6, 2, 7);break;	//F
-    			case 5:Tl.cir2(arr, 0, 5, 1, 4);break;	//B
+    			case 0:Im.cir(arr, 0, 3, 2, 1);break;	//U
+    			case 1:Im.cir(arr, 4, 5, 6, 7);break;	//D
+    			case 2:Im.cir2(arr, 0, 7, 3, 4);break;	//L
+    			case 3:Im.cir2(arr, 1, 6, 2, 5);break;	//R
+    			case 4:Im.cir2(arr, 3, 6, 2, 7);break;	//F
+    			case 5:Im.cir2(arr, 0, 5, 1, 4);break;	//B
     			}
-    			cpm[i][j]=(char) Tl.get8Perm(arr);
+    			cpm[i][j]=(char) Im.get8Perm(arr);
     		}
     	}
     	
@@ -63,10 +63,10 @@ public class Tower {
     			else {
     				Im.indexToPermutation(arr, i, 4);
     				switch(j){
-    				case 2:Tl.cir(arr, 0, 3);break;	//L
-    				case 3:Tl.cir(arr, 1, 2);break;	//R
-    				case 4:Tl.cir(arr, 3, 2);break;	//F
-    				case 5:Tl.cir(arr, 1, 0);break;	//B
+    				case 2:Im.cir(arr, 0, 3);break;	//L
+    				case 3:Im.cir(arr, 1, 2);break;	//R
+    				case 4:Im.cir(arr, 3, 2);break;	//F
+    				case 5:Im.cir(arr, 1, 0);break;	//B
     				}
     				epm[i][j]=(byte) Im.permutationToIndex(arr, 4);
     			}
@@ -142,33 +142,33 @@ public class Tower {
     private static void move(int turn){
     	switch(turn){
     	case 0:	//U
-    		Tl.cir(img,0,2,3,1);
-    		Tl.cir(img,5,7,9,11);
-    		Tl.cir(img,4,6,8,10);break;
+    		Im.cir(img,0,2,3,1);
+    		Im.cir(img,5,7,9,11);
+    		Im.cir(img,4,6,8,10);break;
     	case 1:	//D
-    		Tl.cir(img,28,30,31,29);
-    		Tl.cir(img,27,25,23,21);
-    		Tl.cir(img,26,24,22,20);break;
+    		Im.cir(img,28,30,31,29);
+    		Im.cir(img,27,25,23,21);
+    		Im.cir(img,26,24,22,20);break;
     	case 2:	//L
-    		Tl.cir2(img,0,28,2,30);
-    		Tl.cir2(img,4,21,5,20);
-    		Tl.cir2(img,12,13,14,19);
-    		Tl.cir2(img,6,27,22,11);break;
+    		Im.cir2(img,0,28,2,30);
+    		Im.cir2(img,4,21,5,20);
+    		Im.cir2(img,12,13,14,19);
+    		Im.cir2(img,6,27,22,11);break;
     	case 3:	//R
-    		Tl.cir2(img,1,29,3,31);
-    		Tl.cir2(img,8,25,9,24);
-    		Tl.cir2(img,16,17,15,18);
-    		Tl.cir2(img,7,26,23,10);break;
+    		Im.cir2(img,1,29,3,31);
+    		Im.cir2(img,8,25,9,24);
+    		Im.cir2(img,16,17,15,18);
+    		Im.cir2(img,7,26,23,10);break;
     	case 4:	//F
-    		Tl.cir2(img,2,29,3,28);
-    		Tl.cir2(img,6,23,7,22);
-    		Tl.cir2(img,14,15,13,16);
-    		Tl.cir2(img,5,24,21,8);break;
+    		Im.cir2(img,2,29,3,28);
+    		Im.cir2(img,6,23,7,22);
+    		Im.cir2(img,14,15,13,16);
+    		Im.cir2(img,5,24,21,8);break;
     	case 5:	//B
-    		Tl.cir2(img, 0,31,1,30);
-    		Tl.cir2(img, 10,27,11,26);
-    		Tl.cir2(img, 18,19,17,12);
-    		Tl.cir2(img, 9,20,25,4);break;
+    		Im.cir2(img, 0,31,1,30);
+    		Im.cir2(img, 10,27,11,26);
+    		Im.cir2(img, 18,19,17,12);
+    		Im.cir2(img, 9,20,25,4);break;
     	}
     }
     private static String moveIdx="UDLRFB";

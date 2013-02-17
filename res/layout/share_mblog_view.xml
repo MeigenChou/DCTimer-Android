@@ -38,7 +38,7 @@
 	        android:layout_marginTop="5dp"
 	        android:layout_marginLeft="6dp"
 	        android:text="@string/close"
-	        android:textSize="15dp" />
+	        android:textSize="15sp" />
 
 	    <TextView
 	        android:layout_width="wrap_content"
@@ -57,13 +57,13 @@
 	        android:layout_marginTop="5dp"
 	        android:layout_marginRight="6dp"
 	        android:text="@string/send"
-	        android:textSize="15dp" />
+	        android:textSize="15sp" />
 
 	</RelativeLayout>
 	
 	<RelativeLayout
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
+		android:layout_height="0dp"
 		android:layout_weight="1"
 		android:background="@drawable/bg_content">
 		

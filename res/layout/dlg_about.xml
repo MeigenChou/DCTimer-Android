@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/abt_title"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -25,73 +25,73 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/abt_main"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/abt_1"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/abt_timer"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/abt_2"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/abt_scr"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/abt_3"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/abt_stat"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/abt_4"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/abt_shortc"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/abt_6"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
             
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/abt_more"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
             
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/abt_5"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
         </LinearLayout>
     </ScrollView>
 

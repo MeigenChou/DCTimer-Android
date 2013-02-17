@@ -83,6 +83,7 @@
         <item>random state</item>
     </array>
     <array name="scrClk">
+        <item>WCA</item>
         <item>Jaap order</item>
         <item>concise</item>
         <item>efficient pin order</item>

@@ -83,6 +83,7 @@
         <item>隨機狀態</item>
     </array>
     <array name="scrClk">
+        <item>WCA</item>
         <item>Jaap 順序</item>
         <item>concise</item>
         <item>高效順序</item>

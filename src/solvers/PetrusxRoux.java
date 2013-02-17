@@ -1,7 +1,6 @@
 package solvers;
 
 public class PetrusxRoux {
-	private static short[][] Cnk=new short[12][12];
 	private static short[][] epm = new short[1320][6];
 	private static short[][] eom = new short[1760][6];
 	private static byte[][] com = new byte[24][6];
@@ -27,8 +26,8 @@ public class PetrusxRoux {
 		}
 		q=3;
 		for(t=0;t<12;t++)
-			if(c>=Cnk[11-t][q]){
-				c-=Cnk[11-t][q--];
+			if(c>=Im.Cnk[11-t][q]){
+				c-=Im.Cnk[11-t][q--];
 				n[t]=s[q]<<1|o&1;
 				o>>=1;
 			}
@@ -50,7 +49,7 @@ public class PetrusxRoux {
 		c=0;q=3;
 		for(t=0;12>t;t++)
 			if(0<=n[t]){
-				c+=Cnk[11-t][q--];
+				c+=Im.Cnk[11-t][q--];
 				s[q]=n[t]>>1;
 				o|=(n[t]&1)<<2-q;
 			}
@@ -71,8 +70,8 @@ public class PetrusxRoux {
 		s[0]=p%2; s[1]=1-s[0]; s[2]=o/3; s[3]=o%3;
 		q=2;
 		for(t=7;t>=0;t--)
-			if(c>=Cnk[t][q]){
-				c-=Cnk[t][q--];
+			if(c>=Im.Cnk[t][q]){
+				c-=Im.Cnk[t][q--];
 				n[t]=s[q];
 				u[t]=s[q+2];
 			}
@@ -102,7 +101,7 @@ public class PetrusxRoux {
 		c=0;q=2;
 		for(t=7;t>=0;t--)
 			if(0<=n[t]){
-				c+=Cnk[t][q--];
+				c+=Im.Cnk[t][q--];
 				s[q]=n[t];
 				s[q+2]=u[t]%3;
 			}
@@ -113,11 +112,7 @@ public class PetrusxRoux {
 	public static void init0() {
 		if(ini)return;
 		int i,j;
-		for(i=0;i<12;++i){
-			Cnk[i][0]=1;
-			for(j=Cnk[i][i]=1;j<i;++j)
-				Cnk[i][j]=(short) (Cnk[i-1][j-1]+Cnk[i-1][j]);
-		}
+		Im.init();
 		for(i=0; i<220; i++){
 			for(j=0; j<8; j++){
 				for(int k=0; k<6; k++){

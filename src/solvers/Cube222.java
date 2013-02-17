@@ -68,10 +68,10 @@ public class Cube222 {
 				break;
 			case 3:
 				switch((int)(Math.random()*4)) {
-				case 0: Tl.cir(p, 0, 1); break;
-				case 1: Tl.cir(p, 0, 2); break;
-				case 2: Tl.cir(p, 2, 3); break;
-				case 3: Tl.cir(p, 3, 1); break;
+				case 0: Im.cir(p, 0, 1); break;
+				case 1: Im.cir(p, 0, 2); break;
+				case 2: Im.cir(p, 2, 3); break;
+				case 3: Im.cir(p, 3, 1); break;
 				}
 				break;
 			}
@@ -94,8 +94,8 @@ public class Cube222 {
 				p[3]=5; p[5]=3; break;
 			case 3:
 				switch((int)(Math.random()*2)) {
-				case 0: Tl.cir(p, 0, 3); break;
-				case 1: Tl.cir(p, 1, 2); break;
+				case 0: Im.cir(p, 0, 3); break;
+				case 1: Im.cir(p, 1, 2); break;
 				}
 				break;
 			}

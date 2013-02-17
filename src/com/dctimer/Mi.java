@@ -219,16 +219,18 @@ public class Mi {
 			FullCube c=FullCube.randomCube();
 			scr=new SqSearch().solution(c);if(DCTimer.sqshp)sc=" "+Sq1Shape.solve(scr);viewType=1;
 			img=c.imagestr();mis=(c.ml==0);break;
-		case 144:  //魔表
+		case 144:	//魔表
 			scr=Clock.scramble();viewType=12;break;
 		case 145:
+			scr=ClockOld.scramble();viewType=12;break;
+		case 146:
 			StringBuffer sclk = new StringBuffer();
 			for (int i=0;i<4;i++) sclk.append("(" + (int)((Math.random()*12)-5) + ", " + (int)((Math.random()*12)-5) + ") / ");
 			for (int i=0;i<6;i++) sclk.append("(" + (int)((Math.random()*12)-5) + ") / ");
 			for (int i=0;i<4;i++) sclk.append(OtherScr.rndEl(new String[]{"d","U"}));
 			scr=sclk.toString();viewType=0;
 			break;
-		case 146:
+		case 147:
 			scr="UUUU "+OtherScr.c("u")+" / dUUU "+OtherScr.c("u")+" / dUdU "+OtherScr.c("u")+","+OtherScr.c("d")+" / UUdU "
 			+OtherScr.c("u")+" / UUdd "+OtherScr.c("u")+","+OtherScr.c("d")+" / UUUd "+OtherScr.c("u")+" / UdUd "+OtherScr.c("u")
 			+","+OtherScr.c("d")+" / UdUU "+OtherScr.c("u")+" / ddUU "+OtherScr.c("u")+","+OtherScr.c("d")+" / dddd "+OtherScr.c("d")
@@ -411,7 +413,7 @@ public class Mi {
 	public static void drawScr(int sel2, int width, Paint p, Canvas c){
 		int[] colors={DCTimer.share.getInt("csn1", 0xffffff00), DCTimer.share.getInt("csn2", 0xff0000ff), DCTimer.share.getInt("csn3", 0xffff0000),
 				DCTimer.share.getInt("csn4", 0xffffffff), DCTimer.share.getInt("csn5", 0xff009900), DCTimer.share.getInt("csn6", 0xffff8026)};
-		if(viewType==2){
+		if(viewType==2) {
 			byte[] imst;
 			Cube.parse(2);imst=OtherScr.imagestr(DCTimer.cscrs);
 			int a=width/10,i,j,d=0,sty=(int) ((width*0.75-6*a+2)/2);
@@ -727,7 +729,9 @@ public class Mi {
 			}
 		}
 		else if(viewType==12) {
-			byte[] posit = Clock.posit();
+			byte[] posit;
+			if(sel2==0)posit = Clock.posit();
+			else posit = ClockOld.posit();
 			int clock_radius = 52;
 			int face_dist = 30;
 			int face_background_dist = 29;
@@ -744,7 +748,9 @@ public class Mi {
 			for(int y=cy-face_dist; y<=cy+face_dist; y+=face_dist)
 				for(int x=cx-face_dist; x<=cx+face_dist; x+=face_dist)
 					drawClockFace(p, c, width, x, y, 0xff88aaff, posit[i++]);
-			byte[] pegs = Clock.pegs();
+			byte[] pegs;
+			if(sel2==0)pegs = Clock.pegs();
+			else pegs = ClockOld.pegs();
 			drawPeg(p, c, width, cx - face_dist/2, cy - face_dist/2, 1-pegs[0]);
 		  	drawPeg(p, c, width, cx + face_dist/2, cy - face_dist/2, 1-pegs[1]);
 		  	drawPeg(p, c, width, cx - face_dist/2, cy + face_dist/2, 1-pegs[2]);

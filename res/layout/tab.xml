@@ -128,7 +128,8 @@
                     android:fastScrollEnabled="true"
                     android:focusable="true"
                     android:numColumns="3"
-                    android:stretchMode="columnWidth" />
+                    android:stretchMode="columnWidth"
+                    android:transcriptMode="alwaysScroll" />
 
                 <Button
                     android:id="@+id/mButtonoa"

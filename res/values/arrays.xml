@@ -64,7 +64,7 @@
         <item>对棱训练</item>
     </array>
     <array name="scr666">
-        <item>WCA</item>
+        <item>prefix</item>
         <item>SiGN</item>
         <item>suffix</item>
         <item>对棱训练</item>
@@ -83,6 +83,7 @@
         <item>随机状态</item>
     </array>
     <array name="scrClk">
+        <item>WCA</item>
         <item>Jaap 顺序</item>
         <item>concise</item>
         <item>高效顺序</item>

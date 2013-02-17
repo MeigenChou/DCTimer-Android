@@ -26,10 +26,10 @@ public class Floppy {
 							Im.indexToPermutation(cp, i, 4);
 							Im.indexToOrientation(eo, j, 2, 4);
 							switch(k){
-							case 0:Tl.cir(cp, 0, 1);break;	//U2
-							case 1:Tl.cir(cp, 1, 2);break;	//R2
-							case 2:Tl.cir(cp, 2, 3);break;	//D2
-							case 3:Tl.cir(cp, 0, 3);break;	//L2
+							case 0:Im.cir(cp, 0, 1);break;	//U2
+							case 1:Im.cir(cp, 1, 2);break;	//R2
+							case 2:Im.cir(cp, 2, 3);break;	//D2
+							case 3:Im.cir(cp, 0, 3);break;	//L2
 							}
 							eo[k]=1-eo[k];
 							int cpi=Im.permutationToIndex(cp, 4);
@@ -59,10 +59,10 @@ public class Floppy {
 						Im.indexToPermutation(cp, cpi, 4);
 						Im.indexToOrientation(eo, eoi, 2, 4);
 						switch(i){
-						case 0:Tl.cir(cp, 0, 1);break;
-						case 1:Tl.cir(cp, 1, 2);break;
-						case 2:Tl.cir(cp, 2, 3);break;
-						case 3:Tl.cir(cp, 0, 3);break;
+						case 0:Im.cir(cp, 0, 1);break;
+						case 1:Im.cir(cp, 1, 2);break;
+						case 2:Im.cir(cp, 2, 3);break;
+						case 3:Im.cir(cp, 0, 3);break;
 						}
 						eo[i]=1-eo[i];
 						int nextCpi = Im.permutationToIndex(cp, 4);
@@ -94,21 +94,21 @@ public class Floppy {
 	private static void move(int turn){
 		switch(turn){
 		case 0:	//U
-			Tl.cir2(img, 0, 2, 3, 7);
-			Tl.cir2(img, 4, 8, 6, 10);
-			Tl.cir(img, 5, 9); break;
+			Im.cir2(img, 0, 2, 3, 7);
+			Im.cir2(img, 4, 8, 6, 10);
+			Im.cir(img, 5, 9); break;
 		case 1:	//R
-			Tl.cir2(img, 7, 23, 2, 29);
-			Tl.cir2(img, 6, 24, 22, 8);
-			Tl.cir(img, 14, 16); break;
+			Im.cir2(img, 7, 23, 2, 29);
+			Im.cir2(img, 6, 24, 22, 8);
+			Im.cir(img, 14, 16); break;
 		case 2:	//D
-			Tl.cir2(img, 27, 29, 19, 23);
-			Tl.cir2(img, 20, 24, 22, 26);
-			Tl.cir(img, 21, 25); break;
+			Im.cir2(img, 27, 29, 19, 23);
+			Im.cir2(img, 20, 24, 22, 26);
+			Im.cir(img, 21, 25); break;
 		case 3:	//L
-			Tl.cir2(img, 3, 19, 0, 27);
-			Tl.cir2(img, 4, 26, 20, 10);
-			Tl.cir(img, 12, 18); break;
+			Im.cir2(img, 3, 19, 0, 27);
+			Im.cir2(img, 4, 26, 20, 10);
+			Im.cir(img, 12, 18); break;
 		}
 	}
 	private static String moveIdx="URDL";

@@ -1,6 +1,70 @@
 package solvers;
 
 public class Im {
+	public static short[][] Cnk=new short[12][12];
+	private static boolean ini=false;
+	public static void init() {
+		if(ini)return;
+		for(int i=0;i<12;++i){
+			Cnk[i][0]=1;
+			for(int j=Cnk[i][i]=1;j<i;++j)
+				Cnk[i][j]=(short) (Cnk[i-1][j-1]+Cnk[i-1][j]);
+		}
+		ini=true;
+	}
+	
+	private static int[] fact={1,1,2,6,24,120,720,5040};
+	public static void set8Perm(int[] arr, int idx) {
+		int val = 0x76543210;
+		for (int i=0; i<7; i++) {
+			int p = fact[7-i];
+			int v = idx / p;
+			idx -= v*p;
+			v <<= 2;
+			arr[i] = (val >> v) & 07;
+			int m = (1 << v) - 1;
+			val = (val & m) + ((val >> 4) & ~m);
+		}
+		arr[7] = val;
+	}
+	
+	public static int get8Perm(int[] arr) {
+		int idx = 0;
+		int val = 0x76543210;
+		for (int i=0; i<7; i++) {
+			int v = arr[i] << 2;
+			idx = (8 - i) * idx + ((val >> v) & 07);
+			val -= 0x11111110 << v;
+		}
+		return idx;
+	}
+	
+	public static void cir(int[] arr, int a, int b, int c, int d){
+    	int temp=arr[a]; arr[a]=arr[b]; arr[b]=arr[c]; arr[c]=arr[d]; arr[d]=temp;
+    }
+	
+	public static void cir(byte[] arr, int a, int b, int c, int d){
+    	byte temp=arr[a]; arr[a]=arr[b]; arr[b]=arr[c]; arr[c]=arr[d]; arr[d]=temp;
+    }
+	
+	public static void cir2(int[] arr, int a, int b, int c, int d){
+    	int temp=arr[a]; arr[a]=arr[b]; arr[b]=temp;
+    	temp=arr[c]; arr[c]=arr[d]; arr[d]=temp;
+    }
+	
+	public static void cir2(byte[] arr, int a, int b, int c, int d){
+		byte temp=arr[a]; arr[a]=arr[b]; arr[b]=temp;
+    	temp=arr[c]; arr[c]=arr[d]; arr[d]=temp;
+    }
+	
+	public static void cir(int[] arr, int a, int b){
+    	int temp=arr[a]; arr[a]=arr[b]; arr[b]=temp;
+    }
+	
+	public static void cir(byte[] arr, int a, int b){
+		byte temp=arr[a]; arr[a]=arr[b]; arr[b]=temp;
+    }
+	
     // permutation
     public static int permutationToIndex(int[] permutation, int length) {
         int index = 0;

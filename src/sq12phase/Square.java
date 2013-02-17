@@ -1,5 +1,7 @@
 package sq12phase;
 
+import solvers.Im;
+
 public class Square {
 	int edgeperm;		//number encoding the edge permutation 0-40319
 	int cornperm;		//number encoding the corner permutation 0-40319
@@ -13,40 +15,11 @@ public class Square {
 	static char TopMove[] = new char[40320];			//transition table for top layer turns
 	static char BottomMove[] = new char[40320];			//transition table for bottom layer turns
 
-	private static int[] fact = {1, 1, 2, 6, 24, 120, 720, 5040};
-
-	static void set8Perm(byte[] arr, int idx) {
-		int val = 0x76543210;
-		for (int i=0; i<7; i++) {
-			int p = fact[7-i];
-			int v = idx / p;
-			idx -= v*p;
-			v <<= 2;
-			arr[i] = (byte) ((val >> v) & 07);
-			int m = (1 << v) - 1;
-			val = (val & m) + ((val >> 4) & ~m);
-		}
-		arr[7] = (byte)val;
-	}
-
-	static char get8Perm(byte[] arr) {
-		int idx = 0;
-		int val = 0x76543210;
-		for (int i=0; i<7; i++) {
-			int v = arr[i] << 2;
-			idx = (8 - i) * idx + ((val >> v) & 07);
-			val -= 0x11111110 << v;
-		}
-		return (char)idx;
-	}
-
-	static int[][] Cnk = new int[12][12];
-
 	static int get8Comb(byte[] arr) {
 		int idx = 0, r = 4;
 		for (int i=0; i<8; i++) {
 			if (arr[i] >= 4) {
-				idx += Cnk[7-i][r--];
+				idx += Im.Cnk[7-i][r--];
 			}
 		}
 		return idx;
@@ -58,33 +31,34 @@ public class Square {
 		if (inited) {
 			return;
 		}
-		for (int i=0; i<12; i++) {
-			Cnk[i][0] = 1;
-			Cnk[i][i] = 1;
-			for (int j=1; j<i; j++) {
-				Cnk[i][j] = Cnk[i-1][j-1] + Cnk[i-1][j];
-			}
-		}
-		byte[] pos = new byte[8];
-		byte temp;
+		Im.init();
+//		for (int i=0; i<12; i++) {
+//			Cnk[i][0] = 1;
+//			Cnk[i][i] = 1;
+//			for (int j=1; j<i; j++) {
+//				Cnk[i][j] = Cnk[i-1][j-1] + Cnk[i-1][j];
+//			}
+//		}
+		int[] pos = new int[8];
+		int temp;
 
 		for(int i=0;i<40320;i++){
 			//twist
-			set8Perm(pos, i);
+			Im.set8Perm(pos, i);
 
 			temp=pos[2];pos[2]=pos[4];pos[4]=temp;
 			temp=pos[3];pos[3]=pos[5];pos[5]=temp;
-			TwistMove[i]=get8Perm(pos);
+			TwistMove[i]=(char) Im.get8Perm(pos);
 
 			//top layer turn
-			set8Perm(pos, i);
+			Im.set8Perm(pos, i);
 			temp=pos[0]; pos[0]=pos[1]; pos[1]=pos[2]; pos[2]=pos[3]; pos[3]=temp;
-			TopMove[i]=get8Perm(pos);
+			TopMove[i]=(char) Im.get8Perm(pos);
 
 			//bottom layer turn
-			set8Perm(pos, i);
+			Im.set8Perm(pos, i);
 			temp=pos[4]; pos[4]=pos[5]; pos[5]=pos[6]; pos[6]=pos[7]; pos[7]=temp;
-			BottomMove[i]=get8Perm(pos);
+			BottomMove[i]=(char) Im.get8Perm(pos);
 		}	
 
 		for (int i=0; i<40320*2; i++) {

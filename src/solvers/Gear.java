@@ -16,7 +16,7 @@ public class Gear {
 		for(int i = 0; i < 24; i++){
 			for(int j = 0; j < 3; j++){
 				Im.indexToPermutation(arr, i, 4);
-				Tl.cir(arr, 3, j);
+				Im.cir(arr, 3, j);
 				cpm[i][j] = (byte) Im.permutationToIndex(arr, 4);
 			}
 		}
@@ -24,9 +24,9 @@ public class Gear {
 			for(int j = 0; j < 3; j++){
 				Im.indexToPermutation(arr, i, 4);
 				switch(j){
-				case 0: Tl.cir(arr, 0, 3, 2, 1); break;
-				case 1: Tl.cir(arr, 0, 1); break;
-				case 2: Tl.cir(arr, 1, 2); break;
+				case 0: Im.cir(arr, 0, 3, 2, 1); break;
+				case 1: Im.cir(arr, 0, 1); break;
+				case 2: Im.cir(arr, 1, 2); break;
 				}
 				epm[i][j] = (byte) Im.permutationToIndex(arr, 4);
 			}

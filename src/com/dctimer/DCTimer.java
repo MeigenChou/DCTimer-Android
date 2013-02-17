@@ -491,11 +491,11 @@ public class DCTimer extends Activity {
 			if(resl!=0){
 				temp = new String[(spSel[13]+3)*(resl+1)];
 			}
-			setGridView(temp);
+			setGridView(temp, false);
 		}
 		else {
 			spinner[13].setEnabled(false);
-			setGridView(times);
+			setGridView(times, false);
 		}
 		
 		if(usess){
@@ -609,7 +609,7 @@ public class DCTimer extends Activity {
 					spSel[4]=(byte)arg2;
 					if(!isMulp) {
 						setGvTitle();
-						setGridView(times);
+						setGridView(times, false);
 					}
 					edit.putInt("list1", spSel[4]);
 					edit.commit();
@@ -624,9 +624,8 @@ public class DCTimer extends Activity {
 				if(spSel[5]!=arg2) {
 					spSel[5]=(byte)arg2;
 					if(!isMulp) {
-						aryAdapter=new TimesAdapter (DCTimer.this, times, new int[]{cl[1],cl[2],cl[3],cl[4]}, 
-								Mi.smax, Mi.smin, share.getInt("intv", 30));
 						setGvTitle();
+						setGridView(times, false);
 					}
 					edit.putInt("list2", spSel[5]);
 					edit.commit();
@@ -644,8 +643,8 @@ public class DCTimer extends Activity {
 				else {edit.putBoolean("prec", true);if(spSel[7]==0)mTextView2.setText("0.000");}
 				edit.commit();
 				if(resl!=0){
-					if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)]);
-					else setGridView(times);
+					if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)], false);
+					else setGridView(times, false);
 					seMean.setText(getResources().getString(R.string.session_average)+Mi.sesMean());
 				}
 			}
@@ -717,8 +716,8 @@ public class DCTimer extends Activity {
 					spSel[8]=(byte)arg2;
 					getSession(arg2);
 					seMean.setText(getResources().getString(R.string.session_average)+Mi.sesMean());
-					if(isMulp) setGridView(new String[(spSel[13]+3)*(resl+1)]);
-					else setGridView(times);
+					if(isMulp) setGridView(new String[(spSel[13]+3)*(resl+1)], true);
+					else setGridView(times, true);
 					edit.putInt("group", spSel[8]);
 					edit.commit();
 				}
@@ -851,8 +850,8 @@ public class DCTimer extends Activity {
 				if(spSel[13]!=arg2) {
 					spSel[13]=(byte)arg2;
 					setGvTitle();
-					if(resl!=0) setGridView(new String[(arg2+3)*(resl+1)]);
-					else setGridView(null);
+					if(resl!=0) setGridView(new String[(arg2+3)*(resl+1)], false);
+					else setGridView(null, false);
 					edit.putInt("mulp", arg2);
 					edit.commit();
 				}
@@ -870,7 +869,7 @@ public class DCTimer extends Activity {
 					if(width*0.75>(height-30))width=height-30;
 					LayoutInflater inflater = LayoutInflater.from(DCTimer.this);	// 取得LayoutInflater对象
 					final View popView = inflater.inflate(R.layout.popwindow, null);	// 读取布局管理器
-					popView.setBackgroundColor(0xddece9d8);
+					popView.setBackgroundColor(0xaaece9d8);
 					iv=(ImageView) popView.findViewById(R.id.ImageView1);
 					Bitmap bm=Bitmap.createBitmap(width+7, (int)(width*0.75)+7, Config.ARGB_8888);
 					Canvas c=new Canvas(bm);
@@ -939,8 +938,8 @@ public class DCTimer extends Activity {
 							times=null;
 							seMean.setText(getResources().getString(R.string.session_average)+"0/0): N/A (N/A)");
 							Mi.smax=Mi.smin=-1;
-							if(isMulp)setGridView(new String[spSel[13]+3]);
-							else setGridView(times);
+							if(isMulp)setGridView(new String[spSel[13]+3], false);
+							else setGridView(times, false);
 							if(sestp[spSel[8]]!=-1){
 								sestp[spSel[8]]=-1;
 								edit.remove("sestp"+spSel[8]);
@@ -1006,8 +1005,8 @@ public class DCTimer extends Activity {
 						mTextView2.setTextColor(cl[1]);
 						intv=30;
 						if(resl!=0){
-							if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)]);
-							else setGridView(times);
+							if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)], false);
+							else setGridView(times, false);
 						}
 						releaseWakeLock();
 						screenOn=false;
@@ -1089,8 +1088,8 @@ public class DCTimer extends Activity {
 						mTextView2.setTextColor(color);
 						cl[1]=color;
 						if(resl!=0){
-							if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)]);
-							else setGridView(times);
+							if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)], false);
+							else setGridView(times, false);
 						}
 						setGvTitle();
 						edit.putInt("cl1", color);edit.commit();
@@ -1109,8 +1108,8 @@ public class DCTimer extends Activity {
 					public void colorChanged(int color) {
 						cl[2]=color;
 						if(resl!=0){
-							if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)]);
-							else setGridView(times);
+							if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)], false);
+							else setGridView(times, false);
 						}
 						edit.putInt("cl2", color);edit.commit();
 					}
@@ -1128,8 +1127,8 @@ public class DCTimer extends Activity {
 					public void colorChanged(int color) {
 						cl[3]=color;
 						if(resl!=0){
-							if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)]);
-							else setGridView(times);
+							if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)], false);
+							else setGridView(times, false);
 						}
 						edit.putInt("cl3", color);edit.commit();
 					}
@@ -1146,7 +1145,7 @@ public class DCTimer extends Activity {
 					@Override
 					public void colorChanged(int color) {
 						cl[4]=color;
-						if(resl!=0 && !isMulp) setGridView(times);
+						if(resl!=0 && !isMulp) setGridView(times, false);
 						edit.putInt("cl4", color);edit.commit();
 					}
 				});
@@ -1323,8 +1322,8 @@ public class DCTimer extends Activity {
 				intv=seekBar.getProgress()+20;
 				stt[10].setText(getResources().getString(R.string.row_spacing)+ intv);
 				if(resl!=0){
-					if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)]);
-					else setGridView(times);
+					if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)], false);
+					else setGridView(times, false);
 				}
 				edit.putInt("intv", seekBar.getProgress()+20);
 			} else if(seekBar.getId()==R.id.seekb4){
@@ -1370,8 +1369,8 @@ public class DCTimer extends Activity {
 				if(isChecked){timmh=true;edit.putBoolean("timmh", true);}
 				else {timmh=false;edit.putBoolean("timmh", false);}
 				if(resl>0){
-					if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)]);
-					else setGridView(times);
+					if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)], false);
+					else setGridView(times, false);
 				}
 			} else if(buttonView.getId()==R.id.check7) {
 				if(isChecked) {
@@ -1434,14 +1433,14 @@ public class DCTimer extends Activity {
 						}
 						c.close();
 					}
-					setGridView(new String[(spSel[13]+3)*(resl+1)]);
+					setGridView(new String[(spSel[13]+3)*(resl+1)], false);
 				} else {
 					isMulp=false; spinner[13].setEnabled(false);
 					edit.putBoolean("ismulp", false);
 					mulp = null; multemp = null;
 					System.gc();
-					if(resl>0)setGridView(times);
-					else setGridView(null);
+					if(resl>0)setGridView(times, false);
+					else setGridView(null, false);
 				}
 				setGvTitle();
 			} else if(buttonView.getId()==R.id.lcheck1) {
@@ -1452,7 +1451,7 @@ public class DCTimer extends Activity {
 					l1am=false;edit.putBoolean("l1am", false);
 					if(!isMulp)setGvTitle();
 				}
-				if(resl>0 && !isMulp) setGridView(times);
+				if(resl>0 && !isMulp) setGridView(times, false);
 			} else if(buttonView.getId()==R.id.lcheck2) {
 				if(isChecked){
 					l2am=true;edit.putBoolean("l2am", true);
@@ -1461,7 +1460,7 @@ public class DCTimer extends Activity {
 					l2am=false;edit.putBoolean("l2am", false);
 					if(!isMulp)setGvTitle();
 				}
-				if(resl>0 && !isMulp) setGridView(times);
+				if(resl>0 && !isMulp) setGridView(times, false);
 			}
 			edit.commit();
 		}
@@ -1710,7 +1709,7 @@ public class DCTimer extends Activity {
 		listView.setAdapter(fileList);
 	}
 	
-	private void setGridView(final String[] time) {
+	private void setGridView(final String[] time, boolean ch) {
 		if(!isMulp){
 			aryAdapter=new TimesAdapter (DCTimer.this, time, new int[]{
 					cl[1],cl[2],cl[3],cl[4]}, Mi.smax, Mi.smin, intv);
@@ -1720,9 +1719,10 @@ public class DCTimer extends Activity {
 					cl[2], cl[3], Mi.smax, Mi.smin}, intv, spSel[13]+3);
 			myGridView.setNumColumns(spSel[13]+3);
 		}
-		myGridView.setAdapter(aryAdapter);
-		if(time.length>30*(isMulp?spSel[13]+3:3))myGridView.setStackFromBottom(true);
+		if(ch)myGridView.setStackFromBottom(false);
+		else if(resl>30)myGridView.setStackFromBottom(true);
 		else myGridView.setStackFromBottom(false);
+		myGridView.setAdapter(aryAdapter);
 	}
 	private void setGvTitle() {
 		if(isMulp){
@@ -1974,7 +1974,7 @@ public class DCTimer extends Activity {
 			}
 		}
 	}
-	void inputTime(int action) {
+	private void inputTime(int action) {
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			mTextView2.setTextColor(Color.GREEN);
@@ -2000,7 +2000,7 @@ public class DCTimer extends Activity {
 			}).setNegativeButton(getResources().getString(R.string.btn_cancel), null).show();
 		}
 	}
-	void record(int time, byte p, byte d) {
+	private void record(int time, byte p, byte d) {
 		if(resl>=rest.length) {
 			String[] scr2=new String[scrst.length+12];
 			byte[] rp2=new byte[resp.length+12], rd2=new byte[resd.length+12];
@@ -2046,8 +2046,8 @@ public class DCTimer extends Activity {
 		if(times==null) times=new String[3];
 		else times=new String[times.length+3];
 		seMean.setText(getResources().getString(R.string.session_average)+Mi.sesMean());
-		if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)]);
-		else setGridView(times);
+		if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)], false);
+		else setGridView(times, false);
 		if(selSes && sestp[spSel[8]] != scrType) {
 			sestp[spSel[8]]=(short) scrType;
 			edit.putInt("sestp"+spSel[8], scrType);
@@ -2055,7 +2055,7 @@ public class DCTimer extends Activity {
 		}
 		newScr(false);
 	}
-	void change(int idx, byte p, byte d) {
+	private void change(int idx, byte p, byte d) {
 		if(resp[idx]==p && resd[idx]==d);
 		else {
 			resp[idx]=p;
@@ -2066,8 +2066,8 @@ public class DCTimer extends Activity {
 			c.close();
 			dbh.update(spSel[8], id, p, d);
 			seMean.setText(getResources().getString(R.string.session_average)+Mi.sesMean());
-			if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)]);
-			else setGridView(times);
+			if(isMulp)setGridView(new String[(spSel[13]+3)*(resl+1)], false);
+			else setGridView(times, false);
 		}
 	}
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -2200,7 +2200,7 @@ public class DCTimer extends Activity {
 						edit.commit();
 					}
 					seMean.setText(getResources().getString(R.string.session_average)+Mi.sesMean());
-					setGridView(times);
+					setGridView(times, false);
 				}
 			}).setNegativeButton(R.string.btn_cancel, null).show();
 		}
@@ -2214,8 +2214,8 @@ public class DCTimer extends Activity {
 					times=null;
 					seMean.setText(getResources().getString(R.string.session_average)+"0/0): N/A (N/A)");
 					Mi.smax=Mi.smin=-1;
-					if(isMulp)setGridView(new String[spSel[13]+3]);
-					else setGridView(times);
+					if(isMulp)setGridView(new String[spSel[13]+3], false);
+					else setGridView(times, false);
 					if(sestp[spSel[8]]!=-1){
 						sestp[spSel[8]]=-1;
 						edit.remove("sestp"+spSel[8]);
@@ -2523,7 +2523,7 @@ public class DCTimer extends Activity {
 		}
 		return sb.toString();
 	}
-	private static void quickSort(int[] a, int[] i, int lo0, int hi0) {
+	private void quickSort(int[] a, int[] i, int lo0, int hi0) {
 		int lo = lo0, hi = hi0;
 		if (lo >= hi) return;
 		boolean transfer=true;
@@ -2740,12 +2740,12 @@ public class DCTimer extends Activity {
 					edit.commit();
 				}
 				seMean.setText(getResources().getString(R.string.session_average)+Mi.sesMean());
-				setGridView(times);
+				setGridView(times, false);
 				d.dismiss();
 			}
 		}).show();
 	}
-	private static Bitmap takeScreenShot(Activity activity){
+	private Bitmap takeScreenShot(Activity activity){
 		//View是你需要截图的View
 		View view = activity.getWindow().getDecorView();
 		view.setDrawingCacheEnabled(true);
@@ -2765,7 +2765,7 @@ public class DCTimer extends Activity {
 		view.destroyDrawingCache();
 		return b;
 	}
-	private static void savePic(Bitmap b,String strFileName){
+	private void savePic(Bitmap b,String strFileName){
 		try {
 			FileOutputStream fos = new FileOutputStream(strFileName);
 			if (null != fos) {

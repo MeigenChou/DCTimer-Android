@@ -23,8 +23,8 @@ public class RouxMU {
 			for (j = 0; j < 2; j++) {
 				Im.indexToPermutation(temp, i, 6);
 				switch(j) {
-				case 0: Tl.cir(temp, 0, 4, 5, 2); break;
-				case 1: Tl.cir(temp, 0, 3, 2, 1); break;
+				case 0: Im.cir(temp, 0, 4, 5, 2); break;
+				case 1: Im.cir(temp, 0, 3, 2, 1); break;
 				}
 				epm[i][j] = (short) Im.permutationToIndex(temp, 6);
 			}
@@ -33,10 +33,10 @@ public class RouxMU {
 			for (j = 0; j < 2; j++) {
 				Im.indexToZeroSumOrientation(temp, i, 2, 6);
 				switch(j) {
-				case 0: Tl.cir(temp, 0, 4, 5, 2);
+				case 0: Im.cir(temp, 0, 4, 5, 2);
 				temp[0]=1-temp[0];temp[2]=1-temp[2];
 				temp[4]=1-temp[4];temp[5]=1-temp[5];break;
-				case 1: Tl.cir(temp, 0, 3, 2, 1); break;
+				case 1: Im.cir(temp, 0, 3, 2, 1); break;
 				}
 				eom[i][j] = (byte) Im.zeroSumOrientationToIndex(temp, 2, 6);
 			}

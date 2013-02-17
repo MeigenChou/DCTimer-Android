@@ -14,13 +14,13 @@ public class EOline {
 			for(int j=0; j<6; j++) {
 				Im.indexToZeroSumOrientation(arr, i, 2, 12);
 				switch(j){
-				case 0: Tl.cir(arr, 4, 7, 6, 5); break;
-				case 1: Tl.cir(arr, 8, 9, 10, 11); break;
-				case 2: Tl.cir(arr, 7, 3, 11, 2); break;
-				case 3: Tl.cir(arr, 5, 1, 9, 0); break;
-				case 4: Tl.cir(arr, 6, 2, 10, 1);
+				case 0: Im.cir(arr, 4, 7, 6, 5); break;
+				case 1: Im.cir(arr, 8, 9, 10, 11); break;
+				case 2: Im.cir(arr, 7, 3, 11, 2); break;
+				case 3: Im.cir(arr, 5, 1, 9, 0); break;
+				case 4: Im.cir(arr, 6, 2, 10, 1);
 					arr[6]^=1; arr[2]^=1; arr[10]^=1; arr[1]^=1; break;
-				case 5: Tl.cir(arr, 4, 0, 8, 3);
+				case 5: Im.cir(arr, 4, 0, 8, 3);
 					arr[4]^=1; arr[0]^=1; arr[8]^=1; arr[3]^=1; break;
 				}
 				eom[i][j] = (short) Im.zeroSumOrientationToIndex(arr, 2, 12);
@@ -85,12 +85,12 @@ public class EOline {
 		for (int i = 0; i < 12; i++)
 			if (combination[i]) ep[i] = selectedEdges[permutation[next++]];
 		switch(k){
-		case 0: Tl.cir(ep, 4, 7, 6, 5); break;
-		case 1: Tl.cir(ep, 8, 9, 10, 11); break;
-		case 2: Tl.cir(ep, 7, 3, 11, 2); break;
-		case 3: Tl.cir(ep, 5, 1, 9, 0); break;
-		case 4: Tl.cir(ep, 6, 2, 10, 1); break;
-		case 5: Tl.cir(ep, 4, 0, 8, 3); break;
+		case 0: Im.cir(ep, 4, 7, 6, 5); break;
+		case 1: Im.cir(ep, 8, 9, 10, 11); break;
+		case 2: Im.cir(ep, 7, 3, 11, 2); break;
+		case 3: Im.cir(ep, 5, 1, 9, 0); break;
+		case 4: Im.cir(ep, 6, 2, 10, 1); break;
+		case 5: Im.cir(ep, 4, 0, 8, 3); break;
 		}
 		byte[] edgesMapping = {0, 1, 2, 3};
 		boolean[] ec = new boolean[12];

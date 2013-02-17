@@ -36,7 +36,7 @@ public class RTower {
     	int[] idx = {1,0,2,3};
     	for (int i = 0; i < 40320; i++) {
     		for (int j = 0; j < 6; j++) {
-    			Tl.set8Perm(arr, i);
+    			Im.set8Perm(arr, i);
     			switch(j){
     			case 0:cir(arr, 4, 5, 6, 7);break;	//D
     			case 1:cir(arr, 0, 3, 2, 1);break;	//U
@@ -45,12 +45,12 @@ public class RTower {
     			case 4:cir(arr, 0, 4, 7, 3);break;	//L
     			case 5:cir(arr, 0, 1, 5, 4);break;	//B
     			}
-    			if(j>0)epm[i][j-1]=(char) Tl.get8Perm(arr);
+    			if(j>0)epm[i][j-1]=(char) Im.get8Perm(arr);
     			switch(j){
     			case 2:cir(arr, 1, 2, 6, 5);break;	//R
     			case 3:cir(arr, 2, 3, 7, 6);break;	//F
     			}
-    			if(j<4)cpm[i][idx[j]]=(char) Tl.get8Perm(arr);
+    			if(j<4)cpm[i][idx[j]]=(char) Im.get8Perm(arr);
     		}
     	}
     	for (int i = 0; i < 2187; i++) {

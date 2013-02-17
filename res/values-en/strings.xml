@@ -88,7 +88,7 @@
 	<string name="login">" Login "</string>
 	<string name="logout">" Logout "</string>
 	<string name="login_success">Login success.</string>
-	<string name="con_rsauth">Are you shure?</string>
+	<string name="con_rsauth">Are you sure?</string>
 	<string name="rsauth">Success.</string>
 	<string name="sq1shape">Solve square-1 cube shape</string>
 	<string name="cube2_layer">Solve 2x2x2 first layer</string>
