@@ -39,7 +39,7 @@ public class Timer {
 		if(state==2){
 			state=0;
 			if(ct.wca && threadC.isAlive()) threadC.interrupt();
-			ct.mTextView2.setTextColor(ct.cl[1]);
+			ct.tvTimer.setTextColor(ct.cl[1]);
 		}
 	}
 	public void count(){
@@ -47,14 +47,14 @@ public class Timer {
 			if(state==0 && ct.wca) state = 2;
 			else state=1;
 			if(v == 0){
-				ct.mTextView2.setTextColor(ct.cl[1]);
+				ct.tvTimer.setTextColor(ct.cl[1]);
 				if(ct.wca && threadC.isAlive()) threadC.interrupt();
 				threadS = new ClockThread();
 				time0=System.currentTimeMillis();
 				threadS.start();
 			}
 			else if(v==1){
-				ct.mTextView2.setTextColor(Color.RED);
+				ct.tvTimer.setTextColor(Color.RED);
 				threadC = new CountDownThread();
 				time0=System.currentTimeMillis();
 				threadC.start();
@@ -139,11 +139,11 @@ public class Timer {
 	}
 	private class TimeHandler extends Handler{
 		public void handleMessage (Message msg){
-			if(msg.what==4)ct.mTextView2.setTextColor(Color.GREEN);
-			else if(v==0)ct.mTextView2.setText(Mi.contime(hour, min, sec, msec));
-			else if(v==1)ct.mTextView2.setText(""+sec);
-			else if(v==2)ct.mTextView2.setText("+2");
-			else if(v==3)ct.mTextView2.setText("DNF");
+			if(msg.what==4)ct.tvTimer.setTextColor(Color.GREEN);
+			else if(v==0)ct.tvTimer.setText(Mi.contime(hour, min, sec, msec));
+			else if(v==1)ct.tvTimer.setText(""+sec);
+			else if(v==2)ct.tvTimer.setText("+2");
+			else if(v==3)ct.tvTimer.setText("DNF");
 		}
 	}
 }

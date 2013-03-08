@@ -199,13 +199,13 @@ public class Stackmat {
 			return null;
 		}
 		protected void onProgressUpdate(Integer...pr){
-			if(pr[0]==-2)ct.mTextView2.setText("OFF");
+			if(pr[0]==-2)ct.tvTimer.setText("OFF");
 			else if(pr[0]==-1)ct.confirmTime(pr[1]);
 			else {
-				if(pr[0]==65)ct.mTextView2.setTextColor(0xff00ff00);
-				else if(pr[0]==67)ct.mTextView2.setTextColor(0xffff0000);
-				else ct.mTextView2.setTextColor(ct.cl[1]);
-				ct.mTextView2.setText((pr[1]==0?"":pr[1]+":")+((pr[1]>0 && pr[2]<10)?"0":"")+pr[2]+"."+(pr[3]<10?"0":"")+pr[3]+(isMsec?pr[4]:""));
+				if(pr[0]==65)ct.tvTimer.setTextColor(0xff00ff00);
+				else if(pr[0]==67)ct.tvTimer.setTextColor(0xffff0000);
+				else ct.tvTimer.setTextColor(ct.cl[1]);
+				ct.tvTimer.setText((pr[1]==0?"":pr[1]+":")+((pr[1]>0 && pr[2]<10)?"0":"")+pr[2]+"."+(pr[3]<10?"0":"")+pr[3]+(isMsec?pr[4]:""));
 			}
 		}
 		protected void onPostExecute(Void result){

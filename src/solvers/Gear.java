@@ -45,8 +45,8 @@ public class Gear {
 			pd[i][0] = 0;
 			for(int d = 0; d < 5; d++) {
 				//n = 0;
-				for(int j = 0; j < 576; j++){
-					if(pd[i][j] == d){
+				for(int j = 0; j < 576; j++)
+					if(pd[i][j] == d)
 						for (int k = 0; k < 3; k++) {
 							int p = j;
 							for (int m = 0; m < 11; m++) {
@@ -61,8 +61,6 @@ public class Gear {
 								}
 							}
 						}
-					}
-				}
 				//System.out.println(d+" "+n);
 			}
 		}

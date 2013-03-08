@@ -53,7 +53,7 @@ public class Mi {
 			else if(DCTimer.spSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[10]);
 			break;
 		case 17:
-			scr = new Search().solution(Tools.randomCube(), 21, 100000, 0, 0);
+			scr = new Search().solution(Tools.randomCube(), 21, 20000, 0, 2);
 			viewType=scr.startsWith("Error")?0:3;
 			if(DCTimer.spSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[9], DCTimer.spSel[10]);
 			else if(DCTimer.spSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[10]);
@@ -62,18 +62,18 @@ public class Mi {
 			else if(DCTimer.spSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[10]);
 			break;
 		case 18:
-			scr = new Search().solution(Tools.randomCrossSolved(), 21, 100000, 0,0);
+			scr = new Search().solution(Tools.randomCrossSolved(), 21, 20000, 0, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 19:
-			scr = new Search().solution(Tools.randomLastLayer(), 20, 100000, 0,0);
+			scr = new Search().solution(Tools.randomLastLayer(), 20, 20000, 0, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 20:
 			cube=Tools.randomState(new byte[]{-1, -1, -1, -1, 4, 5, 6, 7}, Tools.STATE_SOLVED, new byte[]{-1, -1, -1, -1, 4, 5, 6, 7, 8, 9, 10, 11}, Tools.STATE_SOLVED);
-			scr = new Search().solution(cube, 20, 100000, 0,0);
+			scr = new Search().solution(cube, 20, 20000, 0, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 21:
 			cube=Tools.randomCornerSolved();
-			cube = new Search().solution(cube, 21, 100000, 0,0);
+			cube = new Search().solution(cube, 21, 20000, 0, 2);
 			scr=cube;viewType=scr.startsWith("Error")?0:3;
 			if(DCTimer.spSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[9], DCTimer.spSel[10]);
 			else if(DCTimer.spSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[10]);
@@ -83,53 +83,53 @@ public class Mi {
 			break;
 		case 22:
 			cube=Tools.randomEdgeSolved();
-			cube = new Search().solution(cube, 21, 100000, 0,0);
+			cube = new Search().solution(cube, 20, 20000, 0, 2);
 			scr=cube;viewType=scr.startsWith("Error")?0:3;break;
 		case 23:
 			cube=Tools.randomLastSlot();
-			cube = new Search().solution(cube, 21, 100000, 0,0);
+			cube = new Search().solution(cube, 20, 20000, 0, 2);
 			scr=cube;viewType=scr.startsWith("Error")?0:3;break;
 		case 24:
 			cube=Tools.randomZBLastLayer();
-			cube = new Search().solution(cube, 20, 100000, 0,0);
+			cube = new Search().solution(cube, 20, 20000, 0, 2);
 			scr=cube;viewType=scr.startsWith("Error")?0:3;break;
 		case 25:
 			cube=Tools.randomEdgeOfLastLayer();
-			cube = new Search().solution(cube, 21, 100000, 0,0);
+			cube = new Search().solution(cube, 20, 20000, 0, 2);
 			scr=cube;viewType=scr.startsWith("Error")?0:3;break;
 		case 26:
 			cube=Tools.randomCornerOfLastLayer();
-			cube = new Search().solution(cube, 21, 100000, 0,0);
+			cube = new Search().solution(cube, 20, 20000, 0, 2);
 			scr=cube;viewType=scr.startsWith("Error")?0:3;break;
 		case 27:
 			switch ((int)(Math.random()*4)) {
 			case 0:
-				scr=new Search().solution(Tools.randomState(new byte[]{0,1,2,3,4,5,6,7}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 21, 100000, 0, 2);
+				scr=new Search().solution(Tools.randomState(new byte[]{0,1,2,3,4,5,6,7}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 20, 20000, 0, 2);
 				break;
 			case 1:
-				scr=new Search().solution(Tools.randomState(new byte[]{3,2,6,7,0,1,5,4}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 21, 100000, 0, 2)+"x'";
+				scr=new Search().solution(Tools.randomState(new byte[]{3,2,6,7,0,1,5,4}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 20, 20000, 0, 2)+"x'";
 				break;
 			case 2:
-				scr=new Search().solution(Tools.randomState(new byte[]{7,6,5,4,3,2,1,0}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 21, 100000, 0, 2)+"x2";
+				scr=new Search().solution(Tools.randomState(new byte[]{7,6,5,4,3,2,1,0}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 20, 20000, 0, 2)+"x2";
 				break;
 			default:
-				scr=new Search().solution(Tools.randomState(new byte[]{4,5,1,0,7,6,2,3}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 21, 100000, 0, 2)+"x";
+				scr=new Search().solution(Tools.randomState(new byte[]{4,5,1,0,7,6,2,3}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 20, 20000, 0, 2)+"x";
 				break;
 			}
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 28:
 			switch ((int)(Math.random()*4)) {
 			case 0:
-				scr=new Search().solution(Tools.randomState(new byte[]{-1,-1,-1,-1,4,5,6,7}, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 21, 100000, 0, 2);
+				scr=new Search().solution(Tools.randomState(new byte[]{-1,-1,-1,-1,4,5,6,7}, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 20, 20000, 200, 2);
 				break;
 			case 1:
-				scr=new Search().solution(Tools.randomState(new byte[]{3,2,-1,-1,0,1,-1,-1}, new byte[]{2,1,-1,-1,1,2,-1,-1}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 21, 100000, 0, 2)+"x'";
+				scr=new Search().solution(Tools.randomState(new byte[]{3,2,-1,-1,0,1,-1,-1}, new byte[]{2,1,-1,-1,1,2,-1,-1}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 20, 20000, 200, 2)+"x'";
 				break;
 			case 2:
-				scr=new Search().solution(Tools.randomState(new byte[]{7,6,5,4,-1,-1,-1,-1}, new byte[]{0,0,0,0,-1,-1,-1,-1}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 21, 100000, 0, 2)+"x2";
+				scr=new Search().solution(Tools.randomState(new byte[]{7,6,5,4,-1,-1,-1,-1}, new byte[]{0,0,0,0,-1,-1,-1,-1}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 20, 20000, 200, 2)+"x2";
 				break;
 			default:
-				scr=new Search().solution(Tools.randomState(new byte[]{-1,-1,1,0,-1,-1,2,3}, new byte[]{-1,-1,2,1,-1,-1,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 21, 100000, 0, 2)+"x";
+				scr=new Search().solution(Tools.randomState(new byte[]{-1,-1,1,0,-1,-1,2,3}, new byte[]{-1,-1,2,1,-1,-1,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 20, 20000, 200, 2)+"x";
 				break;
 			}
 			viewType=scr.startsWith("Error")?0:3;break;
@@ -222,20 +222,11 @@ public class Mi {
 		case 144:	//魔表
 			scr=Clock.scramble();viewType=12;break;
 		case 145:
-			scr=ClockOld.scramble();viewType=12;break;
+			scr=Clock.scrambleOld(false);viewType=12;break;
 		case 146:
-			StringBuffer sclk = new StringBuffer();
-			for (int i=0;i<4;i++) sclk.append("(" + (int)((Math.random()*12)-5) + ", " + (int)((Math.random()*12)-5) + ") / ");
-			for (int i=0;i<6;i++) sclk.append("(" + (int)((Math.random()*12)-5) + ") / ");
-			for (int i=0;i<4;i++) sclk.append(OtherScr.rndEl(new String[]{"d","U"}));
-			scr=sclk.toString();viewType=0;
-			break;
+			scr=Clock.scrambleOld(true);viewType=12; break;
 		case 147:
-			scr="UUUU "+OtherScr.c("u")+" / dUUU "+OtherScr.c("u")+" / dUdU "+OtherScr.c("u")+","+OtherScr.c("d")+" / UUdU "
-			+OtherScr.c("u")+" / UUdd "+OtherScr.c("u")+","+OtherScr.c("d")+" / UUUd "+OtherScr.c("u")+" / UdUd "+OtherScr.c("u")
-			+","+OtherScr.c("d")+" / UdUU "+OtherScr.c("u")+" / ddUU "+OtherScr.c("u")+","+OtherScr.c("d")+" / dddd "+OtherScr.c("d")
-			+" / "+OtherScr.c();
-			viewType=0;break;
+			scr=Clock.scrambleEpo(); viewType=12;break;
 		case 160:	//15puzzles
 			scr=OtherScr.do15puzzle(false);viewType=0;break;
 		case 161:
@@ -730,8 +721,7 @@ public class Mi {
 		}
 		else if(viewType==12) {
 			byte[] posit;
-			if(sel2==0)posit = Clock.posit();
-			else posit = ClockOld.posit();
+			posit = Clock.posit();
 			int clock_radius = 52;
 			int face_dist = 30;
 			int face_background_dist = 29;
@@ -749,8 +739,7 @@ public class Mi {
 				for(int x=cx-face_dist; x<=cx+face_dist; x+=face_dist)
 					drawClockFace(p, c, width, x, y, 0xff88aaff, posit[i++]);
 			byte[] pegs;
-			if(sel2==0)pegs = Clock.pegs();
-			else pegs = ClockOld.pegs();
+			pegs = Clock.pegs();
 			drawPeg(p, c, width, cx - face_dist/2, cy - face_dist/2, 1-pegs[0]);
 		  	drawPeg(p, c, width, cx + face_dist/2, cy - face_dist/2, 1-pegs[1]);
 		  	drawPeg(p, c, width, cx - face_dist/2, cy + face_dist/2, 1-pegs[2]);
@@ -1054,6 +1043,7 @@ public class Mi {
 		p.setColor(Color.BLACK);
 		c.drawPath(path, p);
 	}
+
 	public static String contime(int hour, int min, int sec, int msec) {
 		StringBuffer time=new StringBuffer();
 		if(hour==0) {
@@ -1117,40 +1107,46 @@ public class Mi {
 		if(DCTimer.resp[idx]==1)return contime(hour, min, sec, msec)+"+";
 		else return contime(hour, min, sec, msec);
 	}
+
 	public static String avg(int n, int i, int l){
 		if(i<n-1){bidx[l]=-1;return "N/A";}
-		int min,max,dnf=0,dnidx,cavg;
-		int trim=(int) Math.ceil(n/20.0);
-		double sum=0;
-		max=min=dnidx=i-n+1;
-		boolean m=false;
-		for(int j=i-n+1;j<=i;j++){
-			if(DCTimer.resd[j]!=0 && !m){min=j;m=true;}
-			if(DCTimer.resd[j]==0){max=j;dnidx=j;dnf++;}
-		}
-		if(dnf>trim){
-			cavg=0;if(i<n)bavg[l]=0;return "DNF";
-		}
-		if(n<20) {
-			for (int j=i-n+2;j<=i;j++) {
-				if(dnf==0 && DCTimer.rest[j]+DCTimer.resp[j]*2000>DCTimer.rest[max]+DCTimer.resp[max]*2000)max=j;
-				if(j!=dnidx && DCTimer.rest[j]+DCTimer.resp[j]*2000<=DCTimer.rest[min]+DCTimer.resp[min]*2000)min=j;
-			}
-			for (int j=i-n+1;j<=i;j++) {
-				if(j!=max && j!=min){
-					if(DCTimer.spSel[6]==1)sum+=DCTimer.rest[j]+DCTimer.resp[j]*2000;
-					else sum+=(DCTimer.rest[j]+DCTimer.resp[j]*2000+5)/10;
+		int nDnf=0, cavg;
+		int trim = (int) Math.ceil(n/20.0);
+		double sum = 0;
+		for(int j=i-n+1; j<=i; j++) {
+			if(DCTimer.resd[j]==0) {
+				nDnf++;
+				if(nDnf>trim){
+					cavg=Integer.MAX_VALUE;
+					if(i<n)bavg[l]=Integer.MAX_VALUE;
+					return "DNF";
 				}
 			}
+		}
+		if(n<20) {
+			int max = Integer.MIN_VALUE;
+			int min = Integer.MAX_VALUE;
+			for (int j=i-n+1;j<=i;j++) {
+				if(DCTimer.resd[j]!=0) {
+					int time = DCTimer.rest[j]+DCTimer.resp[j]*2000;
+					if(time>max) max = time;
+					if(time<min) min = time;
+					if(DCTimer.spSel[6]==1) sum+=time;
+					else sum+=(time+5)/10;
+				}
+			}
+			if(nDnf!=0) max = 0;
+			if(DCTimer.spSel[6]==1)sum-=min+max;
+			else sum-=(min+5)/10+(max+5)/10;
 			cavg=(int) (sum/(n-2)+0.5);
 		}
 		else {
-			int[] data=new int[n-dnf];
+			int[] data=new int[n-nDnf];
 			int len=0;
 			for(int j=i-n+1;j<=i;j++) {
 				if(DCTimer.resd[j]!=0) data[len++]=DCTimer.rest[j]+DCTimer.resp[j]*2000;
 			}
-			quickSort(data, 0, n-dnf-1);
+			quickSort(data, 0, n-nDnf-1);
 			for(int j=trim;j<n-trim;j++) {
 				if(DCTimer.spSel[6]==1)sum+=data[j];
 				else sum+=(data[j]+5)/10;
@@ -1159,8 +1155,7 @@ public class Mi {
 		}
 		if(DCTimer.spSel[6]==0)cavg*=10;
 		if(i==n-1){bavg[l]=cavg;bidx[l]=i;}
-		if(bavg[l]==0){bavg[l]=cavg;bidx[l]=i;}
-		else if(cavg<=bavg[l]){bavg[l]=cavg;bidx[l]=i;}
+		if(cavg<=bavg[l]){bavg[l]=cavg;bidx[l]=i;}
 		return distime(cavg);
 	}
 	public static void quickSort(int[] a, int lo0, int hi0) {
@@ -1183,21 +1178,24 @@ public class Mi {
 	}
 	public static String mean(int n, int i, int l){
 		if(i<n-1){bidx[l]=-1;return "N/A";}
-		int dnf=0,cavg;
+		int cavg;
 		double sum=0;
 		for(int j=i-n+1;j<=i;j++){
-			if(DCTimer.resd[j]==0)dnf++;
-		}
-		if(dnf>0){cavg=0;if(i==n-1)bavg[l]=0;return "DNF";}
-		for (int j=i-n+1;j<=i;j++) {
-			if(DCTimer.spSel[6]==1)sum+=DCTimer.rest[j]+DCTimer.resp[j]*2000;
-			else sum+=(DCTimer.rest[j]+DCTimer.resp[j]*2000+5)/10;
+			if(DCTimer.resd[j]==0) {
+				cavg=Integer.MAX_VALUE;
+				if(i==n-1)bavg[l]=Integer.MAX_VALUE;
+				return "DNF";
+			}
+			else {
+				int time = DCTimer.rest[j]+DCTimer.resp[j]*2000;
+				if(DCTimer.spSel[6]==1)sum += time;
+				else sum+=(time+5)/10;
+			}
 		}
 		cavg=(int) (sum/n+0.5);
 		if(DCTimer.spSel[6]==0)cavg*=10;
-		if(i==n-1){bavg[0]=cavg;bidx[l]=i;}
-		if(bavg[l]==0){bavg[l]=cavg;bidx[l]=i;}
-		else {if(cavg<=bavg[l]){bavg[l]=cavg;bidx[l]=i;}}
+		if(i==n-1){bavg[l]=cavg;bidx[l]=i;}
+		if(cavg<=bavg[l]){bavg[l]=cavg;bidx[l]=i;}
 		return distime(cavg);
 	}
 	public static String sesMean(){
@@ -1208,14 +1206,15 @@ public class Mi {
 		for(int i=0;i<DCTimer.resl;i++) {
 			if(DCTimer.resd[i]==0)n--;
 			else {
+				int time = DCTimer.rest[i]+DCTimer.resp[i]*2000;
 				if(smax==-1)smax=i;
-				else if(DCTimer.rest[i]+DCTimer.resp[i]*2000>DCTimer.rest[smax]+DCTimer.resp[smax]*2000)smax=i;
+				else if(time>DCTimer.rest[smax]+DCTimer.resp[smax]*2000)smax=i;
 				if(smin==-1)smin=i;
-				else if(DCTimer.rest[i]+DCTimer.resp[i]*2000<=DCTimer.rest[smin]+DCTimer.resp[smin]*2000)smin=i;
-				if(DCTimer.spSel[6]==1)sum+=(double)DCTimer.rest[i]+DCTimer.resp[i]*2000;
-				else sum+=(DCTimer.rest[i]+DCTimer.resp[i]*2000+5)/10;
-				if(DCTimer.spSel[6]==1)sum2+=Math.pow(DCTimer.rest[i]+DCTimer.resp[i]*2000, 2);
-				else sum2+=Math.pow((DCTimer.rest[i]+DCTimer.resp[i]*2000+5)/10, 2);
+				else if(time<=DCTimer.rest[smin]+DCTimer.resp[smin]*2000)smin=i;
+				if(DCTimer.spSel[6]==1)sum+=time;
+				else sum+=(time+5)/10;
+				if(DCTimer.spSel[6]==1)sum2+=Math.pow(time, 2);
+				else sum2+=Math.pow((time+5)/10, 2);
 			}
 		}
 		if(n==0)return "0/"+DCTimer.resl+"): N/A (N/A)";
@@ -1231,12 +1230,14 @@ public class Mi {
 		int count = 0;
 		int trim=(int) Math.ceil(n/20.0);
 		for(int i=0;i<DCTimer.resl;i++) {
-			if(DCTimer.resd[i]==0)n--;
+			if(DCTimer.resd[i]==0){
+				n--;
+				if(n<DCTimer.resl-trim)return "DNF";
+			}
 			else {
 				data[count++]=DCTimer.rest[i]+DCTimer.resp[i]*2000;
 			}
 		}
-		if(n<DCTimer.resl-trim)return "DNF";
 		double sum = 0, sum2 = 0;
 		quickSort(data, 0, n-1);
 		for(int j=trim;j<DCTimer.resl-trim;j++) {
@@ -1275,6 +1276,7 @@ public class Mi {
 		s.append(""+i%100);
 		return s.toString();
 	}
+
 	public static float s18(int i) {
 		return (float) Math.sin(Math.PI*i/10);
 	}
@@ -1289,16 +1291,22 @@ public class Mi {
 		}
 		return ary;
 	}
-	public static float cos1(int index, float[] ag, float rd) {return (float) (Math.cos(ag[index])*rd);}
-	public static float sin1(int index, float[] ag, float rd) {return (float) (Math.sin(ag[index])*rd);}
-	public static float cos2(int index, float[] ag2, float rd) {return (float) (Math.cos(ag2[index])*rd);}
-	public static float sin2(int index, float[] ag2, float rd) {return (float) (Math.sin(ag2[index])*rd);}
-	public static byte[] rd(byte[] arr)
-	{
+	public static float cos1(int index, float[] ag, float rd) {
+		return (float) (Math.cos(ag[index])*rd);
+	}
+	public static float sin1(int index, float[] ag, float rd) {
+		return (float) (Math.sin(ag[index])*rd);
+	}
+	public static float cos2(int index, float[] ag2, float rd) {
+		return (float) (Math.cos(ag2[index])*rd);
+	}
+	public static float sin2(int index, float[] ag2, float rd) {
+		return (float) (Math.sin(ag2[index])*rd);
+	}
+	public static byte[] rd(byte[] arr) {
 		byte[] out = new byte[arr.length];
 		int j=0;
-		for (int i=0; i<arr.length; i++)
-		{
+		for (int i=0; i<arr.length; i++) {
 			if(i==0 || arr[i]!=arr[i-1])
 				out[j++] = arr[i];
 		}
@@ -1306,8 +1314,9 @@ public class Mi {
 		for(int i=0;i<j;i++)temp[i]=out[i];
 		return temp;
 	}
-	public static String convStr(String s){
-		if(s.length()==0 || s==null || s.equals("0"))return "Error";
+
+	public static String convStr(String s) {
+		if(s==null || s.length()==0 || s.equals("0"))return "Error";
 		StringBuffer sb=new StringBuffer();
 		byte dot=0, colon=0;
 		int num=0;
@@ -1341,6 +1350,7 @@ public class Mi {
 		}
 		return (int)((hour*3600+min*60+sec)*1000+0.5);
 	}
+
 	public static void drawHist(int width, Paint p, Canvas c) {
 		int[] bins=new int[14];
 	    long intervalStart;

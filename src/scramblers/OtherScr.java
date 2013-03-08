@@ -238,50 +238,59 @@ public class OtherScr {
 	public static byte[] imagestr(String scr) {
 		String[] s=scr.replace("3R", "3r r'").replace("M'", "r R'").replace("M2", "r2 R2").replace("M", "r' R")
 				.replace("x'", "r' L").replace("x2", "r2 L2").replace("x", "r L'").split(" ");
-		int k;
-		Cube.seq=new char[s.length];
-		for(int i=0;i<s.length;i++) {
-			k=0;
-			switch(s[i].charAt(0)){
-			case '5':k=4;break;
-			case '4':k=3;break;
-			case '3':k=2;break;
-			case '2':k=1;break;
-			case 'R':Cube.seq[i]=16;break;
-			case 'L':Cube.seq[i]=4;break;
-			case 'U':Cube.seq[i]=12;break;
-			case 'D':Cube.seq[i]=0;break;
-			case 'F':Cube.seq[i]=20;break;
-			case 'B':Cube.seq[i]=8;break;
-			case 'r':Cube.seq[i]=16;k=1;break;
-			case 'l':Cube.seq[i]=4;k=1;break;
-			case 'u':Cube.seq[i]=12;k=1;break;
-			case 'd':Cube.seq[i]=0;k=1;break;
-			case 'f':Cube.seq[i]=20;k=1;break;
-			case 'b':Cube.seq[i]=8;k=1;break;
-			}
-			if(s[i].length()>1){
-				switch(s[i].charAt(1)){
-				case '\'':Cube.seq[i]+=2;break;
-				case '2':Cube.seq[i]++;break;
-				case '³':k=2;break;
-				case '²':k=1;break;
-				case 'w':Cube.seq[i]+=24;break;
-				case 'r':Cube.seq[i]=16;break;
-				case 'l':Cube.seq[i]=4;break;
-				case 'u':Cube.seq[i]=12;break;
-				case 'd':Cube.seq[i]=0;break;
-				case 'f':Cube.seq[i]=20;break;
-				case 'b':Cube.seq[i]=8;break;
-				}
-				if(s[i].length()>2){
-					switch(s[i].charAt(2)){
-					case '\'':Cube.seq[i]+=2;break;
-					case '2':Cube.seq[i]++;break;
+		int k, len = s.length;
+		if(len>0) {
+			char[] seq = new char[len];
+			int count = 0;
+			for(int i=0;i<len;i++) {
+				k=0;
+				if(s[i].length()>0){
+					switch(s[i].charAt(0)){
+					case '5':k=4;break;
+					case '4':k=3;break;
+					case '3':k=2;break;
+					case '2':k=1;break;
+					case 'R':seq[count]=16;break;
+					case 'L':seq[count]=4;break;
+					case 'U':seq[count]=12;break;
+					case 'D':seq[count]=0;break;
+					case 'F':seq[count]=20;break;
+					case 'B':seq[count]=8;break;
+					case 'r':seq[count]=16;k=1;break;
+					case 'l':seq[count]=4;k=1;break;
+					case 'u':seq[count]=12;k=1;break;
+					case 'd':seq[count]=0;k=1;break;
+					case 'f':seq[count]=20;k=1;break;
+					case 'b':seq[count]=8;k=1;break;
 					}
+					if(s[i].length()>1){
+						switch(s[i].charAt(1)){
+						case '\'':seq[count]+=2;break;
+						case '2':seq[count]++;break;
+						case '³':k=2;break;
+						case '²':k=1;break;
+						case 'w':seq[count]+=24;break;
+						case 'r':seq[count]=16;break;
+						case 'l':seq[count]=4;break;
+						case 'u':seq[count]=12;break;
+						case 'd':seq[count]=0;break;
+						case 'f':seq[count]=20;break;
+						case 'b':seq[count]=8;break;
+						}
+						if(s[i].length()>2){
+							switch(s[i].charAt(2)){
+							case '\'':seq[count]+=2;break;
+							case '2':seq[count]++;break;
+							}
+						}
+					}
+					seq[count++]+=k*24;
 				}
 			}
-			Cube.seq[i]+=k*24;
+			if(count>0) {
+				Cube.seq=new char[count];
+				for(int i=0; i<count; i++) Cube.seq[i] = seq[i];
+			}
 		}
 		return Cube.imagestring();
 	}

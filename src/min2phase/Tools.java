@@ -330,6 +330,7 @@ public class Tools implements Runnable {
 	public static final byte[] STATE_SOLVED = new byte[0];	
 	
 	public static String randomState(byte[] cp, byte[] co, byte[] ep, byte[] eo) {
+		//Util.init();
 		int parity;
 		int cntUE = ep == STATE_RANDOM ? 12 : countUnknown(ep);
 		int cntUC = cp == STATE_RANDOM ? 8 : countUnknown(cp);

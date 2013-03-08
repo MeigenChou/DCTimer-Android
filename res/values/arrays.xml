@@ -258,4 +258,13 @@
         <item>5　</item>
         <item>6　</item>
     </array>
+    
+    <array name="inscrStr">
+        <item>自动识别</item>
+        <item>二阶</item>
+        <item>三阶</item>
+        <item>四阶</item>
+        <item>五阶</item>
+        <item>金字塔</item>
+    </array>
 </resources>

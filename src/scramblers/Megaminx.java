@@ -12,48 +12,50 @@ public class Megaminx {
 	private static byte[] state=new byte[11*12];
 	private static byte[] seq=new byte[80];	// move sequences
 	private static StringBuffer sb;
+
+	private static void initState() {
+		for (byte i = 0; i < 12; i++) {
+			for (byte j = 0; j < 11; j++) {
+				state[i*11+j] = i;
+			}
+		}
+	}
+
 	private static byte[] applyMove(byte[] state, short[] movePerm) {
-	   	 byte[] stateNew=new byte[11*12];
-	  	 for (int i = 0; i < 11*12; i++) {
-	  		stateNew[i] = state[movePerm[i]];
-	  	 }
-	  	 return stateNew;
-	   }
+		byte[] stateNew=new byte[11*12];
+		for (int i = 0; i < 11*12; i++) {
+			stateNew[i] = state[movePerm[i]];
+		}
+		return stateNew;
+	}
+
 	private static void scramble(){
 		byte i;
 		for(i=0; i<linenbr*linelen; i++){
 			seq[i]=(byte)(Math.random()*2);
 		}
 	}
+
 	public static String scramblestring(){
 		scramble();
 		sb=new StringBuffer();
 		byte i,j;
-		for (i = 0; i < 12; i++) {
-	  		for (j = 0; j < 11; j++) {
-	  			state[i*11+j] = i;
-	  		}
-	  	}
-		for(j=0; j<linenbr; j++){
-			for(i=0; i<linelen; i++){
-				if (i%2!=0)
-				{
+		initState();
+		for(j=0; j<linenbr; j++) {
+			for(i=0; i<linelen; i++) {
+				if (i%2!=0) {
 					if (seq[j*linelen + i]!=0) {
 						sb.append("D++ ");
 						state = applyMove(state, permD2);
-					}
-					else {
+					} else {
 						sb.append("D-- ");
 						state = applyMove(state, permD2i);
 					}
-				}
-				else
-				{
+				} else {
 					if (seq[j*linelen + i]!=0) {
 						sb.append("R++ ");
 						state = applyMove(state, permR2);
-					}
-					else {
+					} else {
 						sb.append("R-- ");
 						state = applyMove(state, permR2i);
 					}
@@ -62,15 +64,31 @@ public class Megaminx {
 			if (seq[(j+1)*linelen - 1]!=0) {
 				sb.append("U ");
 				state = applyMove(state, permU);
-			}
-			else {
+			} else {
 				sb.append("U' ");
 				state = applyMove(state, permUi);
 			}
 		}
 		return sb.toString();
 	}
+
 	public static byte[] image(){
+		return state;
+	}
+
+	public static byte[] image(String scr) {
+		initState();
+		String[] s = scr.split(" ");
+		for(int i=0; i<s.length; i++) {
+			if(s[i].length()>0) {
+				if(s[i].equals("D++")) state = applyMove(state, permD2);
+				else if(s[i].equals("D--")) state = applyMove(state, permD2i);
+				else if(s[i].equals("R++")) state = applyMove(state, permR2);
+				else if(s[i].equals("R--")) state = applyMove(state, permR2i);
+				else if(s[i].equals("U")) state = applyMove(state, permU);
+				else if(s[i].equals("U'")) state = applyMove(state, permUi);
+			}
+		}
 		return state;
 	}
 }

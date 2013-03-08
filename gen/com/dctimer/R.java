@@ -15,6 +15,7 @@ public final class R {
         public static final int cubeStr=0x7f040001;
         public static final int faceStr=0x7f04001e;
         public static final int fontStr=0x7f040022;
+        public static final int inscrStr=0x7f040024;
         public static final int list1Str=0x7f04001a;
         public static final int list2Str=0x7f04001b;
         public static final int mncStr=0x7f040019;

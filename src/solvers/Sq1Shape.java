@@ -98,9 +98,9 @@ public class Sq1Shape {
 
         distance[getShape2Idx(ID)] = 0;
 
-        for(int depth=0; depth<14; depth++) {
+        for(int d=0; d<14; d++) {
             for (int i = 0; i < 3678; i++) {
-                if (distance[i] == depth) {
+                if (distance[i] == d) {
                     int state = ShapeIdx[i];
 
                     // twist
@@ -108,7 +108,7 @@ public class Sq1Shape {
                         int next = twist(state);
                         int temp=getShape2Idx(next);
                         if (distance[temp] == -1) {
-                            distance[temp] = (byte) (depth + 1);
+                            distance[temp] = (byte) (d + 1);
                         }
                     }
 
@@ -119,7 +119,7 @@ public class Sq1Shape {
                         if(isTwistable(nextTop)){
                         	int temp=getShape2Idx(nextTop);
                         	if (distance[temp] == -1) {
-                        		distance[temp] = (byte) (depth + 1);
+                        		distance[temp] = (byte) (d + 1);
                         	}
                         }
                         
@@ -132,7 +132,7 @@ public class Sq1Shape {
                         if(isTwistable(nextBottom)){
                         	int temp=getShape2Idx(nextBottom);
                         	if (distance[temp] == -1) {
-                        		distance[temp] = (byte) (depth + 1);
+                        		distance[temp] = (byte) (d + 1);
                         	}
                         }
                         

@@ -171,6 +171,7 @@ public class Search {
 	}
 
 	private String solve(CubieCube c) {
+		//Util.init();
 		Tools.init();
 		int conjMask = 0;
 		for (int i=0; i<6; i++) {
