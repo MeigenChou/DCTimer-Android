@@ -12,16 +12,14 @@ import android.graphics.Paint.FontMetrics;
 
 public class Mi {
 	//public static long stime=0L;
-	public static int[] bavg={0, 0};
-	public static int[] bidx={0, 0};
+	public static int[] bavg = {0, 0};
+	public static int[] bidx = {0, 0};
 	public static int sesMean = -1;
 	public static int sesSD;
 	public static int smin, smax;
-	private static boolean ini=false;
 	public static String sc;
+	private static boolean ini = false;
 	public static int viewType;
-	public static byte[] img;
-	private static boolean mis;
 	
 	public static String SetScr(int n) {
 		String[][][] turns;
@@ -205,20 +203,21 @@ public class Mi {
 		case 128:  //SQ1
 			scr=SQ1.scramblestring();
 			if(DCTimer.sqshp) sc=" "+Sq1Shape.solve(scr);
-			viewType=1;mis=(SQ1.count%2==0);break;
+			viewType=1; break;
 		case 129:
 			scr=OtherScr.sq1_scramble(0);
 			if(DCTimer.sqshp) sc=" "+Sq1Shape.solve(scr);
-			viewType=1; mis=true; break;
+			viewType=1; break;
 		case 130:
 			if(!ini) {
-				Shape.init();Square.init();
-				new SqSearch().solution(new FullCube(""));
-				ini=true;
+				Shape.init();
+				Square.init();
+				ini = true;
 			}
 			FullCube c=FullCube.randomCube();
-			scr=new SqSearch().solution(c);if(DCTimer.sqshp)sc=" "+Sq1Shape.solve(scr);viewType=1;
-			img=c.imagestr();mis=(c.ml==0);break;
+			scr=new SqSearch().solution(c);
+			if(DCTimer.sqshp)sc=" "+Sq1Shape.solve(scr);
+			viewType=1; break;
 		case 144:	//魔表
 			scr=Clock.scramble();viewType=12;break;
 		case 145:
@@ -362,7 +361,7 @@ public class Mi {
 		case 288:	//Bandaged Cube
 			scr=OtherScr.bicube();viewType=0;break;
 		case 289:
-			scr=OtherScr.sq1_scramble(2);viewType=0;break;
+			scr=OtherScr.sq1_scramble(2);viewType=1;break;
 		case 304:	//五魔子集
 			turn2=new String[][]{{"U"},{"R"}};
 			scr=OtherScr.megascramble(turn2, csuff, 25);viewType=0;break;
@@ -406,7 +405,7 @@ public class Mi {
 				DCTimer.share.getInt("csn4", 0xffffffff), DCTimer.share.getInt("csn5", 0xff009900), DCTimer.share.getInt("csn6", 0xffff8026)};
 		if(viewType==2) {
 			byte[] imst;
-			Cube.parse(2);imst=OtherScr.imagestr(DCTimer.cscrs);
+			Cube.parse(2);imst=OtherScr.imagestr(DCTimer.crntScr);
 			int a=width/10,i,j,d=0,sty=(int) ((width*0.75-6*a+2)/2);
 			for(i=0;i<2;i++)
 				for(j=0;j<2;j++) {
@@ -505,7 +504,7 @@ public class Mi {
 		else if(viewType==17) {
 			byte[] imst;
 			if(!DCTimer.isInScr && sel2==0)imst=Pyraminx.imageString();
-			else imst=Pyraminx.imageString(DCTimer.cscrs);
+			else imst=Pyraminx.imageString(DCTimer.crntScr);
 			width=(int) (width*0.9);
 			int a=(width-2)/6-1,b=(int) (a*Math.sqrt(3)/2),d=(int) ((width/0.9-(a*6+4))/2);
 			colors = new int[]{DCTimer.share.getInt("csp1", Color.RED), DCTimer.share.getInt("csp2", 0xff009900),
@@ -562,12 +561,8 @@ public class Mi {
 					DCTimer.share.getInt("csq4", 0xffffffff), DCTimer.share.getInt("csq3", 0xffff0000), DCTimer.share.getInt("csq5", 0xff009900)};
 			byte[] img;
 			if(sel2==0)img=SQ1.imagestr();
-			else if(sel2==1)img=SQ1.imagestr(DCTimer.cscrs.split(" "));
-			else {
-				img=Mi.img;
-				ty=new String[]{"e","c","e","c","e","c","e","c","e","c","e","c","e","c","e","c"};
-				col=new String[]{"2","12","1","51","5","45","4","24", "4","42","5","54","1","15","2","21"};
-			}
+			else img=SQ1.imagestr(DCTimer.crntScr.split(" "));
+			boolean mis = SQ1.mi;
 			byte[] temp=new byte[12];
 			for(int i=0;i<12;i++)temp[i]=img[i];
 			byte[] top_side=rd(temp);
@@ -760,7 +755,7 @@ public class Mi {
 		  	drawPeg(p, c, width, cx - face_dist/2, cy + face_dist/2, pegs[3]);
 		}
 		else if(viewType==13) {
-			byte[] imst=Floppy.image(DCTimer.cscrs);
+			byte[] imst=Floppy.image(DCTimer.crntScr);
 			int a=width/8,i,j,d=0;
 			int stx=(width-8*a)/2, sty=(int) ((width*0.75-5*a)/2);
 			p.setStyle(Paint.Style.FILL);
@@ -799,7 +794,7 @@ public class Mi {
 			}
 		}
 		else if(viewType==14) {
-			byte[] imst=Domino.image(DCTimer.cscrs);
+			byte[] imst=Domino.image(DCTimer.crntScr);
 			int a=width/12,i,j,d=0;
 			int stx=(width-12*a)/2, sty=(int) ((width*0.75-8*a+2)/2);
 			p.setStyle(Paint.Style.FILL);
@@ -838,7 +833,7 @@ public class Mi {
 				}
 		}
 		else if(viewType==15) {
-			byte[] imst=Tower.image(DCTimer.cscrs);
+			byte[] imst=Tower.image(DCTimer.crntScr);
 			int a=width/10,i,j,d=0;
 			int stx=(width-8*a)/2, sty=(int) ((width*0.75-7*a)/2);
 			p.setStyle(Paint.Style.FILL);
@@ -878,7 +873,7 @@ public class Mi {
 				}
 		}
 		else if(viewType==16) {
-			byte[] imst=Skewb.image(DCTimer.cscrs);
+			byte[] imst=Skewb.image(DCTimer.crntScr);
 			int a=width/8,i,d=0;
 			int stx=(width-8*a)/2, sty=(int) ((width*0.75-6*a)/2);
 			byte[] dxi={3,7,5,3,3,1}, dyi={5,3,3,1,3,3};
@@ -905,12 +900,12 @@ public class Mi {
 			int a=width/(viewType*4),i,j,d=0,b=viewType;
 			byte[] imst;
 			if(DCTimer.isInScr) {
-				Cube.parse(viewType);imst=OtherScr.imagestr(DCTimer.cscrs);
+				Cube.parse(viewType);imst=OtherScr.imagestr(DCTimer.crntScr);
 			}
 			else if(viewType==3){
 				if(DCTimer.spSel[0]==1 && sel2==0)imst=Cube.imagestring();
 				else {
-					Cube.parse(3);imst=OtherScr.imagestr(DCTimer.cscrs);
+					Cube.parse(3);imst=OtherScr.imagestr(DCTimer.crntScr);
 				}
 			}
 			else if(viewType>7) {
@@ -919,7 +914,7 @@ public class Mi {
 			else if(sel2==0)imst=Cube.imagestring();
 			else {
 				Cube.parse(viewType);
-				imst=OtherScr.imagestr(DCTimer.cscrs);
+				imst=OtherScr.imagestr(DCTimer.crntScr);
 			}
 			int stx=(width-4*a*b)/2, sty=(int) ((width*0.75-3*a*b+2)/2);
 			p.setStyle(Paint.Style.FILL);
@@ -1045,7 +1040,7 @@ public class Mi {
 	}
 
 	public static String contime(int hour, int min, int sec, int msec) {
-		StringBuffer time=new StringBuffer();
+		StringBuilder time=new StringBuilder();
 		if(hour==0) {
 			if(min==0) time.append(""+sec);
 			else {
@@ -1071,17 +1066,18 @@ public class Mi {
 		return time.toString();
 	}
 	public static String distime(int i){
-		if(i<0)return "N/A";
-		if(i==0)return "DNF";
+		boolean m = i<0;
+		if(m)i = -i;
+		//if(i==0)return "DNF";
 		if(DCTimer.spSel[6]==0)i+=5;
 		int msec=i%1000;
 		if(DCTimer.spSel[6]==0)msec/=10;
 		int sec=DCTimer.timmh?(i/1000)%60:i/1000;
 		int min=DCTimer.timmh?(i/60000)%60:0;
 		int hour=DCTimer.timmh?i/3600000:0;
-		return contime(hour, min, sec, msec);
+		return (m?"-":"")+contime(hour, min, sec, msec);
 	}
-	public static String distime2(int i){
+	private static String distime2(int i){
 		boolean m = i < 0;
 		i = Math.abs(i) + 5;
 		int ms=(i%1000)/10;
@@ -1093,7 +1089,7 @@ public class Mi {
 		if(idx<0)return "N/A";
 		if(idx>=DCTimer.rest.length)return "";
 		int i=DCTimer.rest[idx];
-		if(DCTimer.resd[idx]==0){
+		if(DCTimer.resp[idx]==2){
 			if(b)return "DNF ("+distime(i)+")";
 			else return "DNF";
 		}
@@ -1114,7 +1110,7 @@ public class Mi {
 		int trim = (int) Math.ceil(n/20.0);
 		double sum = 0;
 		for(int j=i-n+1; j<=i; j++) {
-			if(DCTimer.resd[j]==0) {
+			if(DCTimer.resp[j]==2) {
 				nDnf++;
 				if(nDnf>trim){
 					cavg=Integer.MAX_VALUE;
@@ -1127,7 +1123,7 @@ public class Mi {
 			int max = Integer.MIN_VALUE;
 			int min = Integer.MAX_VALUE;
 			for (int j=i-n+1;j<=i;j++) {
-				if(DCTimer.resd[j]!=0) {
+				if(DCTimer.resp[j]!=2) {
 					int time = DCTimer.rest[j]+DCTimer.resp[j]*2000;
 					if(time>max) max = time;
 					if(time<min) min = time;
@@ -1144,7 +1140,7 @@ public class Mi {
 			int[] data=new int[n-nDnf];
 			int len=0;
 			for(int j=i-n+1;j<=i;j++) {
-				if(DCTimer.resd[j]!=0) data[len++]=DCTimer.rest[j]+DCTimer.resp[j]*2000;
+				if(DCTimer.resp[j]!=2) data[len++]=DCTimer.rest[j]+DCTimer.resp[j]*2000;
 			}
 			quickSort(data, 0, n-nDnf-1);
 			for(int j=trim;j<n-trim;j++) {
@@ -1181,7 +1177,7 @@ public class Mi {
 		int cavg;
 		double sum=0;
 		for(int j=i-n+1;j<=i;j++){
-			if(DCTimer.resd[j]==0) {
+			if(DCTimer.resp[j]==2) {
 				cavg=Integer.MAX_VALUE;
 				if(i==n-1)bavg[l]=Integer.MAX_VALUE;
 				return "DNF";
@@ -1204,7 +1200,7 @@ public class Mi {
 		int n=DCTimer.resl;
 		if(n==0)return "0/0): N/A (N/A)";
 		for(int i=0;i<DCTimer.resl;i++) {
-			if(DCTimer.resd[i]==0)n--;
+			if(DCTimer.resp[i]==2)n--;
 			else {
 				int time = DCTimer.rest[i]+DCTimer.resp[i]*2000;
 				if(smax==-1)smax=i;
@@ -1230,7 +1226,7 @@ public class Mi {
 		int count = 0;
 		int trim=(int) Math.ceil(n/20.0);
 		for(int i=0;i<DCTimer.resl;i++) {
-			if(DCTimer.resd[i]==0){
+			if(DCTimer.resp[i]==2){
 				n--;
 				if(n<DCTimer.resl-trim)return "DNF";
 			}
@@ -1367,7 +1363,7 @@ public class Mi {
             bins[i] = 0;
         }
 	    for (int i = 0; i < DCTimer.resl; i++) {
-	    	if(DCTimer.resd[i]!=0) {
+	    	if(DCTimer.resp[i]!=2) {
 	    		int time=DCTimer.rest[i]+DCTimer.resp[i]*2000;
 	    		if(time >= intervalStart && time < intervalEnd){
 	    			int bin = (int) (bins.length * (time - intervalStart) / (intervalEnd - intervalStart));

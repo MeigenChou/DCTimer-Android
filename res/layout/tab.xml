@@ -87,7 +87,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="@string/session"
-                        android:textSize="16dp" />
+                        android:textSize="16sp" />
 
                     <Spinner
                         android:id="@+id/spinner8"
@@ -95,7 +95,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:textSize="16dp" />
+                        android:textSize="16sp" />
 
                     <Button
                         android:id="@+id/mButtonClr"
@@ -103,7 +103,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/clear_session"
-                        android:textSize="16dp" />
+                        android:textSize="16sp" />
                     
                     <Button
                         android:id="@+id/mButtonHist"
@@ -111,7 +111,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/time_histogram"
-                        android:textSize="16dp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <GridView
@@ -135,7 +135,7 @@
                     android:id="@+id/mButtonoa"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="15dp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <ScrollView
@@ -156,7 +156,7 @@
                             android:layout_marginTop="5dip"
                             android:layout_marginLeft="10dip"
                             android:text="@string/stt_timer"
-                            android:textSize="16dp" />
+                            android:textSize="16sp" />
                     
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -170,14 +170,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/wcainsp"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
 
                         <CheckBox
                             android:id="@+id/check6"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/clock_format"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
                         
                         <LinearLayout
                             android:layout_width="fill_parent"
@@ -192,10 +192,32 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/input_time"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Spinner
                                 android:id="@+id/spinner7"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dip"
+                            android:layout_marginBottom="5dip"
+                            android:orientation="horizontal" >
+
+                            <TextView
+                                android:id="@+id/stt36"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/timer_upd"
+                                android:textSize="17sp" />
+
+                            <Spinner
+                                android:id="@+id/spinner17"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1" />
@@ -214,7 +236,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/precision"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Spinner
                                 android:id="@+id/spinner6"
@@ -228,14 +250,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/time_tap"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
 
                         <SeekBar
                             android:id="@+id/seekb5"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dip"
-                            android:layout_marginRight="5dip" />
+                            android:paddingLeft="7dip"
+                            android:paddingRight="7dip" />
                         
                         <LinearLayout 
                             android:layout_width="fill_parent"
@@ -264,7 +286,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dip"
                         android:text="@string/stt_stackmat"
-                        android:textSize="16dp" />
+                        android:textSize="16sp" />
                     
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -277,7 +299,7 @@
                             android:id="@+id/check10"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="17dp"
+                            android:textSize="17sp"
                             android:text="@string/stt_usess" />
                         
                         <LinearLayout
@@ -292,7 +314,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/stt_samprate"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Spinner
                                 android:id="@+id/spinner11"
@@ -306,7 +328,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/stt_invert"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
 
                     <TextView
@@ -315,7 +337,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dip"
                         android:text="@string/stt_scramble"
-                        android:textSize="16dp" />
+                        android:textSize="16sp" />
                     
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -330,21 +352,21 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dip"
                             android:text="@string/scrsize"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
 
                         <SeekBar
                             android:id="@+id/seekb2"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dip"
-                            android:layout_marginRight="5dip" />
+                            android:paddingLeft="7dip"
+                            android:paddingRight="7dip" />
                     
                         <CheckBox
                             android:id="@+id/check3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/hidescr"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
                         
                     </LinearLayout>
                        
@@ -354,7 +376,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dip"
                             android:text="@string/stt_stats"
-                            android:textSize="16dp" />
+                            android:textSize="16sp" />
                     
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -368,14 +390,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/confirm_time"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
                         
                         <CheckBox
                             android:id="@+id/check5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/printscr"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
                         
                         <LinearLayout
                             android:layout_width="fill_parent"
@@ -388,7 +410,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/ra0"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Spinner
                                 android:id="@+id/spinner4"
@@ -401,7 +423,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/trimmed"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -415,7 +437,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/ra1"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Spinner
                                 android:id="@+id/spinner5"
@@ -428,7 +450,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/trimmed"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
                         </LinearLayout>
 
                         <CheckBox
@@ -436,7 +458,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/sel_session"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
                         
                         <LinearLayout
                             android:layout_width="fill_parent"
@@ -449,7 +471,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/sesname"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Button
                                 android:id="@+id/btn_ses"
@@ -465,7 +487,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dip"
                             android:text="@string/stt_tools"
-                            android:textSize="16dp" />
+                            android:textSize="16sp" />
                     
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -487,7 +509,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/optcross"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Spinner
                                 android:id="@+id/spinner"
@@ -525,7 +547,7 @@
                             android:layout_marginLeft="5dip"
                             android:layout_marginRight="5dip"
                             android:text="@string/sq1shape"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
                         
                         <LinearLayout
                             android:layout_width="fill_parent"
@@ -541,7 +563,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/cube2_layer"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
                             
                             <Spinner
                                 android:id="@+id/spinner12"
@@ -559,7 +581,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dip"
                         android:text="@string/stt_scheme"
-                        android:textSize="16dp" />
+                        android:textSize="16sp" />
                     
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -579,7 +601,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/stt_csn"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Button
                                 android:id="@+id/btn_csn"
@@ -599,7 +621,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/stt_csp"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
                             
                             <Button
                                 android:id="@+id/btn_csp"
@@ -619,7 +641,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/stt_csq"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
                             
                             <Button
                                 android:id="@+id/btn_csq"
@@ -641,7 +663,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/mmxcolor"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Spinner
                                 android:id="@+id/spinner3"
@@ -658,7 +680,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dip"
                         android:text="@string/stt_share"
-                        android:textSize="16dp" />
+                        android:textSize="16sp" />
 
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -678,7 +700,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/stt_sina"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Button
                                 android:id="@+id/auth_sina"
@@ -694,7 +716,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dip"
                         android:text="@string/stt_interface"
-                        android:textSize="16dp" />
+                        android:textSize="16sp" />
                     
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -708,7 +730,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/full_screen"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
                         
                         <LinearLayout
                             android:layout_width="fill_parent"
@@ -722,7 +744,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/timer_font"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
                             
                             <Spinner
                                 android:id="@+id/spinner13"
@@ -736,23 +758,14 @@
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/timer_size"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
 
                         <SeekBar
                             android:id="@+id/seekb1"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dip"
-                            android:layout_marginRight="5dip" />
-
-                        <CheckBox
-                            android:id="@+id/check2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dip"
-                            android:layout_marginRight="5dip"
-                            android:text="@string/screenon"
-                            android:textSize="17dp" />
+                            android:paddingLeft="7dip"
+                            android:paddingRight="7dip" />
 
                         <LinearLayout
                             android:layout_width="fill_parent"
@@ -765,7 +778,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/bgcolor"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Button
                                 android:id="@+id/selbagc"
@@ -785,7 +798,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/bgpicture"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Button
                                 android:id="@+id/selbgpic"
@@ -804,15 +817,15 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/bgopacity"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <SeekBar
                                 android:id="@+id/seekb4"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:layout_marginLeft="5dip"
-                                android:layout_marginRight="5dip" />
+                                android:paddingLeft="7dip"
+                                android:paddingRight="7dip" />
                         </LinearLayout>
                         
                         <LinearLayout
@@ -826,7 +839,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/text_color"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Button
                                 android:id="@+id/seltxtc"
@@ -846,7 +859,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/best_time"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Button
                                 android:id="@+id/selorbc"
@@ -866,7 +879,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/worst_time"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Button
                                 android:id="@+id/selorwc"
@@ -886,7 +899,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/best_rolling_avg"
-                                android:textSize="17dp" />
+                                android:textSize="17sp" />
 
                             <Button
                                 android:id="@+id/selavbc"
@@ -900,24 +913,124 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/row_spacing"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
 
                         <SeekBar
                             android:id="@+id/seekb3"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dip"
-                            android:layout_marginRight="5dip"
+                            android:paddingLeft="7dip"
+                            android:paddingRight="7dip"
                             android:layout_marginBottom="5dip" />
 
                     </LinearLayout>
 
+                    <TextView
+                        android:id="@+id/stt33"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dip"
+                        android:text="@string/stt_hardw"
+                        android:textSize="16sp" />
+                    
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dip"
+                        android:background="@drawable/group_back"
+                        android:orientation="vertical" >
+                        
+                        <CheckBox
+                            android:id="@+id/check2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dip"
+                            android:layout_marginRight="5dip"
+                            android:text="@string/screenon"
+                            android:textSize="17sp" />
+                        
+                        <CheckBox
+                            android:id="@+id/check13"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dip"
+                            android:layout_marginRight="5dip"
+                            android:text="@string/screengrey"
+                            android:textSize="17sp" />
+                        
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt37"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/stt_screen_ori"
+                                android:textSize="17sp" />
+                            
+                            <Spinner
+                                android:id="@+id/spinner18"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginRight="5dip"
+                                android:layout_marginBottom="5dip" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt34"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/stt_vibra"
+                                android:textSize="17sp" />
+                            
+                            <Spinner
+                                android:id="@+id/spinner15"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginRight="5dip"
+                                android:layout_marginBottom="5dip" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt35"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/stt_vib_time"
+                                android:textSize="17sp" />
+                            
+                            <Spinner
+                                android:id="@+id/spinner16"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginRight="5dip"
+                                android:layout_marginBottom="5dip" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    
                     <Button
                         android:id="@+id/reset"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/reset_all"
-                        android:textSize="16dp" />
+                        android:textSize="16sp" />
 
                 </LinearLayout>
             </ScrollView>

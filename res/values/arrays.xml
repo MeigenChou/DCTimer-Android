@@ -267,4 +267,34 @@
         <item>五阶</item>
         <item>金字塔</item>
     </array>
+    
+    <array name="vibraStr">
+        <item>关闭</item>
+        <item>仅计时开始</item>
+        <item>仅计时结束</item>
+        <item>计时开始和结束</item>
+    </array>
+    
+    <array name="vibTimeStr">
+        <item>非常短</item>
+        <item>较短</item>
+        <item>标准</item>
+        <item>较长</item>
+        <item>非常长</item>
+    </array>
+    
+    <array name="soriStr">
+        <item>默认</item>
+        <item>横屏</item>
+        <item>反向横屏</item>
+        <item>竖屏</item>
+        <item>物理感应</item>
+    </array>
+    
+    <array name="tupdStr">
+        <item>实时</item>
+        <item>到秒</item>
+        <item>仅观察</item>
+        <item>隐藏</item>
+    </array>
 </resources>

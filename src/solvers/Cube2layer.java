@@ -1,5 +1,12 @@
 package solvers;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 public class Cube2layer {
 	public static class State {
 		public int[] cp;
@@ -24,18 +31,6 @@ public class Cube2layer {
         }
 	}
 	
-	private static State[] moves;
-	static {
-		State moveU = new State(new int[] { 3, 0, 1, 2, 4, 5, 6, 7 }, new int[] { 0, 0, 0, 0, 0, 0, 0, 0 });
-        State moveD = new State(new int[] { 0, 1, 2, 3, 5, 6, 7, 4 }, new int[] { 0, 0, 0, 0, 0, 0, 0, 0 });
-        State moveL = new State(new int[] { 4, 1, 2, 0, 7, 5, 6, 3 }, new int[] { 2, 0, 0, 1, 1, 0, 0, 2 });
-        State moveR = new State(new int[] { 0, 2, 6, 3, 4, 1, 5, 7 }, new int[] { 0, 1, 2, 0, 0, 2, 1, 0 });
-        State moveF = new State(new int[] { 0, 1, 3, 7, 4, 5, 2, 6 }, new int[] { 0, 0, 1, 2, 0, 0, 2, 1 });
-        State moveB = new State(new int[] { 1, 5, 2, 3, 0, 4, 6, 7 }, new int[] { 1, 2, 0, 0, 2, 1, 0, 0 });
-        
-        moves = new State[]{moveU, moveD, moveL, moveR, moveF, moveB};
-	}
-	
 	private static short[][] cpm = new short[1680][6];
 	private static short[][] com = new short[5670][6];
 	private static byte[] cpd = new byte[1680];
@@ -44,16 +39,37 @@ public class Cube2layer {
 	private static boolean ini = false;
 	private static void init() {
 		if(ini) return;
-		for(int i = 0; i < 70; i++) {
-			for(int j = 0; j < 81; j++) {
-				State state = cornersToState(new int[]{i, j, j});
-				for(int k = 0; k < 6; k++){
-					int[] cns = stateToCorners(state.multiply(moves[k])); 
-					com[i*81+j][k] = (short) (cns[0] * 81 + cns[2]);
-					if(j<24)cpm[i*24+j][k] = (short) (cns[0] * 24 + cns[1]);
+		try {
+			InputStream in = new BufferedInputStream(new FileInputStream("/data/data/com.dctimer/databases/c2bl.dat"));
+			Cross.read(cpm, in);
+			Cross.read(com, in);
+			in.close();
+		} catch (Exception e) {
+			State moveU = new State(new int[] { 3, 0, 1, 2, 4, 5, 6, 7 }, new int[] { 0, 0, 0, 0, 0, 0, 0, 0 });
+			State moveD = new State(new int[] { 0, 1, 2, 3, 5, 6, 7, 4 }, new int[] { 0, 0, 0, 0, 0, 0, 0, 0 });
+			State moveL = new State(new int[] { 4, 1, 2, 0, 7, 5, 6, 3 }, new int[] { 2, 0, 0, 1, 1, 0, 0, 2 });
+			State moveR = new State(new int[] { 0, 2, 6, 3, 4, 1, 5, 7 }, new int[] { 0, 1, 2, 0, 0, 2, 1, 0 });
+			State moveF = new State(new int[] { 0, 1, 3, 7, 4, 5, 2, 6 }, new int[] { 0, 0, 1, 2, 0, 0, 2, 1 });
+			State moveB = new State(new int[] { 1, 5, 2, 3, 0, 4, 6, 7 }, new int[] { 1, 2, 0, 0, 2, 1, 0, 0 });
+			State[] moves = new State[]{moveU, moveD, moveL, moveR, moveF, moveB};
+			for(int i = 0; i < 70; i++) {
+				for(int j = 0; j < 81; j++) {
+					State state = cornersToState(new int[]{i, j, j});
+					for(int k = 0; k < 6; k++){
+						int[] cns = stateToCorners(state.multiply(moves[k])); 
+						com[i*81+j][k] = (short) (cns[0] * 81 + cns[2]);
+						if(j<24)cpm[i*24+j][k] = (short) (cns[0] * 24 + cns[1]);
+					}
 				}
 			}
+			try {
+				OutputStream out = new BufferedOutputStream(new FileOutputStream("/data/data/com.dctimer/databases/c2bl.dat"));
+				Cross.write(cpm, out);
+				Cross.write(com, out);
+				out.close();
+			} catch (Exception e1) { }
 		}
+		
 		for(int i = 0; i< 1680; i++) cpd[i]=-1;
 		cpd[1656] = 0;
 		int d=0;

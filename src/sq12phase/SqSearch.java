@@ -18,11 +18,6 @@ public class SqSearch {
 		return p & 1;
 	}
 
-	static {
-		Shape.init();
-		Square.init();
-	}
-
 	public String solution(FullCube c) {
 		this.c = c;
 		sol_string = null;

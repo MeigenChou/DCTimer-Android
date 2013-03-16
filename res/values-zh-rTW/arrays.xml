@@ -250,4 +250,43 @@
         <item>數碼管1</item>
         <item>數碼管2</item>
     </array>
+    
+    <array name="inscrStr">
+        <item>自動識別</item>
+        <item>二階</item>
+        <item>三階</item>
+        <item>四階</item>
+        <item>五階</item>
+        <item>金字塔</item>
+    </array>
+    
+    <array name="vibraStr">
+        <item>關閉</item>
+        <item>僅計時開始</item>
+        <item>僅計時結束</item>
+        <item>計時開始和結束</item>
+    </array>
+    
+    <array name="vibTimeStr">
+        <item>非常短</item>
+        <item>較短</item>
+        <item>標準</item>
+        <item>較長</item>
+        <item>非常長</item>
+    </array>
+    
+    <array name="tupdStr">
+        <item>實時</item>
+        <item>到秒</item>
+        <item>僅觀察</item>
+        <item>隱藏</item>
+    </array>
+    
+    <array name="soriStr">
+        <item>默認</item>
+        <item>橫屏</item>
+        <item>反向橫屏</item>
+        <item>竪屏</item>
+        <item>物理感應</item>
+    </array>
 </resources>

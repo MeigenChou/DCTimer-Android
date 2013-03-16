@@ -6,7 +6,7 @@ public class SQ1 {
 	private static int[] seq;    // move sequences
 	private static byte[] posit;    // piece array
 	private static StringBuffer sb;
-	public static int count;
+	public static boolean mi;
 	private static void scramble(){
 		posit=new byte[]{0,0,1,2,2,3,4,4,5,6,6,7,8,9,9,10,11,11,12,13,13,14,15,15};
 		int i,j,ls,f;
@@ -31,7 +31,7 @@ public class SQ1 {
 	}
 	public static String scramblestring(){
 		scramble();
-		count=0;
+		mi = true;
 		sb=new StringBuffer();
 		int i,k,l=-1;
 		for(i=0; i<seq.length; i++){
@@ -41,7 +41,7 @@ public class SQ1 {
 				if(l==1) sb.append("0) / ");
 				if(l==2) sb.append(") / ");
 				l=0;
-				count++;
+				mi = !mi;
 			}else if(k>0){
 				sb.append("(" + (k>6?k-12:k)+",");
 				l=1;
@@ -97,8 +97,12 @@ public class SQ1 {
 	}
 	public static byte[] imagestr(String[] scr){
 		posit=new byte[]{0,0,1,2,2,3,4,4,5,6,6,7,8,9,9,10,11,11,12,13,13,14,15,15};
+		mi = true;
 		for(int i=0; i<scr.length; i++) {
-			if(scr[i].equals("/")) domove(0);
+			if(scr[i].equals("/")) {
+				domove(0);
+				mi = !mi;
+			}
 			else {
 				Pattern p = Pattern.compile("\\((-?\\d+),(-?\\d+)\\)");
 	            Matcher matcher = p.matcher(scr[i]);

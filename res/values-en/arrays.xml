@@ -254,4 +254,43 @@
         <item>lcd1</item>
         <item>lcd2</item>
     </array>
+    
+    <array name="inscrStr">
+        <item>Default</item>
+        <item>2x2</item>
+        <item>3x3</item>
+        <item>4x4</item>
+        <item>5x5</item>
+        <item>Pyraminx</item>
+    </array>
+    
+    <array name="vibraStr">
+        <item>Off</item>
+        <item>Only when timer starts</item>
+        <item>Only when timer ends</item>
+        <item>All events</item>
+    </array>
+    
+    <array name="vibTimeStr">
+        <item>Very short</item>
+        <item>Short</item>
+        <item>Standard</item>
+        <item>Excessive</item>
+        <item>Epic</item>
+    </array>
+    
+    <array name="soriStr">
+        <item>Default</item>
+        <item>Landscape</item>
+        <item>Reverse landscape</item>
+        <item>Portrait</item>
+        <item>Sensor</item>
+    </array>
+    
+    <array name="tupdStr">
+        <item>On</item>
+        <item>Seconds only</item>
+        <item>Inspection only</item>
+        <item>Off</item>
+    </array>
 </resources>

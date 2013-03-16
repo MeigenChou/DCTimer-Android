@@ -5,12 +5,11 @@ import java.util.Random;
 public class Domino {
 	private static char[][] epm = new char[40320][5];
 	private static byte[] epd = new byte[40320];
-	private static StringBuffer sb;
     private static byte[] faces = {3, 1, 1, 1, 1};
     private static byte[] idx = {0, 2, 3, 4, 5};
     private static String[] turn = {"U", "L", "R", "F", "B"};
     private static String[] suff = {"'", "2", ""};
-
+    private static int[] seq = new int[25];
     private static boolean ini=false;
     private static void init(){
     	if(ini)return;
@@ -61,7 +60,8 @@ public class Domino {
     			for(int k = 0; k < faces[i]; k++){
     				y = Tower.cpm[y][idx[i]]; s = epm[s][i];
     				if(search(y, s, depth - 1, i)){
-    					sb.append(turn[i]+(i<1?suff[k]:"2")+" ");
+    					seq[depth] = i*3+(i<1?k:1);
+    					//sb.append(turn[i]+(i<1?suff[k]:"2")+" ");
     					return true;
     				}
     			}
@@ -73,9 +73,15 @@ public class Domino {
     	int cp = r.nextInt(40320);
     	int ep = r.nextInt(40320);
     	
-    	sb=new StringBuffer();
-    	for (int depth = 0; !search(cp, ep, depth, -1); depth++);
-    	return sb.toString();
+    	for (int depth = 0; ; depth++) {
+    		if(search(cp, ep, depth, -1)) {
+    			StringBuffer s = new StringBuffer();
+    			for(int i=1; i<=depth; i++) {
+    				s.append(turn[seq[i]/3]+suff[seq[i]%3]+" ");
+    			}
+    			return s.toString();
+    		}
+    	}
     }
     
     private static byte[] img=new byte[42];

@@ -215,16 +215,7 @@ public class FullCube implements Comparable<FullCube> {
 		for( ; b<8; a+=3, b++) prm[b]=(byte)(pieceAt(a)>>1);
 		sq.edgeperm=Im.get8Perm(prm);
 
-
 		sq.ml = ml;
-	}
-	public byte[] imagestr() {
-		byte[] map = {5,4,3,2,1,0,11,10,9,8,7,6,17,16,15,14,13,12,23,22,21,20,19,18};
-		byte[] posit=new byte[24];
-		for (int j = 0; j < 24; j++) {
-		    posit[j]=pieceAt(map[j]);
-		}
-		return posit;
 	}
 }
 

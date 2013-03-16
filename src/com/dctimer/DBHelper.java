@@ -19,7 +19,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		this.db = db;
 		db.execSQL("create table resulttb(id integer not null,rest integer not null,resp integer not null,resd integer not null,scr text not null,time text,note text,p1 integer,p2 integer,p3 integer,p4 integer,p5 integer,p6 integer);");
-		for(int i=2;i<16;i++)db.execSQL("create table result"+i+"(id integer not null,rest integer not null,resp integer not null,resd integer not null,scr text not null,time text,note text,p1 integer,p2 integer,p3 integer,p4 integer,p5 integer,p6 integer);");
+		for(int i=2; i<16; i++)db.execSQL("create table result"+i+"(id integer not null,rest integer not null,resp integer not null,resd integer not null,scr text not null,time text,note text,p1 integer,p2 integer,p3 integer,p4 integer,p5 integer,p6 integer);");
 	}
 	
 	public void insert(int i, ContentValues values) {
@@ -44,7 +44,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	
 	public void update(int i, int id, byte resp, byte resd) {
 		if (db == null) db = getWritableDatabase();
-		ContentValues cv=new ContentValues();
+		ContentValues cv = new ContentValues();
 		cv.put("resp", resp);
 		cv.put("resd", resd);
 		db.update(TBL_NAME[i], cv, "id=?",new String[] {String.valueOf(id)});
@@ -52,7 +52,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	
 	public void update(int i, int id, String note) {
 		if (db == null) db = getWritableDatabase();
-		ContentValues cv=new ContentValues();
+		ContentValues cv = new ContentValues();
 		cv.put("note", note);
 		db.update(TBL_NAME[i], cv, "id=?",new String[] {String.valueOf(id)});
 	}
@@ -62,20 +62,21 @@ public class DBHelper extends SQLiteOpenHelper {
 	
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVer, int newVer) {
+		if(oldVer > newVer) return;
 		this.db = db;
 		db.execSQL("alter table resulttb add time text;");
 		db.execSQL("alter table resulttb add note text;");
-		for(int i=1;i<7;i++)db.execSQL("alter table resulttb add p"+i+" integer;");
-		if(oldVer<3){
-			for(int i=2;i<16;i++)db.execSQL("create table result"+i+"(id integer not null,rest integer not null,resp integer not null,resd integer not null,scr text not null,time text,note text,p1 integer,p2 integer,p3 integer,p4 integer,p5 integer,p6 integer);");
+		for(int i=1; i<7; i++)db.execSQL("alter table resulttb add p"+i+" integer;");
+		if(oldVer < 3) {
+			for(int i=2; i<16; i++)db.execSQL("create table result"+i+"(id integer not null,rest integer not null,resp integer not null,resd integer not null,scr text not null,time text,note text,p1 integer,p2 integer,p3 integer,p4 integer,p5 integer,p6 integer);");
 		}
-		else if(oldVer<4){
-			for(int i=2;i<10;i++){
+		else if(oldVer < 4){
+			for(int i=2; i<10; i++) {
 				db.execSQL("alter table result"+i+" add time text;");
 				db.execSQL("alter table result"+i+" add note text;");
-				for(int j=1;j<7;j++)db.execSQL("alter table result"+i+" add p"+j+" integer;");
+				for(int j=1; j<7; j++)db.execSQL("alter table result"+i+" add p"+j+" integer;");
 			}
-			for(int i=10;i<16;i++)db.execSQL("create table result"+i+"(id integer not null,rest integer not null,resp integer not null,resd integer not null,scr text not null,time text,note text,p1 integer,p2 integer,p3 integer,p4 integer,p5 integer,p6 integer);");
+			for(int i=10; i<16; i++) db.execSQL("create table result"+i+"(id integer not null,rest integer not null,resp integer not null,resd integer not null,scr text not null,time text,note text,p1 integer,p2 integer,p3 integer,p4 integer,p5 integer,p6 integer);");
 		}
 		//for(int i=1;i<9;i++)db.execSQL(CREATE_TBL[i]);
 	}

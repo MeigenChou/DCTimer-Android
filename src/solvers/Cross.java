@@ -87,7 +87,7 @@ public class Cross {
 //		}
 		return 24*c+i<<4|o;
 	}
-	private static void read(short[][] arr, InputStream in) throws IOException {
+	protected static void read(short[][] arr, InputStream in) throws IOException {
 		int len = arr.length;
 		byte[] buf = new byte[len * 2];
 		for (int i=0; i<6; i++) {
@@ -97,7 +97,7 @@ public class Cross {
 			}
 		}	
 	}
-	private static void write(short[][] arr, OutputStream out) throws IOException {
+	protected static void write(short[][] arr, OutputStream out) throws IOException {
 		int len=arr.length;
 		byte[] buf = new byte[len * 2];
 		for (int i=0; i<6; i++) {

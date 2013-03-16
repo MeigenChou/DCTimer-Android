@@ -23,6 +23,7 @@ public class Stackmat {
 	private boolean isMsec = false;
 	DCTimer ct;
 	private byte state=0;	//0-off, 1-not ready, 2-running, 4-stop
+	private int lasttime = 0;
 	
 	public Stackmat(DCTimer ct){
 		this.ct=ct;
@@ -149,7 +150,12 @@ public class Stackmat {
 	                					case 2:	//running
 	                						if(time==0)state=1;
 	                						if(data[0]=='C' || data[0]=='S'){
-	                							publishProgress(-1, time); state=3;
+	                							if(time == lasttime) {
+	                								lasttime = 0;
+	                								publishProgress(-1, time);
+	                								state=3;
+	                							}
+	                							else lasttime = time;
 	                						}
 	                						break;
 	                					case 3:	//stop
@@ -200,7 +206,10 @@ public class Stackmat {
 		}
 		protected void onProgressUpdate(Integer...pr){
 			if(pr[0]==-2)ct.tvTimer.setText("OFF");
-			else if(pr[0]==-1)ct.confirmTime(pr[1]);
+			else if(pr[0]==-1){
+				ct.newScr(false);
+				ct.confirmTime(pr[1]);
+			}
 			else {
 				if(pr[0]==65)ct.tvTimer.setTextColor(0xff00ff00);
 				else if(pr[0]==67)ct.tvTimer.setTextColor(0xffff0000);

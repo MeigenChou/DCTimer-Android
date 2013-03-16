@@ -6,6 +6,8 @@
 	<string name="scramble_view">scramble view</string>
 	<string name="session">" Session "</string>
 	<string name="clear_session">Clear</string>
+	<string name="inspect">INSPECTING</string>
+	<string name="solve">SOLVING</string>
 	<string name="time">" time"</string>
 	<string name="no_penalty">No penalty</string>
 	<string name="penalty_2">"+2"</string>
@@ -14,12 +16,14 @@
 	<string name="session_average">Session Mean(</string>
 	<string name="wcainsp">WCA inspection</string>
 	<string name="screenon">Always keep screen on</string>
+	<string name="screengrey">Allow to dim the screen</string>
 	<string name="hidescr">Hide scramble while timing</string>
 	<string name="clock_format">Use clock format for times over a minute</string>
 	<string name="confirm_time">Prompt when new time detected</string>
 	<string name="printscr">Print scramble(s) in statistics</string>
 	<string name="precision">" Timer accuracy"</string>
 	<string name="input_time">" Entering in times with"</string>
+	<string name="timer_upd">" Timer updating"</string>
 	<string name="ra0">" RA0:"</string>
 	<string name="ra1">" RA1:"</string>
 	<string name="trimmed">"Trimmed "</string>
@@ -85,6 +89,10 @@
 	<string name="stt_share">Share</string>
 	<string name="stt_scheme">Color Schemes</string>
 	<string name="stt_sina">" Sina Weibo"</string>
+	<string name="stt_hardw">Hardware</string>
+	<string name="stt_vibra">" Haptic feedback"</string>
+	<string name="stt_vib_time">" Hapic feedback duration"</string>
+	<string name="stt_screen_ori">" Screen orientation"</string>
 	<string name="login">" Login "</string>
 	<string name="logout">" Logout "</string>
 	<string name="login_success">Login success.</string>
@@ -127,6 +135,7 @@
     <string name="scheme_sq">"Square-1 Color Schemes"</string>
     <string name="scheme_reset">Reset</string>
     <string name="outscr_mun">"Number of scramble(1~100):"</string>
+    <string name="inscr_type">Scramble type:</string>
     <string name="scr_path">"Path:"</string>
     <string name="scr_filename">"File name:"</string>
     <string name="def_fname">"scramble.txt"</string>

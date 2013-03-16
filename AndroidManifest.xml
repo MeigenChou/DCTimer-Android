@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dctimer"
-    android:versionCode="11"
-    android:versionName="0.6.4" >
+    android:versionCode="12"
+    android:versionName="0.6.5" >
 
     <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="7"/>
 
@@ -14,6 +14,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> 
     <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
     
     <supports-screens 
         android:smallScreens="true"
