@@ -48,16 +48,17 @@
 
                     <Spinner
                         android:id="@+id/mySpinner"
-                        android:layout_width="90dp"
+                        android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" >
                     </Spinner>
 
-                    <Button
+                    <Spinner
                         android:id="@+id/sndscr"
-                        android:layout_width="wrap_content"
+                        android:layout_width="90dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:layout_weight="1" >
+                    </Spinner>
                     
                     <Button
                         android:id="@+id/myButtonSst"

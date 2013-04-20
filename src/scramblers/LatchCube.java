@@ -2,6 +2,8 @@ package scramblers;
 
 import java.util.Random;
 
+import com.dctimer.Mi;
+
 public class LatchCube {
 //	private static final int u = 0;
 //	private static final int d = 1;
@@ -9,9 +11,9 @@ public class LatchCube {
 //	private static final int r = 3;
 //	private static final int f = 4;
 //	private static final int b = 5;
-	private static int[] moveFaces = new int[25];
-	private static int[] moveTimes = new int[25];
-	private static String[] moveNames = new String[25];
+	private static int[] moveFaces;
+	private static int[] moveTimes;
+	private static String[] moveNames;
 
 	private static int moveCount = 0;
 	private static int currentMove = -1;
@@ -61,7 +63,7 @@ public class LatchCube {
 			movableFaceCount += ((movableFaces[i] >= 0) ? 1 : 0);
 	}
 
-	private static boolean moveU(int times) {
+	private static void moveU(int times) {
 		int i = 0;
 		for (i = 0; i < times; ++i) {
 			int tmp = label[0][0];
@@ -76,9 +78,8 @@ public class LatchCube {
 			label[5][0] = label[2][0];
 			label[2][0] = tmp;
 		}
-		return true;
 	}
-	private static boolean moveD(int times) {
+	private static void moveD(int times) {
 		int i = 0;
 		for (i = 0; i < times; ++i) {
 			int tmp = label[1][0];
@@ -93,10 +94,9 @@ public class LatchCube {
 			label[5][3] = label[3][3];
 			label[3][3] = tmp;
 		}
-		return true;
 	}
 
-	private static boolean moveL(int times) {
+	private static void moveL(int times) {
 		int i = 0;
 		for (i = 0; i < times; ++i) {
 			int tmp = label[2][0];
@@ -111,10 +111,9 @@ public class LatchCube {
 			label[1][1] = label[4][1];
 			label[4][1] = tmp;
 		}
-		return true;
 	}
 
-	private static boolean moveR(int times) {
+	private static void moveR(int times) {
 		int i = 0;
 		for (i = 0; i < times; ++i) {
 			int tmp = label[3][0];
@@ -129,10 +128,9 @@ public class LatchCube {
 			label[1][2] = label[5][1];
 			label[5][1] = tmp;
 		}
-		return true;
 	}
 
-	private static boolean moveF(int times) {
+	private static void moveF(int times) {
 		int i = 0;
 		for (i = 0; i < times; ++i) {
 			int tmp = label[4][0];
@@ -147,10 +145,9 @@ public class LatchCube {
 			label[1][0] = label[3][1];
 			label[3][1] = tmp;
 		}
-		return true;
 	}
 
-	private static boolean moveB(int times) {
+	private static void moveB(int times) {
 		int i = 0;
 		for (i = 0; i < times; ++i) {
 			int tmp = label[5][0];
@@ -165,13 +162,15 @@ public class LatchCube {
 			label[1][3] = label[2][1];
 			label[2][1] = tmp;
 		}
-		return true;
 	}
 
 	private static void reset() {
 		label=new int[][]{ { 0, -1, -1, 0 }, { 0, 1, 1, 0 }, { 0, -1, -1, 0 },
 				 { 0, 1, 1, 0 }, { -1, 0, 0, -1 }, { 1, 0, 0, 1 } };
-		for (int i = 0; i < 25; ++i) {
+		moveFaces = new int[Mi.scrLen];
+		moveTimes = new int[Mi.scrLen];
+		moveNames = new String[Mi.scrLen];
+		for (int i = 0; i < Mi.scrLen; ++i) {
 			moveFaces[i] = -1;
 			moveTimes[i] = 0;
 			moveNames[i] = "";
@@ -218,7 +217,7 @@ public class LatchCube {
 		reset();
 		Random rand = new Random(System.currentTimeMillis());
 
-		for (int i = 0; i < 25; moveCount++) {
+		for (int i = 0; i < Mi.scrLen; moveCount++) {
 			determineMovableFaces();
 			currentMove = rand.nextInt(18);
 			currentFace = currentMove / 3;
@@ -257,7 +256,7 @@ public class LatchCube {
 			++i;
 		}
 
-		for (int i = 0; i < 25; ++i) {
+		for (int i = 0; i < Mi.scrLen; ++i) {
 			sequence.append(moveNames[i]);
 		}
 		return sequence.toString();

@@ -37,7 +37,7 @@
         <item>EG2训练</item>
     </array>
     <array name="scr333">
-        <item>传统打乱</item>
+        <item>传统</item>
         <item>随机状态</item>
         <item>F2L训练</item>
         <item>顶层/OLL训练</item>
@@ -50,6 +50,14 @@
         <item>顶层角块</item>
         <item>桥式六棱</item>
         <item>桥式四角</item>
+        <item>棱块位置</item>
+        <item>棱块色相</item>
+        <item>角块位置</item>
+        <item>角块色相</item>
+        <item>位置训练</item>
+        <item>色相训练</item>
+        <item>简单十字</item>
+        <item>2GLL</item>
     </array>
     <array name="scr444">
         <item>WCA</item>

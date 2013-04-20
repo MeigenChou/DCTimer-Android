@@ -8,12 +8,12 @@ public class Shape {
 	static int[] halflayer = {0x00, 0x03, 0x06, 0x0c, 0x0f, 0x18, 0x1b, 0x1e, 
 		0x30, 0x33, 0x36, 0x3c, 0x3f};
 
-	static int[] ShapeIdx = new int[3678];
-	static int[] ShapePrun = new int[3768 * 2];
+	public static int[] ShapeIdx = new int[3678];
+	public static byte[] ShapePrun = new byte[3768 * 2];
 
-	static int[] TopMove = new int[3678 * 2];
-	static int[] BottomMove = new int[3678 * 2];
-	static int[] TwistMove = new int[3678 * 2];
+	public static int[] TopMove = new int[3678 * 2];
+	public static int[] BottomMove = new int[3678 * 2];
+	public static char[] TwistMove = new char[3678 * 2];
 
 	private Shape(){}	
 
@@ -114,7 +114,7 @@ public class Shape {
 			BottomMove[i] |= s.getIdx() << 4;
 			s.setIdx(i);
 			s.twistMove();
-			TwistMove[i] = s.getIdx();
+			TwistMove[i] = (char) s.getIdx();
 		}
 		for (int i=0; i<3768*2; i++) {
 			ShapePrun[i] = -1;
@@ -146,7 +146,7 @@ public class Shape {
 						idx >>= 4;
 						if (ShapePrun[idx] == -1) {
 							++done;
-							ShapePrun[idx] = depth + 1;
+							ShapePrun[idx] = (byte) (depth + 1);
 						}
 					} while (m != 12);
 
@@ -159,7 +159,7 @@ public class Shape {
 						idx >>= 4;
 						if (ShapePrun[idx] == -1) {
 							++done;
-							ShapePrun[idx] = depth + 1;
+							ShapePrun[idx] = (byte) (depth + 1);
 						}
 					} while (m != 12);
 
@@ -167,7 +167,7 @@ public class Shape {
 					idx = TwistMove[i];
 					if (ShapePrun[idx] == -1) {
 						++done;
-						ShapePrun[idx] = depth + 1;
+						ShapePrun[idx] = (byte) (depth + 1);
 					}
 				}
 			}

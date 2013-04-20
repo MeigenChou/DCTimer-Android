@@ -1,5 +1,6 @@
 ﻿package com.dctimer;
 
+import java.io.*;
 import java.util.Random;
 
 import min2phase.*;
@@ -20,37 +21,68 @@ public class Mi {
 	public static String sc;
 	private static boolean ini = false;
 	public static int viewType;
+	public static int scrLen=0;
+	private static short[][] defScrLen = new short[21][];
+	private static boolean inis = false;
 	
-	public static String SetScr(int n) {
+	private static void inits() {
+		if(inis)return;
+		defScrLen[0] = new short[]{0, 25, 25, 0, 0, 0};
+		defScrLen[1] = new short[]{25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0};
+		defScrLen[2] = new short[]{40, 40, 40, 8, 40};
+		defScrLen[3] = new short[]{60, 60, 8};
+		defScrLen[4] = new short[]{80, 80, 80, 8};
+		defScrLen[5] = new short[]{100, 100, 100, 8};
+		defScrLen[6] = new short[]{70, 70};
+		defScrLen[7] = new short[]{0, 25};
+		defScrLen[8] = new short[]{40, 20, 0};
+		defScrLen[9] = new short[]{0, 0, 0, 0};
+		defScrLen[10] = new short[]{80, 80};
+		defScrLen[11] = new short[]{15, 25, 0, 25, 0, 0, 0, 40, 25, 40, 40, 120, 140, 140, 140};
+		defScrLen[12] = new short[]{25, 25};
+		defScrLen[13] = new short[]{0, 10};
+		defScrLen[14] = new short[]{25, 25, 25};
+		defScrLen[15] = new short[]{0, 25};
+		defScrLen[16] = new short[]{25, 40, 20, 20, 25, 25};
+		defScrLen[17] = new short[]{0, 0, 0, 25, 25, 25, 0, 15};
+		defScrLen[18] = new short[]{30, 25};
+		defScrLen[19] = new short[]{30, 20};
+		defScrLen[20] = new short[]{0, 0, 0, 0, 5};
+		inis = true;
+	}
+	
+	public static String SetScr(int n, boolean ch) {
 		String[][][] turns;
 		String[][] turn2;
 		String[] end,suff0={""},csuff={"","2","'"},suff;
-		String scr="", cube;
+		String scr="";
+		inits();
+		if(ch)scrLen = defScrLen[n>>5][n&31];
 		switch(n){
 		case 0: //2阶
 			scr=Cube222.solve(Cube222.randomState());viewType=2;
 			if(DCTimer.spSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spSel[2]);break;
 		case 1:
-			scr=Cube.scramblestring(2, 25);viewType=2;
+			scr=cube(2);viewType=2;
 			if(DCTimer.spSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spSel[2]);break;
 		case 2:
-			scr=OtherScr.megascramble(new String[][][]{{{"U","D"}},{{"R","L"}},{{"F","B"}}}, csuff, 25);viewType=2;
+			scr=OtherScr.megascramble(new String[][][]{{{"U","D"}},{{"R","L"}},{{"F","B"}}}, csuff);viewType=2;
 			if(DCTimer.spSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spSel[2]);break;
 		case 3:
-			scr=Cube222.solve(Cube222.randomCLL());viewType=2; break;
+			scr=Cube222.solve(Cube222.randomCLL());viewType=2;break;
 		case 4:
-			scr=Cube222.solve(Cube222.randomEG1());viewType=2; break;
+			scr=Cube222.solve(Cube222.randomEG1());viewType=2;break;
 		case 5:
-			scr=Cube222.solve(Cube222.randomEG2());viewType=2; break;
-		case 16: //3阶
-			scr=Cube.scramblestring(3, 25);viewType=3;
+			scr=Cube222.solve(Cube222.randomEG2());viewType=2;break;
+		case 32: //3阶
+			scr=cube(3);viewType=3;
 			if(DCTimer.spSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[9], DCTimer.spSel[10]);
 			else if(DCTimer.spSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[10]);
 			else if(DCTimer.spSel[1]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[10]);
 			else if(DCTimer.spSel[1]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[10]);
 			else if(DCTimer.spSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[10]);
 			break;
-		case 17:
+		case 33:
 			scr = new Search().solution(Tools.randomCube(), 21, 20000, 0, 2);
 			viewType=scr.startsWith("Error")?0:3;
 			if(DCTimer.spSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[9], DCTimer.spSel[10]);
@@ -59,257 +91,308 @@ public class Mi {
 			else if(DCTimer.spSel[1]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[10]);
 			else if(DCTimer.spSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[10]);
 			break;
-		case 18:
+		case 34:
 			scr = new Search().solution(Tools.randomCrossSolved(), 21, 20000, 0, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
-		case 19:
-			scr = new Search().solution(Tools.randomLastLayer(), 20, 20000, 0, 2);
+		case 35:
+			scr = new Search().solution(Tools.randomLastLayer(), 21, 20000, 0, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
-		case 20:
-			cube=Tools.randomState(new byte[]{-1, -1, -1, -1, 4, 5, 6, 7}, Tools.STATE_SOLVED, new byte[]{-1, -1, -1, -1, 4, 5, 6, 7, 8, 9, 10, 11}, Tools.STATE_SOLVED);
-			scr = new Search().solution(cube, 20, 20000, 0, 2);
+		case 36:
+			scr = new Search().solution(Tools.randomState(new byte[]{-1, -1, -1, -1, 4, 5, 6, 7}, Tools.STATE_SOLVED, new byte[]{-1, -1, -1, -1, 4, 5, 6, 7, 8, 9, 10, 11}, Tools.STATE_SOLVED), 21, 20000, 0, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
-		case 21:
-			cube=Tools.randomCornerSolved();
-			cube = new Search().solution(cube, 21, 20000, 0, 2);
-			scr=cube;viewType=scr.startsWith("Error")?0:3;
+		case 37:
+			scr = new Search().solution(Tools.randomCornerSolved(), 21, 20000, 0, 2);
+			viewType=scr.startsWith("Error")?0:3;
 			if(DCTimer.spSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[9], DCTimer.spSel[10]);
 			else if(DCTimer.spSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[10]);
 			else if(DCTimer.spSel[1]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[10]);
 			else if(DCTimer.spSel[1]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[10]);
 			else if(DCTimer.spSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[10]);
 			break;
-		case 22:
-			cube=Tools.randomEdgeSolved();
-			cube = new Search().solution(cube, 20, 20000, 0, 2);
-			scr=cube;viewType=scr.startsWith("Error")?0:3;break;
-		case 23:
-			cube=Tools.randomLastSlot();
-			cube = new Search().solution(cube, 20, 20000, 0, 2);
-			scr=cube;viewType=scr.startsWith("Error")?0:3;break;
-		case 24:
-			cube=Tools.randomZBLastLayer();
-			cube = new Search().solution(cube, 20, 20000, 0, 2);
-			scr=cube;viewType=scr.startsWith("Error")?0:3;break;
-		case 25:
-			cube=Tools.randomEdgeOfLastLayer();
-			cube = new Search().solution(cube, 20, 20000, 0, 2);
-			scr=cube;viewType=scr.startsWith("Error")?0:3;break;
-		case 26:
-			cube=Tools.randomCornerOfLastLayer();
-			cube = new Search().solution(cube, 20, 20000, 0, 2);
-			scr=cube;viewType=scr.startsWith("Error")?0:3;break;
-		case 27:
+		case 38:
+			scr = new Search().solution(Tools.randomEdgeSolved(), 21, 20000, 0, 2);
+			viewType=scr.startsWith("Error")?0:3;break;
+		case 39:
+			scr = new Search().solution(Tools.randomLastSlot(), 21, 20000, 0, 2);
+			viewType=scr.startsWith("Error")?0:3;break;
+		case 40:
+			scr = new Search().solution(Tools.randomZBLastLayer(), 21, 20000, 0, 2);
+			viewType=scr.startsWith("Error")?0:3;break;
+		case 41:
+			scr = new Search().solution(Tools.randomEdgeOfLastLayer(), 21, 20000, 0, 2);
+			viewType=scr.startsWith("Error")?0:3;break;
+		case 42:
+			scr = new Search().solution(Tools.randomCornerOfLastLayer(), 21, 20000, 0, 2);
+			viewType=scr.startsWith("Error")?0:3;break;
+		case 43:
 			switch ((int)(Math.random()*4)) {
 			case 0:
-				scr=new Search().solution(Tools.randomState(new byte[]{0,1,2,3,4,5,6,7}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 20, 20000, 0, 2);
+				scr=new Search().solution(Tools.randomState(new byte[]{0,1,2,3,4,5,6,7}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 21, 20000, 0, 2);
 				break;
 			case 1:
-				scr=new Search().solution(Tools.randomState(new byte[]{3,2,6,7,0,1,5,4}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 20, 20000, 0, 2)+"x'";
+				scr=new Search().solution(Tools.randomState(new byte[]{3,2,6,7,0,1,5,4}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 21, 20000, 0, 2)+"x'";
 				break;
 			case 2:
-				scr=new Search().solution(Tools.randomState(new byte[]{7,6,5,4,3,2,1,0}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 20, 20000, 0, 2)+"x2";
+				scr=new Search().solution(Tools.randomState(new byte[]{7,6,5,4,3,2,1,0}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 21, 20000, 0, 2)+"x2";
 				break;
 			default:
-				scr=new Search().solution(Tools.randomState(new byte[]{4,5,1,0,7,6,2,3}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 20, 20000, 0, 2)+"x";
+				scr=new Search().solution(Tools.randomState(new byte[]{4,5,1,0,7,6,2,3}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 21, 20000, 0, 2)+"x";
 				break;
 			}
 			viewType=scr.startsWith("Error")?0:3;break;
-		case 28:
+		case 44:
 			switch ((int)(Math.random()*4)) {
 			case 0:
-				scr=new Search().solution(Tools.randomState(new byte[]{-1,-1,-1,-1,4,5,6,7}, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 20, 20000, 200, 2);
+				scr=new Search().solution(Tools.randomState(new byte[]{-1,-1,-1,-1,4,5,6,7}, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 21, 20000, 0, 2);
 				break;
 			case 1:
-				scr=new Search().solution(Tools.randomState(new byte[]{3,2,-1,-1,0,1,-1,-1}, new byte[]{2,1,-1,-1,1,2,-1,-1}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 20, 20000, 200, 2)+"x'";
+				scr=new Search().solution(Tools.randomState(new byte[]{3,2,-1,-1,0,1,-1,-1}, new byte[]{2,1,-1,-1,1,2,-1,-1}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 21, 20000, 0, 2)+"x'";
 				break;
 			case 2:
-				scr=new Search().solution(Tools.randomState(new byte[]{7,6,5,4,-1,-1,-1,-1}, new byte[]{0,0,0,0,-1,-1,-1,-1}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 20, 20000, 200, 2)+"x2";
+				scr=new Search().solution(Tools.randomState(new byte[]{7,6,5,4,-1,-1,-1,-1}, new byte[]{0,0,0,0,-1,-1,-1,-1}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 21, 20000, 0, 2)+"x2";
 				break;
 			default:
-				scr=new Search().solution(Tools.randomState(new byte[]{-1,-1,1,0,-1,-1,2,3}, new byte[]{-1,-1,2,1,-1,-1,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 20, 20000, 200, 2)+"x";
+				scr=new Search().solution(Tools.randomState(new byte[]{-1,-1,1,0,-1,-1,2,3}, new byte[]{-1,-1,2,1,-1,-1,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 21, 20000, 0, 2)+"x";
 				break;
 			}
 			viewType=scr.startsWith("Error")?0:3;break;
-		case 32: //4阶
-			scr=Cube.scramblestring(4, 40);viewType=4;break;
-		case 33:
+		case 45:
+			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED), 21, 20000, 0, 2);
+			viewType=scr.startsWith("Error")?0:3;break;
+		case 46:
+			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_RANDOM), 21, 20000, 0, 2);
+			viewType=scr.startsWith("Error")?0:3;break;
+		case 47:
+			scr = new Search().solution(Tools.randomState(Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_SOLVED), 21, 20000, 0, 2);
+			viewType=scr.startsWith("Error")?0:3;break;
+		case 48:
+			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_SOLVED), 21, 20000, 0, 2);
+			viewType=scr.startsWith("Error")?0:3;break;
+		case 49:
+			scr = new Search().solution(Tools.randomState(Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED), 21, 20000, 0, 2);
+			viewType=scr.startsWith("Error")?0:3;break;
+		case 50:
+			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_RANDOM), 21, 20000, 0, 2);
+			viewType=scr.startsWith("Error")?0:3;break;
+		case 51:
+			scr = new Search().solution(Tools.randomEasyCross(scrLen), 21, 20000, 0, 2);
+			viewType=scr.startsWith("Error")?0:3;
+			if(DCTimer.spSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[9], DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[10]);
+			else if(DCTimer.spSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[10]);
+			break;
+		case 52:
+			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,5,6,7,8,9,10,11}, Tools.STATE_SOLVED), 21, 20000, 0, 2);
+			viewType=scr.startsWith("Error")?0:3;break;
+		case 64: //4阶
+			scr=cube(4);viewType=4;break;
+		case 65:
 			turn2=new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}};
-			scr=OtherScr.megascramble(turn2, csuff, 40);viewType=4;break;
-		case 34:
+			scr=OtherScr.megascramble(turn2, csuff);viewType=4;break;
+		case 66:
 			scr=OtherScr.yj4x4();viewType=4;break;
-		case 35:
+		case 67:
 			end=new String[]{"Bw2 Rw'", "Bw2 U2 Rw U2 Rw U2 Rw U2 Rw"};
 			scr=OtherScr.edgescramble("Rw Bw2", end, new String[]{"Uw"});viewType=4;
 			break;
-		case 36:
-			scr=OtherScr.megascramble(new String[][]{{"U","u"},{"R","r"}}, csuff, 40);
+		case 68:
+			scr=OtherScr.megascramble(new String[][]{{"U","u"},{"R","r"}}, csuff);
 			viewType=4;break;
-		case 48: //5阶
-			scr=Cube.scramblestring(5, 60);viewType=5;break;
-		case 49:
+		case 96: //5阶
+			scr=cube(5);viewType=5;break;
+		case 97:
 			turn2=new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}};
-			scr=OtherScr.megascramble(turn2, csuff, 60);viewType=5;break;
-		case 50:
+			scr=OtherScr.megascramble(turn2, csuff);viewType=5;break;
+		case 98:
 			end=new String[]{"B' Bw' R' Rw'", "B' Bw' R' U2 Rw U2 Rw U2 Rw U2 Rw"};
 			scr=OtherScr.edgescramble("Rw R Bw B", end, new String[]{"Uw","Dw"});viewType=5;
 			break;
-		case 64: //6阶
-			scr=Cube.scramblestring(6, 80);viewType=6;break;
-		case 65:
+		case 128: //6阶
+			scr=cube(6);viewType=6;break;
+		case 129:
 			turn2=new String[][]{{"U","D","u","d","3u"},{"R","L","r","l","3r"},{"F","B","f","b","3f"}};
-			scr=OtherScr.megascramble(turn2, csuff, 80);viewType=6;break;
-		case 66:
+			scr=OtherScr.megascramble(turn2, csuff);viewType=6;break;
+		case 130:
 			turn2=new String[][]{{"U","D","U²","D²","U³"},{"R","L","R²","L²","R³"},{"F","B","F²","B²","F³"}};
-			scr=OtherScr.megascramble(turn2, csuff, 80);viewType=6;break;
-		case 67:
+			scr=OtherScr.megascramble(turn2, csuff);viewType=6;break;
+		case 131:
 			end=new String[]{"3b' b' 3r' r'","3b' b' 3r' U2 r U2 r U2 r U2 r","3b' b' r' U2 3r U2 3r U2 3r U2 3r","3b' b' r2 U2 3R U2 3R U2 3R U2 3R"};
 			scr=OtherScr.edgescramble("3r r 3b b", end, new String[]{"u","3u","d"});viewType=6;
 			break;
-		case 80: //7阶
-			scr=Cube.scramblestring(7, 100);viewType=7;break;
-		case 81:
+		case 160: //7阶
+			scr=cube(7);viewType=7;break;
+		case 161:
 			turn2=new String[][]{{"U","D","u","d","3u","3d"},{"R","L","r","l","3r","3l"},{"F","B","f","b","3f","3b"}};
-			scr=OtherScr.megascramble(turn2, csuff, 100);viewType=7;break;
-		case 82:
+			scr=OtherScr.megascramble(turn2, csuff);viewType=7;break;
+		case 162:
 			turn2=new String[][]{{"U","D","U²","D²","U³","D³"},{"R","L","R²","L²","R³","L³"},{"F","B","F²","B²","F³","B³"}};
-			scr=OtherScr.megascramble(turn2, csuff, 100);viewType=7;break;
-		case 83:
+			scr=OtherScr.megascramble(turn2, csuff);viewType=7;break;
+		case 163:
 			end=new String[]{"3b' b' 3r' r'","3b' b' 3r' U2 r U2 r U2 r U2 r","3b' b' r' U2 3r U2 3r U2 3r U2 3r","3b' b' r2 U2 3R U2 3R U2 3R U2 3R"};
 			scr=OtherScr.edgescramble("3r r 3b b", end, new String[]{"u","3u","3d","d"});viewType=7;
 			break;
-		case 96: //五魔
+		case 192: //五魔
 			scr=Megaminx.scramblestring();viewType=18;break;
-		case 97:
+		case 193:
 			scr=OtherScr.oldminxscramble();viewType=0;break;
-		case 112: //金字塔
+		case 224: //金字塔
 			scr=Pyraminx.scramble();viewType=17;break;
-		case 113:
+		case 225:
 			turn2=new String[][]{{"U"},{"L"},{"R"},{"B"}};
-			suff=new String[]{"!","'"};
+			suff=new String[]{"","'"};
 			String[][] ss={{"","b ","b' "},{"","l ","l' "},{"","u ","u' "},{"","r ","r' "}};
-			scr=OtherScr.megascramble(turn2, suff, 25);
 			int cnt=0;
 			int[] rnd=new int[4];
 			for(int i=0;i<4;i++){
 				rnd[i]=(int) (Math.random()*3);
 				if(rnd[i]>0) cnt++;
+				if(cnt>=scrLen)break;
 			}
-			scr=scr.substring(0,scr.length()-3*cnt);
-			scr=ss[0][rnd[0]]+ss[1][rnd[1]]+ss[2][rnd[2]]+ss[3][rnd[3]]+scr;
-			scr=scr.replace("!","");
+			scrLen -= cnt;
+			scr=ss[0][rnd[0]]+ss[1][rnd[1]]+ss[2][rnd[2]]+ss[3][rnd[3]]
+					+OtherScr.megascramble(turn2, suff);
+			scrLen += cnt;
 			viewType=17;
 			break;
-		case 128:  //SQ1
+		case 256:  //SQ1
 			scr=SQ1.scramblestring();
 			if(DCTimer.sqshp) sc=" "+Sq1Shape.solve(scr);
 			viewType=1; break;
-		case 129:
+		case 257:
 			scr=OtherScr.sq1_scramble(0);
 			if(DCTimer.sqshp) sc=" "+Sq1Shape.solve(scr);
 			viewType=1; break;
-		case 130:
-			if(!ini) {
-				Shape.init();
-				Square.init();
+		case 258:
+			if(!ini) {//TODO
+				try {
+					InputStream in = new BufferedInputStream(new FileInputStream("/data/data/com.dctimer/databases/sqr.dat"));
+					Tools.read(Shape.ShapeIdx, in);
+					in.read(Shape.ShapePrun);
+					Tools.read(Shape.TopMove, in);
+					Tools.read(Shape.BottomMove, in);
+					Tools.read(Shape.TwistMove, in);
+					Tools.read(Square.TwistMove, in);
+					Tools.read(Square.TopMove, in);
+					Tools.read(Square.BottomMove, in);
+					in.read(Square.SquarePrun);
+					in.close();
+				} catch (Exception e) {
+					Shape.init();
+					Square.init();
+					try {
+						OutputStream out = new BufferedOutputStream(new FileOutputStream("/data/data/com.dctimer/databases/sqr.dat"));
+						Tools.write(Shape.ShapeIdx, out);
+						out.write(Shape.ShapePrun);
+						Tools.write(Shape.TopMove, out);
+						Tools.write(Shape.BottomMove, out);
+						Tools.write(Shape.TwistMove, out);
+						Tools.write(Square.TwistMove, out);
+						Tools.write(Square.TopMove, out);
+						Tools.write(Square.BottomMove, out);
+						out.write(Square.SquarePrun);
+						out.close();
+					} catch (Exception e1) { }
+				}
 				ini = true;
 			}
 			FullCube c=FullCube.randomCube();
 			scr=new SqSearch().solution(c);
 			if(DCTimer.sqshp)sc=" "+Sq1Shape.solve(scr);
 			viewType=1; break;
-		case 144:	//魔表
+		case 288:	//魔表
 			scr=Clock.scramble();viewType=12;break;
-		case 145:
+		case 289:
 			scr=Clock.scrambleOld(false);viewType=12;break;
-		case 146:
+		case 290:
 			scr=Clock.scrambleOld(true);viewType=12; break;
-		case 147:
+		case 291:
 			scr=Clock.scrambleEpo(); viewType=12;break;
-		case 160:	//15puzzles
+		case 320:	//15puzzles
 			scr=OtherScr.do15puzzle(false);viewType=0;break;
-		case 161:
+		case 321:
 			scr=OtherScr.do15puzzle(true);viewType=0;break;
-		case 176:	//MxNxL
+		case 352:	//MxNxL
 			turn2=new String[][]{{"R","L"},{"U","D"}};
-			scr=OtherScr.megascramble(turn2, new String[]{"2"}, 15);viewType=13;break;
-		case 177:
+			scr=OtherScr.megascramble(turn2, new String[]{"2"});viewType=13;break;
+		case 353:
 			turn2=new String[][]{{"R","L"},{"U","D"}};
-			scr=OtherScr.megascramble(turn2, new String[]{"","2","'"}, 25);viewType=0;break;
-		case 178:
+			scr=OtherScr.megascramble(turn2, csuff);viewType=0;break;
+		case 354:
 			Floppy.init();
 			scr=Floppy.solve(new Random());viewType=13;break;
-		case 179:
+		case 355:
 			turns=new String[][][]{{{"R2","L2","R2 L2"}},{{"U","U'","U2"}},{{"F2","B2","F2 B2"}}};
-			scr=OtherScr.megascramble(turns, suff0, 25);viewType=14;break;
-		case 180:
+			scr=OtherScr.megascramble(turns, suff0);viewType=14;break;
+		case 356:
 			scr=Domino.solve(new Random());viewType=14;break;
-		case 181:
+		case 357:
 			scr=Tower.solve(new Random());viewType=15;break;
-		case 182:
+		case 358:
 			scr=RTower.solve();viewType=0; break;
-		case 183:
+		case 359:
 			turns=new String[][][]{{{"U","U'","U2", "u", "u'", "u2", "U u", "U u'", "U u2", "U' u", "U' u'", "U' u2", "U2 u", "U2 u'", "U2 u2"}},{{"R2","L2","M2"}},{{"F2","B2","S2"}}};
-			scr=OtherScr.megascramble(turns, suff0, 40);viewType=0;break;
-		case 184:
+			scr=OtherScr.megascramble(turns, suff0);viewType=0;break;
+		case 360:
 			turns=new String[][][]{{{"U","U'","U2"}, {"D", "D'", "D2"}},{{"R2","R2"},{"L2","L2"}},{{"F2","F2"},{"B2","B2"}}};
-			scr=OtherScr.megascramble(turns, suff0, 25)+"/ "+Cube.scramblestring(3, 25);viewType=0;
+			scr=OtherScr.megascramble(turns, suff0)+"/ "+Cube.scramblestring(3, 25);viewType=0;
 			break;
-		case 185:
+		case 361:
 			turns=new String[][][]{{{"U","U'","U2","u","u'","u2","U u","U u'","U u2","U' u","U' u'","U' u2","U2 u","U2 u'","U2 u2","3u","3u'","3u2","U 3u","U' 3u","U2 3u","u 3u","u' 3u","u2 3u","U u 3u","U u' 3u","U u2 3u","U' u 3u","U' u' 3u","U' u2 3u","U2 u 3u","U2 u' 3u","U2 u2 3u","U 3u'","U' 3u'","U2 3u'","u 3u'","u' 3u'","u2 3u'","U u 3u'","U u' 3u'","U u2 3u'","U' u 3u'","U' u' 3u'","U' u2 3u'","U2 u 3u'","U2 u' 3u'","U2 u2 3u'","U 3u2","U' 3u2","U2 3u2","u 3u2","u' 3u2","u2 3u2","U u 3u2","U u' 3u2","U u2 3u2","U' u 3u2","U' u' 3u2","U' u2 3u2","U2 u 3u2","U2 u' 3u2","U2 u2 3u2"}},{{"R2","L2","M2"}},{{"F2","B2","S2"}}};
-			scr=OtherScr.megascramble(turns, suff0, 40);viewType=0;break;
-		case 186:
+			scr=OtherScr.megascramble(turns, suff0);viewType=0;break;
+		case 362:
 			turns=new String[][][]{{{"U","U'","U2","u","u'","u2","U u","U u'","U u2","U' u","U' u'","U' u2","U2 u","U2 u'","U2 u2"}, {"D","D'","D2","d","d'","d2","D d","D d'","D d2","D' d","D' d'","D' d2","D2 d","D2 d'","D2 d2"}},{{"R2","R2"},{"L2","L2"}},{{"F2","F2"},{"B2","B2"}}};
-			scr=OtherScr.megascramble(turns, suff0, 40)+"/ "+Cube.scramblestring(3, 25);viewType=0;
+			scr=OtherScr.megascramble(turns, suff0)+"/ "+Cube.scramblestring(3, 25);viewType=0;
 			break;
-		case 187:
-			scr=Cube.scramblestring(8, 120);viewType=8;break;
-		case 188:
-			scr=Cube.scramblestring(9, 140);viewType=9;break;
-		case 189:
-			scr=Cube.scramblestring(10, 140);viewType=10;break;
-		case 190:
-			scr=Cube.scramblestring(11, 140);viewType=11;break;
-		case 192:	//Cmetrick
+		case 363:
+			scr=cube(8);viewType=8;break;
+		case 364:
+			scr=cube(9);viewType=9;break;
+		case 365:
+			scr=cube(10);viewType=10;break;
+		case 366:
+			scr=cube(11);viewType=11;break;
+		case 384:	//Cmetrick
 			turns=new String[][][]{{{"U<","U>","U2"},{"E<","E>","E2"},{"D<","D>","D2"}},{{"R^","Rv","R2"},{"M^","Mv","M2"},{"L^","Lv","L2"}}};
-			scr=OtherScr.megascramble(turns, suff0, 25);viewType=0;break;
-		case 193:
+			scr=OtherScr.megascramble(turns, suff0);viewType=0;break;
+		case 385:
 			turns=new String[][][]{{{"U<","U>","U2"},{"D<","D>","D2"}},{{"R^","Rv","R2"},{"L^","Lv","L2"}}};
-			scr=OtherScr.megascramble(turns, suff0, 25);viewType=0;break;
-		case 208:	//齿轮
+			scr=OtherScr.megascramble(turns, suff0);viewType=0;break;
+		case 416:	//齿轮
 			scr=Gear.solve(new Random());viewType=0;break;
-		case 209:
+		case 417:
 			turn2=new String[][]{{"U"},{"R"},{"F"}};
 			suff=new String[]{"","2","3","4","5","6","'","2'","3'","4'","5'"};
-			scr=OtherScr.megascramble(turn2, suff, 10);
+			scr=OtherScr.megascramble(turn2, suff);
 			viewType=0;break;
-		case 224:	//Siamese Cube
+		case 448:	//Siamese Cube
 			turn2=new String[][]{{"U","u"},{"R","r"}};
-			scr=OtherScr.megascramble(turn2, csuff, 25)+"z2 "+OtherScr.megascramble(turn2, csuff, 25);viewType=0;
+			scr=OtherScr.megascramble(turn2, csuff)+"z2 "+OtherScr.megascramble(turn2, csuff);viewType=0;
 			break;
-		case 225:
+		case 449:
 			turn2=new String[][]{{"R","r"},{"U"}};
-			scr=OtherScr.megascramble(turn2, csuff, 25)+"z2 "+OtherScr.megascramble(turn2, csuff, 25);viewType=0;
+			scr=OtherScr.megascramble(turn2, csuff)+"z2 "+OtherScr.megascramble(turn2, csuff);viewType=0;
 			break;
-		case 226:
+		case 450:
 			turn2=new String[][]{{"U"},{"R"},{"F"}};
-			scr=OtherScr.megascramble(turn2, csuff, 25)+"z2 y "+OtherScr.megascramble(turn2, csuff, 25);viewType=0;
+			scr=OtherScr.megascramble(turn2, csuff)+"z2 y "+OtherScr.megascramble(turn2, csuff);viewType=0;
 			break;
-		case 240:	//Skewb
+		case 480:	//Skewb
 			scr=Skewb.solve(new Random());viewType=16;break;
-		case 241:
+		case 481:
 			turn2=new String[][]{{"R"},{"L"},{"B"},{"D"}};
 			suff=new String[]{"","'"};
-			scr=OtherScr.megascramble(turn2, suff, 25);
+			scr=OtherScr.megascramble(turn2, suff);
 			viewType=16;break;
-		case 256:	//Other
+		case 512:	//Other
 			scr=LatchCube.scramble();viewType=0;break;
-		case 257:
+		case 513:
 			scr=OtherScr.helicubescramble();viewType=0;break;
-		case 258:
+		case 514:
 			int i=0;
 			StringBuffer sb=new StringBuffer();
-			while (i<20) {
+			while (i<scrLen) {
 				int rndu = (int)(Math.random()*12)-5;
 				int rndd = (int)(Math.random()*12)-5;
 				if (rndu != 0 || rndd != 0) {
@@ -318,94 +401,100 @@ public class Mi {
 				}
 			}
 			scr=sb.toString();viewType=0;break;
-		case 259:
+		case 515:
 			scr=OtherScr.ssq1t_scramble();viewType=0;break;
-		case 260:
+		case 516:
 			turns=new String[][][]{{{"A"}},{{"B"}},{{"C"}},{{"U","U'","U2'","U2","U3"}}};
-			scr=OtherScr.megascramble(turns, suff0, 25);viewType=0;break;
-		case 261:
+			scr=OtherScr.megascramble(turns, suff0);viewType=0;break;
+		case 517:
 			turn2=new String[][]{{"U","D"},{"F","B"},{"L","BR"},{"R","BL"}};
 			suff=new String[]{"","'"};
-			scr=OtherScr.megascramble(turn2, suff, 25);viewType=0;break;
-		case 272:	//3x3x3 subsets
+			scr=OtherScr.megascramble(turn2, suff);viewType=0;break;
+		case 544:	//3x3x3 subsets
 //			turn2=new String[][]{{"U"},{"R"}};
-//			scr=OtherScr.megascramble(turn2, csuff, 25);
+//			scr=OtherScr.megascramble(turn2, csuff);
 			scr=CubeRU.solve(new Random()); viewType=3;break;
-		case 273:
+		case 545:
 //			turn2=new String[][]{{"U"},{"L"}};
-//			scr=OtherScr.megascramble(turn2, csuff, 25);
+//			scr=OtherScr.megascramble(turn2, csuff);
 			scr=CubeRU.solve(new Random()).replace('R', 'L');
 			viewType=3;break;
-		case 274:
+		case 546:
 			//turn2=new String[][]{{"U"},{"M"}};
-			//scr=OtherScr.megascramble(turn2, csuff, 25);
+			//scr=OtherScr.megascramble(turn2, csuff);
 			scr=RouxMU.solve(new Random()); viewType=3;break;
-		case 275:
+		case 547:
 			turn2=new String[][]{{"U"},{"R"},{"F"}};
-			scr=OtherScr.megascramble(turn2, csuff, 25);viewType=3;break;
-		case 276:
+			scr=OtherScr.megascramble(turn2, csuff);viewType=3;break;
+		case 548:
 			turn2=new String[][]{{"R","L"},{"U"}};
-			scr=OtherScr.megascramble(turn2, csuff, 25);viewType=3;break;
-		case 277:
+			scr=OtherScr.megascramble(turn2, csuff);viewType=3;break;
+		case 549:
 			turn2=new String[][]{{"R","r"},{"U"}};
-			scr=OtherScr.megascramble(turn2, csuff, 25);viewType=3;break;
-		case 278:
+			scr=OtherScr.megascramble(turn2, csuff);viewType=3;break;
+		case 550:
 //			turn2=new String[][]{{"U","D"},{"R","L"},{"F","B"}};
 //			suff=new String[]{"2"};
 //			scr=OtherScr.megascramble(turn2, suff, 25);
 			scr=HalfTurn.solve(new Random());
 			viewType=3;break;
-		case 279:	//3阶LSLL
+		case 551:	//LSLL
 			turns=new String[][][]{{{"R U R'","R U2 R'","R U' R'"}},{{"F' U F","F' U2 F","F' U' F"}},{{"U","U2","U'"}}};
-			scr=OtherScr.megascramble(turns, suff0, 15);viewType=3;break;
-		case 288:	//Bandaged Cube
+			scr=OtherScr.megascramble(turns, suff0);viewType=3;break;
+		case 576:	//Bandaged Cube
 			scr=OtherScr.bicube();viewType=0;break;
-		case 289:
+		case 577:
 			scr=OtherScr.sq1_scramble(2);viewType=1;break;
-		case 304:	//五魔子集
+		case 608:	//五魔子集
 			turn2=new String[][]{{"U"},{"R"}};
-			scr=OtherScr.megascramble(turn2, csuff, 25);viewType=0;break;
-		case 305:
+			scr=OtherScr.megascramble(turn2, csuff);viewType=0;break;
+		case 609:
 			turns=new String[][][]{{{"R U R'","R U2 R'","R U' R'","R U2' R'"}},{{"F' U F","F' U2 F","F' U' F","F' U2' F"}},{{"U","U2","U'","U2'"}}};
-			scr=OtherScr.megascramble(turns, suff0, 20);viewType=0;break;
-		case 320:	//连拧
+			scr=OtherScr.megascramble(turns, suff0);viewType=0;break;
+		case 640:	//连拧
 			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40);
 			viewType=0;break;
-		case 321:
+		case 641:
 			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60);
 			viewType=0;break;
-		case 322:
+		case 642:
 			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60)
 				+"\n6) "+OtherScr.megascramble(new String[][]{{"U","D","u","d","3u"},{"R","L","r","l","3r"},{"F","B","f","b","3f"}}, csuff, 80);
 			viewType=0;break;
-		case 323:
+		case 643:
 			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60)
 				+"\n6) "+OtherScr.megascramble(new String[][]{{"U","D","u","d","3u"},{"R","L","r","l","3r"},{"F","B","f","b","3f"}}, csuff, 80)
 				+"\n7) "+OtherScr.megascramble(new String[][]{{"U","D","u","d","3u","3d"},{"R","L","r","l","3r","3l"},{"F","B","f","b","3f","3b"}}, csuff, 100);
 			viewType=0;break;
-		case 324:
+		case 644:
 			StringBuffer scrb=new StringBuffer();
-			for(int j=0; j<5; j++){
-				scrb.append(j+1+") "+new Search().solution(Tools.randomCube(), 22, 20000, 0, 0));
-				if(j<4)scrb.append("\n");
+			for(int j=0; j<scrLen; j++){
+				scrb.append(j+1+") "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0));
+				if(j<scrLen-1)scrb.append("\n");
 			}
 			scr=scrb.toString();viewType=0;break;
 		}
 		return scr;
 	}
+	
+	private static String cube(int n) {
+		return Cube.scramblestring(n, scrLen);
+	}
+	
 	public static void drawScr(int sel2, int width, Paint p, Canvas c){
 		int[] colors={DCTimer.share.getInt("csn1", 0xffffff00), DCTimer.share.getInt("csn2", 0xff0000ff), DCTimer.share.getInt("csn3", 0xffff0000),
 				DCTimer.share.getInt("csn4", 0xffffffff), DCTimer.share.getInt("csn5", 0xff009900), DCTimer.share.getInt("csn6", 0xffff8026)};
+		//2阶
 		if(viewType==2) {
-			byte[] imst;
-			Cube.parse(2);imst=OtherScr.imagestr(DCTimer.crntScr);
+			Cube.parse(2);
+			byte[] imst=OtherScr.imagestr(DCTimer.crntScr);
 			int a=width/10,i,j,d=0,sty=(int) ((width*0.75-6*a+2)/2);
 			for(i=0;i<2;i++)
 				for(j=0;j<2;j++) {
@@ -441,6 +530,7 @@ public class Mi {
 					c.drawRect(3+(j+3)*a, sty+5+(i+4)*a, 2+(j+4)*a, sty+4+(i+5)*a, p);
 				}
 		}
+		//五魔
 		else if(viewType==18) {	//TODO
 			float edgeFrac = (float) ((1+Math.sqrt(5))/4);
 			float centerFrac = 0.5F;
@@ -501,6 +591,7 @@ public class Mi {
 				drawPolygon(p,c,colors[img[d++]],arys[0],arys[1],true);
 			}
 		}
+		//金字塔
 		else if(viewType==17) {
 			byte[] imst;
 			if(!DCTimer.isInScr && sel2==0)imst=Pyraminx.imageString();
@@ -553,15 +644,14 @@ public class Mi {
 					}
 				}
 		}
+		//SQ1
 		else if(viewType==1) {
 			String[] tb = {"3","3","3","3","3","3","3","3","0","0","0","0","0","0","0","0"};
 			String[] ty = {"c","e","c","e","c","e","c","e","e","c","e","c","e","c","e","c"};
 			String[] col = {"51","1","12","2","24","4","45","5","5","54","4","42","2","21","1","15"};
 			colors = new int[]{DCTimer.share.getInt("csq1", 0xffffff00), DCTimer.share.getInt("csq6", 0xffff8026), DCTimer.share.getInt("csq2", 0xff0000ff),
 					DCTimer.share.getInt("csq4", 0xffffffff), DCTimer.share.getInt("csq3", 0xffff0000), DCTimer.share.getInt("csq5", 0xff009900)};
-			byte[] img;
-			if(sel2==0)img=SQ1.imagestr();
-			else img=SQ1.imagestr(DCTimer.crntScr.split(" "));
+			byte[] img = SQ1.imagestr(DCTimer.crntScr.split(" "));
 			boolean mis = SQ1.mi;
 			byte[] temp=new byte[12];
 			for(int i=0;i<12;i++)temp[i]=img[i];
@@ -714,6 +804,7 @@ public class Mi {
 				}
 			}
 		}
+		//魔表
 		else if(viewType==12) {
 			byte[] posit;
 			posit = Clock.posit();
@@ -754,6 +845,7 @@ public class Mi {
 		  	drawPeg(p, c, width, cx + face_dist/2, cy + face_dist/2, pegs[2]);
 		  	drawPeg(p, c, width, cx - face_dist/2, cy + face_dist/2, pegs[3]);
 		}
+		//1x3x3
 		else if(viewType==13) {
 			byte[] imst=Floppy.image(DCTimer.crntScr);
 			int a=width/8,i,j,d=0;
@@ -793,6 +885,7 @@ public class Mi {
 				c.drawRect(stx+3+(i+1)*a, sty+5+4*a, stx+2+(i+2)*a, sty+4+5*a, p);
 			}
 		}
+		//2x3x3
 		else if(viewType==14) {
 			byte[] imst=Domino.image(DCTimer.crntScr);
 			int a=width/12,i,j,d=0;
@@ -832,6 +925,7 @@ public class Mi {
 					c.drawRect(stx+3+(j+3)*a, sty+5+(i+5)*a, stx+2+(j+4)*a, sty+4+(i+6)*a, p);
 				}
 		}
+		//2x2x3
 		else if(viewType==15) {
 			byte[] imst=Tower.image(DCTimer.crntScr);
 			int a=width/10,i,j,d=0;
@@ -872,6 +966,7 @@ public class Mi {
 					c.drawRect(stx+3+(j+2)*a, sty+5+(5+i)*a, stx+2+(j+3)*a, sty+4+(6+i)*a, p);
 				}
 		}
+		//Skewb
 		else if(viewType==16) {
 			byte[] imst=Skewb.image(DCTimer.crntScr);
 			int a=width/8,i,d=0;
@@ -903,10 +998,8 @@ public class Mi {
 				Cube.parse(viewType);imst=OtherScr.imagestr(DCTimer.crntScr);
 			}
 			else if(viewType==3){
-				if(DCTimer.spSel[0]==1 && sel2==0)imst=Cube.imagestring();
-				else {
-					Cube.parse(3);imst=OtherScr.imagestr(DCTimer.crntScr);
-				}
+				Cube.parse(3);
+				imst=OtherScr.imagestr(DCTimer.crntScr);
 			}
 			else if(viewType>7) {
 				imst=Cube.imagestring();
@@ -1087,21 +1180,15 @@ public class Mi {
 	}
 	public static String distime(int idx, boolean b) {
 		if(idx<0)return "N/A";
-		if(idx>=DCTimer.rest.length)return "";
+		if(idx>=DCTimer.resl)return "";
 		int i=DCTimer.rest[idx];
 		if(DCTimer.resp[idx]==2){
 			if(b)return "DNF ("+distime(i)+")";
 			else return "DNF";
 		}
-		if(DCTimer.resp[idx]==1)i+=2000;
-		if(DCTimer.spSel[6]==0)i+=5;
-		int msec=i%1000;
-		if(DCTimer.spSel[6]==0)msec/=10;
-		int sec=DCTimer.timmh?(i/1000)%60:i/1000;
-		int min=DCTimer.timmh?(i/60000)%60:0;
-		int hour=DCTimer.timmh?i/3600000:0;
-		if(DCTimer.resp[idx]==1)return contime(hour, min, sec, msec)+"+";
-		else return contime(hour, min, sec, msec);
+		else if(DCTimer.resp[idx]==1)
+			return distime(i+2000)+"+";
+		else return distime(i);
 	}
 
 	public static String avg(int n, int i, int l){

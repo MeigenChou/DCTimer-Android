@@ -2,6 +2,8 @@ package scramblers;
 
 import java.util.regex.*;
 
+import com.dctimer.Mi;
+
 public class SQ1 {
 	private static int[] seq;    // move sequences
 	private static byte[] posit;    // piece array
@@ -11,9 +13,9 @@ public class SQ1 {
 		posit=new byte[]{0,0,1,2,2,3,4,4,5,6,6,7,8,9,9,10,11,11,12,13,13,14,15,15};
 		int i,j,ls,f;
 		ls=-1;
-		seq=new int[40];
+		seq=new int[Mi.scrLen];
 		f=0;
-		for(i=0; i<40; i++){
+		for(i=0; i<Mi.scrLen; i++){
 			do{
 				if(ls==0){
 					j=(int)(Math.random()*22)-11;

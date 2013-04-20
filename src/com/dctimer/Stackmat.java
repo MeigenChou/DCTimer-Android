@@ -206,10 +206,7 @@ public class Stackmat {
 		}
 		protected void onProgressUpdate(Integer...pr){
 			if(pr[0]==-2)ct.tvTimer.setText("OFF");
-			else if(pr[0]==-1){
-				ct.newScr(false);
-				ct.confirmTime(pr[1]);
-			}
+			else if(pr[0]==-1) ct.confirmTime(pr[1]);
 			else {
 				if(pr[0]==65)ct.tvTimer.setTextColor(0xff00ff00);
 				else if(pr[0]==67)ct.tvTimer.setTextColor(0xffff0000);

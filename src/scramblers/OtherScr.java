@@ -1,5 +1,7 @@
 package scramblers;
 
+import com.dctimer.Mi;
+
 public class OtherScr {
 	public static String rndEl(String[] x){
 		return x[(int)(Math.random()*x.length)];
@@ -17,7 +19,7 @@ public class OtherScr {
 			movemis[i] = 0;
 		}
 
-		for (int i=0; i<8; i++) {
+		for (int i=0; i<Mi.scrLen; i++) {
 			// apply random moves
 			boolean done = false;
 			while (!done) {
@@ -59,14 +61,14 @@ public class OtherScr {
 		ss += " " + rndEl(end);
 		return ss;
 	}
-	public static String megascramble(String[][] turns, String[] suffixes, int len){
+	public static String megascramble(String[][] turns, String[] suffixes){
 		int[] donemoves=new int[turns[0].length];
 		int lastaxis;
 		int j,k;
 		String s="";
 
 		lastaxis=-1;
-		for(j=0;j<len;j++){
+		for(j=0;j<Mi.scrLen;j++){
 			int done=0;
 			do{
 				int first=(int)(Math.random()*turns.length);
@@ -88,14 +90,21 @@ public class OtherScr {
 		}
 		return s;
 	}
-	public static String megascramble(String[][][] turns, String[] suffixes, int len){
+	public static String megascramble(String[][] turns, String[] suffixes, int len){
+		int l = Mi.scrLen;
+		Mi.scrLen = len;
+		String s = megascramble(turns, suffixes);
+		Mi.scrLen = l;
+		return s;
+	}
+	public static String megascramble(String[][][] turns, String[] suffixes){
 		int[] donemoves=new int[turns[0].length];
 		int lastaxis;
 		int j,k;
 
 		String s="";
 		lastaxis=-1;
-		for(j=0;j<len;j++){
+		for(j=0;j<Mi.scrLen;j++){
 			int done=0;
 			do{
 				int first=(int)(Math.random()*turns.length);
@@ -130,7 +139,7 @@ public class OtherScr {
 		for(j=0;j<12;j++){
 			used[j] = 0;
 		}
-		for(j=0;j<20;j++){
+		for(j=0;j<Mi.scrLen;j++){
 			boolean done = false;
 			do {
 				int face = (int)(Math.random()*12);
@@ -144,7 +153,6 @@ public class OtherScr {
 				}
 			} while (!done);
 		}
-		s += s;
 		return s;
 	}
 
@@ -162,25 +170,25 @@ public class OtherScr {
 //		return s;
 //	}
 	public static String ssq1t_scramble(){
-		byte[][][] seq=new byte[2][40][2];
+		byte[][][] seq=new byte[2][Mi.scrLen*2][2];
 		int i;
 		sq1_getseq(seq, 0);
 		byte[][] s=seq[0],t=seq[1];
 		StringBuffer u=new StringBuffer();
 		//int[][] temp={{0,0}};
 		if (s[0][0]==7) {
-			for(i=0;i<20;i++) {
+			for(i=0;i<Mi.scrLen;i++) {
 				s[i*2][0]=s[i*2+1][0];
 				s[i*2][1]=s[i*2+1][1];
 			}
 		}
 		if (t[0][0]==7) {
-			for(i=0;i<20;i++) {
+			for(i=0;i<Mi.scrLen;i++) {
 				t[i*2][0]=t[i*2+1][0];
 				t[i*2][1]=t[i*2+1][1];
 			}
 		}
-		for(i=0;i<20;i++){
+		for(i=0;i<Mi.scrLen;i++){
 			u.append("(" + s[2*i][0] + "," + t[2*i][0] + "," + t[2*i][1] + "," + s[2*i][1] + ") / ");
 		}
 		return u.toString();
@@ -190,15 +198,15 @@ public class OtherScr {
 			byte[] p = {1,0,0,1,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,1,0,0,1,0};
 			int cnt = 0;
 			int seql=0;
-			while (cnt < 20) {
+			while (cnt < Mi.scrLen) {
 				byte x = (byte)(Math.random() * 12 - 5);
 				byte y = (type==2) ? 0 : (byte)(Math.random() * 12 - 5);
 				int size = (x==0?0:1) + (y==0?0:1);
-				if ((cnt + size <= 20 || type != 1) && (size > 0 || cnt == 0)) {
+				if ((cnt + size <= Mi.scrLen || type != 1) && (size > 0 || cnt == 0)) {
 					if (sq1_domove(p, x, y)) {
 						if (type == 1) cnt += size;
 						if (size > 0) seq[n][seql++] = new byte[]{x,y};
-						if (cnt < 20 || type != 1) {
+						if (cnt < Mi.scrLen || type != 1) {
 							cnt++;
 							seq[n][seql++] = new byte[]{7,0};
 							sq1_domove(p, 7, 0);
@@ -303,7 +311,7 @@ public class OtherScr {
 				j,k;
 		StringBuffer s=new StringBuffer();
 		lastaxis=-1;
-		for(j=0;j<40;j++){
+		for(j=0;j<Mi.scrLen;j++){
 			int done=0;
 			do{
 				int first=(int)(Math.random()*turns.length);
@@ -356,7 +364,7 @@ public class OtherScr {
 		for(j=0;j<12;j++){
 			used[j] = 0;
 		}
-		for(j=0;j<70;j++){
+		for(j=0;j<Mi.scrLen;j++){
 			boolean done = false;
 			do {
 				int face = (int)(Math.random()*12);
@@ -373,12 +381,12 @@ public class OtherScr {
 		return s.toString();
 	}
 	public static String sq1_scramble(int type){
-		byte[][][] seq=new byte[1][40][2];
+		byte[][][] seq=new byte[1][Mi.scrLen*2][2];
 		int i;
 		byte[] k;
 		sq1_getseq(seq, type);
 		StringBuffer s=new StringBuffer();
-		for(i=0; i<40; i++){
+		for(i=0; i<seq[0].length; i++){
 			k=seq[0][i];
 			if(k[0] == 7) {
 				s.append("/ ");
@@ -396,7 +404,7 @@ public class OtherScr {
 		int x=0,y=3,k,r,lastr=5;
 		boolean done;
 		StringBuffer s=new StringBuffer();
-		for(k=0;k<80;k++){
+		for(k=0;k<Mi.scrLen;k++){
 			done=false;
 			while(!done){
 				r=(int)(Math.random()*4);
@@ -447,10 +455,10 @@ public class OtherScr {
 	}
 	public static String bicube(){
 		StringBuffer sb=new StringBuffer();
-		int[][] arr=new int[30][];
+		int[][] arr=new int[Mi.scrLen][];
 		int[] poss;
 		int arrlen=0, done, i, j, x=0, y=0;
-		while (arrlen < 30) {
+		while (arrlen < Mi.scrLen) {
 			poss = new int[]{1,1,1,1};
 			for (j=0; j<4; j++) {
 				if (poss[j]==1 && !canMove(j))
@@ -478,7 +486,7 @@ public class OtherScr {
 				}
 			}
 		}
-		for (i=0; i<30; i++) {
+		for (i=0; i<Mi.scrLen; i++) {
 			sb.append( move[arr[i][0]] + cubesuff[arr[i][1]-1] + " ");
 		}
 		return sb.toString();

@@ -6,12 +6,12 @@
         <item>Settings</item>
     </array>
     <array name="cubeStr">
-        <item>2x2x2</item>
-        <item>3x3x3</item>
-        <item>4x4x4</item>
-        <item>5x5x5</item>
-        <item>6x6x6</item>
-        <item>7x7x7</item>
+        <item>2x2</item>
+        <item>3x3</item>
+        <item>4x4</item>
+        <item>5x5</item>
+        <item>6x6</item>
+        <item>7x7</item>
         <item>Megaminx</item>
         <item>Pyraminx</item>
         <item>Square-1</item>
@@ -23,7 +23,7 @@
         <item>Siamese Cube</item>
         <item>Skewb</item>
         <item>Other</item>
-        <item>3x3x3 subsets</item>
+        <item>3x3 subsets</item>
         <item>Bandaged Cube</item>
         <item>Megaminx subsets</item>
         <item>Relays</item>
@@ -50,6 +50,14 @@
         <item>corners of last layer</item>
         <item>last six edges</item>
         <item>Roux L10P</item>
+        <item>edges permutation</item>
+        <item>edges orientation</item>
+        <item>corners permutation</item>
+        <item>corners orientation</item>
+        <item>permutation only</item>
+        <item>orientation only</item>
+        <item>easy cross</item>
+        <item>2GLL</item>
     </array>
     <array name="scr444">
         <item>WCA</item>

@@ -55,7 +55,9 @@
 	<string name="show_time">時間：</string>
 	<string name="not_support">暫不支持的轉亂類型</string>
 	<string name="copy_scr">複製轉亂</string>
-	<string name="delete_time">刪除該成績</string>
+	<string name="delete_time">刪除</string>
+	<string name="crnt_scr">當前轉亂</string>
+	<string name="scr_len">"轉亂長度: "</string>
 	<string name="no_times">當前沒有數據可刪除</string>
 	<string name="confirm_del_last">確認刪除該成績？</string>
 	<string name="confirm_clear_session">確認清空成績！</string>

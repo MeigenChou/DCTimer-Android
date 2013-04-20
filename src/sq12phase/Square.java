@@ -9,11 +9,11 @@ public class Square {
 	boolean botEdgeFirst;	//true if bottom layer starts with edge right of seam
 	int ml;			//shape of middle layer (+/-1, or 0 if ignored)
 
-	static byte SquarePrun[] = new byte[40320 * 2];			//pruning table; #twists to solve corner|edge permutation
+	public static byte SquarePrun[] = new byte[40320 * 2];			//pruning table; #twists to solve corner|edge permutation
 
-	static char TwistMove[] = new char[40320];			//transition table for twists
-	static char TopMove[] = new char[40320];			//transition table for top layer turns
-	static char BottomMove[] = new char[40320];			//transition table for bottom layer turns
+	public static char TwistMove[] = new char[40320];			//transition table for twists
+	public static char TopMove[] = new char[40320];			//transition table for top layer turns
+	public static char BottomMove[] = new char[40320];			//transition table for bottom layer turns
 
 	static int get8Comb(byte[] arr) {
 		int idx = 0, r = 4;

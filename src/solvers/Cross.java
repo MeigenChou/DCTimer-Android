@@ -1,16 +1,18 @@
 package solvers;
 
 import java.io.*;
+import java.util.Random;
 
 public class Cross {
 	private static short[][] eom=new short[7920][6], epm=new short[11880][6];
 	private static byte[] epd = new byte[11880],eod = new byte[7920];
+	private static int[] ed = new int[23760];
 	private static byte[][] fcm = new byte[24][6], fem = new byte[24][6];
 	private static byte[][] fecd = new byte[4][576];
 	private static int[] goalCo = {12, 15, 18, 21};
 	private static int[] goalFeo = {0, 2, 4, 6};
 	private static StringBuffer sb;
-	public static boolean inic=false, inix=false;
+	public static boolean inic=false, inix=false, inie=false;
 	private static String[] color={"D: ","U: ","L: ","R: ","F: ","B: "};
 	private static String[][] moveIdx={{"UDLRFB","DURLFB","RLUDFB","LRDUFB","BFLRUD","FBLRDU"},
 		{"UDLRFB","DURLFB","RLUDFB","LRDUFB","BFRLDU","FBRLUD"},
@@ -47,18 +49,24 @@ public class Cross {
 		}
 		return i;
 	}
-	private static int getmv(int c,int p, int o,int f){
-		int[] n=new int[12], s=new int[4];
-		int q,t;
-		idxToPerm(s, p);
-		q=4;
-		for(t=0;12>t;t++)
+	
+	private static int idxToComb(int[] n, int[] s, int c, int o) {
+		int q=4;
+		for(int t=0;12>t;t++)
 			if(c>=Im.Cnk[11-t][q]){
 				c-=Im.Cnk[11-t][q--];
 				n[t]=s[q]<<1|o&1;
 				o>>=1;
 			}
 			else n[t]=-1;
+		return o;
+	}
+	
+	private static int getmv(int c,int p, int o,int f){
+		int[] n=new int[12], s=new int[4];
+		int q,t;
+		idxToPerm(s, p);
+		o = idxToComb(n, s, c, o);
 		switch(f){
 		case 0:
 			circle(n,0,1,2,3,0);break;
@@ -293,5 +301,64 @@ public class Cross {
 		StringBuffer s = new StringBuffer();
 		for (int i = 0; i < 6; i++) s.append(solve(scr, i));
 		return s.toString();
+	}
+	
+	private static int getPruning(int[] table, int index) {
+		return table[index >> 3] >> ((index & 7) << 2) & 15;
+	}
+	private static void setPruning(int[] table, int index, int value) {
+		table[index >> 3] ^= (15 ^ value) << ((index & 7) << 2);
+	}
+	public static byte[][] easyCross(int depth) {
+		if(!inie) {
+			initc();
+			for(int i=0; i<23760; i++)ed[i]=-1;
+			setPruning(ed, 0, 0);
+			//int c=1;
+			for(int d=0; d<8; d++) {
+				//c=0;
+				for(int i=0; i<190080; i++)
+					if(getPruning(ed, i)==d)
+						for(int s=0; s<6; s++) {
+							int y = i; 
+							for(int C=0; C<3; C++) {
+								int ori = y&15;
+								int p = epm[y>>4][s];
+								int o = eom[y/384<<4|ori][s];
+								y = p<<4|(o&15);
+								if(getPruning(ed, y)==15) {
+									setPruning(ed, y, d+1);
+									//c++;
+								}
+							}
+						}
+				//System.out.println(d+" "+c);
+			}
+			inie = true;
+		}
+		Random r = new Random();
+		int i;//r.nextInt(190080);
+		if(depth==0)i=0;
+		else for(; ; ) {
+			i = r.nextInt(190080);
+			if(getPruning(ed, i) <= depth)break;
+		}
+		int comb = i/384;
+		int perm = (i>>4)%24;
+		int ori = i&15;
+		int[] c = new int[12];
+		int[] p = new int[4];
+		idxToPerm(p, perm);
+		idxToComb(c, p, comb, ori);
+		byte[][] arr = new byte[2][12];
+		int[] idx = new int[]{7,6,5,4,10,9,8,11,3,2,1,0};
+		for(i=0; i<12; i++) {
+			if(c[i]==-1) arr[0][idx[i]]=arr[1][idx[i]]=-1;
+			else {
+				arr[0][idx[i]]=(byte) (c[i]>>1);
+				arr[1][idx[i]]=(byte) (c[i]&1);
+			}
+		}
+		return arr;
 	}
 }

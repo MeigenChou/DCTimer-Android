@@ -56,6 +56,8 @@
 	<string name="not_support">Unavailable for this scramble type</string>
 	<string name="copy_scr">Copy scramble</string>
 	<string name="delete_time">Delete</string>
+	<string name="crnt_scr">Current scramble</string>
+	<string name="scr_len">"Length: "</string>
 	<string name="no_times">There is no time to delete.</string>
 	<string name="confirm_del_last">Delete this time?</string>
 	<string name="confirm_clear_session">Reset all times in this session?</string>
