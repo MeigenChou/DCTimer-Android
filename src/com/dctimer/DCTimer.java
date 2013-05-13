@@ -29,23 +29,24 @@ public class DCTimer extends Activity {
 	private Context context;
 	private TabHost myTabHost;
 	private int[] layRes = {R.id.tab_timer, R.id.tab_list, R.id.tab_setting};
-	private Button mButtonSst;	//打乱状态
+	private Button mButtonSst;	// 打乱状态
 	public TextView tvTimer;
-	private static TextView tvScr; //显示打乱
-	private Spinner[] spinner=new Spinner[19];
-	public static byte[] spSel=new byte[19];
+	private static TextView tvScr;	// 显示打乱
+	private Spinner[] spinner = new Spinner[19];
+	static byte[] spSel = new byte[19];
 	private ArrayAdapter<String> adapter;
 	public boolean wca;
-	private boolean wcat, opnl, opnd, hidscr, conft, isShare, isLogin, isMulp, canScr=true;
+	private boolean wcat, opnl, opnd, hidscr, conft, isShare, isLogin, isMulp,
+			canScr = true;
 	public static boolean hidls, timmh, l1am, l2am;
-	private static int selold;//,spSel[18];
-	public static int[] rest;	//成绩列表
-	public static byte[] resp;	//惩罚
+	private static int selold;	//,spSel[18];
+	public static int[] rest;	// 成绩列表
+	public static byte[] resp;	// 惩罚
 	protected static int[][] mulp = null;
-	private static long[] multemp=null;
+	private static long[] multemp = null;
 	public static int resl;
-	public static String[] scrst;	//打乱列表
-	public static String crntScr;	//当前打乱
+	public static String[] scrst;	// 打乱列表
+	public static String crntScr;	// 当前打乱
 	private static String nextScr = null;
 	private static String extsol;
 	private static boolean isNextScr = false;
@@ -53,48 +54,49 @@ public class DCTimer extends Activity {
 	private Stackmat stm;
 	static int isp2 = 0;
 	static boolean idnf = true;
-	private static int timk = 0;	//0-无 1-计时中 2-观察中
+	private static int timk = 0;	// 0-无 1-计时中 2-观察中
 	public int[] cl = new int[5];
 	private ImageView iv;
-	private boolean scrt = false, bgcolor, fulls, invs, usess, screenOn, selSes, isLongPress, isChScr;
+	private boolean scrt = false, bgcolor, fulls, invs, usess, screenOn,
+			selSes, isLongPress, isChScr;
 	static boolean sqshp;
 	private String picPath;
 	private int dbLastId;
 	public static short[] sestp = new short[15];
 	private static String[] sesname = new String[15];
 	private static int scrType;
-	
+
 	private GridView myGridView = null, gvTitle = null;
 	private TimesAdapter aryAdapter;
 	private String[] times = null;
-	private Button seMean, clear, hist;	//时间分布
+	private Button seMean, clear, hist;	// 时间分布
 	private static String slist;
-	public static byte[] listnum = {3,5,12,50,100};
-	private static char[] srate = {48000,44100,22050,16000,11025,8000};
+	public static byte[] listnum = {3, 5, 12, 50, 100};
+	private static char[] srate = {48000, 44100, 22050, 16000, 11025, 8000};
 
 	private Button bagc, bgpic, txtc, orbc, orwc, avbc, reset, rsauth;
 	private Button csCube, csPyrm, csSQ1, sesMang;
 	private ColorPicker dialog;
 	private SeekBar skb1, skb2, skb3, skb4, skb5;
 	private int ttsize, stsize, intv, insType;
-	private TextView[] stt = new TextView[38];
-	private int sttlen=stt.length;
+	private TextView[] stt = new TextView[39];
+	private int sttlen = stt.length;
 	private TextView tvl;
-	private CheckBox[] chkb = new CheckBox[15];
+	private CheckBox[] chkb = new CheckBox[26];
 	protected static SharedPreferences share;
 	protected static SharedPreferences.Editor edit;
 	private DBHelper dbh;
 	private Cursor cursor;
-	
+
 	protected boolean canStart;
 	protected int tapTime;
 	private String[] mItems;
 	private Bitmap bitmap;
 	private PowerManager.WakeLock wakeLock = null;
 	private DisplayMetrics dm;
-	private static String addstr="/data/data/com.dctimer/databases/main.png";
-	private static final String CONSUMER_KEY = "3318942954";// 替换为开发者的appkey，例如"1646212960";
-	private static final String CONSUMER_SECRET = "77d13c80e4a9861e4e7c497968c5d4e5";// 替换为开发者的appkey，例如"94098772160b6f8ffc1315374d8861f9";
+	private static String addstr = "/data/data/com.dctimer/databases/main.png";
+	private static final String CONSUMER_KEY = "3318942954";	// 替换为开发者的appkey，例如"1646212960";
+	private static final String CONSUMER_SECRET = "77d13c80e4a9861e4e7c497968c5d4e5";	// 替换为开发者的appkey，例如"94098772160b6f8ffc1315374d8861f9";
 	private int mulpCount;
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private ProgressDialog proDlg = null;
@@ -103,13 +105,16 @@ public class DCTimer extends Activity {
 	private static int inScrLen;
 	protected static boolean isInScr = false;
 	private long exitTime = 0;
-	
+	static int egtype;
+	private int egoll;
+	static String egolls;
+
 	private List<String> items = null, paths = null;
 	private ListView listView;
 	private String selFilePath;
 	private Vibrator vibrator;
-	private long[] vibTime = new long[]{30, 50, 80, 150, 240};
-	private int[] scrOri = new int[]{2, 0, 8, 1, 4};
+	private long[] vibTime = new long[] {30, 50, 80, 150, 240};
+	private int[] screenOri = new int[] {2, 0, 8, 1, 4};
 	
 	public Handler handler = new Handler() {
 		public void handleMessage(Message msg) {
@@ -117,18 +122,18 @@ public class DCTimer extends Activity {
 			switch(msw){
 			case 0: tvScr.setText(crntScr); break;
 			case 1:
-				tvScr.setText(crntScr+"\n\n"+getResources().getString(R.string.shape)+extsol);
+				tvScr.setText(crntScr + "\n\n" + getResources().getString(R.string.shape) + extsol);
 				break;
 			case 2:
 				tvScr.setText(getResources().getString(R.string.scrambling)); break;
-			case 3: tvScr.setText(crntScr+extsol); break;
+			case 3: tvScr.setText(crntScr + extsol); break;
 			case 4: tvTimer.setText(Mi.distime((int)timer.time)); break;
 			case 5: tvTimer.setText("IMPORT"); break;
-			case 6: tvTimer.setText(spSel[6]==0?"0.00":"0.000"); break;
+			case 6: tvTimer.setText(spSel[6]==0 ? "0.00" : "0.000"); break;
 			case 7: Toast.makeText(DCTimer.this, getResources().getString(R.string.outscr_success), Toast.LENGTH_SHORT).show(); break;
-			case 8: tvScr.setText(crntScr+"\n\n"+getResources().getString(R.string.solving)); break;
+			case 8: tvScr.setText(crntScr + "\n\n" + getResources().getString(R.string.solving)); break;
 			case 9: Toast.makeText(DCTimer.this, getResources().getString(R.string.outscr_failed), Toast.LENGTH_SHORT).show(); break;
-			default: proDlg.setMessage(msw%100+"/"+msw/100); break;
+			default: proDlg.setMessage(msw%100 + "/" + msw/100); break;
 			}
 		}
 	};
@@ -139,12 +144,12 @@ public class DCTimer extends Activity {
 		private TextView tv;
 		private int cl;
 		public TitleAdapter(Context context, String[] times, int cl) {
-			this.context=context;
-			this.times=times;
+			this.context = context;
+			this.times = times;
 			this.cl = cl;
 		}
 		public int getCount() {
-			if(times!=null)return times.length;
+			if(times != null) return times.length;
 			return 0;
 		}
 		public Object getItem(int position) {return position;}
@@ -165,25 +170,17 @@ public class DCTimer extends Activity {
 
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-			if(!bgcolor){
-				dm = new DisplayMetrics();
-				getWindowManager().getDefaultDisplay().getMetrics(dm);
-				bitmap=BitmapFactory.decodeFile(picPath);
-				bitmap=getBgPic(bitmap);
-				setBgPic(bitmap, share.getInt("opac", 35));
-				setGridView(false);
-			}
-		} else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-			if(!bgcolor){
-				dm = new DisplayMetrics();
-				getWindowManager().getDefaultDisplay().getMetrics(dm);
-				bitmap=BitmapFactory.decodeFile(picPath);
-				bitmap=getBgPic(bitmap);
-				setBgPic(bitmap, share.getInt("opac", 35));
-				setGridView(false);
-			}
+		if(!bgcolor){
+			dm = new DisplayMetrics();
+			getWindowManager().getDefaultDisplay().getMetrics(dm);
+			bitmap = BitmapFactory.decodeFile(picPath);
+			bitmap = getBgPic(bitmap);
+			setBgPic(bitmap, share.getInt("opac", 35));
+			setGridView(false);
 		}
+//		if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//		} else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//		}
 	}
 
 	@Override
@@ -191,98 +188,102 @@ public class DCTimer extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.setContentView(R.layout.tab);
-		context=this;
+		context = this;
 		share = super.getSharedPreferences("dctimer", Activity.MODE_PRIVATE);
-		selold=spSel[0]=(byte) share.getInt("sel", 1);	//打乱种类
+		selold = spSel[0] = (byte) share.getInt("sel", 1);	//打乱种类
 		//spSel[18]=share.getInt("sel2", 0);
-		cl[0]=share.getInt("cl0", Color.rgb(102, 204, 255));
-		cl[1]=share.getInt("cl1", Color.BLACK);
-		cl[2]=share.getInt("cl2", Color.rgb(255, 0, 255));
-		cl[3]=share.getInt("cl3", Color.RED);
-		cl[4]=share.getInt("cl4", Color.rgb(0, 153, 0));
-		wca=share.getBoolean("wca", false);
-		wcat=wca;
-		hidscr=share.getBoolean("hidscr", true);
-		hidls=share.getBoolean("hidls", false);
-		conft=share.getBoolean("conft", true);
-		l1am=share.getBoolean("l1am", true);
-		l2am=share.getBoolean("l2am", true);
-		spSel[1]=(byte) share.getInt("cxe", 0);
-		ttsize=share.getInt("ttsize", 60);
-		stsize=share.getInt("stsize", 18);
-		if(share.getBoolean("mnxc", true))spSel[3]=1;
-		else spSel[3]=0;	//五魔配色
-		spSel[4]=(byte) share.getInt("list1", 1);
-		spSel[5]=(byte) share.getInt("list2", 1);
-		timmh=share.getBoolean("timmh", true);
-		if(share.getBoolean("prec", true))spSel[6]=1;
-		else spSel[6]=0;	//精度设置
-		spSel[7]=(byte)share.getInt("tiway", 0);	//计时方式
-		spSel[8]=(byte)share.getInt("group", 0);	//分组
-		spSel[9]=(byte)share.getInt("cface", 0);	//十字计算底面
-		spSel[10]=(byte)share.getInt("cside", 1);	//以及颜色
-		spSel[11]=(byte)share.getInt("srate", 1);	//采样频率
-		Stackmat.samplingRate=srate[spSel[11]];
-		spSel[2]=(byte)share.getInt("cube2l", 0);	//二阶底层求解
-		spSel[12]=(byte)share.getInt("tfont", 3);	//计时器字体
-		spSel[13]=(byte)share.getInt("mulp", 0);
-		spSel[14]=(byte)share.getInt("vibra", 0);	//震动反馈
-		spSel[15]=(byte)share.getInt("vibtime", 2);	//震动时长
-		spSel[16]=(byte)share.getInt("timerupd", 0);	//计时器更新
-		spSel[17]=(byte)share.getInt("screenori", 0);	//屏幕方向
-		spSel[18]=(byte)share.getInt("sel2", 0);	//二级打乱
-		bgcolor=share.getBoolean("bgcolor", true);
-		sqshp=share.getBoolean("sqshp", false);	//SQ1复形计算
-		fulls=share.getBoolean("fulls", false);	//全屏显示
-		usess=share.getBoolean("usess", false);
-		invs=share.getBoolean("invs", false);	//反转信号
-		opnl=share.getBoolean("scron", false);
-		opnd=share.getBoolean("scrgry", true);
-		selSes=share.getBoolean("selses", false);
-		Stackmat.inv=invs;
-		picPath=share.getString("picpath", null);
-		tapTime=share.getInt("tapt", 0);
-		isMulp=share.getBoolean("ismulp", false);
-		intv=share.getInt("intv", 30);
-		outPath=share.getString("scrpath", "/sdcard/DCTimer/");
+		cl[0] = share.getInt("cl0", Color.rgb(102, 204, 255));
+		cl[1] = share.getInt("cl1", Color.BLACK);
+		cl[2] = share.getInt("cl2", Color.rgb(255, 0, 255));
+		cl[3] = share.getInt("cl3", Color.RED);
+		cl[4] = share.getInt("cl4", Color.rgb(0, 153, 0));
+		wca = share.getBoolean("wca", false);
+		wcat = wca;
+		hidscr = share.getBoolean("hidscr", true);
+		hidls = share.getBoolean("hidls", false);
+		conft = share.getBoolean("conft", true);
+		l1am = share.getBoolean("l1am", true);
+		l2am = share.getBoolean("l2am", true);
+		spSel[1] = (byte) share.getInt("cxe", 0);
+		ttsize = share.getInt("ttsize", 60);
+		stsize = share.getInt("stsize", 18);
+		if (share.getBoolean("mnxc", true)) spSel[3] = 1;
+		else spSel[3] = 0;	// 五魔配色
+		spSel[4] = (byte) share.getInt("list1", 1);
+		spSel[5] = (byte) share.getInt("list2", 1);
+		timmh = share.getBoolean("timmh", true);
+		if (share.getBoolean("prec", true)) spSel[6] = 1;
+		else spSel[6] = 0;	// 精度设置
+		spSel[7] = (byte) share.getInt("tiway", 0);	// 计时方式
+		spSel[8] = (byte) share.getInt("group", 0);	// 分组
+		spSel[9] = (byte) share.getInt("cface", 0);	// 十字计算底面
+		spSel[10] = (byte) share.getInt("cside", 1);	// 以及颜色
+		spSel[11] = (byte) share.getInt("srate", 1);	// 采样频率
+		Stackmat.samplingRate = srate[spSel[11]];
+		spSel[2] = (byte) share.getInt("cube2l", 0);	// 二阶底层求解
+		spSel[12] = (byte) share.getInt("tfont", 3);	// 计时器字体
+		spSel[13] = (byte) share.getInt("mulp", 0);
+		spSel[14] = (byte) share.getInt("vibra", 0);	// 震动反馈
+		spSel[15] = (byte) share.getInt("vibtime", 2);	// 震动时长
+		spSel[16] = (byte) share.getInt("timerupd", 0);	// 计时器更新
+		spSel[17] = (byte) share.getInt("screenori", 0);	// 屏幕方向
+		spSel[18] = (byte) share.getInt("sel2", 0);	// 二级打乱
+		bgcolor = share.getBoolean("bgcolor", true);
+		sqshp = share.getBoolean("sqshp", false);	// SQ1复形计算
+		fulls = share.getBoolean("fulls", false);	// 全屏显示
+		usess = share.getBoolean("usess", false);
+		invs = share.getBoolean("invs", false);	// 反转信号
+		opnl = share.getBoolean("scron", false);
+		opnd = share.getBoolean("scrgry", true);
+		selSes = share.getBoolean("selses", false);
+		Stackmat.inv = invs;
+		picPath = share.getString("picpath", null);
+		tapTime = share.getInt("tapt", 0);
+		isMulp = share.getBoolean("ismulp", false);
+		intv = share.getInt("intv", 30);
+		outPath = share.getString("scrpath", "/sdcard/DCTimer/");
 		edit = share.edit();
-		for(int i=0; i<15; i++){
-			sestp[i]=(short) share.getInt("sestp"+i, -1);
-			sesname[i]=share.getString("sesname"+i, "");
+		for(int i=0; i<15; i++) {
+			sestp[i] = (short) share.getInt("sestp" + i, -1);
+			sesname[i] = share.getString("sesname" + i, "");
 		}
 		long sestype = share.getLong("sestype", -1);
-		if(sestype!=-1){
+		if(sestype != -1){
 			for(int i=0; i<9; i++){
 				int temp = Mi.getSessionType(sestype, i);
-				if(temp!=0x7f){
-					edit.putInt("sestp"+i, temp);
+				if(temp != 0x7f){
+					edit.putInt("sestp" + i, temp);
 				}
 			}
 			edit.remove("sestype");
 			edit.commit();
 		}
+		egtype = share.getInt("egtype", 7);
+		egoll = share.getInt("egoll", 254);
+		//simss = share.getBoolean("simss", false);
+		setEgOll();
 		
-		if(fulls)getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		if(opnl){acquireWakeLock();screenOn=true;}
-		mItems=getResources().getStringArray(R.array.tabInd);
+		if(fulls) getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		if(opnl) {acquireWakeLock(); screenOn = true;}
+		mItems = getResources().getStringArray(R.array.tabInd);
 		myTabHost = (TabHost) super.findViewById(R.id.tabhost);	//取得TabHost对象
 		myTabHost.setup();	//建立TabHost对象
-		for (int x = 0; x < this.layRes.length; x++) {	//循环取出所有布局标记
+		for (int x=0; x<layRes.length; x++) {	//循环取出所有布局标记
 			TabSpec myTab = myTabHost.newTabSpec("tab" + x);	//定义TabSpec
-			if(x==0)myTab.setIndicator(mItems[x],getResources().getDrawable(R.drawable.img1));
-			else if(x==1)myTab.setIndicator(mItems[x],getResources().getDrawable(R.drawable.img2));
-			else myTab.setIndicator(mItems[x],getResources().getDrawable(R.drawable.img3));
-			myTab.setContent(this.layRes[x]);	//设置显示的组件
+			if(x == 0) myTab.setIndicator(mItems[x], getResources().getDrawable(R.drawable.img1));
+			else if(x == 1) myTab.setIndicator(mItems[x], getResources().getDrawable(R.drawable.img2));
+			else myTab.setIndicator(mItems[x], getResources().getDrawable(R.drawable.img3));
+			myTab.setContent(layRes[x]);	//设置显示的组件
 			myTabHost.addTab(myTab);	//增加标签
 		}
 		
 		dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
-		if(bgcolor)myTabHost.setBackgroundColor(cl[0]);
+		if(bgcolor) myTabHost.setBackgroundColor(cl[0]);
 		else {
 			try{
-				bitmap=BitmapFactory.decodeFile(picPath);
-				bitmap=getBgPic(bitmap);
+				bitmap = BitmapFactory.decodeFile(picPath);
+				bitmap = getBgPic(bitmap);
 				setBgPic(bitmap, share.getInt("opac", 35));
 			} catch (Exception e) {
 				myTabHost.setBackgroundColor(cl[0]);
@@ -295,64 +296,64 @@ public class DCTimer extends Activity {
 		tvTimer = (TextView)findViewById(R.id.myTextView2);
 		//mButtonScr = (Button) findViewById(R.id.myButtonScr);
 		mButtonSst = (Button) findViewById(R.id.myButtonSst);
-		for(int i=0;i<18;i++){
+		for(int i=0; i<18; i++){
 			switch(i){
 			case 0:
-				mItems=getResources().getStringArray(R.array.cubeStr);
-				spinner[i]=(Spinner) findViewById(R.id.mySpinner);break;
+				mItems = getResources().getStringArray(R.array.cubeStr);
+				spinner[i] = (Spinner) findViewById(R.id.mySpinner); break;
 			case 1:
-				mItems=getResources().getStringArray(R.array.crsStr);
-				spinner[i]=(Spinner) findViewById(R.id.spinner);break;
+				mItems = getResources().getStringArray(R.array.crsStr);
+				spinner[i] = (Spinner) findViewById(R.id.spinner); break;
 			case 2:
-				mItems=getResources().getStringArray(R.array.c2lStr);
-				spinner[i]=(Spinner) findViewById(R.id.spinner12);break;
+				mItems = getResources().getStringArray(R.array.c2lStr);
+				spinner[i] = (Spinner) findViewById(R.id.spinner12); break;
 			case 3:
-				mItems=getResources().getStringArray(R.array.mncStr);
-				spinner[i]=(Spinner) findViewById(R.id.spinner3);break;
+				mItems = getResources().getStringArray(R.array.mncStr);
+				spinner[i] = (Spinner) findViewById(R.id.spinner3); break;
 			case 4:
-				mItems=getResources().getStringArray(R.array.list1Str);
-				spinner[i]=(Spinner) findViewById(R.id.spinner4);break;
+				mItems = getResources().getStringArray(R.array.list1Str);
+				spinner[i] = (Spinner) findViewById(R.id.spinner4); break;
 			case 5:
-				mItems=getResources().getStringArray(R.array.list2Str);
-				spinner[i]=(Spinner) findViewById(R.id.spinner5);break;
+				mItems = getResources().getStringArray(R.array.list2Str);
+				spinner[i] = (Spinner) findViewById(R.id.spinner5); break;
 			case 6:
-				mItems=getResources().getStringArray(R.array.preStr);
-				spinner[i]=(Spinner) findViewById(R.id.spinner6);break;
+				mItems = getResources().getStringArray(R.array.preStr);
+				spinner[i] = (Spinner) findViewById(R.id.spinner6); break;
 			case 7:
-				mItems=getResources().getStringArray(R.array.tiwStr);
-				spinner[i]=(Spinner) findViewById(R.id.spinner7);break;
+				mItems = getResources().getStringArray(R.array.tiwStr);
+				spinner[i] = (Spinner) findViewById(R.id.spinner7); break;
 			case 8:
-				mItems=new String[15];
-				for(int j=0; j<15; j++)
-					mItems[j]=j+1+(sesname[j].equals("")?"　":": "+sesname[j]);
-				spinner[i]=(Spinner) findViewById(R.id.spinner8);break;
+				mItems = new String[15];
+				for (int j = 0; j < 15; j++)
+					mItems[j] = (j + 1) + (sesname[j].equals("") ? "　" : ": "+sesname[j]);
+				spinner[i] = (Spinner) findViewById(R.id.spinner8); break;
 			case 9:
-				mItems=getResources().getStringArray(R.array.faceStr);
-				spinner[i]=(Spinner) findViewById(R.id.spinner9);break;
+				mItems = getResources().getStringArray(R.array.faceStr);
+				spinner[i] = (Spinner) findViewById(R.id.spinner9); break;
 			case 10:
-				mItems=getResources().getStringArray(R.array.sideStr);
-				spinner[i]=(Spinner) findViewById(R.id.spinner10);break;
+				mItems = getResources().getStringArray(R.array.sideStr);
+				spinner[i] = (Spinner) findViewById(R.id.spinner10); break;
 			case 11:
-				mItems=getResources().getStringArray(R.array.samprate);
-				spinner[i]=(Spinner) findViewById(R.id.spinner11);break;
+				mItems = getResources().getStringArray(R.array.samprate);
+				spinner[i] = (Spinner) findViewById(R.id.spinner11); break;
 			case 12:
-				mItems=getResources().getStringArray(R.array.fontStr);
-				spinner[i]=(Spinner) findViewById(R.id.spinner13);break;
+				mItems = getResources().getStringArray(R.array.fontStr);
+				spinner[i] = (Spinner) findViewById(R.id.spinner13); break;
 			case 13:
-				mItems=getResources().getStringArray(R.array.mulpStr);
-				spinner[i]=(Spinner) findViewById(R.id.spinner14);break;
+				mItems = getResources().getStringArray(R.array.mulpStr);
+				spinner[i] = (Spinner) findViewById(R.id.spinner14); break;
 			case 14:
-				mItems=getResources().getStringArray(R.array.vibraStr);
-				spinner[i]=(Spinner) findViewById(R.id.spinner15);break;
+				mItems = getResources().getStringArray(R.array.vibraStr);
+				spinner[i] = (Spinner) findViewById(R.id.spinner15); break;
 			case 15:
-				mItems=getResources().getStringArray(R.array.vibTimeStr);
-				spinner[i]=(Spinner) findViewById(R.id.spinner16);break;
+				mItems = getResources().getStringArray(R.array.vibTimeStr);
+				spinner[i] = (Spinner) findViewById(R.id.spinner16); break;
 			case 16:
-				mItems=getResources().getStringArray(R.array.tupdStr);
-				spinner[i]=(Spinner) findViewById(R.id.spinner17);break;
+				mItems = getResources().getStringArray(R.array.tupdStr);
+				spinner[i] = (Spinner) findViewById(R.id.spinner17); break;
 			case 17:
-				mItems=getResources().getStringArray(R.array.soriStr);
-				spinner[i]=(Spinner) findViewById(R.id.spinner18);break;
+				mItems = getResources().getStringArray(R.array.soriStr);
+				spinner[i] = (Spinner) findViewById(R.id.spinner18); break;
 			}
 			adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mItems);
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -360,196 +361,217 @@ public class DCTimer extends Activity {
 			spinner[i].setSelection(spSel[i]);
 		}
 		
-		if(spSel[1]==0){spinner[9].setEnabled(false);spinner[10].setEnabled(false);}
-		if(spSel[14]==0) spinner[15].setEnabled(false);
+		if(spSel[1] == 0) {spinner[9].setEnabled(false); spinner[10].setEnabled(false);}
+		if(spSel[14] == 0) spinner[15].setEnabled(false);
 		spinner[18] = (Spinner) findViewById(R.id.sndscr);
-		//spinner[18] = (Button) findViewById(R.id.spinner[18]);
 		set2ndsel();
 		tvScr.setTextSize(stsize);
 		tvTimer.setTextSize(ttsize);
 		switch(spSel[12]){
 		case 0:
-			tvTimer.setTypeface(Typeface.create("monospace", 0));break;
+			tvTimer.setTypeface(Typeface.create("monospace", 0)); break;
 		case 1:
-			tvTimer.setTypeface(Typeface.create("serif", 0));break;
+			tvTimer.setTypeface(Typeface.create("serif", 0)); break;
 		case 2:
-			tvTimer.setTypeface(Typeface.create("sans-serif", 0));break;
+			tvTimer.setTypeface(Typeface.create("sans-serif", 0)); break;
 		case 3:
-			tvTimer.setTypeface(Typeface.createFromAsset(getAssets(), "Ds.ttf"));
-			break;
+			tvTimer.setTypeface(Typeface.createFromAsset(getAssets(), "Ds.ttf")); break;
 		case 4:
-			tvTimer.setTypeface(Typeface.createFromAsset(getAssets(), "Df.ttf"));
-			break;
+			tvTimer.setTypeface(Typeface.createFromAsset(getAssets(), "Df.ttf")); break;
 		case 5:
-			tvTimer.setTypeface(Typeface.createFromAsset(getAssets(), "lcd.ttf"));
-			break;
+			tvTimer.setTypeface(Typeface.createFromAsset(getAssets(), "lcd.ttf")); break;
 		}
-		if(spSel[17]>0)
-			this.setRequestedOrientation(scrOri[spSel[17]]);
+		if(spSel[17] > 0) this.setRequestedOrientation(screenOri[spSel[17]]);
 		
-		stm=new Stackmat(this);
+		stm = new Stackmat(this);
 		if(usess){
 			spinner[11].setEnabled(false);
 			tvTimer.setText("OFF");
 			if(stm.creatAudioRecord((int)srate[spSel[11]]));
 			else {
 				spinner[11].setSelection(1);
-				spSel[11]=1;
+				spSel[11] = 1;
 				edit.putInt("srate", 1);
 				edit.commit();
 			}
 			stm.start();
 			spinner[7].setEnabled(false);
 		} else {
-			if(spSel[7]==0 && spSel[6]==0)tvTimer.setText("0.00");
-			else if(spSel[7]==1)tvTimer.setText("IMPORT");
+			if(spSel[7] == 0) {
+				if(spSel[6] == 0) tvTimer.setText("0.00");
+				else tvTimer.setText("0.000");
+			}
+			else if(spSel[7] == 1) tvTimer.setText("IMPORT");
 		}
 		
 		timer = new Timer(this);
 		dbh = new DBHelper(this);
 
-		myGridView=(GridView)findViewById(R.id.myGridView);
-		gvTitle=(GridView)findViewById(R.id.gv_title);
-		seMean=(Button)findViewById(R.id.mButtonoa);
-		clear=(Button)findViewById(R.id.mButtonClr);
-		hist=(Button)findViewById(R.id.mButtonHist);
+		myGridView = (GridView) findViewById(R.id.myGridView);
+		gvTitle = (GridView) findViewById(R.id.gv_title);
+		seMean = (Button) findViewById(R.id.mButtonoa);
+		clear = (Button) findViewById(R.id.mButtonClr);
+		hist = (Button) findViewById(R.id.mButtonHist);
 		bagc = (Button) findViewById(R.id.selbagc);
 		bgpic = (Button) findViewById(R.id.selbgpic);
-		txtc=(Button)findViewById(R.id.seltxtc);
-		orbc=(Button)findViewById(R.id.selorbc);
-		orwc=(Button)findViewById(R.id.selorwc);
-		avbc=(Button)findViewById(R.id.selavbc);
-		rsauth=(Button)findViewById(R.id.auth_sina);
-		csCube=(Button)findViewById(R.id.btn_csn);
-		csPyrm=(Button)findViewById(R.id.btn_csp);
-		csSQ1=(Button)findViewById(R.id.btn_csq);
-		sesMang=(Button)findViewById(R.id.btn_ses);
-		chkb[0]=(CheckBox)findViewById(R.id.check1);
-		chkb[1]=(CheckBox)findViewById(R.id.check2);
-		chkb[2]=(CheckBox)findViewById(R.id.check3);
-		chkb[3]=(CheckBox)findViewById(R.id.check4);
-		chkb[4]=(CheckBox)findViewById(R.id.check5);
-		chkb[5]=(CheckBox)findViewById(R.id.lcheck1);
-		chkb[6]=(CheckBox)findViewById(R.id.lcheck2);
-		chkb[7]=(CheckBox)findViewById(R.id.check6);
-		chkb[8]=(CheckBox)findViewById(R.id.check7);
-		chkb[9]=(CheckBox)findViewById(R.id.check8);
-		chkb[10]=(CheckBox)findViewById(R.id.check9);
-		chkb[11]=(CheckBox)findViewById(R.id.check10);
-		chkb[12]=(CheckBox)findViewById(R.id.check11);
-		chkb[13]=(CheckBox)findViewById(R.id.check12);
-		chkb[14]=(CheckBox)findViewById(R.id.check13);
-		
-		skb1=(SeekBar)findViewById(R.id.seekb1);
-		skb2=(SeekBar)findViewById(R.id.seekb2);
-		skb3=(SeekBar)findViewById(R.id.seekb3);
-		skb4=(SeekBar)findViewById(R.id.seekb4);
-		skb5=(SeekBar)findViewById(R.id.seekb5);
-		tvl=(TextView) findViewById(R.id.tv4);
-		stt[0]=(TextView) findViewById(R.id.stt00);
-		stt[1]=(TextView) findViewById(R.id.stt01);
-		stt[2]=(TextView) findViewById(R.id.stt02);
-		stt[3]=(TextView) findViewById(R.id.stt08);
-		stt[4]=(TextView) findViewById(R.id.stt09);
-		stt[5]=(TextView) findViewById(R.id.stt05);
-		stt[6]=(TextView) findViewById(R.id.stt21);
-		stt[7]=(TextView) findViewById(R.id.stt07);
-		stt[8]=(TextView) findViewById(R.id.stt03);
-		stt[9]=(TextView) findViewById(R.id.stt22);
-		stt[10]=(TextView) findViewById(R.id.stt17);
-		stt[11]=(TextView) findViewById(R.id.stt11);
-		stt[12]=(TextView) findViewById(R.id.stt12);
-		stt[13]=(TextView) findViewById(R.id.stt13);
-		stt[14]=(TextView) findViewById(R.id.stt14);
-		stt[15]=(TextView) findViewById(R.id.stt15);
-		stt[16]=(TextView) findViewById(R.id.stt16);
-		stt[17]=(TextView) findViewById(R.id.stt10);
-		stt[18]=(TextView) findViewById(R.id.stt18);
-		stt[19]=(TextView) findViewById(R.id.stt19);
-		stt[20]=(TextView) findViewById(R.id.stt23);
-		stt[21]=(TextView) findViewById(R.id.stt04);
-		stt[22]=(TextView) findViewById(R.id.stt06);
-		stt[23]=(TextView) findViewById(R.id.stt20);
-		stt[24]=(TextView) findViewById(R.id.stt24);
-		stt[25]=(TextView) findViewById(R.id.stt25);
-		stt[26]=(TextView) findViewById(R.id.stt26);
-		stt[27]=(TextView) findViewById(R.id.stt27);
-		stt[28]=(TextView) findViewById(R.id.stt28);
-		stt[29]=(TextView) findViewById(R.id.stt29);
-		stt[30]=(TextView) findViewById(R.id.stt30);
-		stt[31]=(TextView) findViewById(R.id.stt31);
-		stt[32]=(TextView) findViewById(R.id.stt32);
-		stt[33]=(TextView) findViewById(R.id.stt33);
-		stt[34]=(TextView) findViewById(R.id.stt34);
-		stt[35]=(TextView) findViewById(R.id.stt35);
-		stt[36]=(TextView) findViewById(R.id.stt36);
-		stt[37]=(TextView) findViewById(R.id.stt37);
-		reset=(Button)findViewById(R.id.reset);
+		txtc = (Button) findViewById(R.id.seltxtc);
+		orbc = (Button) findViewById(R.id.selorbc);
+		orwc = (Button) findViewById(R.id.selorwc);
+		avbc = (Button) findViewById(R.id.selavbc);
+		rsauth = (Button) findViewById(R.id.auth_sina);
+		csCube = (Button) findViewById(R.id.btn_csn);
+		csPyrm = (Button) findViewById(R.id.btn_csp);
+		csSQ1 = (Button) findViewById(R.id.btn_csq);
+		sesMang = (Button) findViewById(R.id.btn_ses);
+		chkb[0] = (CheckBox) findViewById(R.id.check1);
+		chkb[1] = (CheckBox) findViewById(R.id.check2);
+		chkb[2] = (CheckBox) findViewById(R.id.check3);
+		chkb[3] = (CheckBox) findViewById(R.id.check4);
+		chkb[4] = (CheckBox) findViewById(R.id.check5);
+		chkb[5] = (CheckBox) findViewById(R.id.lcheck1);
+		chkb[6] = (CheckBox) findViewById(R.id.lcheck2);
+		chkb[7] = (CheckBox) findViewById(R.id.check6);
+		chkb[8] = (CheckBox) findViewById(R.id.check7);
+		chkb[9] = (CheckBox) findViewById(R.id.check8);
+		chkb[10] = (CheckBox) findViewById(R.id.check9);
+		chkb[11] = (CheckBox) findViewById(R.id.check10);
+		chkb[12] = (CheckBox) findViewById(R.id.check11);
+		chkb[13] = (CheckBox) findViewById(R.id.check12);
+		chkb[14] = (CheckBox) findViewById(R.id.check13);
+		chkb[15] = (CheckBox) findViewById(R.id.checkcll);
+		chkb[16] = (CheckBox) findViewById(R.id.checkeg1);
+		chkb[17] = (CheckBox) findViewById(R.id.checkeg2);
+		chkb[18] = (CheckBox) findViewById(R.id.checkegpi);
+		chkb[19] = (CheckBox) findViewById(R.id.checkegh);
+		chkb[20] = (CheckBox) findViewById(R.id.checkegu);
+		chkb[21] = (CheckBox) findViewById(R.id.checkegt);
+		chkb[22] = (CheckBox) findViewById(R.id.checkegl);
+		chkb[23] = (CheckBox) findViewById(R.id.checkegs);
+		chkb[24] = (CheckBox) findViewById(R.id.checkega);
+		chkb[25] = (CheckBox) findViewById(R.id.checkegn);
+		//chkb[26] = (CheckBox) findViewById(R.id.check14);
+
+		skb1 = (SeekBar) findViewById(R.id.seekb1);
+		skb2 = (SeekBar) findViewById(R.id.seekb2);
+		skb3 = (SeekBar) findViewById(R.id.seekb3);
+		skb4 = (SeekBar) findViewById(R.id.seekb4);
+		skb5 = (SeekBar) findViewById(R.id.seekb5);
+		tvl = (TextView) findViewById(R.id.tv4);
+		stt[0] = (TextView) findViewById(R.id.stt00);
+		stt[1] = (TextView) findViewById(R.id.stt01);
+		stt[2] = (TextView) findViewById(R.id.stt02);
+		stt[3] = (TextView) findViewById(R.id.stt08);
+		stt[4] = (TextView) findViewById(R.id.stt09);
+		stt[5] = (TextView) findViewById(R.id.stt05);
+		stt[6] = (TextView) findViewById(R.id.stt21);
+		stt[7] = (TextView) findViewById(R.id.stt07);
+		stt[8] = (TextView) findViewById(R.id.stt03);
+		stt[9] = (TextView) findViewById(R.id.stt22);
+		stt[10] = (TextView) findViewById(R.id.stt17);
+		stt[11] = (TextView) findViewById(R.id.stt11);
+		stt[12] = (TextView) findViewById(R.id.stt12);
+		stt[13] = (TextView) findViewById(R.id.stt13);
+		stt[14] = (TextView) findViewById(R.id.stt14);
+		stt[15] = (TextView) findViewById(R.id.stt15);
+		stt[16] = (TextView) findViewById(R.id.stt16);
+		stt[17] = (TextView) findViewById(R.id.stt10);
+		stt[18] = (TextView) findViewById(R.id.stt18);
+		stt[19] = (TextView) findViewById(R.id.stt19);
+		stt[20] = (TextView) findViewById(R.id.stt23);
+		stt[21] = (TextView) findViewById(R.id.stt04);
+		stt[22] = (TextView) findViewById(R.id.stt06);
+		stt[23] = (TextView) findViewById(R.id.stt20);
+		stt[24] = (TextView) findViewById(R.id.stt24);
+		stt[25] = (TextView) findViewById(R.id.stt25);
+		stt[26] = (TextView) findViewById(R.id.stt26);
+		stt[27] = (TextView) findViewById(R.id.stt27);
+		stt[28] = (TextView) findViewById(R.id.stt28);
+		stt[29] = (TextView) findViewById(R.id.stt29);
+		stt[30] = (TextView) findViewById(R.id.stt30);
+		stt[31] = (TextView) findViewById(R.id.stt31);
+		stt[32] = (TextView) findViewById(R.id.stt32);
+		stt[33] = (TextView) findViewById(R.id.stt33);
+		stt[34] = (TextView) findViewById(R.id.stt34);
+		stt[35] = (TextView) findViewById(R.id.stt35);
+		stt[36] = (TextView) findViewById(R.id.stt36);
+		stt[37] = (TextView) findViewById(R.id.stt37);
+		stt[38] = (TextView) findViewById(R.id.stt38);
+		reset = (Button) findViewById(R.id.reset);
 		
 		skb1.setMax(95);
-		stt[3].setText(getResources().getString(R.string.timer_size)+share.getInt("ttsize", 60));
-		skb1.setProgress(share.getInt("ttsize", 60)-50);
+		stt[3].setText(getResources().getString(R.string.timer_size) + share.getInt("ttsize", 60));
+		skb1.setProgress(share.getInt("ttsize", 60) - 50);
 		skb1.setOnSeekBarChangeListener(new OnSeekBarChangeListener());
 		skb2.setMax(25);
-		stt[4].setText(getResources().getString(R.string.scrsize)+share.getInt("stsize", 18));
-		skb2.setProgress(share.getInt("stsize", 18)-12);
+		stt[4].setText(getResources().getString(R.string.scrsize) + share.getInt("stsize", 18));
+		skb2.setProgress(share.getInt("stsize", 18) - 12);
 		skb2.setOnSeekBarChangeListener(new OnSeekBarChangeListener());
 		skb3.setMax(41);
-		skb3.setProgress(share.getInt("intv", 30)-20);
-		stt[10].setText(getResources().getString(R.string.row_spacing)+share.getInt("intv", 30));
+		skb3.setProgress(share.getInt("intv", 30) - 20);
+		stt[10].setText(getResources().getString(R.string.row_spacing) + share.getInt("intv", 30));
 		skb3.setOnSeekBarChangeListener(new OnSeekBarChangeListener());
 		skb4.setProgress(share.getInt("opac", 35));
 		skb4.setOnSeekBarChangeListener(new OnSeekBarChangeListener());
 		skb5.setMax(20);
 		skb5.setProgress(tapTime);
-		stt[31].setText(getResources().getString(R.string.time_tap)+tapTime/20D);
+		stt[31].setText(getResources().getString(R.string.time_tap) + tapTime/20D);
 		skb5.setOnSeekBarChangeListener(new OnSeekBarChangeListener());
-		if(wca)chkb[0].setChecked(true);
-		if(opnl)chkb[1].setChecked(true);
-		if(hidscr)chkb[2].setChecked(true);
-		if(conft)chkb[3].setChecked(true);
-		if(!hidls)chkb[4].setChecked(true);
-		if(l1am)chkb[5].setChecked(true);
-		if(l2am)chkb[6].setChecked(true);
-		if(timmh)chkb[7].setChecked(true);
-		if(sqshp)chkb[8].setChecked(true);
-		if(fulls)chkb[9].setChecked(true);
-		if(invs)chkb[10].setChecked(true);
-		if(opnd)chkb[14].setChecked(true);
+		if(wca) chkb[0].setChecked(true);
+		if(opnl) chkb[1].setChecked(true);
+		if(hidscr) chkb[2].setChecked(true);
+		if(conft) chkb[3].setChecked(true);
+		if(!hidls) chkb[4].setChecked(true);
+		if(l1am) chkb[5].setChecked(true);
+		if(l2am) chkb[6].setChecked(true);
+		if(timmh) chkb[7].setChecked(true);
+		if(sqshp) chkb[8].setChecked(true);
+		if(fulls) chkb[9].setChecked(true);
+		if(invs) chkb[10].setChecked(true);
+		if(opnd) chkb[14].setChecked(true);
 		getSession(spSel[8]);
-		seMean.setText(getResources().getString(R.string.session_average)+Mi.sesMean());
+		seMean.setText(getResources().getString(R.string.session_average) + Mi.sesMean());
 		setGvTitle();
 		if(isMulp){
 			chkb[13].setChecked(true);
 			multemp = new long[7];
 		}
-		else {
-			spinner[13].setEnabled(false);
-		}
+		else spinner[13].setEnabled(false);
 		setGridView(true);
 		
-		if(usess){
+		if(usess) {
 			chkb[11].setChecked(true);
-			if(!stm.isStart)stm.start();
+			if(!stm.isStart) stm.start();
 		}
-		if(selSes)chkb[12].setChecked(true);
-		for(int i=0;i<15;i++)
-		chkb[i].setOnCheckedChangeListener(listener);
+		if(selSes) chkb[12].setChecked(true);
+		if((egtype & 4) != 0) chkb[15].setChecked(true);
+		if((egtype & 2) != 0) chkb[16].setChecked(true);
+		if((egtype & 1) != 0) chkb[17].setChecked(true);
+		if((egoll & 128) != 0) chkb[18].setChecked(true);
+		if((egoll & 64) != 0) chkb[19].setChecked(true);
+		if((egoll & 32) != 0) chkb[20].setChecked(true);
+		if((egoll & 16) != 0) chkb[21].setChecked(true);
+		if((egoll & 8) != 0) chkb[22].setChecked(true);
+		if((egoll & 4) != 0) chkb[23].setChecked(true);
+		if((egoll & 2) != 0) chkb[24].setChecked(true);
+		if((egoll & 1) != 0) chkb[25].setChecked(true);
+		//if(simss) chkb[26].setChecked(true);
+		for(int i=0; i<chkb.length; i++)
+			chkb[i].setOnCheckedChangeListener(listener);
 		
 		String token=share.getString("token", null);
 		String expires_in=share.getString("expin", null);
 		if(token==null || expires_in==null ||
-				(System.currentTimeMillis()-share.getLong("totime", 0))/1000>=Integer.parseInt(expires_in)) {
-			isLogin=false;
+				(System.currentTimeMillis()-share.getLong("totime", 0))/1000 >= Integer.parseInt(expires_in)) {
+			isLogin = false;
 			rsauth.setText(getResources().getString(R.string.login));
 		} else {
-			isLogin=true;
+			isLogin = true;
 			rsauth.setText(getResources().getString(R.string.logout));
 		}
 		
 		tvl.setTextColor(cl[1]);
-		for(int i=0;i<sttlen;i++)stt[i].setTextColor(cl[1]);
-		for(int i=0;i<15;i++)chkb[i].setTextColor(cl[1]);
+		for(int i=0; i<sttlen; i++) stt[i].setTextColor(cl[1]);
+		for(int i=0; i<26; i++) chkb[i].setTextColor(cl[1]);
 		tvScr.setTextColor(cl[1]);
 		tvTimer.setTextColor(cl[1]);
 		
@@ -558,27 +580,28 @@ public class DCTimer extends Activity {
 		//打乱类型
 		spinner[0].setOnItemSelectedListener(new Spinner.OnItemSelectedListener() { 
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				spSel[0]=(byte) arg2;
-				if(spSel[0]!=selold){
-					spSel[18]=0;selold=spSel[0];
+				spSel[0] = (byte) arg2;
+				if(spSel[0] != selold){
+					spSel[18] = 0; selold = spSel[0];
 				}
 				set2ndsel();
 				setScrType();
 				newScr(true);
-				if(selSes)searchSesType();
-				if(inScr!=null && inScr.size()!=0)inScr=null;
+				if(selSes) searchSesType();
+				if(inScr!=null && inScr.size()!=0) inScr = null;
 			}
 			public void onNothingSelected(AdapterView<?> arg0) {}
 		});
 		spinner[18].setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				if(spSel[18]!=arg2) {
-					spSel[18]=(byte) arg2;
+				if (spSel[18] != arg2) {
+					spSel[18] = (byte) arg2;
 					//set2ndsel();
 					setScrType();
 					newScr(true);
-					if(selSes)searchSesType();
-					if(inScr!=null && inScr.size()!=0)inScr=null;
+					if (selSes)
+						searchSesType();
+					if (inScr!=null && inScr.size()!=0) inScr = null;
 				}
 //				final String[] s=set2ndsel();
 //				new AlertDialog.Builder(DCTimer.this).setItems(s, new DialogInterface.OnClickListener() {
@@ -915,7 +938,7 @@ public class DCTimer extends Activity {
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				if(spSel[17]!=arg2) {
 					spSel[17]=(byte)arg2;
-					DCTimer.this.setRequestedOrientation(scrOri[arg2]);
+					DCTimer.this.setRequestedOrientation(screenOri[arg2]);
 					edit.putInt("screenori", arg2);
 					edit.commit();
 				}
@@ -951,7 +974,7 @@ public class DCTimer extends Activity {
 		tvScr.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event){
 				scrt=true;
-				setTouch(event.getAction());
+				setTouch(event);
 				return timk!=0;
 			}
 		});
@@ -996,7 +1019,7 @@ public class DCTimer extends Activity {
 			public boolean onTouch(View v, MotionEvent event){
 				scrt=false;
 				if(!usess){
-					if(spSel[7]==0)setTouch(event.getAction());
+					if(spSel[7]==0)setTouch(event);
 					else if(spSel[7]==1)inputTime(event.getAction());
 				}
 				return true;
@@ -1101,7 +1124,7 @@ public class DCTimer extends Activity {
 						myTabHost.setBackgroundColor(cl[0]);
 						tvl.setTextColor(cl[1]);
 						for(int i=0;i<sttlen;i++)stt[i].setTextColor(cl[1]);
-						for(int i=0;i<13;i++)chkb[i].setTextColor(cl[1]);
+						for(int i=0;i<chkb.length;i++)chkb[i].setTextColor(cl[1]);
 						tvScr.setTextColor(cl[1]);
 						tvTimer.setTextColor(cl[1]);
 						intv=30;
@@ -1188,7 +1211,7 @@ public class DCTimer extends Activity {
 					public void colorChanged(int color) {
 						tvl.setTextColor(color);
 						for(int i=0;i<sttlen;i++)stt[i].setTextColor(color);
-						for(int i=0;i<13;i++)chkb[i].setTextColor(color);
+						for(int i=0;i<chkb.length;i++)chkb[i].setTextColor(color);
 						tvScr.setTextColor(color);
 						tvTimer.setTextColor(color);
 						cl[1]=color;
@@ -1411,93 +1434,75 @@ public class DCTimer extends Activity {
 		}
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
-			//switch(seekBar.getId()) {
-			//计时器字体
-			if(seekBar.getId()==R.id.seekb1){
+			switch (seekBar.getId()) {
+			case R.id.seekb1:	//计时器字体
 				stt[3].setText(getResources().getString(R.string.timer_size)+ (seekBar.getProgress()+50));
 				edit.putInt("ttsize", seekBar.getProgress()+50);
 				tvTimer.setTextSize(seekBar.getProgress()+50);
-			}
-			//打乱字体
-			else if(seekBar.getId()==R.id.seekb2){
+				break;
+			case R.id.seekb2:	//打乱字体
 				stt[4].setText(getResources().getString(R.string.scrsize)+ (seekBar.getProgress()+12));
 				edit.putInt("stsize", seekBar.getProgress()+12);
 				tvScr.setTextSize(seekBar.getProgress()+12);
-			}
-			//成绩列表行距
-			else if(seekBar.getId()==R.id.seekb3){
+				break;
+			case R.id.seekb3:	//成绩列表行距
 				intv=seekBar.getProgress()+20;
 				stt[10].setText(getResources().getString(R.string.row_spacing)+ intv);
 				if(resl!=0){
 					setGridView(false);
 				}
 				edit.putInt("intv", seekBar.getProgress()+20);
-			}
-			//背景图不透明度
-			else if(seekBar.getId()==R.id.seekb4){
+				break;
+			case R.id.seekb4:	//背景图不透明度
 				if(!bgcolor){
 					setBgPic(bitmap, seekBar.getProgress());
 				}
 				edit.putInt("opac", seekBar.getProgress());
-			}
-			//启动延时
-			else if(seekBar.getId()==R.id.seekb5){
+				break;
+			case R.id.seekb5:	//启动延时
 				tapTime=seekBar.getProgress();
 				stt[31].setText(getResources().getString(R.string.time_tap)+ (tapTime/20D));
 				edit.putInt("tapt", tapTime);
+				break;
 			}
 			edit.commit();
 		}
 	}
 	private OnItemClickListener listl = new OnItemClickListener() {
 		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3) {
-			selFilePath=paths.get(arg2);
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			selFilePath = paths.get(arg2);
 			getFileDir(selFilePath);
 		}
 	};
 	private OnCheckedChangeListener listener = new OnCheckedChangeListener() {
 		@Override
-		public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-			//WCA观察
-			if(buttonView.getId()==R.id.check1) {
-				if(isChecked) {if(timk==0) wca=true;wcat=true;edit.putBoolean("wca", true);}
-				else {if(timk==0) wca=false;wcat=false;edit.putBoolean("wca", false);}
-			}
-			//屏幕常亮
-			else if(buttonView.getId()==R.id.check2) {
+		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			switch (buttonView.getId()) {
+			case R.id.check1:	//WCA观察
+				if(timk==0) wca=isChecked; wcat = isChecked; edit.putBoolean("wca", isChecked);
+				break;
+			case R.id.check2:	//屏幕常亮
 				if(isChecked){opnl=true;acquireWakeLock();screenOn=true;edit.putBoolean("scron", true);}
 				else {opnl=false;if(timk!=1)releaseWakeLock();screenOn=false;edit.putBoolean("scron", false);}
-			}
-			//隐藏打乱
-			else if(buttonView.getId()==R.id.check3) {
-				if(isChecked){hidscr=true;edit.putBoolean("hidscr", true);}
-				else {hidscr=false;edit.putBoolean("hidscr", false);}
-			}
-			//确认成绩
-			else if(buttonView.getId()==R.id.check4) {
-				if(isChecked){conft=true;edit.putBoolean("conft", true);}
-				else {conft=false;edit.putBoolean("conft", false);}
-			}
-			//详细成绩隐藏打乱
-			else if(buttonView.getId()==R.id.check5) {
-				if(isChecked){hidls=false;edit.putBoolean("hidls", false);}
-				else {hidls=true;edit.putBoolean("hidls", true);}
-			}
-			//时间格式
-			else if(buttonView.getId()==R.id.check6) {
-				if(isChecked){timmh=true;edit.putBoolean("timmh", true);}
-				else {timmh=false;edit.putBoolean("timmh", false);}
-				if(resl>0){
-					setGridView(false);
-				}
-			}
-			//SQ复形求解
-			else if(buttonView.getId()==R.id.check7) {
-				if(isChecked) {
-					sqshp=true;edit.putBoolean("sqshp", true);
-					if(spSel[0]==8)
+				break;
+			case R.id.check3:	//隐藏打乱
+				hidscr = isChecked; edit.putBoolean("hidscr", isChecked);
+				break;
+			case R.id.check4:	//确认成绩
+				conft = isChecked; edit.putBoolean("conft", isChecked);
+				break;
+			case R.id.check5:	//详细成绩隐藏打乱
+				hidls = !isChecked; edit.putBoolean("hidls", !isChecked);
+				break;
+			case R.id.check6:	//时间格式
+				timmh = isChecked; edit.putBoolean("timmh", isChecked);
+				if(resl>0) setGridView(false);
+				break;
+			case R.id.check7:	//SQ复形求解
+				sqshp = isChecked; edit.putBoolean("sqshp", isChecked);
+				if(spSel[0]==8) {
+					if(isChecked) {
 						new Thread() {
 							public void run() {
 								handler.sendEmptyMessage(8);
@@ -1508,38 +1513,25 @@ public class DCTimer extends Activity {
 								isNextScr=true;
 							}
 						}.start();
-				} else {
-					sqshp=false;edit.putBoolean("sqshp", false);
-					if(spSel[0]==8) tvScr.setText(crntScr);
+					}
+					else tvScr.setText(crntScr);
 				}
-			}
-			//全屏
-			else if(buttonView.getId()==R.id.check8) {
+				break;
+			case R.id.check8:	//全屏
+				if(isChecked) getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+				else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+				fulls = isChecked; edit.putBoolean("fulls", isChecked);
+				break;
+			case R.id.check9:	//信号反转
+				invs = isChecked; Stackmat.inv = isChecked; edit.putBoolean("invs", isChecked);
+				break;
+			case R.id.check10:	//使用ss计时
+				usess = isChecked; edit.putBoolean("usess", isChecked);
+				spinner[11].setEnabled(!isChecked); spinner[7].setEnabled(!isChecked);
 				if(isChecked){
-					getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-					fulls=true;edit.putBoolean("fulls", true);
-				} else {
-					getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-					fulls=false;edit.putBoolean("fulls", false);
-				}
-			}
-			//信号反转
-			else if(buttonView.getId()==R.id.check9) {
-				if(isChecked){invs=true;Stackmat.inv=true;edit.putBoolean("invs", true);}
-				else {invs=false;Stackmat.inv=false;edit.putBoolean("invs", false);}
-			}
-			//使用ss计时
-			else if(buttonView.getId()==R.id.check10) {
-				if(isChecked){
-					usess=true;edit.putBoolean("usess", true);
-					spinner[11].setEnabled(false);
-					spinner[7].setEnabled(false);
 					tvTimer.setText("OFF");
 					if(!stm.isStart)stm.start();
 				} else {
-					usess=false;edit.putBoolean("usess", false);
-					spinner[11].setEnabled(true);
-					spinner[7].setEnabled(true);
 					if(stm.isStart)stm.stop();
 					if(spSel[7]==0){
 						if(spSel[6]==0)tvTimer.setText("0.00");
@@ -1548,14 +1540,11 @@ public class DCTimer extends Activity {
 						tvTimer.setText("IMPORT");
 					}
 				}
-			}
-			//选择分组
-			else if(buttonView.getId()==R.id.check11) {
-				if(isChecked){selSes=true;edit.putBoolean("selses", true);}
-				else {selSes=false;edit.putBoolean("selses", false);}
-			}
-			//分段计时
-			else if(buttonView.getId()==R.id.check12) {
+				break;
+			case R.id.check11:	//选择分组
+				selSes = isChecked; edit.putBoolean("selses", isChecked);
+				break;
+			case R.id.check12:	//分段计时
 				if(isChecked){
 					isMulp=true; spinner[13].setEnabled(true);
 					edit.putBoolean("ismulp", true);
@@ -1581,42 +1570,131 @@ public class DCTimer extends Activity {
 					setGridView(false);
 				}
 				setGvTitle();
-			}
-			//屏幕变暗
-			else if(buttonView.getId()==R.id.check13) {
-				if(isChecked){
-					if(screenOn)releaseWakeLock();
-					opnd=true; if(screenOn)acquireWakeLock();
-					edit.putBoolean("scrgry", true);
-				} else {
-					if(screenOn)releaseWakeLock();
-					opnd=false; if(screenOn)acquireWakeLock();
-					edit.putBoolean("scrgry", false);
-				}
-			}
+				break;
+			case R.id.check13:	//屏幕变暗
+				if(screenOn)releaseWakeLock();
+				opnd = isChecked;
+				if(screenOn)acquireWakeLock();
+				edit.putBoolean("scrgry", isChecked);
+				break;
+//			case R.id.check14:	//模拟ss计时器
+//				simss = isChecked; edit.putBoolean("simss", isChecked);
+//				break;
 			//RA0去尾统计
-			else if(buttonView.getId()==R.id.lcheck1) {
-				if(isChecked){
-					l1am=true;edit.putBoolean("l1am", true);
-					if(!isMulp)setGvTitle();
-				} else {
-					l1am=false;edit.putBoolean("l1am", false);
-					if(!isMulp)setGvTitle();
-				}
+			case R.id.lcheck1:
+				l1am = isChecked; edit.putBoolean("l1am", isChecked);
+				if(!isMulp) setGvTitle();
 				if(resl>0 && !isMulp) setGridView(false);
-			} else if(buttonView.getId()==R.id.lcheck2) {
-				if(isChecked){
-					l2am=true;edit.putBoolean("l2am", true);
-					if(!isMulp)setGvTitle();
-				} else {
-					l2am=false;edit.putBoolean("l2am", false);
-					if(!isMulp)setGvTitle();
-				}
+				break;
+			case R.id.lcheck2:
+				l2am = isChecked; edit.putBoolean("l2am", isChecked);
+				if(!isMulp)setGvTitle();
 				if(resl>0 && !isMulp) setGridView(false);
+				break;
+			//EG训练打乱
+			case R.id.checkcll:
+				if(isChecked) egtype |= 4;
+				else egtype &= 3;
+				edit.putInt("egtype", egtype);
+				break;
+			case R.id.checkeg1:
+				if(isChecked) egtype |= 2;
+				else egtype &= 5;
+				edit.putInt("egtype", egtype);
+				break;
+			case R.id.checkeg2:
+				if(isChecked) egtype |= 1;
+				else egtype &= 6;
+				edit.putInt("egtype", egtype);
+				break;
+			case R.id.checkegpi:
+				if(isChecked) {
+					egoll |= 128;
+					if(chkb[25].isChecked()) {chkb[25].setChecked(false); egoll &= 254;}
+				}
+				else egoll &= 127;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			case R.id.checkegh:
+				if(isChecked) {
+					egoll |= 64;
+					if(chkb[25].isChecked()) {chkb[25].setChecked(false); egoll &= 254;}
+				}
+				else egoll &= 191;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			case R.id.checkegu:
+				if(isChecked) {
+					egoll |= 32;
+					if(chkb[25].isChecked()) {chkb[25].setChecked(false); egoll &= 254;}
+				}
+				else egoll &= 223;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			case R.id.checkegt:
+				if(isChecked) {
+					egoll |= 16;
+					if(chkb[25].isChecked()) {chkb[25].setChecked(false); egoll &= 254;}
+				}
+				else egoll &= 239;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			case R.id.checkegl:
+				if(isChecked) {
+					egoll |= 8;
+					if(chkb[25].isChecked()) {chkb[25].setChecked(false); egoll &= 254;}
+				}
+				else egoll &= 247;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			case R.id.checkegs:
+				if(isChecked) {
+					egoll |= 4;
+					if(chkb[25].isChecked()) {chkb[25].setChecked(false); egoll &= 254;}
+				}
+				else egoll &= 251;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			case R.id.checkega:
+				if(isChecked) {
+					egoll |= 2;
+					if(chkb[25].isChecked()) {chkb[25].setChecked(false); egoll &= 254;}
+				}
+				else egoll &= 253;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			case R.id.checkegn:
+				if(isChecked) {
+					egoll |= 1;
+					for(int i=18; i<25; i++)
+						if(chkb[i].isChecked()) chkb[i].setChecked(false);
+				}
+				else egoll &= 254;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
 			}
 			edit.commit();
 		}
 	};
+	
+	private void setEgOll() {
+		String ego = "PHUTLSAN";
+		StringBuilder sb = new StringBuilder();
+		for(int i=0; i<8; i++) {
+			if((egoll & (1<<(7-i))) != 0) sb.append(ego.charAt(i));
+		}
+		egolls = sb.toString();
+		System.out.println(egolls);
+	}
+	
 	private void viewsVisibility(boolean v) {	//TODO
 		if(v) {
 			myTabHost.getTabWidget().setVisibility(0);
@@ -1624,20 +1702,20 @@ public class DCTimer extends Activity {
 			spinner[18].setVisibility(0);
 			mButtonSst.setVisibility(0);
 			if(hidscr)tvScr.setVisibility(0);
-			chkb[11].setEnabled(true);
-			chkb[11].setTextColor(cl[1]);
-			chkb[13].setEnabled(true);
-			chkb[13].setTextColor(cl[1]);
+//			chkb[11].setEnabled(true);
+//			chkb[11].setTextColor(cl[1]);
+//			chkb[13].setEnabled(true);
+//			chkb[13].setTextColor(cl[1]);
 		} else {
 			myTabHost.getTabWidget().setVisibility(8);
 			spinner[0].setVisibility(8);
 			spinner[18].setVisibility(8);
 			mButtonSst.setVisibility(8);
 			if(hidscr)tvScr.setVisibility(8);
-			chkb[11].setEnabled(false);
-			chkb[11].setTextColor((cl[1]&0xffffff)|(127<<24));
-			chkb[13].setEnabled(false);
-			chkb[13].setTextColor((cl[1]&0xffffff)|(127<<24));
+//			chkb[11].setEnabled(false);
+//			chkb[11].setTextColor((cl[1]&0xffffff)|(127<<24));
+//			chkb[13].setEnabled(false);
+//			chkb[13].setTextColor((cl[1]&0xffffff)|(127<<24));
 		}
 	}
 	private String[] set2ndsel() {
@@ -2042,124 +2120,134 @@ public class DCTimer extends Activity {
 		weibo.share2weibo(this, weibo.getAccessToken().getToken(), weibo.getAccessToken()
 				.getSecret(), content, picPath);
 	}
-	private void setTouch(int a) {
-		switch (a) {
+	private void setTouch(MotionEvent e) {
+		//if(!simss || scrt) {
+		switch (e.getAction()) {
 		case MotionEvent.ACTION_DOWN:
-			if(timk==1) {
-				if(mulpCount!=0) {
-					if(spSel[14]==1 || spSel[14]==3)
-						vibrator.vibrate(vibTime[spSel[15]]);
-					tvTimer.setTextColor(Color.GREEN);
-					multemp[spSel[13]+2-mulpCount] = System.currentTimeMillis();
-				}
-				else {
-					if(spSel[14]>1)
-						vibrator.vibrate(vibTime[spSel[15]]);
-					timer.count();
-					new Thread(new Runnable(){
-						public void run(){
-							try {
-								Thread.sleep(25);
-							} catch (InterruptedException e) {e.printStackTrace();}
-							handler.sendEmptyMessage(4);
-						}
-					}).start();
-					if(isMulp)multemp[spSel[13]+2]=timer.time1;
-					viewsVisibility(true);
-					if(isMulp)spinner[13].setEnabled(true);
-				}
-			} else {
-				if(!scrt || timk==2) {
-					if(tapTime == 0 || (wca && timk==0)) {
-						tvTimer.setTextColor(Color.GREEN);
-						canStart=true;
-					} else {
-						timer.isTapped = true;
-						if(timk==0)tvTimer.setTextColor(Color.RED);
-						else tvTimer.setTextColor(Color.YELLOW);
-						timer.tap();
-					}
-				}
-			}
+			touchDown();
 			break;
 		case MotionEvent.ACTION_UP:
-			if(timk==0){
-				if(isLongPress) {
-					isLongPress = false;
-				}
-				else if(scrt)newScr(false);
-				else {
-					if(tapTime ==0 || canStart) {
-						if(spSel[14]==1 || spSel[14]==3)
-							vibrator.vibrate(vibTime[spSel[15]]);
-						if(wca)timer.v=1;
-						timer.count();
-						if(wca)timk=2;
-						else timk=1;
-						if(isMulp){
-							mulpCount=spSel[13]+1;
-							multemp[0]=timer.time0;
-						}
-						else mulpCount=0;
-						acquireWakeLock();screenOn=true;
-						viewsVisibility(false);
-						if(isMulp)spinner[13].setEnabled(false);
-					} else {
-						timer.isTapped = false;
-						timer.stopt();
-						tvTimer.setTextColor(cl[1]);
+			touchUp();
+		}
+		//}
+		//else {
+		//}
+	}
+	private void touchDown() {
+		if(timk==1) {
+			if(mulpCount!=0) {
+				if(spSel[14]==1 || spSel[14]==3)
+					vibrator.vibrate(vibTime[spSel[15]]);
+				tvTimer.setTextColor(Color.GREEN);
+				multemp[spSel[13]+2-mulpCount] = System.currentTimeMillis();
+			}
+			else {
+				if(spSel[14]>1)
+					vibrator.vibrate(vibTime[spSel[15]]);
+				timer.count();
+				new Thread(new Runnable(){
+					public void run(){
+						try {
+							Thread.sleep(25);
+						} catch (InterruptedException e) {e.printStackTrace();}
+						handler.sendEmptyMessage(4);
 					}
-				}
-			} else if(timk==1){	//TODO
-				if(isLongPress) isLongPress = false;
-				if(mulpCount!=0) {
-					mulpCount--;
-					tvTimer.setTextColor(cl[1]);
+				}).start();
+				if(isMulp)multemp[spSel[13]+2]=timer.time1;
+				viewsVisibility(true);
+				if(isMulp)spinner[13].setEnabled(true);
+			}
+		} else {
+			if(!scrt || timk==2) {
+				if(tapTime == 0 || (wca && timk==0)) {
+					tvTimer.setTextColor(Color.GREEN);
+					canStart=true;
 				} else {
-					wca=wcat;
-					if(!wca){isp2=0;idnf=true;}
-					//newScr(false);
-					//mTextView2.setText(Mi.distime((int)timer.time));
-					if(idnf) confirmTime((int)timer.time);
-					else {
-						if(conft)
-							new AlertDialog.Builder(DCTimer.this).setTitle(getResources().getString(R.string.time_dnf)).setMessage(getResources().getString(R.string.confirm_adddnf))
-							.setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialoginterface, int j){
-									record((int)timer.time,(byte)2);
-								}
-							}).setNegativeButton(getResources().getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface d, int which) {
-									d.dismiss();
-								}
-							}).show();
-						else record((int)timer.time,(byte)2);
-					}
-					timk=0;
-					if(!opnl){releaseWakeLock();screenOn=false;}
+					timer.isTapped = true;
+					if(timk==0)tvTimer.setTextColor(Color.RED);
+					else tvTimer.setTextColor(Color.YELLOW);
+					timer.tap();
 				}
-			} else {
-				if(isLongPress) isLongPress = false;
+			}
+		}
+	}
+	private void touchUp() {
+		if(timk==0){
+			if(isLongPress) {
+				isLongPress = false;
+			}
+			else if(scrt)newScr(false);
+			else {
 				if(tapTime ==0 || canStart) {
-					if(timer.v==1){isp2=0;idnf=true;}
-					else if(timer.v==2){isp2=2000;idnf=true;}
-					else if(timer.v==3){isp2=0;idnf=false;}
 					if(spSel[14]==1 || spSel[14]==3)
 						vibrator.vibrate(vibTime[spSel[15]]);
-					timer.v=0;
+					if(wca)timer.v=1;
 					timer.count();
-					timk=1;
+					if(wca)timk=2;
+					else timk=1;
 					if(isMulp){
+						mulpCount=spSel[13]+1;
 						multemp[0]=timer.time0;
 					}
+					else mulpCount=0;
 					acquireWakeLock();screenOn=true;
 					viewsVisibility(false);
 					if(isMulp)spinner[13].setEnabled(false);
 				} else {
 					timer.isTapped = false;
 					timer.stopt();
-					tvTimer.setTextColor(Color.RED);
+					tvTimer.setTextColor(cl[1]);
 				}
+			}
+		} else if(timk==1){	//TODO
+			if(isLongPress) isLongPress = false;
+			if(mulpCount!=0) {
+				mulpCount--;
+				tvTimer.setTextColor(cl[1]);
+			} else {
+				wca=wcat;
+				if(!wca){isp2=0;idnf=true;}
+				//newScr(false);
+				//mTextView2.setText(Mi.distime((int)timer.time));
+				if(idnf) confirmTime((int)timer.time);
+				else {
+					if(conft)
+						new AlertDialog.Builder(DCTimer.this).setTitle(getResources().getString(R.string.time_dnf)).setMessage(getResources().getString(R.string.confirm_adddnf))
+						.setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialoginterface, int j){
+								record((int)timer.time,(byte)2);
+							}
+						}).setNegativeButton(getResources().getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface d, int which) {
+								d.dismiss();
+							}
+						}).show();
+					else record((int)timer.time,(byte)2);
+				}
+				timk=0;
+				if(!opnl){releaseWakeLock();screenOn=false;}
+			}
+		} else {
+			if(isLongPress) isLongPress = false;
+			if(tapTime ==0 || canStart) {
+				if(timer.v==1){isp2=0;idnf=true;}
+				else if(timer.v==2){isp2=2000;idnf=true;}
+				else if(timer.v==3){isp2=0;idnf=false;}
+				if(spSel[14]==1 || spSel[14]==3)
+					vibrator.vibrate(vibTime[spSel[15]]);
+				timer.v=0;
+				timer.count();
+				timk=1;
+				if(isMulp){
+					multemp[0]=timer.time0;
+				}
+				acquireWakeLock();screenOn=true;
+				viewsVisibility(false);
+				if(isMulp)spinner[13].setEnabled(false);
+			} else {
+				timer.isTapped = false;
+				timer.stopt();
+				tvTimer.setTextColor(Color.RED);
 			}
 		}
 	}
@@ -2552,7 +2640,7 @@ public class DCTimer extends Activity {
 			}
 			else tvScr.setText(crntScr);
 		}
-		else if((spSel[0]==0 && spSel[2]!=0) ||
+		else if((spSel[0]==0 && spSel[18]<3 && spSel[2]!=0) ||
 			(spSel[0]==1 && (spSel[18]!=0 || (spSel[1]!=0 && (spSel[18]==0 || spSel[18]==1 || spSel[18]==5 || spSel[18]==19)))) ||
 			(spSel[0]==8 && (spSel[18]==2 || sqshp)) ||
 			(spSel[0]==11 && (spSel[18]>3 && spSel[18]<7)) ||
@@ -2598,7 +2686,7 @@ public class DCTimer extends Activity {
 				}.start();
 			}
 		} else {
-			crntScr=Mi.SetScr((spSel[0]<<5)|spSel[18], ch);
+			crntScr=Mi.SetScr(spSel[0]<<5|spSel[18], ch);
 			tvScr.setText(crntScr);
 		}
 	}

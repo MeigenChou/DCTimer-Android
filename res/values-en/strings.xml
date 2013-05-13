@@ -34,7 +34,7 @@
 	<string name="optcross">" Another 3x3x3 Solver"</string>
 	<string name="timer_size">" Timer size: "</string>
 	<string name="timer_font">" Timer font:"</string>
-	<string name="time_tap">" Pressing time(sec): "</string>
+	<string name="time_tap">" Timer start delay time(sec): "</string>
 	<string name="scrsize">" Scramble size: "</string>
 	<string name="mmxcolor">" Megaminx"</string>
 	<string name="bgcolor">" Background colour"</string>

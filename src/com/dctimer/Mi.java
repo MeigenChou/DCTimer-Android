@@ -22,45 +22,40 @@ public class Mi {
 	private static boolean ini = false;
 	public static int viewType;
 	public static int scrLen=0;
-	private static short[][] defScrLen = new short[21][];
-	private static boolean inis = false;
-	
-	private static void inits() {
-		if(inis)return;
-		defScrLen[0] = new short[]{0, 25, 25, 0, 0, 0};
-		defScrLen[1] = new short[]{25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0};
-		defScrLen[2] = new short[]{40, 40, 40, 8, 40};
-		defScrLen[3] = new short[]{60, 60, 8};
-		defScrLen[4] = new short[]{80, 80, 80, 8};
-		defScrLen[5] = new short[]{100, 100, 100, 8};
-		defScrLen[6] = new short[]{70, 70};
-		defScrLen[7] = new short[]{0, 25};
-		defScrLen[8] = new short[]{40, 20, 0};
-		defScrLen[9] = new short[]{0, 0, 0, 0};
-		defScrLen[10] = new short[]{80, 80};
-		defScrLen[11] = new short[]{15, 25, 0, 25, 0, 0, 0, 40, 25, 40, 40, 120, 140, 140, 140};
-		defScrLen[12] = new short[]{25, 25};
-		defScrLen[13] = new short[]{0, 10};
-		defScrLen[14] = new short[]{25, 25, 25};
-		defScrLen[15] = new short[]{0, 25};
-		defScrLen[16] = new short[]{25, 40, 20, 20, 25, 25};
-		defScrLen[17] = new short[]{0, 0, 0, 25, 25, 25, 0, 15};
-		defScrLen[18] = new short[]{30, 25};
-		defScrLen[19] = new short[]{30, 20};
-		defScrLen[20] = new short[]{0, 0, 0, 0, 5};
-		inis = true;
-	}
+	private static short[][] defScrLen = {
+		{0, 25, 25, 0, 0, 0, 0, 0},
+		{25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0},
+		{40, 40, 40, 8, 40},
+		{60, 60, 8},
+		{80, 80, 80, 8},
+		{100, 100, 100, 8},
+		{70, 70},
+		{0, 25},
+		{40, 20, 0},
+		{0, 0, 0, 0},
+		{80, 80},
+		{15, 25, 0, 25, 0, 0, 0, 40, 25, 40, 40, 120, 140, 140, 140},
+		{25, 25},
+		{0, 10},
+		{25, 25, 25},
+		{0, 25},
+		{25, 40, 20, 20, 25, 25},
+		{0, 0, 0, 25, 25, 25, 0, 15},
+		{30, 25},
+		{30, 20},
+		{0, 0, 0, 0, 5},
+	};
 	
 	public static String SetScr(int n, boolean ch) {
 		String[][][] turns;
 		String[][] turn2;
 		String[] end,suff0={""},csuff={"","2","'"},suff;
-		String scr="";
-		inits();
+		String scr;
 		if(ch)scrLen = defScrLen[n>>5][n&31];
 		switch(n){
 		case 0: //2阶
-			scr=Cube222.solve(Cube222.randomState());viewType=2;
+			Cube222.randomState();
+			scr=Cube222.solve();viewType=2;
 			if(DCTimer.spSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spSel[2]);break;
 		case 1:
 			scr=cube(2);viewType=2;
@@ -69,11 +64,20 @@ public class Mi {
 			scr=OtherScr.megascramble(new String[][][]{{{"U","D"}},{{"R","L"}},{{"F","B"}}}, csuff);viewType=2;
 			if(DCTimer.spSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spSel[2]);break;
 		case 3:
-			scr=Cube222.solve(Cube222.randomCLL());viewType=2;break;
+			Cube222.randomCLL();
+			scr=Cube222.solve();viewType=2;break;
 		case 4:
-			scr=Cube222.solve(Cube222.randomEG1());viewType=2;break;
+			Cube222.randomEG1();
+			scr=Cube222.solve();viewType=2;break;
 		case 5:
-			scr=Cube222.solve(Cube222.randomEG2());viewType=2;break;
+			Cube222.randomEG2();
+			scr=Cube222.solve();viewType=2;break;
+		case 6:
+			Cube222.randomXLL();
+			scr=Cube222.solve();viewType=2;break;
+		case 7:
+			Cube222.randomEG(DCTimer.egtype, DCTimer.egolls);
+			scr=Cube222.solve(); viewType=2; break;
 		case 32: //3阶
 			scr=cube(3);viewType=3;
 			if(DCTimer.spSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[9], DCTimer.spSel[10]);
@@ -447,27 +451,31 @@ public class Mi {
 			scr=OtherScr.sq1_scramble(2);viewType=1;break;
 		case 608:	//五魔子集
 			turn2=new String[][]{{"U"},{"R"}};
-			scr=OtherScr.megascramble(turn2, csuff);viewType=0;break;
+			scr=OtherScr.megascramble(turn2, new String[]{"", "2", "'", "2'"});viewType=0;break;
 		case 609:
 			turns=new String[][][]{{{"R U R'","R U2 R'","R U' R'","R U2' R'"}},{{"F' U F","F' U2 F","F' U' F","F' U2' F"}},{{"U","U2","U'","U2'"}}};
 			scr=OtherScr.megascramble(turns, suff0);viewType=0;break;
 		case 640:	//连拧
-			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
+			Cube222.randomState();
+			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40);
 			viewType=0;break;
 		case 641:
-			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
+			Cube222.randomState();
+			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60);
 			viewType=0;break;
 		case 642:
-			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
+			Cube222.randomState();
+			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60)
 				+"\n6) "+OtherScr.megascramble(new String[][]{{"U","D","u","d","3u"},{"R","L","r","l","3r"},{"F","B","f","b","3f"}}, csuff, 80);
 			viewType=0;break;
 		case 643:
-			scr="2) "+Cube222.solve(Cube222.randomState())+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
+			Cube222.randomState();
+			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60)
 				+"\n6) "+OtherScr.megascramble(new String[][]{{"U","D","u","d","3u"},{"R","L","r","l","3r"},{"F","B","f","b","3f"}}, csuff, 80)
@@ -480,6 +488,8 @@ public class Mi {
 				if(j<scrLen-1)scrb.append("\n");
 			}
 			scr=scrb.toString();viewType=0;break;
+		default:
+			scr = "";
 		}
 		return scr;
 	}

@@ -14,7 +14,7 @@
 	<string name="penalty_dnf">DNF</string>
 	<string name="note">注释：</string>
 	<string name="session_average">本组平均(</string>
-	<string name="wcainsp">WCA观察</string>
+	<string name="wcainsp">使用WCA观察</string>
 	<string name="screenon">非计时下屏幕常亮</string>
 	<string name="screengrey">允许屏幕变暗</string>
 	<string name="hidescr">计时中隐藏打乱</string>
@@ -24,6 +24,7 @@
 	<string name="precision">" 计时器精确度"</string>
 	<string name="input_time">" 计时与成绩输入方式"</string>
 	<string name="timer_upd">" 计时器更新方式"</string>
+	<string name="simulss">使用两手模拟Stackmat计时</string>
 	<string name="ra0">" 滚动平均0:"</string>
 	<string name="ra1">" 滚动平均1:"</string>
 	<string name="trimmed">"去尾 "</string>
@@ -36,6 +37,7 @@
 	<string name="timer_font">" 计时器字体："</string>
 	<string name="time_tap">" 启动触发延时(秒)："</string>
 	<string name="scrsize">" 打乱字体大小："</string>
+	<string name="egtrain">" EG训练打乱"</string>
 	<string name="mmxcolor">" 五魔方"</string>
 	<string name="bgcolor">" 背景颜色"</string>
 	<string name="bgpicture">" 背景图片"</string>

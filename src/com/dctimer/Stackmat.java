@@ -8,7 +8,7 @@ import android.os.AsyncTask;
 public class Stackmat {
 	protected RecordTask recorder;
 	public AudioRecord record;
-	private boolean isRecording=false;
+	private boolean isRecording = false;
 	private int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;   
 	private int audioEncoding = AudioFormat.ENCODING_PCM_16BIT; 
 	private int bufferReadResult;
@@ -19,18 +19,19 @@ public class Stackmat {
 	private int newPeriod;
 	public static boolean inv;
 	public boolean isStart;
-	private boolean isValid = false;
+	private boolean ssMode = false;
+	//private boolean isValid = false;
 	private boolean isMsec = false;
 	DCTimer ct;
 	private byte state=0;	//0-off, 1-not ready, 2-running, 4-stop
 	private int lasttime = 0;
 	
 	public Stackmat(DCTimer ct){
-		this.ct=ct;
+		this.ct = ct;
 	}
 	
 	public void start(){
-		isStart=true;
+		isStart = true;
 		recorder = new RecordTask();
 		recorder.execute();
 	}
@@ -44,46 +45,52 @@ public class Stackmat {
 		try {
 			int bufferSize = AudioRecord.getMinBufferSize(sampRate, channelConfig, audioEncoding);    
 			new AudioRecord(MediaRecorder.AudioSource.MIC, sampRate, channelConfig, audioEncoding, bufferSize);
-			samplingRate=sampRate;
+			samplingRate = sampRate;
 			return true;
 		} catch (Exception e) {
-			samplingRate=44100;
+			samplingRate = 44100;
 			return false;
 		}
 	}
 
-//	private void readPackage2(byte[] samples){
-//		String s="";
-//		for(int c=0;c<90;c++){
-//			s+=samples[c];
-//		}
-//		Log.v("data", s);
-//	}
+//	private byte[] readPackage2(byte[] samples){
+//		isValid = true; isMsec = false;
+//		int offset = 0, sum = 0;
+//    	byte[] data=new byte[9];
+//    	for(int i=0; i<9; i++){
+//    		data[i]=(byte) parseData(samples, i, inv);
+//    		if(i==0 && !" ACILRS".contains(String.valueOf((char) data[i]))){
+//    			isValid = false; return data;
+//    		}
+//    		if(i>0 && i<6){
+//    			if(!Character.isDigit(data[i])){
+//    				isValid = false; return data;
+//    			}
+//    			data[i] -= 48; sum += data[i];
+//    		}
+//    		if(i==6 && Character.isDigit(data[i])){
+//    			offset = 1; isMsec = true; data[i] -= 48; sum += data[i];
+//    		}
+//    		if(i==6+offset && data[i]!=sum+64){
+//    			isValid = false; return data;
+//    		}
+//    		if(i==7+offset && data[i]!= '\n'){
+//    			isValid = false; return data;
+//    		}
+//    	}
+//    	return data;
+//    }
 	private byte[] readPackage(byte[] samples){
-		isValid = true; isMsec = false;
-		int offset = 0, sum = 0;
+		int sum = 0;
     	byte[] data=new byte[9];
     	for(int i=0; i<9; i++){
-    		data[i]=(byte) parseData(samples, i, inv);
-    		if(i==0 && !" ACILRS".contains(String.valueOf((char) data[i]))){
-    			isValid = false; return data;
+    		if(i>0 && i<7){
+    			data[i] = (byte) parseDigit(samples, i, inv); sum += data[i];
     		}
-    		if(i>0 && i<6){
-    			if(!Character.isDigit(data[i])){
-    				isValid = false; return data;
-    			}
-    			data[i] -= 48; sum += data[i];
-    		}
-    		if(i==6 && Character.isDigit(data[i])){
-    			offset = 1; isMsec = true; data[i] -= 48; sum += data[i];
-    		}
-    		if(i==6+offset && data[i]!=sum+64){
-    			isValid = false; return data;
-    		}
-    		if(i==7+offset && data[i]!= '\n'){
-    			isValid = false; return data;
-    		}
+    		else data[i] = (byte) parseData(samples, i, inv);
     	}
+    	if(" ACILR".contains(String.valueOf((char) data[0]))) ssMode = true;
+    	if(data[7] == sum+64) isMsec = true;
     	return data;
     }
 	private int parseData(byte[] periodData, int pos, boolean inv){
@@ -91,36 +98,42 @@ public class Stackmat {
 		for(int i = 1; i < 9; i++) temp |= periodData[pos * 10 + i] << (i - 1);
 		return inv ? ~temp : temp;
 	}
+	private int parseDigit(byte[] periodData, int pos, boolean inv){
+		int temp = 0;
+		for(int i = 1; i < 5; i++) temp |= periodData[pos * 10 + i] << (i - 1);
+		return inv ? 15 - temp : temp;
+	}
 	
 	class RecordTask extends AsyncTask<Void, Integer, Void>{
 		@Override
 		protected Void doInBackground(Void... params) {
 			isRecording = true;
-			state=0;
+			state = 0;
+			ssMode = isMsec = false;
 			try {
-				int mul = samplingRate > 40000 ? 2 : 1;
-				newPeriod = samplingRate / 44 / mul;
-				signalLengthPerBit = samplingRate * 36.75 / 44100 / mul;
-				noiseSpikeThreshold = samplingRate * 25 / 44100 / mul;
+				newPeriod = samplingRate / 44;
+				signalLengthPerBit = samplingRate * 36.75 / 44100;
+				noiseSpikeThreshold = samplingRate * 25 / 44100;
 				int bufferSize = AudioRecord.getMinBufferSize(samplingRate, channelConfig, audioEncoding);    
 				record = new AudioRecord(MediaRecorder.AudioSource.MIC, samplingRate, channelConfig, audioEncoding, bufferSize);    
 				short[] buffer = new short[bufferSize];
 				record.startRecording();
-				byte[] temp=new byte[90];	//=new byte[230];
-				int tlen=0;
-				byte sample=0, lastSample=0;
+				byte[] temp = new byte[90];	//=new byte[230];
+				int tlen = 0;
+				byte sample = 0, lastSample = 0;
 				byte lastBit = 0;
-                int count=0;
+                int count = 0;
                 
-				while(isRecording){
+				while(isRecording) {
 					bufferReadResult = record.read(buffer, 0, bufferSize);
-					for(int c=0; c < bufferReadResult; c+=mul){
-						sample=(byte)(buffer[c]>>8);
+					for(int c=0; c<bufferReadResult; c++){
+						sample = (byte) (buffer[c]>>8);
 						if(count < newPeriod * 4) count++;
 						else if(count == newPeriod * 4){
 							count++;
 							publishProgress(-2);
-							tlen=0;
+							tlen = 0;
+							state = 0;
 							//Log.v("data", "off");
 						}
 						if(Math.abs(lastSample - sample) > switchThreshold && count > noiseSpikeThreshold) {
@@ -132,13 +145,12 @@ public class Stackmat {
 								}
 								if(tlen>88){
 									//readPackage2(temp);
-									byte[] data=readPackage(temp);
-									if(isValid){
-										//System.out.println(data[0]);
-										int time=(int)data[5]*10+data[4]*100+data[3]*1000+data[2]*10000+data[1]*60000+(isMsec?data[6]:0);
-	                					switch(state){
+									byte[] data = readPackage(temp);
+									int time=(int)data[5]*10+data[4]*100+data[3]*1000+data[2]*10000+data[1]*60000+(isMsec?data[6]:0);
+									if(ssMode){
+	                					switch(state) {
 	                					case 0:	//off
-	                						if(time==0)state=1;
+	                						if(time==0) state=1;
 	                						else state=3;
 	                						break;
 	                					case 1:	//not ready
@@ -162,8 +174,42 @@ public class Stackmat {
 	                						if(time==0)state=1;
 	                						break;
 	                					}
-										publishProgress(Integer.valueOf(data[0]), Integer.valueOf(data[1]), Integer.valueOf(data[2]*10+data[3]), Integer.valueOf(data[4]*10+data[5]), Integer.valueOf(data[6]));
+									} else {
+										switch(state) {
+										case 0:	//off
+											if(time==0) {
+												state=1;
+												System.out.println("open");
+											}
+	                						else state=3;
+											lasttime = time;
+	                						break;
+										case 1:	//not ready
+											if(time != lasttime) {
+												state = 2;
+												System.out.println("run");
+												lasttime = time;
+											}
+											break;
+										case 2:	//running
+											if(time==0)state=1;
+											if(time == lasttime) {
+												lasttime = 0;
+												publishProgress(-1, time);
+												state = 3;
+												System.out.println("stop");
+											}
+											else lasttime = time;
+											break;
+										case 3:	//stop
+											if(time==0) {
+												state = 1;
+												System.out.println("reset");
+											}
+	                						break;
+										}
 									}
+									publishProgress(Integer.valueOf(data[0]), Integer.valueOf(data[1]), Integer.valueOf(data[2]*10+data[3]), Integer.valueOf(data[4]*10+data[5]), Integer.valueOf(data[6]));
 									//Log.v("data", data[1]+":"+data[2]+" "+data[3]+"."+data[4]+" "+data[5]);
 								}
 								tlen=0;
@@ -175,27 +221,7 @@ public class Stackmat {
 							lastBit = bitValue(sample - lastSample);
 							count = 0;
 						}
-//						if(mode){
-//							temp[tlen++]=bitValue(sample);
-//                			if(tlen>100){
-//                				byte[] data = readPackage(temp);
-//                				if(isValid){
-//                					int time=(int)data[5]*10+data[4]*100+data[3]*1000+data[2]*10000+data[1]*60000+(pro?data[6]:0);
-//                					
-//                					publishProgress((int)data[0], (int)data[1], (int)data[2], (int)data[3], (int)data[4], (int)data[5], (int)data[6]);
-//                					//Log.v("data", data[1]+":"+data[2]+data[3]+"."+data[4]+data[5]);
-//                				}
-//                				tlen=0; mode=false;
-//                			}
-//						} else if(Math.abs(sample - lastSample) < 5) {
-//                    		count++;
-//                    	} else {
-//                    		if(count>33)mode=true; count=0;
-//                    	}
                     	lastSample=sample;
-//						offset+=period;
-//						c=(int)(offset);
-//						if(offset>=bufferReadResult)offset-=bufferReadResult;
 					}
 				}
 				record.stop();

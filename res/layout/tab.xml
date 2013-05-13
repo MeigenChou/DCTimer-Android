@@ -32,8 +32,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="0dip"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="0.000" />
+                    android:gravity="center" />
 
                 <TextView
                     android:id="@+id/myTextView1"
@@ -279,6 +278,13 @@
                                 android:layout_marginRight="5dip"
                                 android:layout_weight="1" />
                         </LinearLayout>
+                        
+                        <!-- <CheckBox
+                            android:id="@+id/check14"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="17sp"
+                            android:text="@string/simulss" /> -->
                     </LinearLayout>
 
                     <TextView
@@ -369,6 +375,95 @@
                             android:text="@string/hidescr"
                             android:textSize="17sp" />
                         
+                        <TextView
+                            android:id="@+id/stt38"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/egtrain"
+                            android:textSize="17sp" />
+                        
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" >
+                            
+                            <CheckBox
+                                android:id="@+id/checkcll"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="EG0(CLL)" />
+                            
+                            <CheckBox
+                                android:id="@+id/checkeg1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="EG1" />
+                            
+                            <CheckBox
+                                android:id="@+id/checkeg2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="EG2" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" >
+                            
+                            <CheckBox
+                                android:id="@+id/checkegpi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Pi" />
+                            
+                            <CheckBox
+                                android:id="@+id/checkegh"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="H" />
+                            
+                            <CheckBox
+                                android:id="@+id/checkegu"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="U" />
+                            
+                            <CheckBox
+                                android:id="@+id/checkegt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="T" />
+                            
+                            <CheckBox
+                                android:id="@+id/checkegl"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="L" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" >
+                            <CheckBox
+                                android:id="@+id/checkegs"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sune" />
+                            
+                            <CheckBox
+                                android:id="@+id/checkega"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Anti-sune" />
+                            
+                            <CheckBox
+                                android:id="@+id/checkegn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="None" />
+                        </LinearLayout>
                     </LinearLayout>
                        
                     <TextView
