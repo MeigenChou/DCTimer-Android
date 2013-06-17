@@ -178,11 +178,11 @@
     
     <array name="crsStr">
         <item>不显示</item>
-        <item>显示Cross计算</item>
-        <item>显示Xcross计算</item>
-        <item>显示EOline计算</item>
-        <item>显示Roux S1计算</item>
-        <item>显示Petrus S1计算</item>
+        <item>显示Cross求解</item>
+        <item>显示Xcross求解</item>
+        <item>显示EOline求解</item>
+        <item>显示Roux S1求解</item>
+        <item>显示Petrus S1求解</item>
     </array>
     
     <array name="clrStr">
@@ -262,11 +262,12 @@
     </array>
     
     <array name="mulpStr">
-        <item>2　</item>
-        <item>3　</item>
-        <item>4　</item>
-        <item>5　</item>
-        <item>6　</item>
+        <item>关闭</item>
+        <item>"2"</item>
+        <item>"3"</item>
+        <item>"4"</item>
+        <item>"5"</item>
+        <item>"6"</item>
     </array>
     
     <array name="inscrStr">

@@ -90,8 +90,8 @@
                         android:textSize="16sp" />
 
                     <Spinner
-                        android:id="@+id/spinner8"
-                        android:layout_width="90dp"
+                        android:id="@+id/spinner6"
+                        android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
@@ -150,13 +150,13 @@
                     android:orientation="vertical" >
 
                     <TextView
-                            android:id="@+id/stt00"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dip"
-                            android:layout_marginLeft="10dip"
-                            android:text="@string/stt_timer"
-                            android:textSize="16sp" />
+                        android:id="@+id/stt00"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dip"
+                        android:layout_marginTop="5dip"
+                        android:text="@string/stt_timer"
+                        android:textSize="16sp" />
                     
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -165,91 +165,145 @@
                         android:background="@drawable/group_back"
                         android:orientation="vertical" >
 
-                        <CheckBox
-                            android:id="@+id/check1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/wcainsp"
-                            android:textSize="17sp" />
-
-                        <CheckBox
-                            android:id="@+id/check6"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/clock_format"
-                            android:textSize="17sp" />
-                        
                         <LinearLayout
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dip"
-                            android:layout_marginBottom="5dip"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt41"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/wcainsp"
+                                android:textSize="17sp" />
+
+                            <TextView
+                                android:id="@+id/stcheck1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dip" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt42"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/clock_format"
+                                android:textSize="17sp" />
+
+                            <TextView
+                                android:id="@+id/stcheck2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dip" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
+                            android:id="@+id/lay01"
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt22"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/input_time"
                                 android:textSize="17sp" />
 
-                            <Spinner
-                                android:id="@+id/spinner7"
+                            <TextView
+                                android:id="@+id/std01"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
                         
                         <LinearLayout
+                            android:id="@+id/lay02"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dip"
-                            android:layout_marginBottom="5dip"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt36"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/timer_upd"
                                 android:textSize="17sp" />
-
-                            <Spinner
-                                android:id="@+id/spinner17"
+                            
+                            <TextView
+                                android:id="@+id/std02"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
                         
                         <LinearLayout
+                            android:id="@+id/lay03"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dip"
-                            android:layout_marginBottom="5dip"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="7dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt21"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="@string/precision"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/accuracy"
                                 android:textSize="17sp" />
 
-                            <Spinner
-                                android:id="@+id/spinner6"
+                            <TextView
+                                android:id="@+id/std03"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
                         
                         <TextView
                             android:id="@+id/stt31"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/time_tap"
+                            android:layout_marginLeft="5dip"
                             android:textSize="17sp" />
 
                         <SeekBar
@@ -257,34 +311,61 @@
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:paddingLeft="7dip"
-                            android:paddingRight="7dip" />
+                            android:paddingRight="7dip"
+                            android:layout_marginBottom="5dip" />
                         
                         <LinearLayout 
+                            android:id="@+id/lay04"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:longClickable="true"
                             android:orientation="horizontal">
                             
-                            <CheckBox
-                                android:id="@+id/check12"
-                                android:layout_width="wrap_content"
+                            <TextView
+                                android:id="@+id/stt40"
+                                android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="@string/mul_phase" />
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/mul_phase"
+                                android:textSize="17sp" />
                             
-                            <Spinner
-                                android:id="@+id/spinner14"
+                            <TextView
+                                android:id="@+id/std04"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginRight="5dip"
-                                android:layout_weight="1" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
+                            
                         </LinearLayout>
                         
-                        <!-- <CheckBox
-                            android:id="@+id/check14"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="17sp"
-                            android:text="@string/simulss" /> -->
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt43"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/simulss"
+                                android:textSize="17sp" />
+
+                            <TextView
+                                android:id="@+id/stcheck3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dip" />
+                        </LinearLayout>
                     </LinearLayout>
 
                     <TextView
@@ -302,40 +383,97 @@
                         android:background="@drawable/group_back"
                         android:orientation="vertical" >
 
-                        <CheckBox
-                            android:id="@+id/check10"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="17sp"
-                            android:text="@string/stt_usess" />
-                        
                         <LinearLayout
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dip"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt44"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/stt_usess"
+                                android:textSize="17sp" />
+
+                            <TextView
+                                android:id="@+id/stcheck4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dip" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
+                            android:id="@+id/lay05"
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt20"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/stt_samprate"
                                 android:textSize="17sp" />
 
-                            <Spinner
-                                android:id="@+id/spinner11"
+                            <TextView
+                                android:id="@+id/std05"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
 
-                        <CheckBox
-                            android:id="@+id/check9"
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="7dip"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt45"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/stt_invert"
+                                android:textSize="17sp" />
+
+                            <TextView
+                                android:id="@+id/stcheck5"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dip" />
+                        </LinearLayout>
+                        
+                        <TextView
+                            android:id="@+id/stt39"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/stt_invert"
+                            android:layout_marginLeft="5dip"
                             android:textSize="17sp" />
+                        
+                        <SeekBar
+                            android:id="@+id/seekb6"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="7dip"
+                            android:paddingRight="7dip"
+                            android:layout_marginBottom="5dip" />
                     </LinearLayout>
 
                     <TextView
@@ -358,7 +496,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dip"
-                            android:text="@string/scrsize"
+                            android:layout_marginLeft="5dip"
                             android:textSize="17sp" />
 
                         <SeekBar
@@ -368,17 +506,36 @@
                             android:paddingLeft="7dip"
                             android:paddingRight="7dip" />
                     
-                        <CheckBox
-                            android:id="@+id/check3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/hidescr"
-                            android:textSize="17sp" />
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="7dip"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt46"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/hidescr"
+                                android:textSize="17sp" />
+
+                            <TextView
+                                android:id="@+id/stcheck6"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dip" />
+                        </LinearLayout>
                         
                         <TextView
                             android:id="@+id/stt38"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dip"
                             android:text="@string/egtrain"
                             android:textSize="17sp" />
                         
@@ -465,7 +622,7 @@
                                 android:text="None" />
                         </LinearLayout>
                     </LinearLayout>
-                       
+
                     <TextView
                             android:id="@+id/stt03"
                             android:layout_width="wrap_content"
@@ -481,19 +638,55 @@
                         android:background="@drawable/group_back"
                         android:orientation="vertical" >
                         
-                        <CheckBox
-                            android:id="@+id/check4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/confirm_time"
-                            android:textSize="17sp" />
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt47"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/confirm_time"
+                                android:textSize="17sp" />
+
+                            <TextView
+                                android:id="@+id/stcheck7"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dip" />
+                        </LinearLayout>
                         
-                        <CheckBox
-                            android:id="@+id/check5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/printscr"
-                            android:textSize="17sp" />
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt48"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/printscr"
+                                android:textSize="17sp" />
+
+                            <TextView
+                                android:id="@+id/stcheck8"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dip" />
+                        </LinearLayout>
                         
                         <LinearLayout
                             android:layout_width="fill_parent"
@@ -505,6 +698,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:layout_marginLeft="5dip"
                                 android:text="@string/ra0"
                                 android:textSize="17sp" />
 
@@ -518,6 +712,7 @@
                                 android:id="@+id/lcheck1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginRight="5dip"
                                 android:text="@string/trimmed"
                                 android:textSize="17sp" />
                         </LinearLayout>
@@ -532,6 +727,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:layout_marginLeft="5dip"
                                 android:text="@string/ra1"
                                 android:textSize="17sp" />
 
@@ -545,35 +741,55 @@
                                 android:id="@+id/lcheck2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginRight="5dip"
                                 android:text="@string/trimmed"
                                 android:textSize="17sp" />
                         </LinearLayout>
 
-                        <CheckBox
-                            android:id="@+id/check11"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/sel_session"
-                            android:textSize="17sp" />
-                        
                         <LinearLayout
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt49"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/sel_session"
+                                android:textSize="17sp" />
+
+                            <TextView
+                                android:id="@+id/stcheck9"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dip" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
+                            android:id="@+id/lay18"
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="3dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt32"
-                                android:layout_width="0dp"
+                                android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/sesname"
-                                android:textSize="17sp" />
-
-                            <Button
-                                android:id="@+id/btn_ses"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/setting" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -593,26 +809,31 @@
                         android:orientation="vertical" >
                         
                         <LinearLayout
+                            android:id="@+id/lay06"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dip"
-                            android:layout_marginTop="5dip"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginTop="3dip"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt07"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/optcross"
                                 android:textSize="17sp" />
 
-                            <Spinner
-                                android:id="@+id/spinner"
+                            <TextView
+                                android:id="@+id/std06"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1" >
-                            </Spinner>
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -622,51 +843,72 @@
                             android:orientation="horizontal" >
 
                             <Spinner
-                                android:id="@+id/spinner9"
+                                android:id="@+id/spinner2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1" >
                             </Spinner>
 
                             <Spinner
-                                android:id="@+id/spinner10"
+                                android:id="@+id/spinner3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1" >
                             </Spinner>
                         </LinearLayout>
 
-                        <CheckBox
-                            android:id="@+id/check7"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dip"
-                            android:layout_marginRight="5dip"
-                            android:text="@string/sq1shape"
-                            android:textSize="17sp" />
-                        
                         <LinearLayout
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dip"
-                            android:layout_marginRight="5dip"
-                            android:layout_marginBottom="5dip"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt50"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/sq1shape"
+                                android:textSize="17sp" />
+
+                            <TextView
+                                android:id="@+id/stcheck10"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dip" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
+                            android:id="@+id/lay07"
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:longClickable="true"
+                            android:layout_marginBottom="3dip"
                             android:orientation="horizontal" >
                             
                             <TextView
                                 android:id="@+id/stt26"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/cube2_layer"
                                 android:textSize="17sp" />
                             
-                            <Spinner
-                                android:id="@+id/spinner12"
+                            <TextView
+                                android:id="@+id/std07"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1" >
-                            </Spinner>
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
+                            
                         </LinearLayout>
 
                     </LinearLayout>
@@ -687,86 +929,94 @@
                         android:orientation="vertical" >
                         
                         <LinearLayout
+                            android:id="@+id/lay19"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginTop="3dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt27"
-                                android:layout_width="0dp"
+                                android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/stt_csn"
-                                android:textSize="17sp" />
-
-                            <Button
-                                android:id="@+id/btn_csn"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/select" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
                         
                         <LinearLayout 
+                            android:id="@+id/lay20"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
                             
                             <TextView
                                 android:id="@+id/stt28"
-                                android:layout_width="0dp"
+                                android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/stt_csp"
-                                android:textSize="17sp" />
-                            
-                            <Button
-                                android:id="@+id/btn_csp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/select" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
 
                         <LinearLayout 
+                            android:id="@+id/lay21"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
                             
                             <TextView
                                 android:id="@+id/stt29"
-                                android:layout_width="0dp"
+                                android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/stt_csq"
-                                android:textSize="17sp" />
-                            
-                            <Button
-                                android:id="@+id/btn_csq"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/select" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
                         
                         <LinearLayout
+                            android:id="@+id/lay08"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dip"
-                            android:layout_marginBottom="5dip"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="3dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt11"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/mmxcolor"
                                 android:textSize="17sp" />
 
-                            <Spinner
-                                android:id="@+id/spinner3"
+                            <TextView
+                                android:id="@+id/std08"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1" >
-                            </Spinner>
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
                     </LinearLayout>
                     
@@ -795,6 +1045,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:layout_marginLeft="5dip"
                                 android:text="@string/stt_sina"
                                 android:textSize="17sp" />
 
@@ -821,39 +1072,64 @@
                         android:background="@drawable/group_back"
                         android:orientation="vertical" >
                         
-                        <CheckBox
-                            android:id="@+id/check8"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/full_screen"
-                            android:textSize="17sp" />
-                        
                         <LinearLayout
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dip"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt51"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/full_screen"
+                                android:textSize="17sp" />
+
+                            <TextView
+                                android:id="@+id/stcheck11"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dip" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
+                            android:id="@+id/lay09"
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="7dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt30"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/timer_font"
                                 android:textSize="17sp" />
                             
-                            <Spinner
-                                android:id="@+id/spinner13"
+                            <TextView
+                                android:id="@+id/std09"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
                         
                         <TextView
                             android:id="@+id/stt08"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/timer_size"
+                            android:layout_marginLeft="5dip"
                             android:textSize="17sp" />
 
                         <SeekBar
@@ -861,46 +1137,49 @@
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:paddingLeft="7dip"
-                            android:paddingRight="7dip" />
+                            android:paddingRight="7dip"
+                            android:layout_marginBottom="5dip" />
 
                         <LinearLayout
+                            android:id="@+id/lay13"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt12"
-                                android:layout_width="0dip"
+                                android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/bgcolor"
-                                android:textSize="17sp" />
-
-                            <Button
-                                android:id="@+id/selbagc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/select" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/lay22"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="7dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt23"
-                                android:layout_width="0dip"
+                                android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/bgpicture"
-                                android:textSize="17sp" />
-
-                            <Button
-                                android:id="@+id/selbgpic"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/select" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -912,6 +1191,7 @@
                                 android:id="@+id/stt04"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dip"
                                 android:text="@string/bgopacity"
                                 android:textSize="17sp" />
 
@@ -925,90 +1205,92 @@
                         </LinearLayout>
                         
                         <LinearLayout
+                            android:id="@+id/lay14"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginTop="5dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt13"
-                                android:layout_width="0dip"
+                                android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/text_color"
-                                android:textSize="17sp" />
-
-                            <Button
-                                android:id="@+id/seltxtc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/select" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/lay15"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt14"
-                                android:layout_width="0dip"
+                                android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/best_time"
-                                android:textSize="17sp" />
-
-                            <Button
-                                android:id="@+id/selorbc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/select" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/lay16"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt15"
-                                android:layout_width="0dip"
+                                android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/worst_time"
-                                android:textSize="17sp" />
-
-                            <Button
-                                android:id="@+id/selorwc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/select" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/lay17"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="7dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt16"
-                                android:layout_width="0dip"
+                                android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/best_rolling_avg"
-                                android:textSize="17sp" />
-
-                            <Button
-                                android:id="@+id/selavbc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/select" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
 
                         <TextView
                             android:id="@+id/stt17"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/row_spacing"
+                            android:layout_marginLeft="5dip"
                             android:textSize="17sp" />
 
                         <SeekBar
@@ -1036,98 +1318,153 @@
                         android:background="@drawable/group_back"
                         android:orientation="vertical" >
                         
-                        <CheckBox
-                            android:id="@+id/check2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dip"
-                            android:layout_marginRight="5dip"
-                            android:text="@string/screenon"
-                            android:textSize="17sp" />
-                        
-                        <CheckBox
-                            android:id="@+id/check13"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dip"
-                            android:layout_marginRight="5dip"
-                            android:text="@string/screengrey"
-                            android:textSize="17sp" />
-                        
                         <LinearLayout
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
                             android:orientation="horizontal" >
                             
                             <TextView
-                                android:id="@+id/stt37"
-                                android:layout_width="wrap_content"
+                                android:id="@+id/stt52"
+                                android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="@string/stt_screen_ori"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/screenon"
                                 android:textSize="17sp" />
-                            
-                            <Spinner
-                                android:id="@+id/spinner18"
+
+                            <TextView
+                                android:id="@+id/stcheck12"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_marginRight="5dip"
-                                android:layout_marginBottom="5dip" />
+                                android:layout_marginRight="3dip" />
                         </LinearLayout>
                         
                         <LinearLayout
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt53"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/screengrey"
+                                android:textSize="17sp" />
+
+                            <TextView
+                                android:id="@+id/stcheck13"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dip" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
+                            android:id="@+id/lay10"
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:longClickable="true"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt37"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/stt_screen_ori"
+                                android:textSize="17sp" />
+                            
+                            <TextView
+                                android:id="@+id/std10"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
+                            android:id="@+id/lay11"
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
                             
                             <TextView
                                 android:id="@+id/stt34"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/stt_vibra"
                                 android:textSize="17sp" />
                             
-                            <Spinner
-                                android:id="@+id/spinner15"
-                                android:layout_width="wrap_content"
+                            <TextView
+                                android:id="@+id/std11"
+                                android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:layout_marginRight="5dip"
-                                android:layout_marginBottom="5dip" />
+                                android:gravity="right"
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
                         
                         <LinearLayout
+                            android:id="@+id/lay12"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="3dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
                             
                             <TextView
                                 android:id="@+id/stt35"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
                                 android:text="@string/stt_vib_time"
                                 android:textSize="17sp" />
                             
-                            <Spinner
-                                android:id="@+id/spinner16"
+                            <TextView
+                                android:id="@+id/std12"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_marginRight="5dip"
-                                android:layout_marginBottom="5dip" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
                     </LinearLayout>
                     
                     <Button
                         android:id="@+id/reset"
+                        android:background="@drawable/button_style"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dip"
+                        android:layout_marginRight="5dip"
+                        android:layout_marginBottom="5dip"
                         android:text="@string/reset_all"
+                        android:textColor="#ffffff"
                         android:textSize="16sp" />
-
                 </LinearLayout>
             </ScrollView>
         </FrameLayout>

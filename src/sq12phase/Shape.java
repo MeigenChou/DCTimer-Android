@@ -174,6 +174,5 @@ public class Shape {
 		}
 		inited = true;
 	}
-
 }
 

@@ -1,19 +1,16 @@
 package solvers;
 
 public class Im {
-	public static short[][] Cnk=new short[12][12];
-	private static boolean ini=false;
-	public static void init() {
-		if(ini)return;
-		for(int i=0;i<12;++i){
-			Cnk[i][0]=1;
-			for(int j=Cnk[i][i]=1;j<i;++j)
-				Cnk[i][j]=(short) (Cnk[i-1][j-1]+Cnk[i-1][j]);
+	public static short[][] Cnk = new short[12][12];
+	static  {
+		for(int i=0; i<12; ++i) {
+			Cnk[i][0] = 1;
+			for(int j=Cnk[i][i]=1; j<i; ++j)
+				Cnk[i][j] = (short) (Cnk[i-1][j-1] + Cnk[i-1][j]);
 		}
-		ini=true;
 	}
 	
-	private static int[] fact={1,1,2,6,24,120,720,5040};
+	private static int[] fact = {1, 1, 2, 6, 24, 120, 720, 5040};
 	public static void set8Perm(int[] arr, int idx) {
 		int val = 0x76543210;
 		for (int i=0; i<7; i++) {
@@ -39,31 +36,39 @@ public class Im {
 		return idx;
 	}
 	
-	public static void cir(int[] arr, int a, int b, int c, int d){
+	public static void cir(int[] arr, int a, int b, int c, int d) {
     	int temp=arr[a]; arr[a]=arr[b]; arr[b]=arr[c]; arr[c]=arr[d]; arr[d]=temp;
     }
 	
-	public static void cir(byte[] arr, int a, int b, int c, int d){
+	public static void cir(byte[] arr, int a, int b, int c, int d) {
     	byte temp=arr[a]; arr[a]=arr[b]; arr[b]=arr[c]; arr[c]=arr[d]; arr[d]=temp;
     }
 	
-	public static void cir2(int[] arr, int a, int b, int c, int d){
+	public static void cir2(int[] arr, int a, int b, int c, int d) {
     	int temp=arr[a]; arr[a]=arr[b]; arr[b]=temp;
     	temp=arr[c]; arr[c]=arr[d]; arr[d]=temp;
     }
 	
-	public static void cir2(byte[] arr, int a, int b, int c, int d){
+	public static void cir2(byte[] arr, int a, int b, int c, int d) {
 		byte temp=arr[a]; arr[a]=arr[b]; arr[b]=temp;
     	temp=arr[c]; arr[c]=arr[d]; arr[d]=temp;
     }
 	
-	public static void cir(int[] arr, int a, int b){
+	public static void cir(int[] arr, int a, int b) {
     	int temp=arr[a]; arr[a]=arr[b]; arr[b]=temp;
     }
 	
-	public static void cir(byte[] arr, int a, int b){
+	public static void cir(byte[] arr, int a, int b) {
 		byte temp=arr[a]; arr[a]=arr[b]; arr[b]=temp;
     }
+	
+	public static void cir(int[] arr, int a, int b, int c) {
+		int temp = arr[a]; arr[a] = arr[b]; arr[b] = arr[c]; arr[c] = temp;
+	}
+	
+	public static void cir(byte[] arr, int a, int b, int c) {
+		byte temp = arr[a]; arr[a] = arr[b]; arr[b] = arr[c]; arr[c] = temp;
+	}
 	
     // permutation
     public static int permutationToIndex(int[] permutation, int length) {
@@ -134,7 +139,7 @@ public class Im {
     public static int zeroSumOrientationToIndex(int[] orientation, int nValues, int length) {
         int index = 0;
         for (int i = 0; i < length - 1; i++)
-            index = nValues * index + orientation[i];
+            index = nValues * index + (orientation[i] % nValues);
         return index;
     }
 

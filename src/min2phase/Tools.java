@@ -388,6 +388,14 @@ public class Tools implements Runnable {
 			new byte[]{-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0});
 	}
 	
+	public static String randomPLL() {
+		return randomState(
+				new byte[]{-1, -1, -1, -1, 4, 5, 6, 7},
+				STATE_SOLVED,
+				new byte[]{-1, -1, -1, -1, 4, 5, 6, 7, 8, 9, 10, 11},
+				STATE_SOLVED);
+	}
+	
 	public static String randomLastSlot() {
 		return randomState(
 			new byte[]{-1, -1, -1, -1, -1, 5, 6, 7}, 

@@ -195,19 +195,19 @@
         <item>mf8</item>
     </array>
     
-    <string-array name="list1Str">
-        <item>3</item>
-        <item>5</item>
-        <item>12</item>
-        <item>50</item>
-    </string-array>
+    <array name="list1Str">
+        <item>"3"</item>
+        <item>"5"</item>
+        <item>"12"</item>
+        <item>"50"</item>
+    </array>
     
-    <string-array name="list2Str">
-        <item>5</item>
-        <item>12</item>
-        <item>50</item>
-        <item>100</item>
-    </string-array>
+    <array name="list2Str">
+        <item>"5"</item>
+        <item>"12"</item>
+        <item>"50"</item>
+        <item>"100"</item>
+    </array>
     
     <array name="preStr">
         <item>0.01 sec</item>
@@ -237,7 +237,7 @@
         <item>Display all</item>
     </array>
     <array name="c2lStr">
-        <item>Hide</item>
+        <item>None</item>
         <item>D(yellow)</item>
         <item>U(white)</item>
         <item>L(orange)</item>
@@ -263,6 +263,15 @@
         <item>CCT</item>
         <item>lcd1</item>
         <item>lcd2</item>
+    </array>
+    
+    <array name="mulpStr">
+        <item>Off</item>
+        <item>"2"</item>
+        <item>"3"</item>
+        <item>"4"</item>
+        <item>"5"</item>
+        <item>"6"</item>
     </array>
     
     <array name="inscrStr">

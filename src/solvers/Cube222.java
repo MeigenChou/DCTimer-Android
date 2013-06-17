@@ -16,71 +16,46 @@ public class Cube222 {
 	
 	private static Random r = new Random();
 	
-	private static void idxToPrm(int[] ps, int p) {
-		int q = p;
-		for (int a=1; a<=7; a++) {
-			int b = q % a;
-			q = (q - b) / a;
-			for (int c=a-1; c>=b; c--)
-				ps[c + 1] = ps[c];
-			ps[b] = 7 - a;
+	private static int[] fact = {1, 1, 2, 6, 24, 120, 720};
+	private static void idxToPrm(int[] ps, int idx) {
+		int val = 0x6543210;
+		for (int i=0; i<6; i++) {
+			int p = fact[6-i];
+			int v = idx / p;
+			idx -= v*p;
+			v <<= 2;
+			ps[i] = (val >> v) & 07;
+			int m = (1 << v) - 1;
+			val = (val & m) + ((val >> 4) & ~m);
 		}
+		ps[6] = val;
 	}
 	
 	private static int prmToIdx(int[] ps) {
-		int q = 0;
-		for (int a=0; a<7; a++) {
-			int b = 0;
-			for (int c=0; c<7; c++) {
-				if (ps[c] == a) break;
-				if (ps[c] > a) b++;
-			}
-			q = q * (7 - a) + b;
+		int idx = 0;
+		int val = 0x6543210;
+		for (int i=0; i<7; i++) {
+			int v = ps[i] << 2;
+			idx = (7 - i) * idx + ((val >> v) & 07);
+			val -= 0x1111110 << v;
 		}
-		return q;
-	}
-	
-	private static void idxToTws(int[] ps, int p) {
-		int q = p, d = 0;
-		for (int a=0; a<=5; a++) {
-			int c = q / 3;
-			int b = q - 3 * c;
-			q = c;
-			ps[a] = b;
-			d -= b;
-			if (d < 0) d += 3;
-		}
-		ps[6] = d;
-	}
-	
-	private static int twsToIdx(int[] ps) {
-		int q = 0;
-		for (int a=5; a>=0; a--) {
-			q = q * 3 + (ps[a] % 3);
-		}
-		return q;
+		return idx;
 	}
 	
 	private static void permMove(int[]ps, int m) {
 		switch (m) {
-		case 0:
-			Im.cir(ps, 0, 1, 3, 2);	//U
-			break;
-		case 1:
-			Im.cir(ps, 0, 4, 5, 1);	//R
-			break;
-		case 2:
-			Im.cir(ps, 0, 2, 6, 4);	//F
-			break;
-		case 3:
-			Im.cir(ps, 4, 6, 7, 5);	//D
-			break;
-		case 4:
-			Im.cir(ps, 2, 3, 7, 6);	//L
-			break;
-		case 5:
-			Im.cir(ps, 1, 5, 7, 3);	//B
-			break;
+		case 0:	//U
+			Im.cir(ps, 0, 1, 3, 2); break;
+		case 1:	//R
+			Im.cir(ps, 0, 4, 5, 1); break;
+		case 2:	//F
+			Im.cir(ps, 0, 2, 6, 4); break;
+		case 3:	//D
+			Im.cir(ps, 4, 6, 7, 5); break;
+		case 4:	//L
+			Im.cir(ps, 2, 3, 7, 6); break;
+		case 5:	//B
+			Im.cir(ps, 1, 5, 7, 3); break;
 		}
 	}
 	
@@ -162,7 +137,7 @@ public class Cube222 {
 		int p = r.nextInt(5040);
 		int o = r.nextInt(729);
 		idxToPrm(state[0], p);
-		idxToTws(state[1], o);
+		Im.indexToZeroSumOrientation(state[1], o, 3, 7);
 	}
 	
 	public static void randomEG(int type, String olls) {
@@ -212,7 +187,7 @@ public class Cube222 {
 		for(int i=0; i<4; i++) {
 			swap(i, i+r.nextInt(4-i));
 		}
-		if(olls.equals("X") || olls.equals(""))
+		if(olls.equals("X") || olls.equals("") || olls.equals("PHUTLSA"))
 			Im.indexToZeroSumOrientation(state[1], r.nextInt(27), 3, 4);
 		else {
 			char oll = olls.charAt(r.nextInt(olls.length()));
@@ -275,38 +250,39 @@ public class Cube222 {
 		randomEG(0, "N");
 	}
 	
-	private static int getprmmv(int p,int m){
+	private static int getprmmv(int p, int m) {
 		//given position p<5040 and move m<3, return new position number
 		//convert number into array;
 		int[] ps=new int[8];
 		idxToPrm(ps, p);
 		//perform move on array
 		permMove(ps, m);
+		//convert array back to number
 		return prmToIdx(ps);
 	}
 	
-	private static int gettwsmv(int p,int m){
+	private static int gettwsmv(int p, int m) {
 		//given orientation p<729 and move m<3, return new orientation number
 		//convert number into array;
 		int[] ps=new int[7];
-		idxToTws(ps, p);
+		Im.indexToZeroSumOrientation(ps, p, 3, 7);
 		//perform move on array
 		twistMove(ps, m);
 		//convert array back to number
-		return twsToIdx(ps);
+		return Im.zeroSumOrientationToIndex(ps, 3, 7);
 	}
 	
 	private static void calcperm(){
 		//calculate solving arrays
 		//first permutation
-		for(int p=0; p<5040; p++){
+		for(int p=0; p<5040; p++) {
 			perm[p] = -1;
 			for(int m=0; m<3; m++)
 				permmv[p][m] = (short) getprmmv(p, m);
 		}
 
 		perm[0] = 0;
-		for(int l=0; l<=6; l++){
+		for(int l=0; l<=6; l++) {
 			//n=0;
 			for(int p=0; p<5040; p++)
 				if(perm[p] == l)
@@ -348,17 +324,17 @@ public class Cube222 {
 		//remove wait sign
 	}
 	
-	private static boolean search(int d, int q, int t, int l, int lm) {
+	private static boolean search(int q, int t, int l, int lm) {
 		//searches for solution, from position q|t, in l moves exactly. last move was lm, current depth=d
 		if(l==0)return q==0 && t==0;
 		if(perm[q]>l || twst[t]>l) return(false);
-		for(int m=0; m<3; m++){
-			if(m!=lm){
+		for(int m=0; m<3; m++) {
+			if(m != lm) {
 				int p=q, s=t;
-				for(int a=0; a<3; a++){
-					p=permmv[p][m];
-					s=twstmv[s][m];
-					if(search(d+1,p,s,l-1,m)){
+				for(int a=0; a<3; a++) {
+					p = permmv[p][m];
+					s = twstmv[s][m];
+					if(search(p, s, l-1, m)) {
 						sol.append(turn[m]+suff[a]+" ");
 						return(true);
 					}
@@ -375,8 +351,8 @@ public class Cube222 {
 		}
 		sol = new StringBuffer();
 		int p = prmToIdx(state[0]);
-		int o = twsToIdx(state[1]);
-		for(int l=0; !search(0, p, o, l, -1); l++);
+		int o = Im.zeroSumOrientationToIndex(state[1], 3, 7);
+		for(int l=0; !search(p, o, l, -1); l++);
 		return sol.toString();
 	}
 }

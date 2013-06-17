@@ -15,15 +15,15 @@ public class Square {
 	public static char TopMove[] = new char[40320];			//transition table for top layer turns
 	public static char BottomMove[] = new char[40320];			//transition table for bottom layer turns
 
-	static int get8Comb(byte[] arr) {
-		int idx = 0, r = 4;
-		for (int i=0; i<8; i++) {
-			if (arr[i] >= 4) {
-				idx += Im.Cnk[7-i][r--];
-			}
-		}
-		return idx;
-	}	
+//	static int get8Comb(byte[] arr) {
+//		int idx = 0, r = 4;
+//		for (int i=0; i<8; i++) {
+//			if (arr[i] >= 4) {
+//				idx += Im.Cnk[7-i][r--];
+//			}
+//		}
+//		return idx;
+//	}
 
 	static boolean inited = false;
 
@@ -31,14 +31,6 @@ public class Square {
 		if (inited) {
 			return;
 		}
-		Im.init();
-//		for (int i=0; i<12; i++) {
-//			Cnk[i][0] = 1;
-//			Cnk[i][i] = 1;
-//			for (int j=1; j<i; j++) {
-//				Cnk[i][j] = Cnk[i-1][j-1] + Cnk[i-1][j];
-//			}
-//		}
 		int[] pos = new int[8];
 		int temp;
 

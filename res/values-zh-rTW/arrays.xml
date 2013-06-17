@@ -253,6 +253,15 @@
         <item>數碼管2</item>
     </array>
     
+    <array name="mulpStr">
+        <item>關閉</item>
+        <item>"2"</item>
+        <item>"3"</item>
+        <item>"4"</item>
+        <item>"5"</item>
+        <item>"6"</item>
+    </array>
+    
     <array name="inscrStr">
         <item>自動識別</item>
         <item>二階</item>

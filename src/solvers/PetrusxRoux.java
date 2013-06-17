@@ -112,7 +112,6 @@ public class PetrusxRoux {
 	public static void init0() {
 		if(ini)return;
 		int i,j;
-		Im.init();
 		for(i=0; i<220; i++){
 			for(j=0; j<8; j++){
 				for(int k=0; k<6; k++){
@@ -242,7 +241,7 @@ public class PetrusxRoux {
 		{"U","D","B","F","L","R"}};
 	private static String[] suff={"","2","'"};
 	private static StringBuffer sb=new StringBuffer();
-	private static boolean search(int co, int ep, int eo, int depth, int lm, int face) {
+	private static boolean idaPetrus(int co, int ep, int eo, int depth, int lm, int face) {
 		if (depth == 0) return co==12 && ep==132 && eo==176;
 		if (epd[ep] > depth || eod[eo] > depth) return false;
 		for (int i = 0; i < 6; i++)
@@ -251,7 +250,7 @@ public class PetrusxRoux {
 				for(int j=0;j<3;j++){
 					w=com[w][i];
 					y=epm[y][i];s=eom[s][i];
-					if(search(w, y, s, depth-1, i, face)){
+					if(idaPetrus(w, y, s, depth-1, i, face)){
 						sb.insert(0, " "+turn[face][i]+suff[j]);
 						return true;
 					}
@@ -261,7 +260,7 @@ public class PetrusxRoux {
 	}
 	private static String[] moveIdx={"DULRBF","FBLRDU","DUFBLR","DURLFB",
 		"UDFBRL","UDLRFB","UDRLBF","UDBFLR"};
-	private static String[] color={"ULF:","ULB:","URF:","URB:","DLF:","DLB:","DRF:","DRB:"};
+	private static String[] colorp={"ULF:","ULB:","URF:","URB:","DLF:","DLB:","DRF:","DRB:"};
 	private static String solve(String s, int face){
 		String[] scr=s.split(" ");
 		int co=12, ep=132, eo=176;
@@ -279,8 +278,8 @@ public class PetrusxRoux {
 				}
 			}
 		sb=new StringBuffer();
-		for(int d=0;!search(co,ep,eo,d,-1,face);d++);
-		return "\n"+color[face]+sb;
+		for(int d=0;!idaPetrus(co,ep,eo,d,-1,face);d++);
+		return "\n"+colorp[face]+sb;
 	}
 	private static byte[][] faceIdx={{4,5,6,7},{0,1,2,3},{0,1,4,5},
 		{2,3,6,7},{0,2,4,6},{1,3,5,7}};
@@ -316,7 +315,7 @@ public class PetrusxRoux {
 		{"DURLFB","UDRLBF","BFRLDU","FBRLUD"},
 		{"UDFBRL","DUFBLR","LRFBUD","RLFBDU"},
 		{"UDBFLR","DUBFRL","RLBFUD","LRBFDU"}};
-	private static String[][] colorR={
+	private static String[][] colorr={
 		{"DL","DF","DR","DB"},{"UR","UF","UL","UB"},
 		{"LU","LF","LD","LB"},{"RD","RF","RU","RB"},
 		{"FU","FR","FD","FL"},{"BU","BL","BD","BR"}};
@@ -359,7 +358,7 @@ public class PetrusxRoux {
 			//System.out.print(d+" ");
 			for(int idx=0; idx<4; idx++)
 				if(idaRoux(cp[idx], co[idx], ep[idx], eo[idx], d, -1))
-					return "\n"+colorR[face][side]+": "+rotIdx[face]+rotIdx2[idx]+sb;
+					return "\n"+colorr[face][side]+": "+rotIdx[face]+rotIdx2[idx]+sb;
 		}
 	}
 	public static String roux(String scr, int face){

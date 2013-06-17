@@ -23,14 +23,14 @@ public class Mi {
 	public static int viewType;
 	public static int scrLen=0;
 	private static short[][] defScrLen = {
-		{0, 25, 25, 0, 0, 0, 0, 0},
-		{25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0},
+		{0, 15, 15, 0, 0, 0, 0, 0},
+		{25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0},
 		{40, 40, 40, 8, 40},
 		{60, 60, 8},
 		{80, 80, 80, 8},
 		{100, 100, 100, 8},
 		{70, 70},
-		{0, 25},
+		{0, 15},
 		{40, 20, 0},
 		{0, 0, 0, 0},
 		{80, 80},
@@ -56,13 +56,13 @@ public class Mi {
 		case 0: //2阶
 			Cube222.randomState();
 			scr=Cube222.solve();viewType=2;
-			if(DCTimer.spSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spSel[2]);break;
+			if(DCTimer.stSel[6]>0)sc="\n"+Cube2bl.cube2layer(scr, DCTimer.stSel[6]);break;
 		case 1:
 			scr=cube(2);viewType=2;
-			if(DCTimer.spSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spSel[2]);break;
+			if(DCTimer.stSel[6]>0)sc="\n"+Cube2bl.cube2layer(scr, DCTimer.stSel[6]);break;
 		case 2:
 			scr=OtherScr.megascramble(new String[][][]{{{"U","D"}},{{"R","L"}},{{"F","B"}}}, csuff);viewType=2;
-			if(DCTimer.spSel[2]>0)sc="\n"+Cube2layer.cube2layer(scr, DCTimer.spSel[2]);break;
+			if(DCTimer.stSel[6]>0)sc="\n"+Cube2bl.cube2layer(scr, DCTimer.stSel[6]);break;
 		case 3:
 			Cube222.randomCLL();
 			scr=Cube222.solve();viewType=2;break;
@@ -80,115 +80,115 @@ public class Mi {
 			scr=Cube222.solve(); viewType=2; break;
 		case 32: //3阶
 			scr=cube(3);viewType=3;
-			if(DCTimer.spSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[9], DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[10]);
+			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[1], DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[3]);
 			break;
 		case 33:
-			scr = new Search().solution(Tools.randomCube(), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomCube(), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;
-			if(DCTimer.spSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[9], DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[10]);
+			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[1], DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[3]);
 			break;
 		case 34:
-			scr = new Search().solution(Tools.randomCrossSolved(), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomCrossSolved(), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 35:
-			scr = new Search().solution(Tools.randomLastLayer(), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomLastLayer(), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 36:
-			scr = new Search().solution(Tools.randomState(new byte[]{-1, -1, -1, -1, 4, 5, 6, 7}, Tools.STATE_SOLVED, new byte[]{-1, -1, -1, -1, 4, 5, 6, 7, 8, 9, 10, 11}, Tools.STATE_SOLVED), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomPLL(), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 37:
-			scr = new Search().solution(Tools.randomCornerSolved(), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomCornerSolved(), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;
-			if(DCTimer.spSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[9], DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[10]);
+			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[1], DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[3]);
 			break;
 		case 38:
-			scr = new Search().solution(Tools.randomEdgeSolved(), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomEdgeSolved(), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 39:
-			scr = new Search().solution(Tools.randomLastSlot(), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomLastSlot(), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 40:
-			scr = new Search().solution(Tools.randomZBLastLayer(), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomZBLastLayer(), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 41:
-			scr = new Search().solution(Tools.randomEdgeOfLastLayer(), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomEdgeOfLastLayer(), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 42:
-			scr = new Search().solution(Tools.randomCornerOfLastLayer(), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomCornerOfLastLayer(), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 43:
 			switch ((int)(Math.random()*4)) {
 			case 0:
-				scr=new Search().solution(Tools.randomState(new byte[]{0,1,2,3,4,5,6,7}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 21, 20000, 0, 2);
+				scr=new Search().solution(Tools.randomState(new byte[]{0,1,2,3,4,5,6,7}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 21, 20000, 200, 2);
 				break;
 			case 1:
-				scr=new Search().solution(Tools.randomState(new byte[]{3,2,6,7,0,1,5,4}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 21, 20000, 0, 2)+"x'";
+				scr=new Search().solution(Tools.randomState(new byte[]{3,2,6,7,0,1,5,4}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 21, 20000, 200, 2)+"x'";
 				break;
 			case 2:
-				scr=new Search().solution(Tools.randomState(new byte[]{7,6,5,4,3,2,1,0}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 21, 20000, 0, 2)+"x2";
+				scr=new Search().solution(Tools.randomState(new byte[]{7,6,5,4,3,2,1,0}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 21, 20000, 200, 2)+"x2";
 				break;
 			default:
-				scr=new Search().solution(Tools.randomState(new byte[]{4,5,1,0,7,6,2,3}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 21, 20000, 0, 2)+"x";
+				scr=new Search().solution(Tools.randomState(new byte[]{4,5,1,0,7,6,2,3}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 21, 20000, 200, 2)+"x";
 				break;
 			}
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 44:
 			switch ((int)(Math.random()*4)) {
 			case 0:
-				scr=new Search().solution(Tools.randomState(new byte[]{-1,-1,-1,-1,4,5,6,7}, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 21, 20000, 0, 2);
+				scr=new Search().solution(Tools.randomState(new byte[]{-1,-1,-1,-1,4,5,6,7}, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 21, 20000, 200, 2);
 				break;
 			case 1:
-				scr=new Search().solution(Tools.randomState(new byte[]{3,2,-1,-1,0,1,-1,-1}, new byte[]{2,1,-1,-1,1,2,-1,-1}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 21, 20000, 0, 2)+"x'";
+				scr=new Search().solution(Tools.randomState(new byte[]{3,2,-1,-1,0,1,-1,-1}, new byte[]{2,1,-1,-1,1,2,-1,-1}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 21, 20000, 200, 2)+"x'";
 				break;
 			case 2:
-				scr=new Search().solution(Tools.randomState(new byte[]{7,6,5,4,-1,-1,-1,-1}, new byte[]{0,0,0,0,-1,-1,-1,-1}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 21, 20000, 0, 2)+"x2";
+				scr=new Search().solution(Tools.randomState(new byte[]{7,6,5,4,-1,-1,-1,-1}, new byte[]{0,0,0,0,-1,-1,-1,-1}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 21, 20000, 200, 2)+"x2";
 				break;
 			default:
-				scr=new Search().solution(Tools.randomState(new byte[]{-1,-1,1,0,-1,-1,2,3}, new byte[]{-1,-1,2,1,-1,-1,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 21, 20000, 0, 2)+"x";
+				scr=new Search().solution(Tools.randomState(new byte[]{-1,-1,1,0,-1,-1,2,3}, new byte[]{-1,-1,2,1,-1,-1,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 21, 20000, 200, 2)+"x";
 				break;
 			}
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 45:
-			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 46:
-			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_RANDOM), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_RANDOM), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 47:
-			scr = new Search().solution(Tools.randomState(Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_SOLVED), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomState(Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_SOLVED), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 48:
-			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_SOLVED), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_SOLVED), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 49:
-			scr = new Search().solution(Tools.randomState(Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomState(Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 50:
-			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_RANDOM), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_RANDOM), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 51:
-			scr = new Search().solution(Tools.randomEasyCross(scrLen), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomEasyCross(scrLen), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;
-			if(DCTimer.spSel[1]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[9], DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[10]);
-			else if(DCTimer.spSel[1]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[10]);
+			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[1], DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[3]);
+			else if(DCTimer.stSel[5]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[3]);
 			break;
 		case 52:
-			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,5,6,7,8,9,10,11}, Tools.STATE_SOLVED), 21, 20000, 0, 2);
+			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,5,6,7,8,9,10,11}, Tools.STATE_SOLVED), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;break;
 		case 64: //4阶
 			scr=cube(4);viewType=4;break;
@@ -457,25 +457,25 @@ public class Mi {
 			scr=OtherScr.megascramble(turns, suff0);viewType=0;break;
 		case 640:	//连拧
 			Cube222.randomState();
-			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
+			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 200, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40);
 			viewType=0;break;
 		case 641:
 			Cube222.randomState();
-			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
+			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 200, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60);
 			viewType=0;break;
 		case 642:
 			Cube222.randomState();
-			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
+			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 200, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60)
 				+"\n6) "+OtherScr.megascramble(new String[][]{{"U","D","u","d","3u"},{"R","L","r","l","3r"},{"F","B","f","b","3f"}}, csuff, 80);
 			viewType=0;break;
 		case 643:
 			Cube222.randomState();
-			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0)
+			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 200, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60)
 				+"\n6) "+OtherScr.megascramble(new String[][]{{"U","D","u","d","3u"},{"R","L","r","l","3r"},{"F","B","f","b","3f"}}, csuff, 80)
@@ -484,7 +484,7 @@ public class Mi {
 		case 644:
 			StringBuffer scrb=new StringBuffer();
 			for(int j=0; j<scrLen; j++){
-				scrb.append(j+1+") "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0));
+				scrb.append(j+1+") "+new Search().solution(Tools.randomCube(), 21, 20000, 200, 0));
 				if(j<scrLen-1)scrb.append("\n");
 			}
 			scr=scrb.toString();viewType=0;break;
@@ -499,8 +499,8 @@ public class Mi {
 	}
 	
 	public static void drawScr(int sel2, int width, Paint p, Canvas c){
-		int[] colors={DCTimer.share.getInt("csn1", 0xffffff00), DCTimer.share.getInt("csn2", 0xff0000ff), DCTimer.share.getInt("csn3", 0xffff0000),
-				DCTimer.share.getInt("csn4", 0xffffffff), DCTimer.share.getInt("csn5", 0xff009900), DCTimer.share.getInt("csn6", 0xffff8026)};
+		int[] colors={DCTimer.share.getInt("csn1", Color.YELLOW), DCTimer.share.getInt("csn2", Color.BLUE), DCTimer.share.getInt("csn3", Color.RED),
+				DCTimer.share.getInt("csn4", Color.WHITE), DCTimer.share.getInt("csn5", 0xff009900), DCTimer.share.getInt("csn6", 0xffff8026)};
 		//2阶
 		if(viewType==2) {
 			Cube.parse(2);
@@ -544,7 +544,7 @@ public class Mi {
 		else if(viewType==18) {	//TODO
 			float edgeFrac = (float) ((1+Math.sqrt(5))/4);
 			float centerFrac = 0.5F;
-			if(DCTimer.spSel[3]==0)colors=new int[] {Color.WHITE,Color.rgb(0, 0, 136),Color.rgb(0, 136, 0),Color.rgb(0, 255, 255),Color.rgb(136, 34, 34),Color.rgb(136, 170, 255),
+			if(DCTimer.stSel[7]==0)colors=new int[] {Color.WHITE,Color.rgb(0, 0, 136),Color.rgb(0, 136, 0),Color.rgb(0, 255, 255),Color.rgb(136, 34, 34),Color.rgb(136, 170, 255),
 					Color.RED,Color.BLUE,Color.rgb(255, 0, 255),Color.GREEN,Color.rgb(255, 136, 0),Color.YELLOW};
 			else colors=new int[] {Color.WHITE,Color.RED,Color.rgb(0, 161, 0),Color.rgb(123, 0, 123),Color.YELLOW,Color.BLUE,
 					Color.rgb(255, 255, 132),Color.rgb(66, 221, 255),Color.rgb(255, 127, 38),Color.GREEN,Color.rgb(255, 128, 255),Color.GRAY};
@@ -659,59 +659,57 @@ public class Mi {
 			String[] tb = {"3","3","3","3","3","3","3","3","0","0","0","0","0","0","0","0"};
 			String[] ty = {"c","e","c","e","c","e","c","e","e","c","e","c","e","c","e","c"};
 			String[] col = {"51","1","12","2","24","4","45","5","5","54","4","42","2","21","1","15"};
-			colors = new int[]{DCTimer.share.getInt("csq1", 0xffffff00), DCTimer.share.getInt("csq6", 0xffff8026), DCTimer.share.getInt("csq2", 0xff0000ff),
-					DCTimer.share.getInt("csq4", 0xffffffff), DCTimer.share.getInt("csq3", 0xffff0000), DCTimer.share.getInt("csq5", 0xff009900)};
+			colors = new int[]{DCTimer.share.getInt("csq1", Color.YELLOW), DCTimer.share.getInt("csq6", 0xffff8026), DCTimer.share.getInt("csq2", Color.BLUE),
+					DCTimer.share.getInt("csq4", Color.WHITE), DCTimer.share.getInt("csq3", Color.RED), DCTimer.share.getInt("csq5", 0xff009900)};
 			byte[] img = SQ1.imagestr(DCTimer.crntScr.split(" "));
 			boolean mis = SQ1.mi;
-			byte[] temp=new byte[12];
-			for(int i=0;i<12;i++)temp[i]=img[i];
-			byte[] top_side=rd(temp);
-			for(int i=0;i<6;i++)temp[i]=img[i+18];
-			for(int i=6;i<12;i++)temp[i]=img[i+6];
-			byte[] bot_side=rd(temp);
-			temp=new byte[top_side.length+bot_side.length];
-			for(int i=0;i<top_side.length;i++)temp[i]=top_side[i];
-			for(int i=top_side.length;i<top_side.length+bot_side.length;i++)temp[i]=bot_side[i-top_side.length];
-			byte[] eido=temp;
-			StringBuffer a2=new StringBuffer(),b2=new StringBuffer(),c2=new StringBuffer();
+			byte[] temp = new byte[12];
+			for(int i=0; i<12; i++) temp[i] = img[i];
+			byte[] top_side = rd(temp);
+			for(int i=0; i<6; i++) temp[i] = img[i+18];
+			for(int i=6; i<12; i++) temp[i] = img[i+6];
+			byte[] bot_side = rd(temp);
+			temp = new byte[top_side.length+bot_side.length];
+			for(int i=0; i<top_side.length; i++) temp[i] = top_side[i];
+			for(int i=top_side.length; i<top_side.length+bot_side.length; i++) temp[i] = bot_side[i-top_side.length];
+			byte[] eido = temp;
+			StringBuffer a2 = new StringBuffer(), b2 = new StringBuffer(), c2 = new StringBuffer();
 			for(int j=0; j<16; j++) {
 				a2.append(ty[eido[j]]);
 				b2.append(tb[eido[j]]);
 				c2.append(col[eido[j]]);
 			}
-			String stickers=b2.append(c2).toString();
-			String a=a2.toString();
+			String stickers = b2.append(c2).toString();
+			String a = a2.toString();
 			float z=1.366F; // sqrt(2)/sqrt(1^2+tan(15degrees)^2)
 			float[] arrx, arry;
-			int margin = 1;
-			float sidewid=(float) (.15*100/z);
-			int cx = 55;
-			int cy = 55;
-			float rd=(cx-margin-sidewid*z)/z;
-			float w = (sidewid+rd)/rd;	// ratio btw total piece width and rd
-			float[] ag={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-			float[] ag2={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+			float sidewid = 10.98F;
+			int cx = 55, cy = 55;
+			float rd = (cx - 16) / z;
+			float w = (sidewid + rd) / rd;	// ratio btw total piece width and rd
+			float[] ag = new float[24];
+			float[] ag2 = new float[24];
 			int foo;
-			for(foo=0; foo<24; foo++){
-				ag[foo]=(float) ((17F-foo*2)*Math.PI/12);
+			for(foo=0; foo<24; foo++) {
+				ag[foo] = (float) ((17F-foo*2)*Math.PI/12);
 				a = a.concat("xxxxxxxxxxxxxxxx");
 			}
 			for(foo=0; foo<24; foo++){
-				ag2[foo]=(float) ((19F-foo*2)*Math.PI/12);
+				ag2[foo] = (float) ((19F-foo*2)*Math.PI/12);
 				a = a.concat("xxxxxxxxxxxxxxxx");
 			}
 			float h = sin1(1,ag,rd)*w*z - sin1(1,ag,rd)*z;
 			if(mis){
 				arrx=new float[]{cx+cos1(1,ag,rd)*w*z, cx+cos1(4,ag,rd)*w*z, cx+cos1(7,ag,rd)*w*z, cx+cos1(10,ag,rd)*w*z};
 				arry=new float[]{cy-sin1(1,ag,rd)*w*z, cy-sin1(4,ag,rd)*w*z, cy-sin1(7,ag,rd)*w*z, cy-sin1(10,ag,rd)*w*z};
-				drawPolygon(p,c,Color.BLACK,width,arrx,arry);
+				drawPolygon(p, c, Color.BLACK, width, arrx, arry);
 				cy += 10;
 				arrx=new float[]{cx+cos1(0,ag,rd)*w, cx+cos1(0,ag,rd)*w, cx+cos1(1,ag,rd)*w*z, cx+cos1(1,ag,rd)*w*z};
 				arry=new float[]{cy-sin1(1,ag,rd)*w*z, cy-sin1(1,ag,rd)*z, cy-sin1(1,ag,rd)*z, cy-sin1(1,ag,rd)*w*z};
-				drawPolygon(p,c,colors[5],width,arrx,arry);
+				drawPolygon(p, c, colors[5], width, arrx, arry);
 				arrx=new float[]{cx+cos1(0,ag,rd)*w, cx+cos1(0,ag,rd)*w, cx+cos1(10,ag,rd)*w*z, cx+cos1(10,ag,rd)*w*z};
 				arry=new float[]{cy-sin1(1,ag,rd)*w*z, cy-sin1(1,ag,rd)*z, cy-sin1(1,ag,rd)*z, cy-sin1(1,ag,rd)*w*z};
-				drawPolygon(p,c,colors[5],width,arrx,arry);
+				drawPolygon(p, c, colors[5], width, arrx, arry);
 				cy -= 10;
 			}
 			else {
@@ -792,23 +790,23 @@ public class Mi {
 				if (a.length()<=foo) sc = 12;
 				if (a.charAt(foo)=='x') sc++;
 				if (a.charAt(foo)=='c'){
-					arrx=new float[]{cx, cx+cos2(sc,ag2,rd), cx+cos2(sc+1,ag2,rd)*z, cx+cos2(sc+2,ag2,rd)};
-					arry=new float[]{cy, cy-sin2(sc,ag2,rd), cy-sin2(sc+1,ag2,rd)*z, cy-sin2(sc+2,ag2,rd)};
+					arrx=new float[]{cx, cx+cos1(sc,ag2,rd), cx+cos1(sc+1,ag2,rd)*z, cx+cos1(sc+2,ag2,rd)};
+					arry=new float[]{cy, cy-sin1(sc,ag2,rd), cy-sin1(sc+1,ag2,rd)*z, cy-sin1(sc+2,ag2,rd)};
 					drawPolygon(p,c,colors[(int)stickers.charAt(foo)-48],width,arrx,arry);
-					arrx=new float[]{cx+cos2(sc,ag2,rd), cx+cos2(sc+1,ag2,rd)*z, cx+cos2(sc+1,ag2,rd)*w*z, cx+cos2(sc,ag2,rd)*w};
-					arry=new float[]{cy-sin2(sc,ag2,rd), cy-sin2(sc+1,ag2,rd)*z, cy-sin2(sc+1,ag2,rd)*w*z, cy-sin2(sc,ag2,rd)*w};
+					arrx=new float[]{cx+cos1(sc,ag2,rd), cx+cos1(sc+1,ag2,rd)*z, cx+cos1(sc+1,ag2,rd)*w*z, cx+cos1(sc,ag2,rd)*w};
+					arry=new float[]{cy-sin1(sc,ag2,rd), cy-sin1(sc+1,ag2,rd)*z, cy-sin1(sc+1,ag2,rd)*w*z, cy-sin1(sc,ag2,rd)*w};
 					drawPolygon(p,c,colors[(int)stickers.charAt(28+sc)-48],width,arrx,arry);
-					arrx=new float[]{cx+cos2(sc+2,ag2,rd), cx+cos2(sc+1,ag2,rd)*z, cx+cos2(sc+1,ag2,rd)*w*z, cx+cos2(sc+2,ag2,rd)*w};
-					arry=new float[]{cy-sin2(sc+2,ag2,rd), cy-sin2(sc+1,ag2,rd)*z, cy-sin2(sc+1,ag2,rd)*w*z, cy-sin2(sc+2,ag2,rd)*w};
+					arrx=new float[]{cx+cos1(sc+2,ag2,rd), cx+cos1(sc+1,ag2,rd)*z, cx+cos1(sc+1,ag2,rd)*w*z, cx+cos1(sc+2,ag2,rd)*w};
+					arry=new float[]{cy-sin1(sc+2,ag2,rd), cy-sin1(sc+1,ag2,rd)*z, cy-sin1(sc+1,ag2,rd)*w*z, cy-sin1(sc+2,ag2,rd)*w};
 					drawPolygon(p,c,colors[(int)stickers.charAt(29+sc)-48],width,arrx,arry);
 					sc +=2;
 				}
 				if (a.charAt(foo)=='e'){
-					arrx=new float[]{cx, cx+cos2(sc,ag2,rd), cx+cos2(sc+1,ag2,rd)};
-					arry=new float[]{cy, cy-sin2(sc,ag2,rd), cy-sin2(sc+1,ag2,rd)};
+					arrx=new float[]{cx, cx+cos1(sc,ag2,rd), cx+cos1(sc+1,ag2,rd)};
+					arry=new float[]{cy, cy-sin1(sc,ag2,rd), cy-sin1(sc+1,ag2,rd)};
 					drawPolygon(p,c,colors[(int)stickers.charAt(foo)-48],width,arrx,arry);
-					arrx=new float[]{cx+cos2(sc,ag2,rd), cx+cos2(sc+1,ag2,rd), cx+cos2(sc+1,ag2,rd)*w, cx+cos2(sc,ag2,rd)*w};
-					arry=new float[]{cy-sin2(sc,ag2,rd), cy-sin2(sc+1,ag2,rd), cy-sin2(sc+1,ag2,rd)*w, cy-sin2(sc,ag2,rd)*w};
+					arrx=new float[]{cx+cos1(sc,ag2,rd), cx+cos1(sc+1,ag2,rd), cx+cos1(sc+1,ag2,rd)*w, cx+cos1(sc,ag2,rd)*w};
+					arry=new float[]{cy-sin1(sc,ag2,rd), cy-sin1(sc+1,ag2,rd), cy-sin1(sc+1,ag2,rd)*w, cy-sin1(sc,ag2,rd)*w};
 					drawPolygon(p,c,colors[(int)stickers.charAt(28+sc)-48],width,arrx,arry);
 					sc +=1;
 				}
@@ -818,35 +816,27 @@ public class Mi {
 		else if(viewType==12) {
 			byte[] posit;
 			posit = Clock.posit();
-			int clock_radius = 52;
 			int face_dist = 30;
-			int face_background_dist = 29;
-			int face_background_radius = 18;
 			int cx = 56;
 			int cy = 55;
 			p.setColor(0xff2a2a2a);
-			drawSideBackground(p, c, width, cx, cy, clock_radius+1,
-					face_background_dist, face_background_radius+1);
+			drawSideBackground(p, c, width, cx, cy, 53, 29, 19);
 			p.setColor(0xff3366ff);
-			drawSideBackground(p, c, width, cx, cy, clock_radius,
-					face_background_dist, face_background_radius);
+			drawSideBackground(p, c, width, cx, cy, 52, 29, 18);
 			int i = 0;
 			for(int y=cy-face_dist; y<=cy+face_dist; y+=face_dist)
 				for(int x=cx-face_dist; x<=cx+face_dist; x+=face_dist)
 					drawClockFace(p, c, width, x, y, 0xff88aaff, posit[i++]);
-			byte[] pegs;
-			pegs = Clock.pegs();
+			byte[] pegs = Clock.pegs();
 			drawPeg(p, c, width, cx - face_dist/2, cy - face_dist/2, 1-pegs[0]);
 		  	drawPeg(p, c, width, cx + face_dist/2, cy - face_dist/2, 1-pegs[1]);
 		  	drawPeg(p, c, width, cx - face_dist/2, cy + face_dist/2, 1-pegs[2]);
 		  	drawPeg(p, c, width, cx + face_dist/2, cy + face_dist/2, 1-pegs[3]);
 		  	cx = 167;
 		  	p.setColor(0xff2a2a2a);
-		  	drawSideBackground(p, c, width, cx, cy, clock_radius+1,
-					face_background_dist, face_background_radius+1);
+		  	drawSideBackground(p, c, width, cx, cy, 53, 29, 19);
 		  	p.setColor(0xff88aaff);
-			drawSideBackground(p, c, width, cx, cy, clock_radius,
-					face_background_dist, face_background_radius);
+			drawSideBackground(p, c, width, cx, cy, 52, 29, 18);
 			for (int y = cy - face_dist; y <= cy + face_dist; y += face_dist)
 		  		for (int x = cx - face_dist; x <= cx + face_dist; x += face_dist)
 		  			drawClockFace(p, c, width, x, y, 0xff3366ff, posit[i++]);
@@ -857,12 +847,12 @@ public class Mi {
 		}
 		//1x3x3
 		else if(viewType==13) {
-			byte[] imst=Floppy.image(DCTimer.crntScr);
-			int a=width/8,i,j,d=0;
+			byte[] imst = Floppy.image(DCTimer.crntScr);
+			int a=width/8, i, j, d=0;
 			int stx=(width-8*a)/2, sty=(int) ((width*0.75-5*a)/2);
 			p.setStyle(Paint.Style.FILL);
-			colors=new int[]{0xFF4B4D4B,0xFFFFEF33,0xFF33B9FF,0xFFC8CCC8,0xFFFF0026,0xFF99FF99};
-			for(i=0;i<3;i++) {
+			colors = new int[]{0xFF4B4D4B,0xFFFFEF33,0xFF33B9FF,0xFFC8CCC8,0xFFFF0026,0xFF99FF99};
+			for(i=0; i<3; i++) {
 				p.setStyle(Paint.Style.FILL);
 				p.setColor(colors[imst[d++]]);
 				c.drawRect(stx+3+(i+1)*a, sty+1, stx+2+(i+2)*a, sty+a, p);
@@ -1080,7 +1070,7 @@ public class Mi {
 		//drawCircle(p, cv, w, cx, cy, 12);
 		p.setColor(color);
 		drawCircle(p, cv, w, cx, cy, 11);
-		p.setColor(0xffff0000);
+		p.setColor(Color.RED);
 	    drawCircle(p, cv, w, cx, cy, 3);
 	    float[] arx={scalePoint(w, cx, cy - 10)[0], scalePoint(w, cx + 3, cy - 1)[0], scalePoint(w, cx - 3, cy - 1)[0]},
 	    		ary={scalePoint(w, cx, cy - 10)[1], scalePoint(w, cx + 3, cy - 1)[1], scalePoint(w, cx - 3, cy - 1)[1]};
@@ -1093,19 +1083,19 @@ public class Mi {
 	    cv.restore();
 	    cv.save();
 	    cv.rotate(30*hour, scaled[0], scaled[1]);
-	    drawPolygon(p, cv, 0xffff0000, arx, ary, false);
+	    drawPolygon(p, cv, Color.RED, arx, ary, false);
 	    cv.restore();
-	    p.setColor(0xffffff00);
+	    p.setColor(Color.YELLOW);
 	    drawCircle(p, cv, w, cx, cy, 2);
 	    arx=new float[]{scalePoint(w, cx, cy - 8)[0], scalePoint(w, cx + 2, (float)(cy - 0.5))[0], scalePoint(w, cx - 2, (float)(cy - 0.5))[0]};
 	    ary=new float[]{scalePoint(w, cx, cy - 8)[1], scalePoint(w, cx + 2, (float)(cy - 0.5))[1], scalePoint(w, cx - 2, (float)(cy - 0.5))[1]};
 	    cv.save();
 	    cv.rotate(30*hour, scaled[0], scaled[1]);
-	    drawPolygon(p, cv, 0xffffff00, arx, ary, false);
+	    drawPolygon(p, cv, Color.YELLOW, arx, ary, false);
 	    cv.restore();
 	}
 	private static void drawPeg(Paint p, Canvas c, int w, int cx, int cy, int pegValue) {
-		int color = pegValue==1?0xffffff00:0xff444400;
+		int color = pegValue==1?Color.YELLOW:0xff444400;
 		p.setColor(0xff2a2a2a);
 		drawCircle(p, c, w, cx, cy, 5);
 		p.setColor(color);
@@ -1158,7 +1148,7 @@ public class Mi {
 			if(sec<10)time.append(":0"+sec);
 			else time.append(":"+sec);
 		}
-		if(DCTimer.spSel[6]==1){
+		if(DCTimer.stSel[2]==1){
 			if(msec<10)time.append(".00"+msec);
 			else if(msec<100)time.append(".0"+msec);
 			else time.append("."+msec);}
@@ -1172,20 +1162,20 @@ public class Mi {
 		boolean m = i<0;
 		if(m)i = -i;
 		//if(i==0)return "DNF";
-		if(DCTimer.spSel[6]==0)i+=5;
+		//if(DCTimer.stSel[2]==0)i+=5;
 		int msec=i%1000;
-		if(DCTimer.spSel[6]==0)msec/=10;
-		int sec=DCTimer.timmh?(i/1000)%60:i/1000;
-		int min=DCTimer.timmh?(i/60000)%60:0;
-		int hour=DCTimer.timmh?i/3600000:0;
+		if(DCTimer.stSel[2]==0)msec/=10;
+		int sec=DCTimer.clkform?(i/1000)%60:i/1000;
+		int min=DCTimer.clkform?(i/60000)%60:0;
+		int hour=DCTimer.clkform?i/3600000:0;
 		return (m?"-":"")+contime(hour, min, sec, msec);
 	}
 	private static String distime2(int i){
 		boolean m = i < 0;
 		i = Math.abs(i) + 5;
 		int ms=(i%1000)/10;
-		int s=DCTimer.timmh?(i/1000)%60:i/1000;
-		int mi=DCTimer.timmh?(i/60000)%60:0;
+		int s=DCTimer.clkform?(i/1000)%60:i/1000;
+		int mi=DCTimer.clkform?(i/60000)%60:0;
 		return (m?"-":"")+(mi>0?mi+":":"")+((mi>0 && s<10)?"0":"")+s+"."+(ms<10?"0":"")+ms;
 	}
 	public static String distime(int idx, boolean b) {
@@ -1224,13 +1214,13 @@ public class Mi {
 					int time = DCTimer.rest[j]+DCTimer.resp[j]*2000;
 					if(time>max) max = time;
 					if(time<min) min = time;
-					if(DCTimer.spSel[6]==1) sum+=time;
-					else sum+=(time+5)/10;
+					if(DCTimer.stSel[2]==1) sum+=time;
+					else sum+=time/10;
 				}
 			}
 			if(nDnf!=0) max = 0;
-			if(DCTimer.spSel[6]==1)sum-=min+max;
-			else sum-=(min+5)/10+(max+5)/10;
+			if(DCTimer.stSel[2]==1)sum-=min+max;
+			else sum-=min/10+max/10;
 			cavg=(int) (sum/(n-2)+0.5);
 		}
 		else {
@@ -1241,12 +1231,12 @@ public class Mi {
 			}
 			quickSort(data, 0, n-nDnf-1);
 			for(int j=trim;j<n-trim;j++) {
-				if(DCTimer.spSel[6]==1)sum+=data[j];
-				else sum+=(data[j]+5)/10;
+				if(DCTimer.stSel[2]==1)sum+=data[j];
+				else sum+=data[j]/10;
 			}
 			cavg=(int) (sum/(n-2*trim)+0.5);
 		}
-		if(DCTimer.spSel[6]==0)cavg*=10;
+		if(DCTimer.stSel[2]==0)cavg*=10;
 		if(i==n-1){bavg[l]=cavg;bidx[l]=i;}
 		if(cavg<=bavg[l]){bavg[l]=cavg;bidx[l]=i;}
 		return distime(cavg);
@@ -1254,7 +1244,7 @@ public class Mi {
 	public static void quickSort(int[] a, int lo0, int hi0) {
 		int lo = lo0, hi = hi0;
 		if (lo >= hi) return;
-		boolean transfer=true;
+		boolean transfer = true;
 		while (lo != hi) {
 			if (a[lo] > a[hi]) {
 				int temp = a[lo];
@@ -1281,12 +1271,12 @@ public class Mi {
 			}
 			else {
 				int time = DCTimer.rest[j]+DCTimer.resp[j]*2000;
-				if(DCTimer.spSel[6]==1)sum += time;
-				else sum+=(time+5)/10;
+				if(DCTimer.stSel[2]==1)sum += time;
+				else sum+=time/10;
 			}
 		}
 		cavg=(int) (sum/n+0.5);
-		if(DCTimer.spSel[6]==0)cavg*=10;
+		if(DCTimer.stSel[2]==0)cavg*=10;
 		if(i==n-1){bavg[l]=cavg;bidx[l]=i;}
 		if(cavg<=bavg[l]){bavg[l]=cavg;bidx[l]=i;}
 		return distime(cavg);
@@ -1304,16 +1294,16 @@ public class Mi {
 				else if(time>DCTimer.rest[smax]+DCTimer.resp[smax]*2000)smax=i;
 				if(smin==-1)smin=i;
 				else if(time<=DCTimer.rest[smin]+DCTimer.resp[smin]*2000)smin=i;
-				if(DCTimer.spSel[6]==1)sum+=time;
-				else sum+=(time+5)/10;
-				if(DCTimer.spSel[6]==1)sum2+=Math.pow(time, 2);
-				else sum2+=Math.pow((time+5)/10, 2);
+				if(DCTimer.stSel[2]==1)sum+=time;
+				else sum+=time/10;
+				if(DCTimer.stSel[2]==1)sum2+=Math.pow(time, 2);
+				else sum2+=Math.pow(time/10, 2);
 			}
 		}
 		if(n==0)return "0/"+DCTimer.resl+"): N/A (N/A)";
 		sesMean=(int)(sum/n+0.5);
-		if(DCTimer.spSel[6]==0)sesMean*=10;
-		sesSD=(int)(Math.sqrt((sum2-sum*sum/n)/n)+(DCTimer.spSel[6]==1?0:0.5));
+		if(DCTimer.stSel[2]==0)sesMean*=10;
+		sesSD=(int)(Math.sqrt((sum2-sum*sum/n)/n)+(DCTimer.stSel[2]==1?0:0.5));
 		return ""+n+"/"+DCTimer.resl+"): "+distime(sesMean)+" ("+standDev(sesSD)+")";
 	}
 	public static String sesAvg(){
@@ -1334,15 +1324,15 @@ public class Mi {
 		double sum = 0, sum2 = 0;
 		quickSort(data, 0, n-1);
 		for(int j=trim;j<DCTimer.resl-trim;j++) {
-			if(DCTimer.spSel[6]==1)sum+=data[j];
-			else sum+=(data[j]+5)/10;
-			if(DCTimer.spSel[6]==1)sum2+=Math.pow(data[j], 2);
-			else sum2+=Math.pow((data[j]+5)/10, 2);
+			if(DCTimer.stSel[2]==1)sum+=data[j];
+			else sum+=data[j]/10;
+			if(DCTimer.stSel[2]==1)sum2+=Math.pow(data[j], 2);
+			else sum2+=Math.pow(data[j]/10, 2);
 		}
 		int num = DCTimer.resl-2*trim;
 		int savg=(int) (sum/num+0.5);
-		if(DCTimer.spSel[6]==0)savg*=10;
-		int ssd=(int)(Math.sqrt((sum2-sum*sum/num)/num)+(DCTimer.spSel[6]==1?0:0.5));
+		if(DCTimer.stSel[2]==0)savg*=10;
+		int ssd=(int)(Math.sqrt((sum2-sum*sum/num)/num)+(DCTimer.stSel[2]==1?0:0.5));
 		return distime(savg)+" (σ = "+standDev(ssd)+")";
 	}
 	public static String mulMean(int p) {
@@ -1351,20 +1341,20 @@ public class Mi {
 		if(n==DCTimer.resl)return "-";
 		for(int i=0;i<DCTimer.resl;i++) {
 			if(DCTimer.mulp[p][i]!=0) {
-				if(DCTimer.spSel[6]==1)sum+=(double)DCTimer.mulp[p][i];
-				else sum+=(DCTimer.mulp[p][i]+5)/10;
+				if(DCTimer.stSel[2]==1)sum+=(double)DCTimer.mulp[p][i];
+				else sum+=DCTimer.mulp[p][i]/10;
 				n++;
 			}
 		}
 		if(n==0)return "-";
 		int m=(int)(sum/n+0.5);
-		if(DCTimer.spSel[6]==0)m*=10;
+		if(DCTimer.stSel[2]==0)m*=10;
 		return distime(m);
 	}
 	public static String standDev(int i) {
 		if(i<0)return "N/A";
-		if(DCTimer.spSel[6]==1)i=(i+5)/10;
-		StringBuffer s=new StringBuffer(""+i/100+".");
+		if(DCTimer.stSel[2]==1)i=(i+5)/10;
+		StringBuffer s=new StringBuffer(i/100+".");
 		if(i%100<10)s.append("0");
 		s.append(""+i%100);
 		return s.toString();
@@ -1390,12 +1380,6 @@ public class Mi {
 	public static float sin1(int index, float[] ag, float rd) {
 		return (float) (Math.sin(ag[index])*rd);
 	}
-	public static float cos2(int index, float[] ag2, float rd) {
-		return (float) (Math.cos(ag2[index])*rd);
-	}
-	public static float sin2(int index, float[] ag2, float rd) {
-		return (float) (Math.sin(ag2[index])*rd);
-	}
 	public static byte[] rd(byte[] arr) {
 		byte[] out = new byte[arr.length];
 		int j=0;
@@ -1403,8 +1387,8 @@ public class Mi {
 			if(i==0 || arr[i]!=arr[i-1])
 				out[j++] = arr[i];
 		}
-		byte[] temp=new byte[j];
-		for(int i=0;i<j;i++)temp[i]=out[i];
+		byte[] temp = new byte[j];
+		for(int i=0; i<j; i++)temp[i]=out[i];
 		return temp;
 	}
 
@@ -1415,9 +1399,9 @@ public class Mi {
 		int num=0;
 		boolean dbc=false;
 		for(int i=0;i<s.length();i++){
-			if(s.charAt(i)>47 && s.charAt(i)<58){sb.append(s.charAt(i));num++;}
-			if(s.charAt(i)=='.' && dot<1){sb.append('.');dot++;dbc=true;}
-			if(s.charAt(i)==':' && colon<2 && !dbc){sb.append(':');colon++;}
+			if(Character.isDigit(s.charAt(i))) {sb.append(s.charAt(i)); num++;}
+			if(s.charAt(i)=='.' && dot<1) {sb.append('.'); dot++; dbc=true;}
+			if(s.charAt(i)==':' && colon<2 && !dbc) {sb.append(':'); colon++;}
 		}
 		if(num==0)return "Error";
 		sb.insert(0, dot+""+colon);
@@ -1445,7 +1429,7 @@ public class Mi {
 	}
 
 	public static void drawHist(int width, Paint p, Canvas c) {
-		int[] bins=new int[14];
+		int[] bins = new int[14];
 	    long intervalStart;
 	    long intervalEnd;
 	    if(DCTimer.resl==0){

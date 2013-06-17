@@ -1,272 +1,211 @@
 package solvers;
 
+import java.util.Random;
+
 public class Pyraminx {
-	private static byte[] colmap=new byte[91];
-	private static byte[] colors= {0, 0, 1, 2, 3, 4}; //stores colours used
+	private static byte[] colmap = new byte[91];
 	private static StringBuffer sb;
-	private static short[] posit=new short[36];
-	private static short[] perm=new short[720];   // pruning table for edge permutation
-	private static int[] twst=new int[2592];   // pruning table for edge orientation+twist
-	private static short[][] permmv=new short[720][4]; // transition table for edge permutation
-	private static short[][] twstmv=new short[2592][4]; // transition table for edge orientation+twist
-	private static byte[] sol=new byte[12];
-	private static short sollen;
-	private static short[] pcperm=new short[6];
-	private static short[] pcori;
-	private static String[] scr={"U","L","R","B"};
-	private static String[] scr2={"","'"};
-	private static boolean ini=false;
-	private static byte[] img=new byte[91];
+	private static byte[] perm = new byte[360];	// pruning table for edge permutation
+	private static byte[] twst = new byte[2592];	// pruning table for edge orientation+twist
+	private static short[][] permmv = new short[360][4];	// transition table for edge permutation
+	private static byte[][] twstmv = new byte[81][4];	// transition table for corner orientation
+	private static byte[][] flipmv = new byte[32][4];	// transition table for edge orientation
+	private static byte[] sol = new byte[12];
+	private static byte sollen;
+	private static String[] turn = {"L", "R", "B", "U"};
+	private static String[] suff = {"", "'"};
+	private static boolean ini = false;
+	private static byte[] img = new byte[91];
+	private static Random r = new Random();
 	
 	private static void init_colors() {
-		colmap=new byte[]{
-				1,1,1,1,1,0,2,0,3,3,3,3,3,
-				0,1,1,1,0,2,2,2,0,3,3,3,0,
-				0,0,1,0,2,2,2,2,2,0,3,0,0,
-				0,0,0,0,0,0,0,0,0,0,0,0,0,
-				0,0,0,0,4,4,4,4,4,0,0,0,0,
-				0,0,0,0,0,4,4,4,0,0,0,0,0,
-				0,0,0,0,0,0,4,0,0,0,0,0,0};;
+		colmap = new byte[] {
+				1, 1, 1, 1, 1, 0, 2, 0, 3, 3, 3, 3, 3,
+				0, 1, 1, 1, 0, 2, 2, 2, 0, 3, 3, 3, 0,
+				0, 0, 1, 0, 2, 2, 2, 2, 2, 0, 3, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 4, 4, 4, 4, 4, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 4, 4, 4, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0 };
 	}
+	
 	public static String scramble() {
 		int i, j;
-		initbrd();
-		if(!ini){
+		if(!ini) {
 			calcperm();
-			ini=true;
+			ini = true;
 		}
-		dosolve();
-		sb=new StringBuffer();
+		sollen = 0;
+		int t = r.nextInt(2592), q = r.nextInt(360), l;
+		if(q!=0 || t!=0) {
+			for(l=0; l<12; l++) {
+				if(search(q,t,l,-1)) break;
+			}
+		}
+		sb = new StringBuffer();
 		init_colors();
-		
-		byte[] temp={3,0,1,2};
-		for (i=0;i<sollen;i++) {
-			sb.append(scr[sol[i]&7]+scr2[sol[i]/8]+" ");
-			picmove(temp[sol[i]&7],1+sol[i]/8);
+		for (i=0; i<sollen; i++) {
+			sb.append(turn[sol[i]&7] + suff[sol[i]>>3] + " ");
+			picmove(sol[i]&7, 1+sol[i]>>3);
 		}
-		String[] tips={"l","r","b","u"};
-		for (i=0;i<4;i++) {
-			j = (int)(Math.random() * 3);
+		String[] tips = {"l", "r", "b", "u"};
+		for (i=0; i<4; i++) {
+			j = (int) (Math.random() * 3);
 			if (j < 2) {
-				sb.append(tips[i] + scr2[j] + " ");
-				picmove(4+i,1+j);
+				sb.append(tips[i] + suff[j] + " ");
+				picmove(4+i, 1+j);
 			}
 		}
 		//imageString();
 		return sb.toString();
 	}
-	private static void initbrd(){
-		for(int i=0;i<9;i++) {
-			posit[i]=0;
-			posit[9+i]=1;
-			posit[18+i]=2;
-			posit[27+i]=3;
-		}
-		sollen=0;
-	}
-	private static void dosolve(){
-		int a,i,b,c,l,t=0,q=0;
-		// Get a random permutation and orientation.
-		int parity = 0;
-		for(i=0;i<6;i++) pcperm[i] = (short) i;
-		for (i=0;i<4;i++) {
-			int other = (int)(i + (6-i) * Math.random());
-			short temp = pcperm[i];
-			pcperm[i] = pcperm[other];
-			pcperm[other] = temp;
-			if (i != other) parity++;
-		}
-		if (parity%2 == 1) {
-			short temp = pcperm[4];
-			pcperm[4] = pcperm[5];
-			pcperm[5] = temp;
-		}
-		parity=0;
-		pcori = new short[10];
-		for (i=0;i<5;i++) {
-			pcori[i] = (short)(2 * Math.random());
-			parity += pcori[i];
-		}
-		pcori[5] = (short) (parity % 2);
-		for (i=6;i<10;i++) {
-			pcori[i] = (short)(3 * Math.random());
-		}
 
-		for(a=0;a<6;a++){
-			b=0;
-			for(c=0;c<6;c++){
-				if(pcperm[c]==a)break;
-				if(pcperm[c]>a)b++;
-			}
-			q=(short) (q*(6-a)+b);
-		}
-		//corner orientation
-		for(a=9;a>=6;a--){
-			t=t*3+pcori[a];
-		}
-		//edge orientation
-		for(a=4;a>=0;a--){
-			t=t*2+pcori[a];
-		}
-
-		// solve it
-		if(q!=0 || t!=0){
-			for(l=0;l<12;l++){  //allow solutions from 7 through 11 moves
-				if(search(q,t,l,-1)) break;
-			}
-		}
-	}
-	private static boolean search(int q,int t,int l,int lm){
+	private static boolean search(int q, int t, int l, int lm) {
 		//searches for solution, from position q|t, in l moves exactly. last move was lm, current depth=d
-		if(l==0)return q==0 && t==0;
-		if(perm[q]>l || twst[t]>l) return(false);
-		int p,s,a,m;
-		for(m=0;m<4;m++){
-			if(m!=lm){
-				p=q; s=t;
-				for(a=0;a<2;a++){
-					p=permmv[p][m];
-					s=twstmv[s][m];
-					sol[sollen++]=(byte) (m+8*a);
-					if(search(p,s,l-1,m)) return(true);
+		if(l==0) return q==0 && t==0;
+		if(perm[q]>l || twst[t]>l) return false;
+		int p, s, a, m;
+		for(m=0; m<4; m++) {
+			if(m != lm) {
+				p = q; s = t;
+				for(a=0; a<2; a++) {
+					p = permmv[p][m];
+					s = twstmv[s>>5][m] << 5 | flipmv[s&31][m];
+					sol[sollen++] = (byte) (a<<3|m);
+					if(search(p, s, l-1, m)) return true;
 					sollen--;
 				}
 			}
 		}
-		return(false);
+		return false;
 	}
-	private static void calcperm(){
-		int c,q,l,m,p;
+	private static void calcperm() {
+		int c, q, l, m, p, r;
 		//calculate solving arrays
 		//first permutation
-		// initialise arrays
-		for(p=0;p<720;p++){
-			perm[p]=-1;
-			for(m=0;m<4;m++)
-				permmv[p][m]=(short) getprmmv(p,m);
+		//initialise arrays
+		for(p=0; p<360; p++) {
+			perm[p] = -1;
+			for(m=0; m<4; m++)
+				permmv[p][m] = (short) getprmmv(p, m);
 		}
 		//fill it
-		perm[0]=0;
-		for(l=0;l<=6;l++){
-			for(p=0;p<720;p++)
-				if(perm[p]==l)
-					for(m=0;m<4;m++){
-						q=p;
-						for(c=0;c<2;c++){
-							q=permmv[q][m];
-							if(perm[q]==-1) perm[q]=(short) (l+1);
+		perm[0] = 0;
+		for(l=0; l<=4; l++)
+			for(p=0; p<360; p++)
+				if(perm[p] == l)
+					for(m=0; m<4; m++) {
+						q = p;
+						for(c=0; c<2; c++) {
+							q = permmv[q][m];
+							if(perm[q] == -1) perm[q] = (byte) (l+1);
 						}
 					}
-		}
-		//then twist
-		// initialise arrays
-		for(p=0;p<2592;p++){
-			twst[p]=-1;
-			for(m=0;m<4;m++)
-				twstmv[p][m]=(short) gettwsmv(p,m);
-		}
-		//fill it
-		twst[0]=0;
-		for(l=0;l<=5;l++)
-			for(p=0;p<2592;p++)
-				if(twst[p]==l)
-					for(m=0;m<4;m++){
-						q=p;
-						for(c=0;c<2;c++){
-							q=twstmv[q][m];
-							if(twst[q]==-1) { twst[q]=l+1;}
-						}
-					}
-	}
-	private static int getprmmv(int p,int m){
-		//given position p<720 and move m<4, return new position number
-		//convert number into array
-		int a,b,c,q=p;
-		byte[] ps=new byte[7];
-		for(a=1;a<=6;a++){
-			c=q/a;
-			b=q-a*c;
-			q=c;
-			for(c=a-1;c>=b;c--) ps[c+1]=ps[c];
-			ps[b]=(byte) (6-a);
-		}
-		//perform move on array
-		if(m==0){
-			cycle3(ps, 0, 3, 1);//U
-		}else if(m==1){
-			cycle3(ps, 1, 5, 2);//L
-		}else if(m==2){
-			cycle3(ps, 0, 2, 4);//R
-		}else if(m==3){
-			cycle3(ps, 3, 4, 5);//B
-		}
-		//convert array back to number
-		q=0;
-		for(a=0;a<6;a++){
-			b=0;
-			for(c=0;c<6;c++){
-				if(ps[c]==a)break;
-				if(ps[c]>a)b++;
+		//then twist && flip
+		//initialise arrays
+		for(p=0; p<81; p++)
+			for(m=0; m<4; m++) {
+				twstmv[p][m] = (byte) gettwsmv(p, m);
+				if(p<32) flipmv[p][m] = (byte) getflpmv(p, m);
 			}
-			q=q*(6-a)+b;
-		}
-		return(q);
+		//fill it
+		for(p=0; p<2592; p++) twst[p] = -1;
+		twst[0] = 0;
+		for(l=0; l<=6; l++)
+			for(p=0; p<2592; p++)
+				if(twst[p] == l)
+					for(m=0; m<4; m++) {
+						q = p>>5; r = p&31;
+						for(c=0; c<2; c++) {
+							q = twstmv[q][m]; r = flipmv[r][m];
+							if(twst[q<<5|r] == -1) twst[q<<5|r] = (byte) (l+1);
+						}
+					}
 	}
-	private static int gettwsmv(int p,int m){
-		//given position p<2592 and move m<4, return new position number
-		//convert number into array;
-		int a,d=0,b,c;
-		byte[] ps=new byte[10];
-		int q=p;
-		//first edge orientation
-		for(a=0;a<=4;a++){
-			ps[a]=(byte) (q&1);
-			q>>=1;
-		d^=ps[a];
-		}
-		ps[5]=(byte) d;
-		//next corner orientation
-		for(a=6;a<=9;a++){
-			c=q/3;
-			b=q-3*c;
-			q=c;
-			ps[a]=(byte) b;
-		}
+	private static int getprmmv(int p, int m) {
+		//given position p<360 and move m<4, return new position number
+		//convert number into array
+		int[] ps = new int[6];
+		Im.indexToEvenPermutation(ps, p, 6);
 		//perform move on array
-		if(m==0){
-			//U
-			ps[6]++; if(ps[6]==3) ps[6]=0;
-			cycle3(ps, 0, 3, 1);
-			ps[1]^=1;ps[3]^=1;
-		}else if(m==1){
-			//L
-			ps[7]++; if(ps[7]==3) ps[7]=0;
-			cycle3(ps, 1, 5, 2);
-			ps[2]^=1; ps[5]^=1;
-		}else if(m==2){
-			//R
-			ps[8]++; if(ps[8]==3) ps[8]=0;
-			cycle3(ps, 0, 2, 4);
-			ps[0]^=1; ps[2]^=1;
-		}else if(m==3){
-			//B
-			ps[9]++; if(ps[9]==3) ps[9]=0;
-			cycle3(ps, 3, 4, 5);
-			ps[3]^=1; ps[4]^=1;
+		if(m == 0) {
+			Im.cir(ps, 1, 5, 2);//L
+		} else if(m == 1) {
+			Im.cir(ps, 0, 2, 4);//R
+		} else if(m == 2) {
+			Im.cir(ps, 3, 4, 5);//B
+		} else if(m == 3) {
+			Im.cir(ps, 0, 3, 1);//U
 		}
 		//convert array back to number
-		q=0;
-		//corner orientation
-		for(a=9;a>=6;a--){
-			q=q*3+ps[a];
+		return(Im.evenPermutationToIndex(ps, 6));
+	}
+	private static int getflpmv(int p, int m) {
+		//given orientation p<32 and move m<4, return new position number
+		//convert number into array;
+		int a, d=0;
+		int[] ps = new int[6];
+		int q = p;
+		//edge orientation
+		for(a=0; a<=4; a++) {
+			ps[a] = q & 1;
+			q>>=1;
+			d^=ps[a];
 		}
-		//corner orientation
-		for(a=4;a>=0;a--){
+		ps[5] = d;
+		//perform move on array
+		switch (m) {
+		case 0:	//L
+			Im.cir(ps, 1, 5, 2);
+			ps[2]^=1; ps[5]^=1;
+			break;
+		case 1:	//R
+			Im.cir(ps, 0, 2, 4);
+			ps[0]^=1; ps[2]^=1;
+			break;
+		case 2:	//B
+			Im.cir(ps, 3, 4, 5);
+			ps[3]^=1; ps[4]^=1;
+			break;
+		case 3:	//U
+			Im.cir(ps, 0, 3, 1);
+			ps[1]^=1;ps[3]^=1;
+			break;
+		}
+		//edge orientation
+		for(a=4; a>=0; a--) {
 			q=q*2+ps[a];
 		}
-		return(q);
+		return q;
 	}
-	private static void picmove(int type, int direction){
+	
+	private static int gettwsmv(int p, int m) {
+		//given orientation p<81 and move m<4, return new position number
+		//convert number into array;
+		int[] ps = new int[4];
+		//corner orientation
+		Im.indexToOrientation(ps, p, 3, 4);
+		//perform move on array
+		switch (m) {
+		case 0:	//L
+			ps[1]++; if(ps[1]==3) ps[1]=0;
+			break;
+		case 1:	//R
+			ps[2]++; if(ps[2]==3) ps[2]=0;
+			break;
+		case 2:	//B
+			ps[3]++; if(ps[3]==3) ps[3]=0;
+			break;
+		case 3:	//U
+			ps[0]++; if(ps[0]==3) ps[0]=0;
+			break;
+		}
+		//convert array back to number
+		//corner orientation
+		return(Im.orientationToIndex(ps, 3, 4));
+	}
+	
+	private static void picmove(int type, int direction) {
 		switch(type) {
 		case 0: // L
 			rotate3(14,58,18, direction);
@@ -306,35 +245,28 @@ public class Pyraminx {
 			break;
 		}
 	}
-	private static void rotate3(int v1,int v2,int v3,int clockwise)
-	{
+	private static void rotate3(int v1, int v2, int v3, int clockwise) {
 		if(clockwise == 2) {
-			cycle3(colmap, v3, v2, v1);
+			Im.cir(colmap, v3, v2, v1);
 		} else {
-			cycle3(colmap, v1, v2, v3);
+			Im.cir(colmap, v1, v2, v3);
 		}
 	}
-	private static void cycle3(byte[] arr,int i1,int i2,int i3) {
-		byte c = arr[i1];
-		arr[i1] = arr[i2];
-		arr[i2] = arr[i3];
-		arr[i3] = c;
-	}
 	public static byte[] imageString() {
-		int x,d=0;
-		for(x = 0; x < 91; x++)
-			img[d++] = colors[colmap[x]];
+		int d=0;
+		for(int x = 0; x < 91; x++)
+			img[d++] = (byte) (colmap[x] - 1);
 		return img;
 	}
-	private static String moveIdx="LRBUlrbu";
+	private static String moveIdx = "LRBUlrbu";
 	public static byte[] imageString(String scr) {
 		String[] s=scr.split(" ");
 		init_colors();
 		int turn, suff;
-		for(int i=0; i<s.length; i++){
-			suff=s[i].length();
-			if(suff>0){
-				turn=moveIdx.indexOf(s[i].charAt(0));
+		for(int i=0; i<s.length; i++) {
+			suff = s[i].length();
+			if(suff > 0) {
+				turn = moveIdx.indexOf(s[i].charAt(0));
 				picmove(turn, suff);
 			}
 		}

@@ -211,6 +211,7 @@ public class Search {
 				corn[0] = corn0[urfIdx];
 				mid4[0] = slice[urfIdx];
 				ud8e[0] = ud8e0[urfIdx];
+				valid1 = 0;
 				if ((prun[urfIdx] <= depth1)
 						&& phase1(twist[urfIdx]>>>3, twist[urfIdx]&7, flip[urfIdx]>>>3, flip[urfIdx]&7,
 							slice[urfIdx]&0x1ff, depth1, -1) == 0) {
@@ -218,7 +219,7 @@ public class Search {
 				}
 			}
 		}
-		return "Error 7";
+		return solution == null ? "Error 7" : solution;
 	}
 	
 	/**

@@ -9,14 +9,14 @@ public class SqSearch {
 	int maxlen2;
 	String sol_string;
 
-	static int getNParity(int idx, int n) {
-		int p = 0;
-		for (int i=n-2; i>=0; i--) {
-			p ^= idx % (n-i);
-			idx /= (n-i);
-		}
-		return p & 1;
-	}
+//	static int getNParity(int idx, int n) {
+//		int p = 0;
+//		for (int i=n-2; i>=0; i--) {
+//			p ^= idx % (n-i);
+//			idx /= (n-i);
+//		}
+//		return p & 1;
+//	}
 
 	public String solution(FullCube c) {
 		this.c = c;
@@ -32,7 +32,6 @@ public class SqSearch {
 	}
 
 	boolean phase1(int shape, int prunvalue, int maxl, int depth, int lm) {
-
 		if (prunvalue==0 && maxl<4) {
 			return maxl==0 && init2();
 		}

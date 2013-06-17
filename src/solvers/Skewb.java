@@ -10,13 +10,6 @@ public class Skewb {
 	private static byte[] fd = new byte[360];
 	private static byte[][][] cd = new byte[12][27][81];
 	
-	private static void cir(int[] arr, int a, int b, int c){
-		int temp = arr[a];
-		arr[a] = arr[b];
-		arr[b] = arr[c];
-		arr[c] = temp;
-	}
-	
 	private static boolean ini=false;
 	private static void init() {
 		if(ini)return;
@@ -27,10 +20,10 @@ public class Skewb {
 			for (int j = 0; j < 4; j++) {
 				Im.indexToEvenPermutation(arr, i, 6);
 				switch(j){
-				case 0: cir(arr, 0, 1, 4); break;
-				case 1: cir(arr, 0, 3, 2); break;
-				case 2: cir(arr, 3, 4, 5); break;
-				case 3: cir(arr, 1, 2, 5); break;
+				case 0: Im.cir(arr, 0, 1, 4); break;
+				case 1: Im.cir(arr, 0, 3, 2); break;
+				case 2: Im.cir(arr, 3, 4, 5); break;
+				case 3: Im.cir(arr, 1, 2, 5); break;
 				}
 				fpm[i][j] = (short)Im.evenPermutationToIndex(arr, 6);
 			}
@@ -40,10 +33,10 @@ public class Skewb {
 			for (int j = 0; j < 4; j++) {
 				Im.indexToEvenPermutation(arr, i, 4);
 				switch(j){
-				case 0: cir(arr, 0, 2, 1); break;
-				case 1: cir(arr, 0, 1, 3); break;
-				case 2: cir(arr, 1, 2, 3); break;
-				case 3: cir(arr, 0, 3, 2); break;
+				case 0: Im.cir(arr, 0, 2, 1); break;
+				case 1: Im.cir(arr, 0, 1, 3); break;
+				case 2: Im.cir(arr, 1, 2, 3); break;
+				case 3: Im.cir(arr, 0, 3, 2); break;
 				}
 				cpm[i][j] = (byte)Im.evenPermutationToIndex(arr, 4);
 			}
@@ -52,13 +45,13 @@ public class Skewb {
 			for (int j = 0; j < 4; j++) {
 				Im.indexToZeroSumOrientation(arr, i, 3, 4);
 				switch(j){
-				case 0: cir(arr, 0, 2, 1); arr[0] = (arr[0] + 2) % 3;
+				case 0: Im.cir(arr, 0, 2, 1); arr[0] = (arr[0] + 2) % 3;
 				arr[1] = (arr[1] + 2) % 3; arr[2] = (arr[2] + 2) % 3; break;
-				case 1: cir(arr, 0, 1, 3); arr[0] = (arr[0] + 2) % 3;
+				case 1: Im.cir(arr, 0, 1, 3); arr[0] = (arr[0] + 2) % 3;
 				arr[1] = (arr[1] + 2) % 3; arr[3] = (arr[3] + 2) % 3; break;
-				case 2: cir(arr, 1, 2, 3); arr[3] = (arr[3] + 2) % 3;
+				case 2: Im.cir(arr, 1, 2, 3); arr[3] = (arr[3] + 2) % 3;
 				arr[1] = (arr[1] + 2) % 3; arr[2] = (arr[2] + 2) % 3; break;
-				case 3: cir(arr, 0, 3, 2); arr[0] = (arr[0] + 2) % 3;
+				case 3: Im.cir(arr, 0, 3, 2); arr[0] = (arr[0] + 2) % 3;
 				arr[3] = (arr[3] + 2) % 3; arr[2] = (arr[2] + 2) % 3; break;
 				}
 				com[i][j] = (byte)Im.zeroSumOrientationToIndex(arr, 3, 4);

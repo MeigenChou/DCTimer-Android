@@ -13,7 +13,7 @@ public class Cross {
 	private static int[] goalFeo = {0, 2, 4, 6};
 	private static StringBuffer sb;
 	public static boolean inic=false, inix=false, inie=false;
-	private static String[] color={"D: ","U: ","L: ","R: ","F: ","B: "};
+	private static String[] color={"D","U","L","R","F","B"};
 	private static String[][] moveIdx={{"UDLRFB","DURLFB","RLUDFB","LRDUFB","BFLRUD","FBLRDU"},
 		{"UDLRFB","DURLFB","RLUDFB","LRDUFB","BFRLDU","FBRLUD"},
 		{"UDLRFB","DURLFB","RLUDFB","LRDUFB","BFUDRL","FBUDLR"},
@@ -31,7 +31,7 @@ public class Cross {
 		int q=d[f];d[f]=d[n]^s;d[n]=d[l]^s;d[l]=d[h]^s;d[h]=q^s;
 	}
 	
-	private static void idxToPerm(int[] s, int p) {
+	static void idxToPerm(int[] s, int p) {
 		int v;
 		for(int q=1;4>=q;q++){
 			int t=p%q;
@@ -41,7 +41,7 @@ public class Cross {
 		}
 	}
 	
-	private static int permToIdx(int[] s) {
+	static int permToIdx(int[] s) {
 		int i=0, v, t;
 		for(int q=0;4>q;q++){
 			for(v=t=0;4>v&&!(s[v]==q);v++)if(s[v]>q)t++;
@@ -120,7 +120,6 @@ public class Cross {
 	private static void initc(){
 		if(inic)return;
 		int i,j,D,y,C;
-		Im.init();
 		try {
 			InputStream in = new BufferedInputStream(new FileInputStream("/data/data/com.dctimer/databases/cross.dat"));
 			read(epm, in);
@@ -267,7 +266,7 @@ public class Cross {
 			}
 		sb=new StringBuffer();
 		for(C=0;9>C&&!idacross(D,s,C,-1,face);C++);
-		return "\n"+color[side]+rotIdx[face][side]+sb.toString();
+		return "\nCross("+color[side]+"): "+rotIdx[face][side]+sb.toString();
 	}
 	public static String solve(String s, int face) {
 		String[] scr = s.split(" ");
@@ -293,7 +292,7 @@ public class Cross {
 		for (int d = 0; ; d++)
 			for (int idx = 0; idx < 4; idx++)
 				if (idaxcross(ep, eo, co[idx], feo[idx], idx, d, -1))
-					return "\n" + color[face] + rotIdx[0][face] + sb.toString();
+					return "\nXCross(" + color[face] + "): " + rotIdx[0][face] + sb.toString();
 	}
 	public static String xcross(String scr, int face) {
 		initx();

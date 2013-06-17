@@ -32,10 +32,11 @@
 
 	    <Button
 	        android:id="@+id/btnClose"
+	        android:background="@drawable/bg_btn"
 	        android:layout_width="wrap_content"
-	        android:layout_height="40dp"
+	        android:layout_height="wrap_content"
 	        android:layout_alignParentLeft="true"
-	        android:layout_marginTop="5dp"
+	        android:layout_marginTop="6dp"
 	        android:layout_marginLeft="6dp"
 	        android:text="@string/close"
 	        android:textSize="15sp" />
@@ -51,10 +52,11 @@
 
 	    <Button
 	        android:id="@+id/btnSend"
+	        android:background="@drawable/bg_btn"
 	        android:layout_width="wrap_content"
-	        android:layout_height="40dp"
+	        android:layout_height="wrap_content"
 	        android:layout_alignParentRight="true"
-	        android:layout_marginTop="5dp"
+	        android:layout_marginTop="6dp"
 	        android:layout_marginRight="6dp"
 	        android:text="@string/send"
 	        android:textSize="15sp" />
@@ -98,7 +100,7 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:text="140"
-						android:layout_marginRight="5px"
+						android:layout_marginRight="5dp"
 						android:textColor="#333"/>
 					
 					<ImageView
@@ -151,7 +153,7 @@
 			    android:imeOptions="actionDone"
 			    android:gravity="top|left"
 			    android:isScrollContainer="true"
-			    android:layout_margin="3px"/>			
+			    android:layout_margin="3dp"/>			
 		</LinearLayout>
 		
 	</RelativeLayout>
