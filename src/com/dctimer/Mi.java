@@ -1,6 +1,5 @@
 ﻿package com.dctimer;
 
-import java.io.*;
 import java.util.Random;
 
 import min2phase.*;
@@ -19,7 +18,6 @@ public class Mi {
 	public static int sesSD;
 	public static int smin, smax;
 	public static String sc;
-	private static boolean ini = false;
 	public static int viewType;
 	public static int scrLen=0;
 	private static short[][] defScrLen = {
@@ -54,8 +52,7 @@ public class Mi {
 		if(ch)scrLen = defScrLen[n>>5][n&31];
 		switch(n){
 		case 0: //2阶
-			Cube222.randomState();
-			scr=Cube222.solve();viewType=2;
+			scr=Cube222.randomState();viewType=2;
 			if(DCTimer.stSel[6]>0)sc="\n"+Cube2bl.cube2layer(scr, DCTimer.stSel[6]);break;
 		case 1:
 			scr=cube(2);viewType=2;
@@ -64,20 +61,15 @@ public class Mi {
 			scr=OtherScr.megascramble(new String[][][]{{{"U","D"}},{{"R","L"}},{{"F","B"}}}, csuff);viewType=2;
 			if(DCTimer.stSel[6]>0)sc="\n"+Cube2bl.cube2layer(scr, DCTimer.stSel[6]);break;
 		case 3:
-			Cube222.randomCLL();
-			scr=Cube222.solve();viewType=2;break;
+			scr=Cube222.randomCLL();viewType=2;break;
 		case 4:
-			Cube222.randomEG1();
-			scr=Cube222.solve();viewType=2;break;
+			scr=Cube222.randomEG1();viewType=2;break;
 		case 5:
-			Cube222.randomEG2();
-			scr=Cube222.solve();viewType=2;break;
+			scr=Cube222.randomEG2();viewType=2;break;
 		case 6:
-			Cube222.randomXLL();
-			scr=Cube222.solve();viewType=2;break;
+			scr=Cube222.randomXLL();viewType=2;break;
 		case 7:
-			Cube222.randomEG(DCTimer.egtype, DCTimer.egolls);
-			scr=Cube222.solve(); viewType=2; break;
+			scr=Cube222.egScr(DCTimer.egtype, DCTimer.egolls); viewType=2; break;
 		case 32: //3阶
 			scr=cube(3);viewType=3;
 			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[1], DCTimer.spSel[3]);
@@ -269,40 +261,7 @@ public class Mi {
 			if(DCTimer.sqshp) sc=" "+Sq1Shape.solve(scr);
 			viewType=1; break;
 		case 258:
-			if(!ini) {//TODO
-				try {
-					InputStream in = new BufferedInputStream(new FileInputStream("/data/data/com.dctimer/databases/sqr.dat"));
-					Tools.read(Shape.ShapeIdx, in);
-					in.read(Shape.ShapePrun);
-					Tools.read(Shape.TopMove, in);
-					Tools.read(Shape.BottomMove, in);
-					Tools.read(Shape.TwistMove, in);
-					Tools.read(Square.TwistMove, in);
-					Tools.read(Square.TopMove, in);
-					Tools.read(Square.BottomMove, in);
-					in.read(Square.SquarePrun);
-					in.close();
-				} catch (Exception e) {
-					Shape.init();
-					Square.init();
-					try {
-						OutputStream out = new BufferedOutputStream(new FileOutputStream("/data/data/com.dctimer/databases/sqr.dat"));
-						Tools.write(Shape.ShapeIdx, out);
-						out.write(Shape.ShapePrun);
-						Tools.write(Shape.TopMove, out);
-						Tools.write(Shape.BottomMove, out);
-						Tools.write(Shape.TwistMove, out);
-						Tools.write(Square.TwistMove, out);
-						Tools.write(Square.TopMove, out);
-						Tools.write(Square.BottomMove, out);
-						out.write(Square.SquarePrun);
-						out.close();
-					} catch (Exception e1) { }
-				}
-				ini = true;
-			}
-			FullCube c=FullCube.randomCube();
-			scr=new SqSearch().solution(c);
+			scr = new SqSearch().solution(FullCube.randomCube());
 			if(DCTimer.sqshp)sc=" "+Sq1Shape.solve(scr);
 			viewType=1; break;
 		case 288:	//魔表
@@ -456,26 +415,22 @@ public class Mi {
 			turns=new String[][][]{{{"R U R'","R U2 R'","R U' R'","R U2' R'"}},{{"F' U F","F' U2 F","F' U' F","F' U2' F"}},{{"U","U2","U'","U2'"}}};
 			scr=OtherScr.megascramble(turns, suff0);viewType=0;break;
 		case 640:	//连拧
-			Cube222.randomState();
-			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 200, 0)
+			scr="2) "+Cube222.randomState()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 200, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40);
 			viewType=0;break;
 		case 641:
-			Cube222.randomState();
-			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 200, 0)
+			scr="2) "+Cube222.randomState()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 200, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60);
 			viewType=0;break;
 		case 642:
-			Cube222.randomState();
-			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 200, 0)
+			scr="2) "+Cube222.randomState()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 200, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60)
 				+"\n6) "+OtherScr.megascramble(new String[][]{{"U","D","u","d","3u"},{"R","L","r","l","3r"},{"F","B","f","b","3f"}}, csuff, 80);
 			viewType=0;break;
 		case 643:
-			Cube222.randomState();
-			scr="2) "+Cube222.solve()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 200, 0)
+			scr="2) "+Cube222.randomState()+"\n3) "+new Search().solution(Tools.randomCube(), 21, 20000, 200, 0)
 				+"\n4) "+OtherScr.megascramble(new String[][]{{"U","D","u"},{"R","L","r"},{"F","B","f"}}, csuff, 40)
 				+"\n5) "+OtherScr.megascramble(new String[][]{{"U","D","u","d"},{"R","L","r","l"},{"F","B","f","b"}}, csuff, 60)
 				+"\n6) "+OtherScr.megascramble(new String[][]{{"U","D","u","d","3u"},{"R","L","r","l","3r"},{"F","B","f","b","3f"}}, csuff, 80)
@@ -484,7 +439,7 @@ public class Mi {
 		case 644:
 			StringBuffer scrb=new StringBuffer();
 			for(int j=0; j<scrLen; j++){
-				scrb.append(j+1+") "+new Search().solution(Tools.randomCube(), 21, 20000, 200, 0));
+				scrb.append(j+1+") "+new Search().solution(Tools.randomCube(), 21, 20000, 0, 0));
 				if(j<scrLen-1)scrb.append("\n");
 			}
 			scr=scrb.toString();viewType=0;break;
@@ -498,50 +453,50 @@ public class Mi {
 		return Cube.scramblestring(n, scrLen);
 	}
 	
-	public static void drawScr(int sel2, int width, Paint p, Canvas c){
+	public static void drawScr(int sel2, int width, Paint p, Canvas c) {
 		int[] colors={DCTimer.share.getInt("csn1", Color.YELLOW), DCTimer.share.getInt("csn2", Color.BLUE), DCTimer.share.getInt("csn3", Color.RED),
 				DCTimer.share.getInt("csn4", Color.WHITE), DCTimer.share.getInt("csn5", 0xff009900), DCTimer.share.getInt("csn6", 0xffff8026)};
 		//2阶
 		if(viewType==2) {
 			Cube.parse(2);
-			byte[] imst=OtherScr.imagestr(DCTimer.crntScr);
-			int a=width/10,i,j,d=0,sty=(int) ((width*0.75-6*a+2)/2);
-			for(i=0;i<2;i++)
-				for(j=0;j<2;j++) {
+			byte[] imst = OtherScr.imagestr(DCTimer.crntScr);
+			int a=width/10, i, j, d=0, stx=(width-8*a-19)/2, sty=(width*3/4-6*a-14)/2;
+			for(i=0; i<2; i++)
+				for(j=0; j<2; j++) {
 					p.setStyle(Paint.Style.FILL);
 					p.setColor(colors[imst[d++]]);
-					c.drawRect(3+(j+3)*a, sty+1+i*a, 2+(j+4)*a, sty+(i+1)*a, p);
+					c.drawRect(stx+7+(j+2)*a, sty+1+i*a, stx+6+(j+3)*a, sty+(i+1)*a, p);
 					p.setStyle(Paint.Style.STROKE);
 					p.setColor(Color.BLACK);
-					c.drawRect(3+(j+3)*a, sty+1+i*a, 2+(j+4)*a, sty+(i+1)*a, p);
+					c.drawRect(stx+7+(j+2)*a, sty+1+i*a, stx+6+(j+3)*a, sty+(i+1)*a, p);
 				}
 			for(i=0;i<2;i++)
 				for(j=0;j<8;j++) {
 					p.setStyle(Paint.Style.FILL);
 					p.setColor(colors[imst[d++]]);
-					if(j>=6)c.drawRect(7+(j+1)*a, sty+3+(i+2)*a, 6+(j+2)*a, sty+2+(i+3)*a, p);
-					else if(j>=4)c.drawRect(5+(j+1)*a, sty+3+(i+2)*a, 4+(j+2)*a, sty+2+(i+3)*a, p);
-					else if(j>=2)c.drawRect(3+(j+1)*a, sty+3+(i+2)*a, 2+(j+2)*a, sty+2+(i+3)*a, p);
-					else c.drawRect(1+(j+1)*a, sty+3+(i+2)*a, (j+2)*a, sty+2+(i+3)*a, p);
+					if(j>=6)     c.drawRect(stx+19+j*a, sty+7+(i+2)*a, stx+18+(j+1)*a, sty+6+(i+3)*a, p);
+					else if(j>=4)c.drawRect(stx+13+j*a, sty+7+(i+2)*a, stx+12+(j+1)*a, sty+6+(i+3)*a, p);
+					else if(j>=2)c.drawRect(stx+ 7+j*a, sty+7+(i+2)*a, stx+ 6+(j+1)*a, sty+6+(i+3)*a, p);
+					else         c.drawRect(stx+ 1+j*a, sty+7+(i+2)*a, stx   +(j+1)*a, sty+6+(i+3)*a, p);
 					p.setStyle(Paint.Style.STROKE);
 					p.setColor(Color.BLACK);
-					if(j>=6)c.drawRect(7+(j+1)*a, sty+3+(i+2)*a, 6+(j+2)*a, sty+2+(i+3)*a, p);
-					else if(j>=4)c.drawRect(5+(j+1)*a, sty+3+(i+2)*a, 4+(j+2)*a, sty+2+(i+3)*a, p);
-					else if(j>=2)c.drawRect(3+(j+1)*a, sty+3+(i+2)*a, 2+(j+2)*a, sty+2+(i+3)*a, p);
-					else c.drawRect(1+(j+1)*a, sty+3+(i+2)*a, (j+2)*a, sty+2+(i+3)*a, p);
+					if(j>=6)     c.drawRect(stx+19+j*a, sty+7+(i+2)*a, stx+18+(j+1)*a, sty+6+(i+3)*a, p);
+					else if(j>=4)c.drawRect(stx+13+j*a, sty+7+(i+2)*a, stx+12+(j+1)*a, sty+6+(i+3)*a, p);
+					else if(j>=2)c.drawRect(stx+ 7+j*a, sty+7+(i+2)*a, stx+ 6+(j+1)*a, sty+6+(i+3)*a, p);
+					else         c.drawRect(stx+ 1+j*a, sty+7+(i+2)*a, stx   +(j+1)*a, sty+6+(i+3)*a, p);
 				}
 			for(i=0;i<2;i++)
 				for(j=0;j<2;j++) {
 					p.setStyle(Paint.Style.FILL);
 					p.setColor(colors[imst[d++]]);
-					c.drawRect(3+(j+3)*a, sty+5+(i+4)*a, 2+(j+4)*a, sty+4+(i+5)*a, p);
+					c.drawRect(stx+7+(j+2)*a, sty+13+(i+4)*a, stx+6+(j+3)*a, sty+12+(i+5)*a, p);
 					p.setStyle(Paint.Style.STROKE);
 					p.setColor(Color.BLACK);
-					c.drawRect(3+(j+3)*a, sty+5+(i+4)*a, 2+(j+4)*a, sty+4+(i+5)*a, p);
+					c.drawRect(stx+7+(j+2)*a, sty+13+(i+4)*a, stx+6+(j+3)*a, sty+12+(i+5)*a, p);
 				}
 		}
 		//五魔
-		else if(viewType==18) {	//TODO
+		else if(viewType==18) {
 			float edgeFrac = (float) ((1+Math.sqrt(5))/4);
 			float centerFrac = 0.5F;
 			if(DCTimer.stSel[7]==0)colors=new int[] {Color.WHITE,Color.rgb(0, 0, 136),Color.rgb(0, 136, 0),Color.rgb(0, 255, 255),Color.rgb(136, 34, 34),Color.rgb(136, 170, 255),
@@ -550,9 +505,9 @@ public class Mi {
 					Color.rgb(255, 255, 132),Color.rgb(66, 221, 255),Color.rgb(255, 127, 38),Color.GREEN,Color.rgb(255, 128, 255),Color.GRAY};
 			int defaultWidth = 350;
 			int defaultHeight = 180;
-			float scale = (float) Math.min((width+7)/(double)defaultWidth, ((width*0.75)+7)/defaultHeight);
-			int dx = (int) (((width+7) - (defaultWidth * scale))/2);
-			int dy = (int) (((width*0.75)+7 - (defaultHeight * scale))/2);
+			float scale = (float) Math.min((double)width/defaultWidth, width*0.75/defaultHeight);
+			int dx = (int) ((width - (defaultWidth * scale))/2);
+			int dy = (int) ((width*0.75 - (defaultHeight * scale))/2);
 			float majorR = 36*scale;
 			float minorR = majorR * edgeFrac;
 			float pentR = minorR*2;
@@ -602,53 +557,53 @@ public class Mi {
 			}
 		}
 		//金字塔
-		else if(viewType==17) {
+		else if(viewType==17) {	//TODO
 			byte[] imst;
-			if(!DCTimer.isInScr && sel2==0)imst=Pyraminx.imageString();
-			else imst=Pyraminx.imageString(DCTimer.crntScr);
-			width=(int) (width*0.9);
-			int a=(width-2)/6-1,b=(int) (a*Math.sqrt(3)/2),d=(int) ((width/0.9-(a*6+4))/2);
+			if(!DCTimer.isInScr && sel2==0) imst = Pyraminx.imageString();
+			else imst = Pyraminx.imageString(DCTimer.crntScr);
+			int b=(width*3/4-15)/6, a=(int)(b*2/Math.sqrt(3)), d=(int) ((width-a*6-21)/2);
 			colors = new int[]{DCTimer.share.getInt("csp1", Color.RED), DCTimer.share.getInt("csp2", 0xff009900),
 					DCTimer.share.getInt("csp3", Color.BLUE), DCTimer.share.getInt("csp4", Color.YELLOW)};
 			float[] arx,ary;
-			byte[] layout =
-				{1,2,1,2,1,0,2,0,1,2,1,2,1,
+			byte[] layout = {
+					1,2,1,2,1,0,2,0,1,2,1,2,1,
 					0,1,2,1,0,2,1,2,0,1,2,1,0,
 					0,0,1,0,2,1,2,1,2,0,1,0,0,
 					0,0,0,0,0,0,0,0,0,0,0,0,0,
 					0,0,0,0,1,2,1,2,1,0,0,0,0,
 					0,0,0,0,0,1,2,1,0,0,0,0,0,
 					0,0,0,0,0,0,1,0,0,0,0,0,0};
-			int[] pos={d,d+a/2,d+a,d+3*a/2,d+2*a,d+5*a/2,d+2+5*a/2,d+2+3*a,d+4+3*a,d+4+7*a/2,d+4+4*a,d+4+9*a/2,d+4+5*a,
-					d+4+11*a/2,d+a/2,d+a,d+3*a/2,d+2*a,d+2+2*a,d+2+5*a/2,d+2+3*a,d+2+7*a/2,d+4+7*a/2,d+4+4*a,d+4+9*a/2,d+4+5*a,
-					0,0,d+a,d+3*a/2,d+2+3*a/2,d+2+2*a,d+2+5*a/2,d+2+3*a,d+2+7*a/2,d+2+4*a,d+4+4*a,d+4+9*a/2,0,
+			int[] pos = {
+					d,d+a/2,d+a,d+3*a/2,d+2*a,d+5*a/2,d+7+5*a/2,d+7+3*a,d+14+3*a,d+14+7*a/2,d+14+4*a,d+14+9*a/2,d+14+5*a,
+					d+14+11*a/2,d+a/2,d+a,d+3*a/2,d+2*a,d+7+2*a,d+7+5*a/2,d+7+3*a,d+7+7*a/2,d+14+7*a/2,d+14+4*a,d+14+9*a/2,d+14+5*a,
+					0,0,d+a,d+3*a/2,d+7+3*a/2,d+7+2*a,d+7+5*a/2,d+7+3*a,d+7+7*a/2,d+7+4*a,d+14+4*a,d+14+9*a/2,0,
 					0,0,0,0,0,0,0,0,0,0,0,0,0,
-					0,0,0,0,d+2+3*a/2,d+2+2*a,d+2+5*a/2,d+2+3*a,d+2+7*a/2,d+2+4*a,0,0,0,
-					0,0,0,0,0,d+2+2*a,d+2+5*a/2,d+2+3*a,d+2+7*a/2,0,0,0,0,
-					0,0,0,0,0,0,d+2+5*a/2,d+2+3*a,0,0,0,0,0};
-			for(int y=0;y<7;y++) 
-				for(int x=0;x<13;x++){
-					if(layout[y*13+x]==1){
+					0,0,0,0,d+7+3*a/2,d+7+2*a,d+7+5*a/2,d+7+3*a,d+7+7*a/2,d+7+4*a,0,0,0,
+					0,0,0,0,0,d+7+2*a,d+7+5*a/2,d+7+3*a,d+7+7*a/2,0,0,0,0,
+					0,0,0,0,0,0,d+7+5*a/2,d+7+3*a,0,0,0,0,0};
+			for(int y=0; y<7; y++) 
+				for(int x=0; x<13; x++) {
+					if(layout[y*13+x] == 1) {
 						if(y<3) {
 							arx=new float[]{pos[y*13+x]+x,pos[y*13+x]+a+x,pos[y*13+x+1]+x};
-							ary=new float[]{y*b+y,y*b+y,(y+1)*b+y};
+							ary=new float[]{y*b+3+y,y*b+3+y,(y+1)*b+3+y};
 							drawPolygon(p,c,colors[imst[y*13+x]],arx,ary,true);
 						}
-						if(y>3) {
+						else if(y>3) {
 							arx=new float[]{pos[y*13+x]+x,pos[y*13+x]+a+x,pos[y*13+x+1]+x};
-							ary=new float[]{(y-1)*b+1+y,(y-1)*b+1+y,y*b+1+y};
+							ary=new float[]{(y-1)*b+9+y,(y-1)*b+9+y,y*b+9+y};
 							drawPolygon(p,c,colors[imst[y*13+x]],arx,ary,true);
 						}
 					}
-					if(layout[y*13+x]==2){
+					else if(layout[y*13+x] == 2) {
 						if(y<3) {
 							arx=new float[]{pos[y*13+x]+x,pos[y*13+x]+a+x,pos[y*13+x+1]+x};
-							ary=new float[]{(y+1)*b+y,(y+1)*b+y,y*b+y};
+							ary=new float[]{(y+1)*b+3+y,(y+1)*b+3+y,y*b+3+y};
 							drawPolygon(p,c,colors[imst[y*13+x]],arx,ary,true);
 						}
-						if(y>3) {
+						else if(y>3) {
 							arx=new float[]{pos[y*13+x]+x,pos[y*13+x]+a+x,pos[y*13+x+1]+x};
-							ary=new float[]{y*b+1+y,y*b+1+y,(y-1)*b+1+y};
+							ary=new float[]{y*b+9+y,y*b+9+y,(y-1)*b+9+y};
 							drawPolygon(p,c,colors[imst[y*13+x]],arx,ary,true);
 						}
 					}
@@ -684,7 +639,7 @@ public class Mi {
 			float z=1.366F; // sqrt(2)/sqrt(1^2+tan(15degrees)^2)
 			float[] arrx, arry;
 			float sidewid = 10.98F;
-			int cx = 55, cy = 55;
+			int cx = 55, cy = 50;
 			float rd = (cx - 16) / z;
 			float w = (sidewid + rd) / rd;	// ratio btw total piece width and rd
 			float[] ag = new float[24];
@@ -817,7 +772,7 @@ public class Mi {
 			byte[] posit;
 			posit = Clock.posit();
 			int face_dist = 30;
-			int cx = 56;
+			int cx = 55;
 			int cy = 55;
 			p.setColor(0xff2a2a2a);
 			drawSideBackground(p, c, width, cx, cy, 53, 29, 19);
@@ -832,7 +787,7 @@ public class Mi {
 		  	drawPeg(p, c, width, cx + face_dist/2, cy - face_dist/2, 1-pegs[1]);
 		  	drawPeg(p, c, width, cx - face_dist/2, cy + face_dist/2, 1-pegs[2]);
 		  	drawPeg(p, c, width, cx + face_dist/2, cy + face_dist/2, 1-pegs[3]);
-		  	cx = 167;
+		  	cx = 165;
 		  	p.setColor(0xff2a2a2a);
 		  	drawSideBackground(p, c, width, cx, cy, 53, 29, 19);
 		  	p.setColor(0xff88aaff);
@@ -848,201 +803,201 @@ public class Mi {
 		//1x3x3
 		else if(viewType==13) {
 			byte[] imst = Floppy.image(DCTimer.crntScr);
-			int a=width/8, i, j, d=0;
-			int stx=(width-8*a)/2, sty=(int) ((width*0.75-5*a)/2);
+			int a = (width-19)/8, i, j, d = 0;
+			int stx = (width-8*a-19)/2, sty = (width*3/4-5*a-14)/2;
 			p.setStyle(Paint.Style.FILL);
-			colors = new int[]{0xFF4B4D4B,0xFFFFEF33,0xFF33B9FF,0xFFC8CCC8,0xFFFF0026,0xFF99FF99};
+			colors = new int[] {0xFF4B4D4B, 0xFFFFEF33, 0xFF33B9FF, 0xFFC8CCC8, 0xFFFF0026, 0xFF99FF99};
 			for(i=0; i<3; i++) {
 				p.setStyle(Paint.Style.FILL);
 				p.setColor(colors[imst[d++]]);
-				c.drawRect(stx+3+(i+1)*a, sty+1, stx+2+(i+2)*a, sty+a, p);
+				c.drawRect(stx+7+(i+1)*a, sty+1, stx+6+(i+2)*a, sty+a, p);
 				p.setStyle(Paint.Style.STROKE);
 				p.setColor(Color.BLACK);
-				c.drawRect(stx+3+(i+1)*a, sty+1, stx+2+(i+2)*a, sty+a, p);
+				c.drawRect(stx+7+(i+1)*a, sty+1, stx+6+(i+2)*a, sty+a, p);
 			}
 			for(i=0; i<3; i++){
 				for(j=0; j<8; j++){
 					p.setStyle(Paint.Style.FILL);
 					p.setColor(colors[imst[d++]]);
-					if(j>4)c.drawRect(stx+7+j*a, sty+3+(i+1)*a, stx+6+(j+1)*a, sty+2+(i+2)*a, p);
-					else if(j>3)c.drawRect(stx+5+j*a, sty+3+(i+1)*a, stx+4+(j+1)*a, sty+2+(i+2)*a, p);
-					else if(j>0)c.drawRect(stx+3+j*a, sty+3+(i+1)*a, stx+2+(j+1)*a, sty+2+(i+2)*a, p);
-					else c.drawRect(stx+1+j*a, sty+3+(i+1)*a, stx+(j+1)*a, sty+2+(i+2)*a, p);
+					if(j>4)     c.drawRect(stx+19+j*a, sty+7+(i+1)*a, stx+18+(j+1)*a, sty+6+(i+2)*a, p);
+					else if(j>3)c.drawRect(stx+13+j*a, sty+7+(i+1)*a, stx+12+(j+1)*a, sty+6+(i+2)*a, p);
+					else if(j>0)c.drawRect(stx+ 7+j*a, sty+7+(i+1)*a, stx+ 6+(j+1)*a, sty+6+(i+2)*a, p);
+					else        c.drawRect(stx+ 1+j*a, sty+7+(i+1)*a, stx   +(j+1)*a, sty+6+(i+2)*a, p);
 					p.setStyle(Paint.Style.STROKE);
 					p.setColor(Color.BLACK);
-					if(j>4)c.drawRect(stx+7+j*a, sty+3+(i+1)*a, stx+6+(j+1)*a, sty+2+(i+2)*a, p);
-					else if(j>3)c.drawRect(stx+5+j*a, sty+3+(i+1)*a, stx+4+(j+1)*a, sty+2+(i+2)*a, p);
-					else if(j>0)c.drawRect(stx+3+j*a, sty+3+(i+1)*a, stx+2+(j+1)*a, sty+2+(i+2)*a, p);
-					else c.drawRect(stx+1+j*a, sty+3+(i+1)*a, stx+(j+1)*a, sty+2+(i+2)*a, p);
+					if(j>4)     c.drawRect(stx+19+j*a, sty+7+(i+1)*a, stx+18+(j+1)*a, sty+6+(i+2)*a, p);
+					else if(j>3)c.drawRect(stx+13+j*a, sty+7+(i+1)*a, stx+12+(j+1)*a, sty+6+(i+2)*a, p);
+					else if(j>0)c.drawRect(stx+ 7+j*a, sty+7+(i+1)*a, stx+ 6+(j+1)*a, sty+6+(i+2)*a, p);
+					else        c.drawRect(stx+ 1+j*a, sty+7+(i+1)*a, stx   +(j+1)*a, sty+6+(i+2)*a, p);
 				}
 			}
 			for(i=0;i<3;i++) {
 				p.setStyle(Paint.Style.FILL);
 				p.setColor(colors[imst[d++]]);
-				c.drawRect(stx+3+(i+1)*a, sty+5+4*a, stx+2+(i+2)*a, sty+4+5*a, p);
+				c.drawRect(stx+7+(i+1)*a, sty+13+4*a, stx+6+(i+2)*a, sty+12+5*a, p);
 				p.setStyle(Paint.Style.STROKE);
 				p.setColor(Color.BLACK);
-				c.drawRect(stx+3+(i+1)*a, sty+5+4*a, stx+2+(i+2)*a, sty+4+5*a, p);
+				c.drawRect(stx+7+(i+1)*a, sty+13+4*a, stx+6+(i+2)*a, sty+12+5*a, p);
 			}
 		}
 		//2x3x3
 		else if(viewType==14) {
 			byte[] imst=Domino.image(DCTimer.crntScr);
-			int a=width/12,i,j,d=0;
-			int stx=(width-12*a)/2, sty=(int) ((width*0.75-8*a+2)/2);
+			int a = (width-19)/12, i, j, d = 0;
+			int stx = (width-12*a-19)/2, sty = (width*3/4-8*a+2-14)/2;
 			p.setStyle(Paint.Style.FILL);
+			for(i=0; i<3; i++)
+				for(j=0; j<3; j++) {
+					p.setStyle(Paint.Style.FILL);
+					p.setColor(colors[imst[d++]]);
+					c.drawRect(stx+7+(j+3)*a, sty+1+i*a, stx+6+(j+4)*a, sty+(i+1)*a, p);
+					p.setStyle(Paint.Style.STROKE);
+					p.setColor(Color.BLACK);
+					c.drawRect(stx+7+(j+3)*a, sty+1+i*a, stx+6+(j+4)*a, sty+(i+1)*a, p);
+				}
+			for(i=0; i<2; i++)
+				for(j=0; j<12; j++) {
+					p.setStyle(Paint.Style.FILL);
+					p.setColor(colors[imst[d++]]);
+					if(j>=9)     c.drawRect(stx+19+j*a, sty+7+(i+3)*a, stx+18+(j+1)*a, sty+6+(i+4)*a, p);
+					else if(j>=6)c.drawRect(stx+13+j*a, sty+7+(i+3)*a, stx+12+(j+1)*a, sty+6+(i+4)*a, p);
+					else if(j>=3)c.drawRect(stx+ 7+j*a, sty+7+(i+3)*a, stx+ 6+(j+1)*a, sty+6+(i+4)*a, p);
+					else         c.drawRect(stx+ 1+j*a, sty+7+(i+3)*a, stx   +(j+1)*a, sty+6+(i+4)*a, p);
+					p.setStyle(Paint.Style.STROKE);
+					p.setColor(Color.BLACK);
+					if(j>=9)     c.drawRect(stx+19+j*a, sty+7+(i+3)*a, stx+18+(j+1)*a, sty+6+(i+4)*a, p);
+					else if(j>=6)c.drawRect(stx+13+j*a, sty+7+(i+3)*a, stx+12+(j+1)*a, sty+6+(i+4)*a, p);
+					else if(j>=3)c.drawRect(stx+ 7+j*a, sty+7+(i+3)*a, stx+ 6+(j+1)*a, sty+6+(i+4)*a, p);
+					else         c.drawRect(stx+ 1+j*a, sty+7+(i+3)*a, stx   +(j+1)*a, sty+6+(i+4)*a, p);
+				}
 			for(i=0;i<3;i++)
 				for(j=0;j<3;j++) {
 					p.setStyle(Paint.Style.FILL);
 					p.setColor(colors[imst[d++]]);
-					c.drawRect(stx+3+(j+3)*a, sty+1+i*a, stx+2+(j+4)*a, sty+(i+1)*a, p);
+					c.drawRect(stx+7+(j+3)*a, sty+13+(i+5)*a, stx+6+(j+4)*a, sty+12+(i+6)*a, p);
 					p.setStyle(Paint.Style.STROKE);
 					p.setColor(Color.BLACK);
-					c.drawRect(stx+3+(j+3)*a, sty+1+i*a, stx+2+(j+4)*a, sty+(i+1)*a, p);
-				}
-			for(i=0;i<2;i++)
-				for(j=0;j<12;j++) {
-					p.setStyle(Paint.Style.FILL);
-					p.setColor(colors[imst[d++]]);
-					if(j>=9)c.drawRect(stx+7+j*a, sty+3+(i+3)*a, stx+6+(j+1)*a, sty+2+(i+4)*a, p);
-					else if(j>=6)c.drawRect(stx+5+j*a, sty+3+(i+3)*a, stx+4+(j+1)*a, sty+2+(i+4)*a, p);
-					else if(j>=3)c.drawRect(stx+3+j*a, sty+3+(i+3)*a, stx+2+(j+1)*a, sty+2+(i+4)*a, p);
-					else c.drawRect(stx+1+j*a, sty+3+(i+3)*a, stx+(j+1)*a, sty+2+(i+4)*a, p);
-					p.setStyle(Paint.Style.STROKE);
-					p.setColor(Color.BLACK);
-					if(j>=9)c.drawRect(stx+7+j*a, sty+3+(i+3)*a, stx+6+(j+1)*a, sty+2+(i+4)*a, p);
-					else if(j>=6)c.drawRect(stx+5+j*a, sty+3+(i+3)*a, stx+4+(j+1)*a, sty+2+(i+4)*a, p);
-					else if(j>=3)c.drawRect(stx+3+j*a, sty+3+(i+3)*a, stx+2+(j+1)*a, sty+2+(i+4)*a, p);
-					else c.drawRect(stx+1+j*a, sty+3+(i+3)*a, stx+(j+1)*a, sty+2+(i+4)*a, p);
-				}
-			for(i=0;i<3;i++)
-				for(j=0;j<3;j++) {
-					p.setStyle(Paint.Style.FILL);
-					p.setColor(colors[imst[d++]]);
-					c.drawRect(stx+3+(j+3)*a, sty+5+(i+5)*a, stx+2+(j+4)*a, sty+4+(i+6)*a, p);
-					p.setStyle(Paint.Style.STROKE);
-					p.setColor(Color.BLACK);
-					c.drawRect(stx+3+(j+3)*a, sty+5+(i+5)*a, stx+2+(j+4)*a, sty+4+(i+6)*a, p);
+					c.drawRect(stx+7+(j+3)*a, sty+13+(i+5)*a, stx+6+(j+4)*a, sty+12+(i+6)*a, p);
 				}
 		}
 		//2x2x3
 		else if(viewType==15) {
 			byte[] imst=Tower.image(DCTimer.crntScr);
-			int a=width/10,i,j,d=0;
-			int stx=(width-8*a)/2, sty=(int) ((width*0.75-7*a)/2);
+			int a=(width*3/4-14)/7, i, j, d = 0;
+			int stx = (width-8*a-19)/2, sty = (width*3/4-7*a-14)/2;
 			p.setStyle(Paint.Style.FILL);
 			colors=new int[]{0xFF4B4D4B,0xFFFFEF33,0xFF33B9FF,0xFFC8CCC8,0xFFFF0026,0xFF99FF99};
-			for(i=0;i<2;i++)
-				for(j=0; j<2; j++){
+			for(i=0; i<2; i++)
+				for(j=0; j<2; j++) {
 					p.setStyle(Paint.Style.FILL);
 					p.setColor(colors[imst[d++]]);
-					c.drawRect(stx+3+(j+2)*a, sty+1+i*a, stx+2+(j+3)*a, sty+(i+1)*a, p);
+					c.drawRect(stx+7+(j+2)*a, sty+1+i*a, stx+6+(j+3)*a, sty+(i+1)*a, p);
 					p.setStyle(Paint.Style.STROKE);
 					p.setColor(Color.BLACK);
-					c.drawRect(stx+3+(j+2)*a, sty+1+i*a, stx+2+(j+3)*a, sty+(i+1)*a, p);
+					c.drawRect(stx+7+(j+2)*a, sty+1+i*a, stx+6+(j+3)*a, sty+(i+1)*a, p);
 				}
 			for(i=0; i<3; i++)
-				for(j=0; j<8; j++){
+				for(j=0; j<8; j++) {
 					p.setStyle(Paint.Style.FILL);
 					p.setColor(colors[imst[d++]]);
-					if(j>5)c.drawRect(stx+7+j*a, sty+3+(i+2)*a, stx+6+(j+1)*a, sty+2+(i+3)*a, p);
-					else if(j>3)c.drawRect(stx+5+j*a, sty+3+(i+2)*a, stx+4+(j+1)*a, sty+2+(i+3)*a, p);
-					else if(j>1)c.drawRect(stx+3+j*a, sty+3+(i+2)*a, stx+2+(j+1)*a, sty+2+(i+3)*a, p);
-					else c.drawRect(stx+1+j*a, sty+3+(i+2)*a, stx+(j+1)*a, sty+2+(i+3)*a, p);
+					if(j>5)     c.drawRect(stx+19+j*a, sty+7+(i+2)*a, stx+18+(j+1)*a, sty+6+(i+3)*a, p);
+					else if(j>3)c.drawRect(stx+13+j*a, sty+7+(i+2)*a, stx+12+(j+1)*a, sty+6+(i+3)*a, p);
+					else if(j>1)c.drawRect(stx+ 7+j*a, sty+7+(i+2)*a, stx+ 6+(j+1)*a, sty+6+(i+3)*a, p);
+					else        c.drawRect(stx+ 1+j*a, sty+7+(i+2)*a, stx   +(j+1)*a, sty+6+(i+3)*a, p);
 					p.setStyle(Paint.Style.STROKE);
 					p.setColor(Color.BLACK);
-					if(j>5)c.drawRect(stx+7+j*a, sty+3+(i+2)*a, stx+6+(j+1)*a, sty+2+(i+3)*a, p);
-					else if(j>3)c.drawRect(stx+5+j*a, sty+3+(i+2)*a, stx+4+(j+1)*a, sty+2+(i+3)*a, p);
-					else if(j>1)c.drawRect(stx+3+j*a, sty+3+(i+2)*a, stx+2+(j+1)*a, sty+2+(i+3)*a, p);
-					else c.drawRect(stx+1+j*a, sty+3+(i+2)*a, stx+(j+1)*a, sty+2+(i+3)*a, p);
+					if(j>5)     c.drawRect(stx+19+j*a, sty+7+(i+2)*a, stx+18+(j+1)*a, sty+6+(i+3)*a, p);
+					else if(j>3)c.drawRect(stx+13+j*a, sty+7+(i+2)*a, stx+12+(j+1)*a, sty+6+(i+3)*a, p);
+					else if(j>1)c.drawRect(stx+ 7+j*a, sty+7+(i+2)*a, stx+ 6+(j+1)*a, sty+6+(i+3)*a, p);
+					else        c.drawRect(stx+ 1+j*a, sty+7+(i+2)*a, stx   +(j+1)*a, sty+6+(i+3)*a, p);
 				}
 			for(i=0;i<2;i++)
 				for(j=0; j<2; j++) {
 					p.setStyle(Paint.Style.FILL);
 					p.setColor(colors[imst[d++]]);
-					c.drawRect(stx+3+(j+2)*a, sty+5+(5+i)*a, stx+2+(j+3)*a, sty+4+(6+i)*a, p);
+					c.drawRect(stx+7+(j+2)*a, sty+13+(5+i)*a, stx+6+(j+3)*a, sty+12+(6+i)*a, p);
 					p.setStyle(Paint.Style.STROKE);
 					p.setColor(Color.BLACK);
-					c.drawRect(stx+3+(j+2)*a, sty+5+(5+i)*a, stx+2+(j+3)*a, sty+4+(6+i)*a, p);
+					c.drawRect(stx+7+(j+2)*a, sty+13+(5+i)*a, stx+6+(j+3)*a, sty+12+(6+i)*a, p);
 				}
 		}
 		//Skewb
 		else if(viewType==16) {
 			byte[] imst=Skewb.image(DCTimer.crntScr);
-			int a=width/8,i,d=0;
-			int stx=(width-8*a)/2, sty=(int) ((width*0.75-6*a)/2);
-			byte[] dxi={3,7,5,3,3,1}, dyi={5,3,3,1,3,3};
+			int a = (width-19)/8, i, d = 0;
+			int stx = (width-8*a-19)/2, sty = (width*3/4-6*a-14)/2;
+			byte[] dxi = {3,7,5,3,3,1}, dyi = {5,3,3,1,3,3};
+			byte[] sxi = {7,19,13,7,7,1}, syi = {13,7,7,1,7,7};
 			p.setStyle(Paint.Style.FILL);
-			for(i=0; i<6; i++){
+			for(i=0; i<6; i++) {
 				drawPolygon(p,c,colors[imst[d++]],
-					new float[]{stx+dxi[i]+(dxi[i]-1)*a+1, stx+dxi[i]+dxi[i]*a, stx+dxi[i]+(dxi[i]-1)*a+1},
-					new float[]{sty+dyi[i]+(dyi[i]-1)*a+1, sty+dyi[i]+(dyi[i]-1)*a+1, sty+dyi[i]+dyi[i]*a},true);
+					new float[]{stx+sxi[i]+(dxi[i]-1)*a+1, stx+sxi[i]+dxi[i]*a, stx+sxi[i]+(dxi[i]-1)*a+1},
+					new float[]{sty+syi[i]+(dyi[i]-1)*a+1, sty+syi[i]+(dyi[i]-1)*a+1, sty+syi[i]+dyi[i]*a},true);
 				drawPolygon(p,c,colors[imst[d++]],
-					new float[]{stx+dxi[i]+dxi[i]*a, stx+dxi[i]+(dxi[i]+1)*a-1, stx+dxi[i]+(dxi[i]+1)*a-1},
-					new float[]{sty+dyi[i]+(dyi[i]-1)*a+1, sty+dyi[i]+(dyi[i]-1)*a+1, sty+dyi[i]+dyi[i]*a},true);
+					new float[]{stx+sxi[i]+dxi[i]*a, stx+sxi[i]+(dxi[i]+1)*a-1, stx+sxi[i]+(dxi[i]+1)*a-1},
+					new float[]{sty+syi[i]+(dyi[i]-1)*a+1, sty+syi[i]+(dyi[i]-1)*a+1, sty+syi[i]+dyi[i]*a},true);
 				drawPolygon(p,c,colors[imst[d++]],
-					new float[]{stx+dxi[i]+(dxi[i]+1)*a-1, stx+dxi[i]+(dxi[i]+1)*a-1, stx+dxi[i]+dxi[i]*a},
-					new float[]{sty+dyi[i]+dyi[i]*a, sty+dyi[i]+(dyi[i]+1)*a-1, sty+dyi[i]+(dyi[i]+1)*a-1},true);
+					new float[]{stx+sxi[i]+(dxi[i]+1)*a-1, stx+sxi[i]+(dxi[i]+1)*a-1, stx+sxi[i]+dxi[i]*a},
+					new float[]{sty+syi[i]+dyi[i]*a, sty+syi[i]+(dyi[i]+1)*a-1, sty+syi[i]+(dyi[i]+1)*a-1},true);
 				drawPolygon(p,c,colors[imst[d++]],
-					new float[]{stx+dxi[i]+dxi[i]*a, stx+dxi[i]+(dxi[i]-1)*a+1, stx+dxi[i]+(dxi[i]-1)*a+1},
-					new float[]{sty+dyi[i]+(dyi[i]+1)*a-1, sty+dyi[i]+(dyi[i]+1)*a-1, sty+dyi[i]+dyi[i]*a},true);
+					new float[]{stx+sxi[i]+dxi[i]*a, stx+sxi[i]+(dxi[i]-1)*a+1, stx+sxi[i]+(dxi[i]-1)*a+1},
+					new float[]{sty+syi[i]+(dyi[i]+1)*a-1, sty+syi[i]+(dyi[i]+1)*a-1, sty+syi[i]+dyi[i]*a},true);
 				drawPolygon(p,c,colors[imst[d++]],
-					new float[]{stx+dxi[i]+dxi[i]*a, stx+dxi[i]+(dxi[i]+1)*a-1, stx+dxi[i]+dxi[i]*a, stx+dxi[i]+(dxi[i]-1)*a+1},
-					new float[]{sty+dyi[i]+(dyi[i]-1)*a+1, sty+dyi[i]+dyi[i]*a, sty+dyi[i]+(dyi[i]+1)*a-1, sty+dyi[i]+dyi[i]*a},true);
+					new float[]{stx+sxi[i]+dxi[i]*a, stx+sxi[i]+(dxi[i]+1)*a-1, stx+sxi[i]+dxi[i]*a, stx+sxi[i]+(dxi[i]-1)*a+1},
+					new float[]{sty+syi[i]+(dyi[i]-1)*a+1, sty+syi[i]+dyi[i]*a, sty+syi[i]+(dyi[i]+1)*a-1, sty+syi[i]+dyi[i]*a},true);
 			}
 		}
 		else {
-			int a=width/(viewType*4),i,j,d=0,b=viewType;
+			int a=(width-19)/(viewType*4), i, j, d=0, b=viewType;
 			byte[] imst;
 			if(DCTimer.isInScr) {
-				Cube.parse(viewType);imst=OtherScr.imagestr(DCTimer.crntScr);
+				Cube.parse(viewType);
+				imst = OtherScr.imagestr(DCTimer.crntScr);
 			}
-			else if(viewType==3){
+			else if(viewType == 3) {
 				Cube.parse(3);
-				imst=OtherScr.imagestr(DCTimer.crntScr);
+				imst = OtherScr.imagestr(DCTimer.crntScr);
 			}
-			else if(viewType>7) {
-				imst=Cube.imagestring();
-			}
-			else if(sel2==0)imst=Cube.imagestring();
+			else if(viewType > 7) imst = Cube.imagestring();
+			else if(sel2 == 0) imst = Cube.imagestring();
 			else {
 				Cube.parse(viewType);
-				imst=OtherScr.imagestr(DCTimer.crntScr);
+				imst = OtherScr.imagestr(DCTimer.crntScr);
 			}
-			int stx=(width-4*a*b)/2, sty=(int) ((width*0.75-3*a*b+2)/2);
+			int stx = (width-4*a*b-19)/2, sty = (width*3/4-3*a*b-14)/2;
 			p.setStyle(Paint.Style.FILL);
-			for(i=0;i<b;i++)
+			for(i=0; i<b; i++)
 				for(j=0;j<b;j++) {
 					p.setStyle(Paint.Style.FILL);
 					p.setColor(colors[imst[d++]]);
-					c.drawRect(stx+3+(j+b)*a, sty+1+i*a, stx+2+(j+1+b)*a, sty+(i+1)*a, p);
+					c.drawRect(stx+7+(j+b)*a, sty+1+i*a, stx+6+(j+1+b)*a, sty+(i+1)*a, p);
 					p.setStyle(Paint.Style.STROKE);
 					p.setColor(Color.BLACK);
-					c.drawRect(stx+3+(j+b)*a, sty+1+i*a, stx+2+(j+1+b)*a, sty+(i+1)*a, p);
+					c.drawRect(stx+7+(j+b)*a, sty+1+i*a, stx+6+(j+1+b)*a, sty+(i+1)*a, p);
 				}
-			for(i=0;i<b;i++)
-				for(j=0;j<b*4;j++) {
+			for(i=0; i<b; i++)
+				for(j=0; j<b*4; j++) {
 					p.setStyle(Paint.Style.FILL);
 					p.setColor(colors[imst[d++]]);
-					if(j>=b*3)c.drawRect(stx+7+j*a, sty+3+(i+b)*a, stx+6+(j+1)*a, sty+2+(i+1+b)*a, p);
-					else if(j>=b*2)c.drawRect(stx+5+j*a, sty+3+(i+b)*a, stx+4+(j+1)*a, sty+2+(i+1+b)*a, p);
-					else if(j>=b)c.drawRect(stx+3+j*a, sty+3+(i+b)*a, stx+2+(j+1)*a, sty+2+(i+1+b)*a, p);
-					else c.drawRect(stx+1+j*a, sty+3+(i+b)*a, stx+(j+1)*a, sty+2+(i+1+b)*a, p);
+					if(j>=b*3)     c.drawRect(stx+19+j*a, sty+7+(i+b)*a, stx+18+(j+1)*a, sty+6+(i+1+b)*a, p);
+					else if(j>=b*2)c.drawRect(stx+13+j*a, sty+7+(i+b)*a, stx+12+(j+1)*a, sty+6+(i+1+b)*a, p);
+					else if(j>=b)  c.drawRect(stx+ 7+j*a, sty+7+(i+b)*a, stx+ 6+(j+1)*a, sty+6+(i+1+b)*a, p);
+					else           c.drawRect(stx+ 1+j*a, sty+7+(i+b)*a, stx   +(j+1)*a, sty+6+(i+1+b)*a, p);
 					p.setStyle(Paint.Style.STROKE);
 					p.setColor(Color.BLACK);
-					if(j>=b*3)c.drawRect(stx+7+j*a, sty+3+(i+b)*a, stx+6+(j+1)*a, sty+2+(i+1+b)*a, p);
-					else if(j>=b*2)c.drawRect(stx+5+j*a, sty+3+(i+b)*a, stx+4+(j+1)*a, sty+2+(i+1+b)*a, p);
-					else if(j>=b)c.drawRect(stx+3+j*a, sty+3+(i+b)*a, stx+2+(j+1)*a, sty+2+(i+1+b)*a, p);
-					else c.drawRect(stx+1+j*a, sty+3+(i+b)*a, stx+(j+1)*a, sty+2+(i+1+b)*a, p);
+					if(j>=b*3)     c.drawRect(stx+19+j*a, sty+7+(i+b)*a, stx+18+(j+1)*a, sty+6+(i+1+b)*a, p);
+					else if(j>=b*2)c.drawRect(stx+13+j*a, sty+7+(i+b)*a, stx+12+(j+1)*a, sty+6+(i+1+b)*a, p);
+					else if(j>=b)  c.drawRect(stx+ 7+j*a, sty+7+(i+b)*a, stx+ 6+(j+1)*a, sty+6+(i+1+b)*a, p);
+					else           c.drawRect(stx+ 1+j*a, sty+7+(i+b)*a, stx   +(j+1)*a, sty+6+(i+1+b)*a, p);
 				}
-			for(i=0;i<b;i++)
-				for(j=0;j<b;j++) {
+			for(i=0; i<b; i++)
+				for(j=0; j<b; j++) {
 					p.setStyle(Paint.Style.FILL);
 					p.setColor(colors[imst[d++]]);
-					c.drawRect(stx+3+(j+b)*a, sty+5+(i+2*b)*a, stx+2+(j+1+b)*a, sty+4+(i+1+2*b)*a, p);
+					c.drawRect(stx+7+(j+b)*a, sty+13+(i+2*b)*a, stx+6+(j+1+b)*a, sty+12+(i+1+2*b)*a, p);
 					p.setStyle(Paint.Style.STROKE);
 					p.setColor(Color.BLACK);
-					c.drawRect(stx+3+(j+b)*a, sty+5+(i+2*b)*a, stx+2+(j+1+b)*a, sty+4+(i+1+2*b)*a, p);
+					c.drawRect(stx+7+(j+b)*a, sty+13+(i+2*b)*a, stx+6+(j+1+b)*a, sty+12+(i+1+2*b)*a, p);
 				}
 		}
 	}
@@ -1062,7 +1017,7 @@ public class Mi {
 		float scale = width/220F;
 		float x = cx*scale + (width - (220 * scale))/2;
 		float y = cy*scale + (width*3/4 - (110 * scale))/2;
-		return new float[]{x, y, scale};
+		return new float[] {x, y, scale};
 	}
 	private static void drawClockFace(Paint p, Canvas cv, int w, int cx, int cy, int color, int hour){
 		float[] scaled = scalePoint(w, cx, cy);

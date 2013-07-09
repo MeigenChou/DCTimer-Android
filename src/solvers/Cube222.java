@@ -133,11 +133,10 @@ public class Cube222 {
 		state[1][corner] += value;
 	}
 
-	public static void randomState() {
+	public static String randomState() {
 		int p = r.nextInt(5040);
 		int o = r.nextInt(729);
-		idxToPrm(state[0], p);
-		Im.indexToZeroSumOrientation(state[1], o, 3, 7);
+		return solve(p, o);
 	}
 	
 	public static void randomEG(int type, String olls) {
@@ -187,8 +186,11 @@ public class Cube222 {
 		for(int i=0; i<4; i++) {
 			swap(i, i+r.nextInt(4-i));
 		}
-		if(olls.equals("X") || olls.equals("") || olls.equals("PHUTLSA"))
+		if(olls.equals(""))
 			Im.indexToZeroSumOrientation(state[1], r.nextInt(27), 3, 4);
+		else if(olls.equals("X") || olls.equals("PHUTLSA")) {
+			Im.indexToZeroSumOrientation(state[1], r.nextInt(26)+1, 3, 4);
+		}
 		else {
 			char oll = olls.charAt(r.nextInt(olls.length()));
 			switch (oll) {
@@ -234,20 +236,54 @@ public class Cube222 {
 		}
 	}
 	
-	public static void randomCLL() {
-		randomEG(4, "X");
+	public static String randomCLL() {
+		int p, o;
+		do {
+			randomEG(4, "X");
+			p = prmToIdx(state[0]);
+			o = Im.zeroSumOrientationToIndex(state[1], 3, 7);
+		} while (p==0 && o==0);
+		return solve(p, o);
 	}
 	
-	public static void randomEG1() {
-		randomEG(2, "X");
+	public static String randomEG1() {
+		int p, o;
+		do {
+			randomEG(2, "X");
+			p = prmToIdx(state[0]);
+			o = Im.zeroSumOrientationToIndex(state[1], 3, 7);
+		} while (p==0 && o==0);
+		return solve(p, o);
 	}
 	
-	public static void randomEG2() {
-		randomEG(1, "X");
+	public static String randomEG2() {
+		int p, o;
+		do {
+			randomEG(1, "X");
+			p = prmToIdx(state[0]);
+			o = Im.zeroSumOrientationToIndex(state[1], 3, 7);
+		} while (p==0 && o==0);
+		return solve(p, o);
 	}
 	
-	public static void randomXLL() {
-		randomEG(0, "N");
+	public static String randomXLL() {
+		int p, o;
+		do {
+			randomEG(0, "N");
+			p = prmToIdx(state[0]);
+			o = Im.zeroSumOrientationToIndex(state[1], 3, 7);
+		} while (p==0 && o==0);
+		return solve(p, o);
+	}
+	
+	public static String egScr(int type, String olls) {
+		int p, o;
+		do {
+			randomEG(type, olls);
+			p = prmToIdx(state[0]);
+			o = Im.zeroSumOrientationToIndex(state[1], 3, 7);
+		} while (p==0 && o==0);
+		return solve(p, o);
 	}
 	
 	private static int getprmmv(int p, int m) {
@@ -344,14 +380,14 @@ public class Cube222 {
 		return(false);
 	}
 	
-	public static String solve(){
-		if(!ini){
+	private static String solve(int p, int o) {
+		if(!ini) {
 			calcperm();
 			ini = true;
 		}
 		sol = new StringBuffer();
-		int p = prmToIdx(state[0]);
-		int o = Im.zeroSumOrientationToIndex(state[1], 3, 7);
+//		int p = prmToIdx(state[0]);
+//		int o = Im.zeroSumOrientationToIndex(state[1], 3, 7);
 		for(int l=0; !search(p, o, l, -1); l++);
 		return sol.toString();
 	}

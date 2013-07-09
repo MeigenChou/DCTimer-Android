@@ -53,7 +53,6 @@ public class DCTimer extends Activity {
 	private Stackmat stm;
 	static int isp2 = 0;
 	static boolean idnf = true;
-	private static int timk = 0;	// 0-无 1-计时中 2-观察中
 	public int[] cl = new int[5];
 	private ImageView iv;
 	private boolean scrt = false, bgcolor, fulls, invs, usess, screenOn,
@@ -577,14 +576,11 @@ public class DCTimer extends Activity {
 			public void onClick(View arg0) {
 				if(Mi.viewType > 0) {
 					int width = dm.widthPixels;
-					int height = dm.heightPixels;
-					width = (int) (width*0.9);
-					if(width*0.75 > (height-30)) width = height-30;
 					LayoutInflater inflater = LayoutInflater.from(DCTimer.this);	// 取得LayoutInflater对象
 					final View popView = inflater.inflate(R.layout.popwindow, null);	// 读取布局管理器
 					popView.setBackgroundColor(0xaaece9d8);
 					iv = (ImageView) popView.findViewById(R.id.ImageView1);
-					Bitmap bm = Bitmap.createBitmap(width+7, (int)(width*0.75)+7, Config.ARGB_8888);
+					Bitmap bm = Bitmap.createBitmap(width, width*3/4, Config.ARGB_8888);
 					Canvas c = new Canvas(bm);
 					c.drawColor(0);
 					Paint p = new Paint();
@@ -601,12 +597,12 @@ public class DCTimer extends Activity {
 			public boolean onTouch(View v, MotionEvent event){
 				scrt = true;
 				setTouch(event);
-				return timk != 0;
+				return timer.state != 0;
 			}
 		});
 		tvScr.setOnLongClickListener(new View.OnLongClickListener() {
 			public boolean onLongClick(View v) {
-				if(timk == 0) {
+				if(timer.state == 0) {
 					isLongPress = true;
 					LayoutInflater factory = LayoutInflater.from(DCTimer.this);
 					final View view = factory.inflate(R.layout.scr_layout, null);
@@ -880,7 +876,7 @@ public class DCTimer extends Activity {
 			case R.id.stcheck12:	//屏幕常亮
 				stt[64].setBackgroundResource(opnl ? R.drawable.switchoff : R.drawable.switchon);
 				if(opnl) {
-					if(timk!=1) releaseWakeLock();
+					if(timer.state != 1) releaseWakeLock();
 				} else acquireWakeLock();
 				opnl = !opnl; edit.putBoolean("scron", opnl);
 				break;
@@ -1865,8 +1861,8 @@ public class DCTimer extends Activity {
 	}
 	
 	private void touchDown() {
-		if(timk==1) {
-			if(mulpCount!=0) {
+		if(timer.state == 1) {
+			if(mulpCount != 0) {
 				if(stSel[10]==1 || stSel[10]==3)
 					vibrator.vibrate(vibTime[stSel[11]]);
 				tvTimer.setTextColor(Color.GREEN);
@@ -1879,14 +1875,13 @@ public class DCTimer extends Activity {
 				if(isMulp) multemp[stSel[3]+1]=timer.time1;
 				viewsVisibility(true);
 			}
-		} else {
-			if(!scrt || timk==2) {
-				if(frzTime == 0 || (wca && timk==0)) {
+		} else if(timer.state != 3) {
+			if(!scrt || timer.state==2) {
+				if(frzTime == 0 || (wca && timer.state==0)) {
 					tvTimer.setTextColor(Color.GREEN);
-					canStart=true;
+					canStart = true;
 				} else {
-					timer.isFreezed = true;
-					if(timk==0) tvTimer.setTextColor(Color.RED);
+					if(timer.state==0) tvTimer.setTextColor(Color.RED);
 					else tvTimer.setTextColor(Color.YELLOW);
 					timer.freeze();
 				}
@@ -1894,19 +1889,14 @@ public class DCTimer extends Activity {
 		}
 	}
 	private void touchUp() {
-		if(timk==0) {
-			if(isLongPress) {
-				isLongPress = false;
-			}
+		if(timer.state == 0) {
+			if(isLongPress) isLongPress = false;
 			else if(scrt) newScr(false);
 			else {
 				if(frzTime ==0 || canStart) {
 					if(stSel[10]==1 || stSel[10]==3)
 						vibrator.vibrate(vibTime[stSel[11]]);
-					if(wca) timer.v=1;
 					timer.count();
-					if(wca) timk=2;
-					else timk=1;
 					if(isMulp) {
 						mulpCount = stSel[3];
 						multemp[0] = timer.time0;
@@ -1915,53 +1905,39 @@ public class DCTimer extends Activity {
 					acquireWakeLock(); screenOn=true;
 					viewsVisibility(false);
 				} else {
-					timer.isFreezed = false;
 					timer.stopf();
 					tvTimer.setTextColor(cl[1]);
 				}
 			}
-		} else if(timk==1) {	//TODO
+		} else if(timer.state == 1) {	//TODO
 			if(isLongPress) isLongPress = false;
 			if(mulpCount!=0) {
 				mulpCount--;
 				tvTimer.setTextColor(cl[1]);
-			} else {
-				if(!wca) {isp2=0; idnf=true;}
-				//newScr(false);
-				//mTextView2.setText(Mi.distime((int)timer.time));
-				if(idnf) confirmTime((int)timer.time);
-				else {
-					if(conft)
-						new AlertDialog.Builder(DCTimer.this).setTitle(getResources().getString(R.string.time_dnf)).setMessage(getResources().getString(R.string.confirm_adddnf))
-						.setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialoginterface, int j){
-								save((int)timer.time,(byte)2);
-							}
-						}).setNegativeButton(getResources().getString(R.string.btn_cancel), null).show();
-					else save((int)timer.time,(byte)2);
-				}
-				timk = 0;
-				if(!opnl) {releaseWakeLock(); screenOn=false;}
 			}
-		} else {
+		} else if(timer.state == 2) {
 			if(isLongPress) isLongPress = false;
 			if(frzTime ==0 || canStart) {
-				if(timer.v==1) {isp2=0; idnf=true;}
-				else if(timer.v==2) {isp2=2000; idnf=true;}
-				else if(timer.v==3) {isp2=0; idnf=false;}
+				isp2 = timer.insp==2 ? 2000 : 0;
+				idnf = timer.insp != 3;
 				if(stSel[10]==1 || stSel[10]==3)
 					vibrator.vibrate(vibTime[stSel[11]]);
-				timer.v=0;
 				timer.count();
-				timk=1;
 				if(isMulp) multemp[0] = timer.time0;
 				acquireWakeLock(); screenOn=true;
 				viewsVisibility(false);
 			} else {
-				timer.isFreezed = false;
 				timer.stopf();
 				tvTimer.setTextColor(Color.RED);
 			}
+		} else {
+			if(isLongPress) isLongPress = false;
+			if(!wca) {isp2=0; idnf=true;}
+			//newScr(false);
+			//mTextView2.setText(Mi.distime((int)timer.time));
+			confirmTime((int)timer.time);
+			timer.state = 0;
+			if(!opnl) {releaseWakeLock(); screenOn=false;}
 		}
 	}
 	private void inputTime(int action) {
@@ -1989,7 +1965,7 @@ public class DCTimer extends Activity {
 			}).setNegativeButton(getResources().getString(R.string.btn_cancel), null).show();
 		}
 	}
-	private void save(int time, byte p) {
+	private void save(int time, int p) {
 		if(resl >= rest.length) {
 			String[] scr2 = new String[scrst.length+12];
 			byte[] rep2 = new byte[resp.length+12];
@@ -2009,7 +1985,7 @@ public class DCTimer extends Activity {
 			}
 			System.gc();
 		}
-		scrst[resl]=crntScr; resp[resl]=p; rest[resl++]=time;
+		scrst[resl]=crntScr; resp[resl]=(byte) p; rest[resl++]=time;
 		if(isMulp) {
 			boolean temp = true;
 			for(int i=0; i<stSel[3]+1; i++) {
@@ -2021,7 +1997,7 @@ public class DCTimer extends Activity {
 				}
 			}
 		}
-		byte d = 1;
+		int d = 1;
 		if(p==2) {
 			p=0; d=0;
 		}
@@ -2114,29 +2090,18 @@ public class DCTimer extends Activity {
 	}
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if(keyCode == KeyEvent.KEYCODE_BACK) {
-			if(timk == 1) {
+			if(timer.state == 1) {
 				timer.count();
 				viewsVisibility(true);
 				if(!wca) {isp2=0; idnf=true;}
 				//newScr(false);
-				if(idnf) confirmTime((int)timer.time);
-				else {
-					if(conft)
-						new AlertDialog.Builder(DCTimer.this).setTitle(getResources().getString(R.string.time_dnf)).setMessage(getResources().getString(R.string.confirm_adddnf))
-						.setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialoginterface, int j){
-								save((int)timer.time,(byte)2);
-							}
-						}).setNegativeButton(getResources().getString(R.string.btn_cancel), null).show();
-					else save((int)timer.time, (byte)2);
-				}
-				timk = 0;
+				confirmTime((int)timer.time);
+				timer.state = 0;
 				if(!opnl) {releaseWakeLock(); screenOn=false;}
-			} else if(timk == 2) {
+			} else if(timer.state == 2) {
 				timer.stopi();
 				tvTimer.setText(stSel[2]==0 ? "0.00" : "0.000");
 				viewsVisibility(true);
-				timk = 0;
 				if(!opnl) {releaseWakeLock(); screenOn=false;}
 			} else if(event.getRepeatCount() == 0) {
 				if((System.currentTimeMillis()-exitTime) > 2000) {
@@ -2392,26 +2357,42 @@ public class DCTimer extends Activity {
 			tvScr.setText(crntScr);
 		}
 	}
-	public void confirmTime(int utime) {
-		final int time=utime;
-		if(conft)
-			new AlertDialog.Builder(DCTimer.this).setTitle(getResources().getString(R.string.show_time)+Mi.distime(time + isp2)).
-					setItems(R.array.rstcon, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					switch (which) {
-					case 0:save(time + isp2, (byte) 0);break;
-					case 1:save(time + isp2, (byte) 1);break;
-					case 2:save(time + isp2, (byte) 2);break;
+	public void confirmTime(final int time) {
+		if(idnf) {
+			if(conft)
+				new AlertDialog.Builder(DCTimer.this).setTitle(getResources().getString(R.string.show_time)+Mi.distime(time + isp2)).
+						setItems(R.array.rstcon, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+						case 0:save(time + isp2, 0);break;
+						case 1:save(time + isp2, 1);break;
+						case 2:save(time + isp2, 2);break;
+						}
 					}
-				}
-			})
-			.setNegativeButton(getResources().getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface d,int which) {
-					d.dismiss();
-					newScr(false);
-				}
-			}).show();
-		else save(time + isp2, (byte)0);
+				})
+				.setNegativeButton(getResources().getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface d,int which) {
+						d.dismiss();
+						newScr(false);
+					}
+				}).show();
+			else save(time + isp2, 0);
+		}
+		else {
+			if(conft)
+				new AlertDialog.Builder(DCTimer.this).setTitle(getResources().getString(R.string.time_dnf)).setMessage(getResources().getString(R.string.confirm_adddnf))
+				.setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialoginterface, int j){
+						save((int)timer.time, 2);
+					}
+				}).setNegativeButton(getResources().getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface d,int which) {
+						d.dismiss();
+						newScr(false);
+					}
+				}).show();
+			else save((int)timer.time, 2);
+		}
 	}
 	
 	public String sesMean() {

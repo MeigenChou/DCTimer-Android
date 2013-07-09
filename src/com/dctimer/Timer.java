@@ -6,85 +6,82 @@ import android.os.Handler;
 import android.os.Message;
 
 public class Timer {
-	public int v;	//0-计时中 1-观察中 2-观察中(+2) 3-观察中(DNF)
-	 int state = 0;	//0-停止 1-计时中 2-观察中
+	public int insp;	//1-正常 2-+2 3-DNF
+	public int state = 0;	//0-就绪 1-计时中 2-观察中 3-停止
 	
 	long time, time0, time1;
 	protected java.util.Timer myTimer;
 	protected TimerTask timerTask = null;
+	FreezeThread threadf = null;
 	DCTimer ct;
 	TimeHandler timeh;
 	private int sec = 0;
-
-	protected boolean isFreezed;
 	
-	public Timer(DCTimer parent){
+	public Timer(DCTimer parent) {
 		this.ct = parent;
 		timeh = new TimeHandler();
 		myTimer = new java.util.Timer();
 	}
 	
 	public void freeze() {
-		timerTask = new FreezeTask();
-		ct.canStart = false;
-		myTimer.schedule(timerTask, ct.frzTime*50);
+		threadf = new FreezeThread();
+		threadf.start();
 	}
 	
 	public void stopf() {
-		if(timerTask != null) timerTask.cancel();
-		timerTask = null;
+		if(threadf != null && threadf.isAlive()) threadf.interrupt();
+		threadf = null;
 	}
 	
 	public void stopi() {
 		if(state == 2) {
-			if(timerTask != null) timerTask.cancel();
+			timerTask.cancel();
 			timerTask = null;
 			ct.tvTimer.setTextColor(ct.cl[1]);
 		}
-		state = v = 0;
+		state = 0;
 	}
 	
 	public void count() {
 		if(state==0 || state==2) {
-			if(state==0 && ct.wca) state = 2;
-			else state = 1;
-			if(v == 0) {
-				ct.tvTimer.setTextColor(ct.cl[1]);
-				if(timerTask != null) timerTask.cancel();
-				timerTask = new ClockTask();
-				time0 = System.currentTimeMillis();
-				myTimer.schedule(timerTask, 0, 17);
-			}
-			else if(v == 1) {
+			if(state==0 && ct.wca) {
+				state = 2;
 				ct.tvTimer.setTextColor(0xffff0000);
 				timerTask = new InspectTask();
 				time0 = System.currentTimeMillis();
 				myTimer.schedule(timerTask, 0, 100);
 			}
-		}
-		else {
-			state = 0;
-			if(v == 0){
-				time1 = System.currentTimeMillis();
-				time = time1 - time0;
-				timerTask.cancel();
-				timerTask = null;
-				new Thread(new Runnable() {
-					public void run() {
-						try {
-							Thread.sleep(25);
-						} catch (InterruptedException e) {e.printStackTrace();}
-						timeh.sendEmptyMessage(2);
-					}
-				}).start();
+			else {
+				if(timerTask != null) {
+					timerTask.cancel();
+				}
+				state = 1;
+				ct.tvTimer.setTextColor(ct.cl[1]);
+				timerTask = new ClockTask();
+				time0 = System.currentTimeMillis();
+				myTimer.schedule(timerTask, 0, 17);
 			}
+		}
+		else if(state == 1) {
+			state = 3;
+			time1 = System.currentTimeMillis();
+			time = time1 - time0;
+			timerTask.cancel();
+			timerTask = null;
+			new Thread(new Runnable() {
+				public void run() {
+					try {
+						Thread.sleep(20);
+					} catch (InterruptedException e) { }
+					timeh.sendEmptyMessage(2);
+				}
+			}).start();
 		}
 	}
 	
 	private class ClockTask extends TimerTask {
 		@Override
 		public void run() {
-			v = 0;
 			time = System.currentTimeMillis() - time0;
 			timeh.sendEmptyMessage(0);
 		}
@@ -96,22 +93,28 @@ public class Timer {
 			time = System.currentTimeMillis() - time0;
 			if(time/1000 < 15) {
 				sec = (int) (15-time/1000);
-				v = 1;
+				insp = 1;
 			}
 			else if(time/1000 < 17) {
 				sec = 0;
-				v = 2;
+				insp = 2;
 			}
-			else v = 3;
+			else insp = 3;
 			timeh.sendEmptyMessage(0);
 		}
 	}
 	
-	private class FreezeTask extends TimerTask {
-		@Override
+	private class FreezeThread extends Thread {
 		public void run() {
-			ct.canStart = true;
-			timeh.sendEmptyMessage(1);
+			try {
+				ct.canStart = false;
+				sleep(ct.frzTime*50);
+				ct.canStart = true;
+				timeh.sendEmptyMessage(1);
+				return;
+			} catch (InterruptedException e) {
+				return;
+			}
 		}
 	}
 	
@@ -144,19 +147,19 @@ public class Timer {
 		public void handleMessage (Message msg) {
 			if(msg.what==1) ct.tvTimer.setTextColor(0xff00ff00);
 			else if(msg.what==2) ct.tvTimer.setText(Mi.distime((int)time));
-			else if(v==0) {
+			else if(state==1) {
 				if(DCTimer.stSel[1]==0) ct.tvTimer.setText(Mi.distime((int)time));
 				else if(DCTimer.stSel[1]==1)ct.tvTimer.setText(contime((int)time));
 				else ct.tvTimer.setText(ct.getResources().getString(R.string.solve));
 			}
-			else if(v==1) {
+			else if(insp==1) {
 				if(DCTimer.stSel[1]<3)ct.tvTimer.setText(""+sec);
 				else ct.tvTimer.setText(ct.getResources().getString(R.string.inspect));
 			}
-			else if(v==2) {
+			else if(insp==2) {
 				if(DCTimer.stSel[1]<3)ct.tvTimer.setText("+2");
 			}
-			else if(v==3) {
+			else if(insp==3) {
 				if(DCTimer.stSel[1]<3)ct.tvTimer.setText("DNF");
 			}
 		}

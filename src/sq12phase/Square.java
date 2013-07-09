@@ -2,7 +2,7 @@ package sq12phase;
 
 import solvers.Im;
 
-public class Square {
+class Square {
 	int edgeperm;		//number encoding the edge permutation 0-40319
 	int cornperm;		//number encoding the corner permutation 0-40319
 	boolean topEdgeFirst;	//true if top layer starts with edge left of seam

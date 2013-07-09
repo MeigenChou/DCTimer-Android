@@ -2,7 +2,7 @@ package sq12phase;
 
 import java.util.Arrays;
 
-public class Shape {
+class Shape {
 
 	//1 = corner, 0 = edge.
 	static int[] halflayer = {0x00, 0x03, 0x06, 0x0c, 0x0f, 0x18, 0x1b, 0x1e, 

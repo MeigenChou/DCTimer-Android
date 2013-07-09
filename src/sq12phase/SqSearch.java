@@ -1,5 +1,9 @@
 package sq12phase;
 
+import java.io.*;
+
+import min2phase.Tools;
+
 public class SqSearch {
 
 	int[] move = new int[100];
@@ -18,6 +22,38 @@ public class SqSearch {
 //		return p & 1;
 //	}
 
+	static {
+		try {
+			InputStream in = new BufferedInputStream(new FileInputStream("/data/data/com.dctimer/databases/sqr.dat"));
+			Tools.read(Shape.ShapeIdx, in);
+			in.read(Shape.ShapePrun);
+			Tools.read(Shape.TopMove, in);
+			Tools.read(Shape.BottomMove, in);
+			Tools.read(Shape.TwistMove, in);
+			Tools.read(Square.TwistMove, in);
+			Tools.read(Square.TopMove, in);
+			Tools.read(Square.BottomMove, in);
+			in.read(Square.SquarePrun);
+			in.close();
+		} catch (Exception e) {
+			Shape.init();
+			Square.init();
+			try {
+				OutputStream out = new BufferedOutputStream(new FileOutputStream("/data/data/com.dctimer/databases/sqr.dat"));
+				Tools.write(Shape.ShapeIdx, out);
+				out.write(Shape.ShapePrun);
+				Tools.write(Shape.TopMove, out);
+				Tools.write(Shape.BottomMove, out);
+				Tools.write(Shape.TwistMove, out);
+				Tools.write(Square.TwistMove, out);
+				Tools.write(Square.TopMove, out);
+				Tools.write(Square.BottomMove, out);
+				out.write(Square.SquarePrun);
+				out.close();
+			} catch (Exception e1) { }
+		}
+	}
+	
 	public String solution(FullCube c) {
 		this.c = c;
 		sol_string = null;

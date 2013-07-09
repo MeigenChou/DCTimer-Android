@@ -13,7 +13,6 @@ public class Cube2bl {
 	private static boolean ini = false;
 	private static void init() {
 		if(ini) return;
-		long tm = System.currentTimeMillis();
 		for(int i=0; 8>i; ++i) {
 			Cnk[i][0] = 1;
 			for(int j=Cnk[i][i]=1; j<i; ++j) {
@@ -63,8 +62,6 @@ public class Cube2bl {
 						}
 			//System.out.println(d+" "+c);
 		}
-		tm = System.currentTimeMillis() - tm;
-		sb.append("("+tm+")");
 		ini = true;
 	}
 	
@@ -138,7 +135,6 @@ public class Cube2bl {
 	private static byte[][] oriIdx = {{0,1,2,3,4,5},{1,0,3,2,5,4},
 		{3,2,0,1,3,3},{2,3,1,0,2,2},{5,5,5,5,0,1},{4,4,4,4,1,0}};
 	public static String solve(String s, int face) {
-		sb = new StringBuffer();
 		init();
 		String[] scr=s.split(" ");
 		int[] cp=new int[6], co=new int[6];
@@ -156,6 +152,7 @@ public class Cube2bl {
 					}
 				}
 		}
+		sb = new StringBuffer();
 		for(int d=0; ;d++)
 			for(int idx=0; idx<6; idx++)
 				if(search(cp[idx],co[idx],d,-1))
