@@ -42,6 +42,7 @@ public class ColorScheme extends Dialog {
 		private int mHeight;
     	private int mWidth;
     	private int downInPosition;
+    	private boolean downInReset = false;
     	
     	public ColorSchemeView(Context context, int height, int width) {
     		super(context);
@@ -57,12 +58,12 @@ public class ColorScheme extends Dialog {
     	@Override
     	protected void onDraw(Canvas canvas) {
     		mPaint.setStyle(Paint.Style.FILL);
-    		switch(cubeType){
+    		switch(cubeType) {
     		case 1:
     		case 3:
-    			if(downInPosition>0){
+    			if(downInPosition>0) {
     				mPaint.setColor(0xff00ff00);
-    				switch(downInPosition){
+    				switch(downInPosition) {
     				case 1:
     					canvas.drawRect(mWidth/4, mHeight*2/3, mWidth/2, mHeight, mPaint);
     					break;
@@ -145,8 +146,8 @@ public class ColorScheme extends Dialog {
     			break;
     		case 2:
     			float a = (float) (mHeight / Math.sqrt(3));
-    			if(downInPosition>0){
-    				switch(downInPosition){
+    			if(downInPosition > 0) {
+    				switch(downInPosition) {
     				case 1:
     					Mi.drawPolygon(mPaint, canvas, 0xff00ff00, new float[]{mWidth/2-a, mWidth/2, mWidth/2-a/2}, new float[]{0,0,mHeight/2},true);
     					break;
@@ -212,13 +213,14 @@ public class ColorScheme extends Dialog {
     		switch (event.getAction()) {
     		case MotionEvent.ACTION_DOWN:
     			downInPosition = inPosition;
+    			downInReset = inReset(x, y);
     		case MotionEvent.ACTION_MOVE:
     			if(downInPosition>0 && inPosition!=downInPosition)downInPosition=0;
     			if(downInPosition<0 && downInPosition>=0)downInPosition=0;
     			invalidate();
     			break;
     		case MotionEvent.ACTION_UP:
-    			if(downInPosition>0){
+    			if(downInPosition>0) {
     				final int dip=downInPosition;
     				ColorPicker cp = new ColorPicker(context, colors[dip-1], new ColorPicker.OnColorChangedListener() {
     					@Override
@@ -233,7 +235,7 @@ public class ColorScheme extends Dialog {
     				cp.setTitle(context.getResources().getString(R.string.select_color));
     				cp.show();
     			}
-    			else {
+    			else if(downInReset && inReset(x, y)) {
     				int[] color = null;
     				switch(cubeType) {
     				case 1:
@@ -266,34 +268,38 @@ public class ColorScheme extends Dialog {
     	
 		private int inCube(float x, float y) {
 			if(y>0 && y<mHeight/3){
-				if(x>mWidth/4 && x<mWidth/2)return 4;
+				if(x>mWidth/4 && x<mWidth/2) return 4;
 			}
-			if(y>mHeight/3 && y<mHeight*2/3){
-				if(x>0 && x<mWidth/4)return 6;
-				if(x>mWidth/4 && x<mWidth/2)return 5;
-				if(x>mWidth/2 && x<mWidth*3/4)return 3;
-				if(x>mWidth*3/4 && x<mWidth)return 2;
+			if(y>mHeight/3 && y<mHeight*2/3) {
+				if(x>0 && x<mWidth/4) return 6;
+				if(x>mWidth/4 && x<mWidth/2) return 5;
+				if(x>mWidth/2 && x<mWidth*3/4) return 3;
+				if(x>mWidth*3/4 && x<mWidth) return 2;
 			}
-			if(y>mHeight*2/3 && y<mHeight){
-				if(x>mWidth/4 && x<mWidth/2)return 1;
-				if(y>mHeight*4/5 && x>mWidth*2/3 && x<mWidth)return -1;
+			if(y>mHeight*2/3 && y<mHeight) {
+				if(x>mWidth/4 && x<mWidth/2) return 1;
+				if(y>mHeight*4/5 && x>mWidth*2/3 && x<mWidth) return -1;
 			}
 			return 0;
 		}
 		
-		private int inPrym(float x, float y){
-			if(y>0 && y<mHeight/2){
-				if(x>0 && x<mWidth/3)return 1;
-				if(x>mWidth/3 && x<mWidth*2/3)return 2;
-				if(x>mWidth*2/3 && x<mWidth)return 3;
+		private int inPrym(float x, float y) {
+			if(y>0 && y<mHeight/2) {
+				if(x>0 && x<mWidth/3) return 1;
+				if(x>mWidth/3 && x<mWidth*2/3) return 2;
+				if(x>mWidth*2/3 && x<mWidth) return 3;
 			}
 			if(y>mHeight/2 && y<mHeight){
-				if(x>mWidth/3 && x<mWidth*2/3)return 4;
-				if(y>mHeight*4/5 && x>mWidth*2/3 && x<mWidth)return -1;
+				if(x>mWidth/3 && x<mWidth*2/3) return 4;
+				if(y>mHeight*4/5 && x>mWidth*2/3 && x<mWidth) return -1;
 			}
 			return 0;
 		}
-		private void drawTriangle(Paint p, Canvas c, float[] arx, float[] ary){
+		
+		private boolean inReset(float x, float y) {
+			return x>mWidth*2/3 && y>mHeight*0.81;
+		}
+		private void drawTriangle(Paint p, Canvas c, float[] arx, float[] ary) {
 			p.setColor(0xff000000);
 			Path path=new Path();
 			path.moveTo(arx[0],ary[0]);

@@ -5,7 +5,7 @@
 	<string name="solving">計算中…</string>
 	<string name="scramble_view">轉亂狀態</string>
 	<string name="session">" 分組 "</string>
-	<string name="clear_session">清除本組</string>
+	<string name="option">選項</string>
 	<string name="inspect">觀察</string>
 	<string name="solve">還原</string>
 	<string name="time">時間</string>
@@ -80,6 +80,8 @@
 	<string name="ses_mean">縂平均：</string>
 	<string name="stat_best">最佳單次：</string>
 	<string name="stat_worst">最差單次：</string>
+	<string name="stat_best_avg">最佳len次去尾平均：</string>
+	<string name="stat_best_mean">最佳len次平均：</string>
 	<string name="stat_list">成績列表：</string>
 	<string name="mulp_mean">平均</string>
 	<string name="not_exist">文件不存在</string>
@@ -128,7 +130,6 @@
     <string name="menu_weibo">分享到微博</string>
     <string name="menu_about">關於</string>
     <string name="menu_exit">退出</string>
-    <string name="time_histogram">時間分佈</string>
     <string name="stt_csn">NxNxN</string>
     <string name="stt_csp">金字塔</string>
     <string name="stt_csq">Square-1</string>

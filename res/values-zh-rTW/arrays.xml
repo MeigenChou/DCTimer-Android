@@ -54,7 +54,7 @@
         <item>橋式四角</item>
     </array>
     <array name="scr444">
-        <item>WCA</item>
+        <item>傳統</item>
         <item>SiGN</item>
         <item>YJ</item>
         <item>對棱訓練</item>
@@ -83,6 +83,7 @@
         <item>face turn metric</item>
         <item>twist metric</item>
         <item>隨機狀態</item>
+        <item>立方體形狀</item>
     </array>
     <array name="scrClk">
         <item>WCA</item>
@@ -183,7 +184,7 @@
     </array>
     
     <array name="mncStr">
-        <item>Mark2</item>
+        <item>預設</item>
         <item>mf8</item>
     </array>
     
@@ -299,5 +300,18 @@
         <item>反向橫屏</item>
         <item>竪屏</item>
         <item>物理感應</item>
+    </array>
+    
+    <array name="optStr">
+        <item>分組命名</item>
+        <item>清除本組</item>
+        <item>時間分佈</item>
+        <item>折綫圖</item>
+    </array>
+    
+    <array name="sq1sStr">
+        <item>不顯示</item>
+        <item>face turn metric</item>
+        <item>twist metric</item>
     </array>
 </resources>

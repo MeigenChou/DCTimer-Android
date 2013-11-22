@@ -1,31 +1,16 @@
 package sq12phase;
 
 import java.util.*;
+
 import solvers.Im;
 
-public class FullCube implements Comparable<FullCube> {
+public class FullCube {
 
 	int ul = 0x011233;
 	int ur = 0x455677;
 	int dl = 0x998bba;
 	int dr = 0xddcffe;
 	public int ml = 0;
-
-	public int compareTo(FullCube f) {
-		if (ul != f.ul) {
-			return ul - f.ul;
-		}
-		if (ur != f.ur) {
-			return ur - f.ur;
-		}
-		if (dl != f.dl) {
-			return dl - f.dl;
-		}
-		if (dr != f.dr) {
-			return dr - f.dr;
-		}
-		return ml - f.ml;
-	}
 
 	public FullCube(String s) {
 		//TODO
@@ -36,33 +21,22 @@ public class FullCube implements Comparable<FullCube> {
 	}
 
 	static Random r = new Random();
-	public static FullCube randomCube() {
-		return randomCube(r);
-	}
 
-	public static FullCube randomCube(Random r) {
-		//int test;
-		int shape = Shape.ShapeIdx[r.nextInt(3678)];
+	public static FullCube randomCube(int shape) {
+		//r.nextInt(3678)
+		shape = Shape.ShapeIdx[shape];
 		FullCube f = new FullCube();
-		int corner = 0x01234567 << 1 | 0x11111111;
-		int edge = 0x01234567 << 1;
-		int n_corner = 8, n_edge = 8;
-		int rnd, m;
+		int[] pc = new int[8], pe = new int[8];
+		Im.set8Perm(pc, r.nextInt(40320));
+		Im.set8Perm(pe, r.nextInt(40320));
+		int cc = 0, ec = 0;
 		for (int i=0; i<24; i++) {
-			if (((shape >> i) & 1) == 0) {//edge
-				rnd = r.nextInt(n_edge) << 2;
-				f.setPiece(23-i, (edge >> rnd) & 0xf);
-				m = (1 << rnd) - 1;
-				edge = (edge & m) + ((edge >> 4) & ~m);
-				--n_edge;
-			} else {//corner
-				rnd = r.nextInt(n_corner) << 2;
-				f.setPiece(23-i, (corner >> rnd) & 0xf);
-				f.setPiece(22-i, (corner >> rnd) & 0xf);
-				m = (1 << rnd) - 1;
-				corner = (corner & m) + ((corner >> 4) & ~m);
-				--n_corner;
-				++i;				
+			if(((shape >> i) & 1) == 0) {	//edge
+				f.setPiece(23-i, pe[ec++]<<1);
+			} else {	//corner
+				f.setPiece(23-i, pc[cc]<<1|1);
+				f.setPiece(22-i, pc[cc++]<<1|1);
+				i++;
 			}
 		}
 		f.ml = r.nextInt(2);
@@ -215,7 +189,7 @@ public class FullCube implements Comparable<FullCube> {
 		for( ; b<8; a+=3, b++) prm[b]=(byte)(pieceAt(a)>>1);
 		sq.edgeperm=Im.get8Perm(prm);
 
-		sq.ml = ml;
+		sq.qml = ml;
 	}
 }
 

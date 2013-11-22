@@ -16,17 +16,15 @@ import android.view.WindowManager;
 
 public class ColorPicker extends Dialog {
 	Context context;
-	private int mInitialColor;//初始颜色
+	private int mInitialColor;	//初始颜色
 	private OnColorChangedListener mListener;
 	
 	/**
-     * 
      * @param context
      * @param initialColor 初始颜色
      * @param listener 回调
      */
-    public ColorPicker(Context context, int initialColor, 
-    		OnColorChangedListener listener) {
+    public ColorPicker(Context context, int initialColor, OnColorChangedListener listener) {
         super(context);
         this.context = context;
         mListener = listener;
@@ -37,7 +35,7 @@ public class ColorPicker extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowManager manager = getWindow().getWindowManager();
-        int size=Math.min(manager.getDefaultDisplay().getHeight(), manager.getDefaultDisplay().getWidth());
+        int size = Math.min(manager.getDefaultDisplay().getHeight(), manager.getDefaultDisplay().getWidth());
 		int height = (int) (size * 0.8);
 		int width = (int) (size * 0.8);
 		ColorPickerView myView = new ColorPickerView(context, height, width);
@@ -165,10 +163,10 @@ public class ColorPicker extends Dialog {
     				mLeftPaint.setColor(hslToRgb(hue, saturation, lum));
     				//Log.v("text", hue+","+saturation+","+lum);
     			}
-    			if(downInBottom == 1 && inBottom !=1){
+    			if(downInBottom == 1 && inBottom !=1) {
     				downInBottom = 0;
     			}
-    			else if(downInBottom == 2 && inBottom !=2){
+    			else if(downInBottom == 2 && inBottom !=2) {
     				downInBottom = 0;
     			}
     			invalidate();
@@ -212,10 +210,10 @@ public class ColorPicker extends Dialog {
 		 *  2:右边选择块
 		 */
 		private int inBottom(float x, float y) {
-			if(y < mHeight * 0.69)return 0;
+			if(y < mHeight * 0.69) return 0;
 			else if(y < mHeight * 0.85){
-				if(x > 0 && x < mWidth / 2)return 1;
-				else if(x > mWidth / 2 && x < mWidth)return 2;
+				if(x > 0 && x < mWidth / 2) return 1;
+				else if(x > mWidth / 2 && x < mWidth) return 2;
 			}
 			return 0;
 		}
@@ -280,7 +278,7 @@ public class ColorPicker extends Dialog {
 		this.mListener = mListener;
 	}
 	
-	public static int hslToRgb(int h, double s, double l){
+	public static int hslToRgb(int h, double s, double l) {
 		double r, g, b;
 		if(s == 0) r = g = b = l;
 		else {
@@ -302,7 +300,7 @@ public class ColorPicker extends Dialog {
 		return Color.rgb((int)r, (int)g, (int)b);
 	}
 	
-	public static double[] rgbToHSL(int rgb){
+	public static double[] rgbToHSL(int rgb) {
 		double R = ((rgb>>16) & 0xff) / 255D;
 		double G = ((rgb>>8) & 0xff) / 255D;
 		double B = (rgb & 0xff) / 255D;
@@ -321,7 +319,7 @@ public class ColorPicker extends Dialog {
 		return new double[]{h, s, l};
 	}
 	
-	private static double toRGB(double tc, double q, double p, double H){
+	private static double toRGB(double tc, double q, double p, double H) {
 		if(tc < 0)tc += 1;
 		if(tc > 1)tc -= 1;
 		if(tc < 1/6D)

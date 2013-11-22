@@ -62,7 +62,7 @@
         <item>2GLL</item>
     </array>
     <array name="scr444">
-        <item>WCA</item>
+        <item>传统</item>
         <item>SiGN</item>
         <item>YJ</item>
         <item>对棱训练</item>
@@ -91,6 +91,7 @@
         <item>face turn metric</item>
         <item>twist metric</item>
         <item>随机状态</item>
+        <item>立方体形状</item>
     </array>
     <array name="scrClk">
         <item>WCA</item>
@@ -191,7 +192,7 @@
     </array>
     
     <array name="mncStr">
-        <item>Mark2</item>
+        <item>默认</item>
         <item>mf8</item>
     </array>
     
@@ -307,5 +308,18 @@
         <item>到秒</item>
         <item>仅观察</item>
         <item>隐藏</item>
+    </array>
+    
+    <array name="optStr">
+        <item>分组命名</item>
+        <item>清空成绩</item>
+        <item>时间分布</item>
+        <item>折线图</item>
+    </array>
+    
+    <array name="sq1sStr">
+        <item>不显示</item>
+        <item>face turn metric</item>
+        <item>twist metric</item>
     </array>
 </resources>

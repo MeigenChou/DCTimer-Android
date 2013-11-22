@@ -62,7 +62,7 @@
         <item>2GLL</item>
     </array>
     <array name="scr444">
-        <item>WCA</item>
+        <item>old style</item>
         <item>SiGN</item>
         <item>YJ</item>
         <item>edges</item>
@@ -91,6 +91,7 @@
         <item>ftm</item>
         <item>ttm</item>
         <item>random state</item>
+        <item>cube shape</item>
     </array>
     <array name="scrClk">
         <item>WCA</item>
@@ -191,7 +192,7 @@
     </array>
     
     <array name="mncStr">
-        <item>Mark2</item>
+        <item>Default</item>
         <item>mf8</item>
     </array>
     
@@ -311,5 +312,18 @@
         <item>Seconds only</item>
         <item>Inspection only</item>
         <item>Off</item>
+    </array>
+    
+    <array name="optStr">
+        <item>Rename session</item>
+        <item>Clear session</item>
+        <item>Histogram</item>
+        <item>Graph</item>
+    </array>
+    
+    <array name="sq1sStr">
+        <item>None</item>
+        <item>Face turn metric</item>
+        <item>Twist metric</item>
     </array>
 </resources>

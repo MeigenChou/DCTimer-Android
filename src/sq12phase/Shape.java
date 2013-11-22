@@ -11,9 +11,9 @@ class Shape {
 	public static int[] ShapeIdx = new int[3678];
 	public static byte[] ShapePrun = new byte[3768 * 2];
 
-	public static int[] TopMove = new int[3678 * 2];
-	public static int[] BottomMove = new int[3678 * 2];
-	public static char[] TwistMove = new char[3678 * 2];
+	public static int[] spTopMove = new int[3678 * 2];
+	public static int[] spBottomMove = new int[3678 * 2];
+	public static char[] spTwistMove = new char[3678 * 2];
 
 	private Shape(){}	
 
@@ -107,14 +107,14 @@ class Shape {
 		Shape s = new Shape();
 		for (int i=0; i<3678*2; i++) {
 			s.setIdx(i);
-			TopMove[i] = s.topMove();
-			TopMove[i] |= s.getIdx() << 4;
+			spTopMove[i] = s.topMove();
+			spTopMove[i] |= s.getIdx() << 4;
 			s.setIdx(i);
-			BottomMove[i] = s.bottomMove();
-			BottomMove[i] |= s.getIdx() << 4;
+			spBottomMove[i] = s.bottomMove();
+			spBottomMove[i] |= s.getIdx() << 4;
 			s.setIdx(i);
 			s.twistMove();
-			TwistMove[i] = (char) s.getIdx();
+			spTwistMove[i] = (char) s.getIdx();
 		}
 		for (int i=0; i<3768*2; i++) {
 			ShapePrun[i] = -1;
@@ -141,7 +141,7 @@ class Shape {
 					int m = 0;
 					int idx = i;
 					do {
-						idx = TopMove[idx];
+						idx = spTopMove[idx];
 						m += idx & 0xf;
 						idx >>= 4;
 						if (ShapePrun[idx] == -1) {
@@ -154,7 +154,7 @@ class Shape {
 					m = 0;
 					idx = i;
 					do {
-						idx = BottomMove[idx];
+						idx = spBottomMove[idx];
 						m += idx & 0xf;
 						idx >>= 4;
 						if (ShapePrun[idx] == -1) {
@@ -164,7 +164,7 @@ class Shape {
 					} while (m != 12);
 
 					// try twist
-					idx = TwistMove[i];
+					idx = spTwistMove[i];
 					if (ShapePrun[idx] == -1) {
 						++done;
 						ShapePrun[idx] = (byte) (depth + 1);

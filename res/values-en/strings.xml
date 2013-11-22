@@ -5,7 +5,7 @@
 	<string name="solving">solving…</string>
 	<string name="scramble_view">scramble view</string>
 	<string name="session">" Session "</string>
-	<string name="clear_session">Clear</string>
+	<string name="option">More</string>
 	<string name="inspect">INSPECTING</string>
 	<string name="solve">SOLVING</string>
 	<string name="time">time</string>
@@ -30,7 +30,7 @@
 	<string name="trimmed">Trimmed</string>
 	<string name="sel_session">Select session automatically while scramble type changes</string>
 	<string name="mul_phase">Multi-phase</string>
-	<string name="sesname">Session naming</string>
+	<string name="sesname">Rename session</string>
 	<string name="optcross">3x3x3 Solvers</string>
 	<string name="timer_size">"Timer size: "</string>
 	<string name="timer_font">Timer font</string>
@@ -80,6 +80,8 @@
 	<string name="ses_mean">"Session Mean: "</string>
 	<string name="stat_best">"Best Time: "</string>
 	<string name="stat_worst">"Worst Time: "</string>
+	<string name="stat_best_avg">"Best average of len: "</string>
+	<string name="stat_best_mean">"Best mean of len: "</string>
 	<string name="stat_list">Individual Times:</string>
 	<string name="mulp_mean">Mean</string>
 	<string name="not_exist">File not exists.</string>
@@ -128,7 +130,6 @@
     <string name="menu_weibo">Share to Weibo</string>
     <string name="menu_about">About</string>
     <string name="menu_exit">Exit</string>
-    <string name="time_histogram">Histogram</string>
     <string name="stt_csn">NxNxN</string>
     <string name="stt_csp">Pyraminx</string>
     <string name="stt_csq">Square-1</string>

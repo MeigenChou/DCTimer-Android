@@ -6,7 +6,7 @@ import min2phase.Tools;
 
 public class SqSearch {
 
-	int[] move = new int[100];
+	int[] move = new int[50];
 	FullCube c = null;
 	FullCube d = new FullCube("");
 	int length1;
@@ -27,12 +27,12 @@ public class SqSearch {
 			InputStream in = new BufferedInputStream(new FileInputStream("/data/data/com.dctimer/databases/sqr.dat"));
 			Tools.read(Shape.ShapeIdx, in);
 			in.read(Shape.ShapePrun);
-			Tools.read(Shape.TopMove, in);
-			Tools.read(Shape.BottomMove, in);
-			Tools.read(Shape.TwistMove, in);
-			Tools.read(Square.TwistMove, in);
-			Tools.read(Square.TopMove, in);
-			Tools.read(Square.BottomMove, in);
+			Tools.read(Shape.spTopMove, in);
+			Tools.read(Shape.spBottomMove, in);
+			Tools.read(Shape.spTwistMove, in);
+			Tools.read(Square.sqTwistMove, in);
+			Tools.read(Square.sqTopMove, in);
+			Tools.read(Square.sqBottomMove, in);
 			in.read(Square.SquarePrun);
 			in.close();
 		} catch (Exception e) {
@@ -42,12 +42,12 @@ public class SqSearch {
 				OutputStream out = new BufferedOutputStream(new FileOutputStream("/data/data/com.dctimer/databases/sqr.dat"));
 				Tools.write(Shape.ShapeIdx, out);
 				out.write(Shape.ShapePrun);
-				Tools.write(Shape.TopMove, out);
-				Tools.write(Shape.BottomMove, out);
-				Tools.write(Shape.TwistMove, out);
-				Tools.write(Square.TwistMove, out);
-				Tools.write(Square.TopMove, out);
-				Tools.write(Square.BottomMove, out);
+				Tools.write(Shape.spTopMove, out);
+				Tools.write(Shape.spBottomMove, out);
+				Tools.write(Shape.spTwistMove, out);
+				Tools.write(Square.sqTwistMove, out);
+				Tools.write(Square.sqTopMove, out);
+				Tools.write(Square.sqBottomMove, out);
 				out.write(Square.SquarePrun);
 				out.close();
 			} catch (Exception e1) { }
@@ -58,8 +58,8 @@ public class SqSearch {
 		this.c = c;
 		sol_string = null;
 		int shape = c.getShapeIdx();
-		for (length1=Shape.ShapePrun[shape]; length1<100; length1++) {
-			maxlen2 = Math.min(31 - length1, 17);
+		for (length1=Shape.ShapePrun[shape]; length1<50; length1++) {
+			maxlen2 = Math.min(34 - length1, 17);
 			if (phase1(shape, Shape.ShapePrun[shape], length1, 0, -1)) {
 				break;
 			}
@@ -74,7 +74,7 @@ public class SqSearch {
 
 		//try each possible move. First twist;
 		if (lm != 0) {
-			int shapex = Shape.TwistMove[shape];
+			int shapex = Shape.spTwistMove[shape];
 			int prunx = Shape.ShapePrun[shapex];
 			if (prunx < maxl) {
 				move[depth] = 0;
@@ -89,7 +89,7 @@ public class SqSearch {
 		if(lm <= 0){
 			int m = 0;
 			while (true) {
-				m += Shape.TopMove[shapex];
+				m += Shape.spTopMove[shapex];
 				shapex = m >> 4;
 				m &= 0x0f;
 				if (m >= 12) {
@@ -112,7 +112,7 @@ public class SqSearch {
 		if(lm <= 1){
 			int m = 0;
 			while (true) {
-				m += Shape.BottomMove[shapex];
+				m += Shape.spBottomMove[shapex];
 				shapex = m >> 4;
 				m &= 0x0f;
 				if (m >= 6) {
@@ -133,7 +133,7 @@ public class SqSearch {
 		return false;
 	}
 
-	int count = 0;
+//	int count = 0;
 	Square sq = new Square();
 
 
@@ -152,7 +152,7 @@ public class SqSearch {
 
 		int edge = sq.edgeperm;
 		int corner = sq.cornperm;
-		int ml = sq.ml;
+		int ml = sq.qml;
 //		int shp = sq.topEdgeFirst ? 0 : 1;
 //		shp |= sq.botEdgeFirst ? 0 : 2;
 
@@ -182,7 +182,7 @@ public class SqSearch {
 		return false;
 	}
 
-	int pruncomb[] = new int[100];
+	//int pruncomb[] = new int[100];
 
 	String move2string(int len) {
 		//TODO whether to invert the solution or not should be set by params.
@@ -220,8 +220,8 @@ public class SqSearch {
 
 		//try each possible move. First twist;
 		if(lm!=0 && topEdgeFirst == botEdgeFirst) {
-			int edgex = Square.TwistMove[edge];
-			int cornerx = Square.TwistMove[corner];
+			int edgex = Square.sqTwistMove[edge];
+			int cornerx = Square.sqTwistMove[corner];
 
 			if (Square.SquarePrun[edgex<<1|(1-ml)] < maxl && Square.SquarePrun[cornerx<<1|(1-ml)] < maxl) {
 				move[depth] = 0;
@@ -234,8 +234,8 @@ public class SqSearch {
 		//Try top layer
 		if (lm <= 0){
 			boolean topEdgeFirstx = !topEdgeFirst;
-			int edgex = topEdgeFirstx ? Square.TopMove[edge] : edge;
-			int cornerx = topEdgeFirstx ? corner : Square.TopMove[corner];
+			int edgex = topEdgeFirstx ? Square.sqTopMove[edge] : edge;
+			int cornerx = topEdgeFirstx ? corner : Square.sqTopMove[corner];
 			int m = topEdgeFirstx ? 1 : 2;
 			int prun1 = Square.SquarePrun[edgex<<1|ml];
 			int prun2 = Square.SquarePrun[cornerx<<1|ml];
@@ -248,11 +248,11 @@ public class SqSearch {
 				}
 				topEdgeFirstx = !topEdgeFirstx;
 				if (topEdgeFirstx) {
-					edgex = Square.TopMove[edgex];
+					edgex = Square.sqTopMove[edgex];
 					prun1 = Square.SquarePrun[edgex<<1|ml];
 					m += 1;
 				} else {
-					cornerx = Square.TopMove[cornerx];
+					cornerx = Square.sqTopMove[cornerx];
 					prun2 = Square.SquarePrun[cornerx<<1|ml];
 					m += 2;
 				}
@@ -261,8 +261,8 @@ public class SqSearch {
 
 		if (lm <= 1){
 			boolean botEdgeFirstx = !botEdgeFirst;
-			int edgex = botEdgeFirstx ? Square.BottomMove[edge] : edge;
-			int cornerx = botEdgeFirstx ? corner : Square.BottomMove[corner];
+			int edgex = botEdgeFirstx ? Square.sqBottomMove[edge] : edge;
+			int cornerx = botEdgeFirstx ? corner : Square.sqBottomMove[corner];
 			int m = botEdgeFirstx ? 1 : 2;
 			int prun1 = Square.SquarePrun[edgex<<1|ml];
 			int prun2 = Square.SquarePrun[cornerx<<1|ml];
@@ -275,11 +275,11 @@ public class SqSearch {
 				}
 				botEdgeFirstx = !botEdgeFirstx;
 				if (botEdgeFirstx) {
-					edgex = Square.BottomMove[edgex];
+					edgex = Square.sqBottomMove[edgex];
 					prun1 = Square.SquarePrun[edgex<<1|ml];
 					m += 1;
 				} else {
-					cornerx = Square.BottomMove[cornerx];
+					cornerx = Square.sqBottomMove[cornerx];
 					prun2 = Square.SquarePrun[cornerx<<1|ml];
 					m += 2;
 				}

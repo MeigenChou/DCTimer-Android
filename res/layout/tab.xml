@@ -91,26 +91,18 @@
 
                     <Spinner
                         android:id="@+id/spinner6"
-                        android:layout_width="80dp"
+                        android:layout_width="140dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:textSize="16sp" />
 
                     <Button
-                        android:id="@+id/mButtonClr"
+                        android:id="@+id/mButtonOpt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/clear_session"
-                        android:textSize="16sp" />
-                    
-                    <Button
-                        android:id="@+id/mButtonHist"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/time_histogram"
+                        android:text="@string/option"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -310,9 +302,10 @@
                             android:id="@+id/seekb5"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dip"
                             android:paddingLeft="7dip"
                             android:paddingRight="7dip"
-                            android:layout_marginBottom="5dip" />
+                            />
                         
                         <LinearLayout 
                             android:id="@+id/lay04"
@@ -770,27 +763,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="3dip" />
                         </LinearLayout>
-                        
-                        <LinearLayout
-                            android:id="@+id/lay18"
-                            android:layout_width="fill_parent"
-                            android:layout_height="42dip"
-                            android:gravity="center"
-                            android:layout_marginLeft="1dip"
-                            android:layout_marginRight="1dip"
-                            android:layout_marginBottom="3dip"
-                            android:longClickable="true"
-                            android:orientation="horizontal" >
-
-                            <TextView
-                                android:id="@+id/stt32"
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="4dip"
-                                android:text="@string/sesname"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
-                        </LinearLayout>
                     </LinearLayout>
 
                     <TextView
@@ -858,12 +830,14 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/lay23"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
                             android:gravity="center"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
                             android:layout_marginBottom="1dip"
+                            android:longClickable="true"
                             android:orientation="horizontal" >
                             
                             <TextView
@@ -876,10 +850,11 @@
                                 android:textSize="17sp" />
 
                             <TextView
-                                android:id="@+id/stcheck10"
+                                android:id="@+id/std13"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginRight="3dip" />
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
                         
                         <LinearLayout
@@ -1020,7 +995,7 @@
                         </LinearLayout>
                     </LinearLayout>
                     
-                    <TextView
+                    <!--<TextView
                         android:id="@+id/stt24"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -1035,10 +1010,10 @@
                         android:background="@drawable/group_back"
                         android:orientation="horizontal" >
 
-                        <!-- <LinearLayout
+                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal" > -->
+                            android:orientation="horizontal" > 
 
                             <TextView
                                 android:id="@+id/stt25"
@@ -1053,9 +1028,9 @@
                                 android:id="@+id/auth_sina"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" />
-                        <!-- </LinearLayout> -->
+                         </LinearLayout> 
 
-                    </LinearLayout>
+                    </LinearLayout> -->
 
                     <TextView
                         android:id="@+id/stt01"
