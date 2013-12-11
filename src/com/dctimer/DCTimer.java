@@ -102,6 +102,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 	public static short[] sestp = new short[15];
 
 	private String picPath, selFilePath, newver, newupd;
+	private String defPath = Environment.getExternalStorageDirectory().getPath()+"/DCTimer/";
 	private String[] times = null, mItems;
 	private String[][] itemStr = new String[13][];
 	private static String nextScr = null, extsol, slist, outPath;
@@ -253,7 +254,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 		isMulp = stSel[3] != 0;
 		intv = share.getInt("intv", 30);	//成绩列表行距
 		drop = share.getBoolean("drop", false);
-		outPath = share.getString("scrpath", Environment.getExternalStorageDirectory().getPath()+"/DCTimer/");
+		outPath = share.getString("scrpath", defPath);
 		edit = share.edit();
 		for(int i=0; i<15; i++) {
 			sestp[i] = (short) share.getInt("sestp" + i, -1);
@@ -784,7 +785,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 							break;
 						case 4:	//导出数据库
 							try {
-								BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath()+"/DCTimer/Database.csv"), "UTF-8"));
+								BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(defPath+"Database.csv"), "UTF-8"));
 								for(int i=0; i<15; i++) {
 									Cursor cur = dbh.query(i);
 									int count = cur.getCount();
@@ -815,7 +816,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 								public void run() {
 									try {
 										int table = 1;
-										BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(Environment.getExternalStorageDirectory().getPath()+"/DCTimer/Database.csv"), "UTF-8"));
+										BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(defPath+"Database.csv"), "UTF-8"));
 										String line = "";
 										ContentValues cv = new ContentValues();
 										int count = 1;
@@ -1815,7 +1816,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 	private String getContent(String strUrl) {
         try {
             URL url = new URL(strUrl);
-            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream(), "GB2312"));
             StringBuffer sb = new StringBuffer("");
             String line = "";
             while((line = br.readLine()) != null) {
@@ -1828,9 +1829,9 @@ public class DCTimer extends Activity implements SensorEventListener {
         }
     }
 	
-	private void download(final String fileName) {
+	private void download(final String fileName) {//TODO
 		bytesum = 0;
-		final File f = new File(Environment.getExternalStorageDirectory().getPath()+"/DCTimer/");
+		final File f = new File(defPath);
     	if(!f.exists()) f.mkdirs();
     	dlProg.show();
         new Thread() {
@@ -1847,7 +1848,7 @@ public class DCTimer extends Activity implements SensorEventListener {
                 		return;
                 	}
                 	dlProg.setMax(filesum / 1024);
-                	FileOutputStream fs = new FileOutputStream(Environment.getExternalStorageDirectory().getPath()+"/DCTimer/"+fileName);
+                	FileOutputStream fs = new FileOutputStream(defPath+fileName);
                 	byte[] buffer = new byte[2096];
                 	int byteread;
                 	while ((byteread = is.read(buffer)) != -1) {
@@ -1863,9 +1864,9 @@ public class DCTimer extends Activity implements SensorEventListener {
         		}
         		dlProg.dismiss();
         		Intent intent = new Intent();
-        		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         		intent.setAction(android.content.Intent.ACTION_VIEW);
-        		intent.setDataAndType(Uri.fromFile(f), "application/vnd.android.package-archive");
+        		intent.setDataAndType(Uri.parse("file://"+defPath+fileName), "application/vnd.android.package-archive");
+        		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         		startActivity(intent);
         	}
         }.start();
