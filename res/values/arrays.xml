@@ -1,103 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="tabInd">
-        <item>计时</item>
-        <item>成绩列表</item>
-        <item>设置</item>
+        <item>Timer</item>
+        <item>Times List</item>
+        <item>Settings</item>
     </array>
     <array name="cubeStr">
-        <item>2阶</item>
-        <item>3阶</item>
-        <item>4阶</item>
-        <item>5阶</item>
-        <item>6阶</item>
-        <item>7阶</item>
-        <item>五魔方</item>
-        <item>金字塔</item>
-        <item>SQ1</item>
-        <item>魔表</item>
+        <item>2x2</item>
+        <item>3x3</item>
+        <item>4x4</item>
+        <item>5x5</item>
+        <item>6x6</item>
+        <item>7x7</item>
+        <item>Megaminx</item>
+        <item>Pyraminx</item>
+        <item>Square-1</item>
+        <item>Clock</item>
         <item>15 puzzle</item>
         <item>LxMxN</item>
         <item>Cmetrick</item>
-        <item>齿轮魔方</item>
+        <item>Gear Cube</item>
         <item>Siamese Cube</item>
         <item>Skewb</item>
-        <item>其他</item>
-        <item>3阶子集</item>
-        <item>捆绑魔方</item>
-        <item>五魔子集</item>
-        <item>连拧</item>
+        <item>Other</item>
+        <item>3x3 subsets</item>
+        <item>Bandaged Cube</item>
+        <item>Megaminx subsets</item>
+        <item>Relays</item>
     </array>
     <array name="scr222">
-        <item>随机状态</item>
+        <item>random state</item>
         <item>3-gen</item>
         <item>6-gen</item>
-        <item>CLL训练</item>
-        <item>EG1训练</item>
-        <item>EG2训练</item>
-        <item>XLL训练</item>
-        <item>EG训练</item>
+        <item>CLL training</item>
+        <item>EG1 training</item>
+        <item>EG2 training</item>
+        <item>PBL training</item>
+        <item>EG training</item>
     </array>
     <array name="scr333">
-        <item>传统</item>
-        <item>随机状态</item>
-        <item>F2L训练</item>
-        <item>顶层/OLL训练</item>
-        <item>PLL训练</item>
-        <item>棱块训练</item>
-        <item>角块训练</item>
-        <item>单组F2L训练</item>
-        <item>ZBLL训练</item>
-        <item>顶层棱块</item>
-        <item>顶层角块</item>
-        <item>桥式六棱</item>
-        <item>桥式四角</item>
-        <item>棱块位置</item>
-        <item>棱块色相</item>
-        <item>角块位置</item>
-        <item>角块色相</item>
-        <item>位置训练</item>
-        <item>色相训练</item>
-        <item>简单十字</item>
+        <item>old style</item>
+        <item>random state</item>
+        <item>F2L training</item>
+        <item>last layer</item>
+        <item>PLL training</item>
+        <item>edges only</item>
+        <item>corners only</item>
+        <item>last slot+last layer</item>
+        <item>zb last layer</item>
+        <item>edges of last layer</item>
+        <item>corners of last layer</item>
+        <item>last six edges</item>
+        <item>Roux L10P</item>
+        <item>edges permutation</item>
+        <item>edges orientation</item>
+        <item>corners permutation</item>
+        <item>corners orientation</item>
+        <item>permutation only</item>
+        <item>orientation only</item>
+        <item>easy cross</item>
         <item>2GLL</item>
     </array>
     <array name="scr444">
-        <item>传统</item>
+        <item>old style</item>
         <item>SiGN</item>
         <item>YJ</item>
-        <item>对棱训练</item>
+        <item>edges</item>
         <item>R,r,U,u</item>
     </array>
     <array name="scr555">
         <item>WCA</item>
         <item>SiGN</item>
-        <item>对棱训练</item>
+        <item>edges</item>
     </array>
     <array name="scr666">
-        <item>prefix</item>
+        <item>WCA</item>
         <item>SiGN</item>
         <item>suffix</item>
-        <item>对棱训练</item>
+        <item>edges</item>
     </array>
     <array name="scrMinx">
         <item>WCA</item>
-        <item>传统</item>
+        <item>old style</item>
     </array>
     <array name="scrPrym">
-        <item>随机状态</item>
-        <item>随机步骤</item>
+        <item>random state</item>
+        <item>random moves</item>
     </array>
     <array name="scrSq1">
-        <item>face turn metric</item>
-        <item>twist metric</item>
-        <item>随机状态</item>
-        <item>立方体形状</item>
+        <item>ftm</item>
+        <item>ttm</item>
+        <item>random state</item>
+        <item>cube shape</item>
     </array>
     <array name="scrClk">
         <item>WCA</item>
-        <item>Jaap 顺序</item>
+        <item>Jaap order</item>
         <item>concise</item>
-        <item>高效顺序</item>
+        <item>efficient pin order</item>
     </array>
     <array name="scr15p">
         <item>piece moves</item>
@@ -106,9 +106,9 @@
     <array name="scrMxN">
         <item>1x3x3</item>
         <item>Super 1x3x3</item>
-        <item>1x3x3(随机状态)</item>
+        <item>1x3x3(random state)</item>
         <item>2x3x3</item>
-        <item>2x3x3(随机状态)</item>
+        <item>2x3x3(random state)</item>
         <item>2x2x3</item>
         <item>2x2x4</item>
         <item>3x3x4</item>
@@ -130,8 +130,8 @@
         <item>2x2x2 block</item>
     </array>
     <array name="scrOth">
-        <item>插销魔方</item>
-        <item>直升机</item>
+        <item>Latch Cube</item>
+        <item>Helicopter</item>
         <item>Square-2</item>
         <item>Super SQ1</item>
         <item>UFO</item>
@@ -156,92 +156,96 @@
         <item>LSLL</item>
     </array>
     <array name="scrGear">
-        <item>随机状态</item>
+        <item>random state</item>
         <item>3-gen</item>
     </array>
     <array name="scrSkw">
-        <item>随机状态</item>
+        <item>random state</item>
         <item>L R D B</item>
     </array>
     <array name="scrRly">
-        <item>2到4阶</item>
-        <item>2到5阶</item>
-        <item>2到6阶</item>
-        <item>2到7阶</item>
-        <item>多个3阶</item>
+        <item>234 relay</item>
+        <item>2345 relay</item>
+        <item>23456 relay</item>
+        <item>234567 relay</item>
+        <item>lots of 3x3s</item>
     </array>
     
     <array name="rstcon">
-        <item>无惩罚</item>
+        <item>No penalty</item>
         <item>"+2"</item>
         <item>DNF</item>
     </array>
     
     <array name="crsStr">
-        <item>不显示</item>
-        <item>显示Cross求解</item>
-        <item>显示Xcross求解</item>
-        <item>显示EOline求解</item>
-        <item>显示Roux S1求解</item>
-        <item>显示Petrus S1求解</item>
+        <item>None</item>
+        <item>Cross</item>
+        <item>Xcross</item>
+        <item>EOline</item>
+        <item>Roux S1</item>
+        <item>Petrus S1</item>
     </array>
     
     <array name="clrStr">
-        <item>国标配色</item>
-        <item>日标配色</item>
+        <item>Western</item>
+        <item>Japanese</item>
     </array>
     
     <array name="mncStr">
-        <item>默认</item>
+        <item>Default</item>
         <item>mf8</item>
     </array>
     
     <array name="list1Str">
-        <item>3次</item>
-        <item>5次</item>
-        <item>12次</item>
-        <item>50次</item>
+        <item>"3"</item>
+        <item>"5"</item>
+        <item>"12"</item>
+        <item>"50"</item>
     </array>
+    
     <array name="list2Str">
-        <item>5次</item>
-        <item>12次</item>
-        <item>50次</item>
-        <item>100次</item>
+        <item>"5"</item>
+        <item>"12"</item>
+        <item>"50"</item>
+        <item>"100"</item>
     </array>
+    
     <array name="preStr">
-        <item>0.01秒</item>
-        <item>0.001秒</item>
+        <item>0.01 sec</item>
+        <item>0.001 sec</item>
     </array>
+    
 	<array name="tiwStr">
-        <item>计时器</item>
-        <item>手动输入</item>
+        <item>timer</item>
+        <item>typing</item>
     </array>
+    
     <array name="faceStr">
-        <item>D(底)</item>
-        <item>U(顶)</item>
-        <item>L(左)</item>
-        <item>R(右)</item>
-        <item>F(前)</item>
-        <item>B(后)</item>
+        <item>D(button)</item>
+        <item>U(top)</item>
+        <item>L(left)</item>
+        <item>R(right)</item>
+        <item>F(front)</item>
+        <item>B(back)</item>
     </array>
     <array name="sideStr">
-        <item>D(黄)</item>
-        <item>U(白)</item>
-        <item>L(橙)</item>
-        <item>R(红)</item>
-        <item>F(绿)</item>
-        <item>B(蓝)</item>
-        <item>全部显示</item>
+        <item>D(yellow)</item>
+        <item>U(white)</item>
+        <item>L(orange)</item>
+        <item>R(red)</item>
+        <item>F(green)</item>
+        <item>B(blue)</item>
+        <item>Display all</item>
     </array>
     <array name="c2lStr">
-        <item>不显示</item>
-        <item>D(黄)</item>
-        <item>U(白)</item>
-        <item>L(橙)</item>
-        <item>R(红)</item>
-        <item>F(绿)</item>
-        <item>B(蓝)</item>
-        <item>全部显示</item>
+        <item>None</item>
+        <item>D(yellow)</item>
+        <item>U(white)</item>
+        <item>L(orange)</item>
+        <item>R(red)</item>
+        <item>F(green)</item>
+        <item>B(blue)</item>
+        <item>Display all</item>
     </array>
     
     <string-array name="samprate">
@@ -258,12 +262,12 @@
         <item>serif</item>
         <item>sans-serif</item>
         <item>CCT</item>
-        <item>数码管1</item>
-        <item>数码管2</item>
+        <item>lcd1</item>
+        <item>lcd2</item>
     </array>
     
     <array name="mulpStr">
-        <item>关闭</item>
+        <item>Off</item>
         <item>"2"</item>
         <item>"3"</item>
         <item>"4"</item>
@@ -272,54 +276,56 @@
     </array>
     
     <array name="inscrStr">
-        <item>自动识别</item>
-        <item>二阶</item>
-        <item>三阶</item>
-        <item>四阶</item>
-        <item>五阶</item>
-        <item>金字塔</item>
+        <item>Default</item>
+        <item>2x2</item>
+        <item>3x3</item>
+        <item>4x4</item>
+        <item>5x5</item>
+        <item>Pyraminx</item>
     </array>
     
     <array name="vibraStr">
-        <item>关闭</item>
-        <item>仅计时开始</item>
-        <item>仅计时结束</item>
-        <item>计时开始和结束</item>
+        <item>Off</item>
+        <item>Only when timer starts</item>
+        <item>Only when timer ends</item>
+        <item>All events</item>
     </array>
     
     <array name="vibTimeStr">
-        <item>非常短</item>
-        <item>较短</item>
-        <item>标准</item>
-        <item>较长</item>
-        <item>非常长</item>
+        <item>Very short</item>
+        <item>Short</item>
+        <item>Standard</item>
+        <item>Excessive</item>
+        <item>Epic</item>
     </array>
     
     <array name="soriStr">
-        <item>默认</item>
-        <item>横屏</item>
-        <item>反向横屏</item>
-        <item>竖屏</item>
-        <item>物理感应</item>
+        <item>Default</item>
+        <item>Landscape</item>
+        <item>Reverse landscape</item>
+        <item>Portrait</item>
+        <item>Sensor</item>
     </array>
     
     <array name="tupdStr">
-        <item>实时</item>
-        <item>到秒</item>
-        <item>仅观察</item>
-        <item>隐藏</item>
+        <item>On</item>
+        <item>Seconds only</item>
+        <item>Inspection only</item>
+        <item>Off</item>
     </array>
     
     <array name="optStr">
-        <item>分组命名</item>
-        <item>清空成绩</item>
-        <item>时间分布</item>
-        <item>折线图</item>
+        <item>Rename session</item>
+        <item>Clear session</item>
+        <item>Histogram</item>
+        <item>Graph</item>
+        <item>Export database</item>
+        <item>Inport database</item>
     </array>
     
     <array name="sq1sStr">
-        <item>不显示</item>
-        <item>face turn metric</item>
-        <item>twist metric</item>
+        <item>None</item>
+        <item>Face turn metric</item>
+        <item>Twist metric</item>
     </array>
 </resources>

@@ -99,7 +99,6 @@
 	<string name="stt_screen_ori">熒幕方向</string>
 	<string name="login">　登錄　</string>
 	<string name="logout">　註銷　</string>
-	<string name="login_success">登錄成功</string>
 	<string name="con_rsauth">確認註銷？</string>
 	<string name="rsauth">已註銷</string>
 	<string name="sq1shape">顯示SQ1復形求解</string>
@@ -113,17 +112,8 @@
 	<string name="stt_invert">信号反轉</string>
 	<string name="stt_ssvalue">Stackmat参數：</string>
 	<string name="sr_not_support">當前設備不支持所選的取樣率</string>
-	<string name="attention">注意</string>
-    <string name="delete_all">是否要刪除這條微博？</string>
-    <string name="ok">是</string>
-    <string name="cancel">否</string>
-    <string name="send">發送</string>
-    <string name="close">關閉</string>
-    <string name="share_dialog_title">新浪微博</string>
-    <string name="please_login">請登錄！</string>
-    <string name="send_sucess">分享成功！</string>
-    <string name="send_failed">分享失敗！</string>
-    <string name="del_pic">是否刪除圖片？</string>
+    <string name="send_sucess">分享成功</string>
+    <string name="send_failed">分享失敗</string>
     <string name="menu_inscr">匯入轉亂</string>
     <string name="menu_outscr">匯出轉亂</string>
     <string name="menu_share">推薦好友</string>
@@ -157,4 +147,10 @@
     <string name="abt_stat">統計</string>
     <string name="abt_shortc">快捷鍵</string>
     <string name="abt_more">更多</string>
+    <string name="conning">正在連接網絡…</string>
+    <string name="lastest">當前已是最新版本</string>
+    <string name="havenew">發現新版本：</string>
+    <string name="drop_to_stop">感應停表</string>
+    <string name="sensitivity">靈敏度</string>
+    
 </resources>

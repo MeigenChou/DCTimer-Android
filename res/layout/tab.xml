@@ -302,9 +302,13 @@
                             android:id="@+id/seekb5"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="5dip"
+                            android:minHeight="10dip"
+                            android:maxHeight="10dip"
                             android:paddingLeft="7dip"
                             android:paddingRight="7dip"
+                            android:progressDrawable="@layout/seek_style"
+                            android:thumb="@layout/seek_thumb"
+                            android:thumbOffset="12dip"
                             />
                         
                         <LinearLayout 
@@ -359,6 +363,53 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="3dip" />
                         </LinearLayout>
+                        
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="7dip"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt54"
+                                android:layout_width="0dip"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/drop_to_stop"
+                                android:textSize="17sp" />
+
+                            <TextView
+                                android:id="@+id/stcheck10"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dip" />
+                        </LinearLayout>
+                        
+                        <TextView
+                            android:id="@+id/stt55"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dip"
+                            android:text="@string/sensitivity"
+                            android:textSize="17sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekb7"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="10dip"
+                            android:maxHeight="10dip"
+                            android:paddingLeft="7dip"
+                            android:paddingRight="7dip"
+                            android:progressDrawable="@layout/seek_style"
+                            android:thumb="@layout/seek_thumb"
+                            android:thumbOffset="12dip"
+                            />
+                        
                     </LinearLayout>
 
                     <TextView
@@ -464,9 +515,13 @@
                             android:id="@+id/seekb6"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
+                            android:minHeight="10dip"
+                            android:maxHeight="10dip"
                             android:paddingLeft="7dip"
                             android:paddingRight="7dip"
-                            android:layout_marginBottom="5dip" />
+                            android:progressDrawable="@layout/seek_style"
+                            android:thumb="@layout/seek_thumb"
+                            android:thumbOffset="12dip" />
                     </LinearLayout>
 
                     <TextView
@@ -496,8 +551,13 @@
                             android:id="@+id/seekb2"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
+                            android:minHeight="10dip"
+                            android:maxHeight="10dip"
                             android:paddingLeft="7dip"
-                            android:paddingRight="7dip" />
+                            android:paddingRight="7dip"
+                            android:progressDrawable="@layout/seek_style"
+                            android:thumb="@layout/seek_thumb"
+                            android:thumbOffset="12dip" />
                     
                         <LinearLayout
                             android:layout_width="fill_parent"
@@ -995,7 +1055,7 @@
                         </LinearLayout>
                     </LinearLayout>
                     
-                    <!--<TextView
+                    <TextView
                         android:id="@+id/stt24"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -1030,7 +1090,7 @@
                                 android:layout_height="wrap_content" />
                          </LinearLayout> 
 
-                    </LinearLayout> -->
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/stt01"
@@ -1111,9 +1171,13 @@
                             android:id="@+id/seekb1"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
+                            android:minHeight="10dip"
+                            android:maxHeight="10dip"
                             android:paddingLeft="7dip"
                             android:paddingRight="7dip"
-                            android:layout_marginBottom="5dip" />
+                            android:progressDrawable="@layout/seek_style"
+                            android:thumb="@layout/seek_thumb"
+                            android:thumbOffset="12dip" />
 
                         <LinearLayout
                             android:id="@+id/lay13"
@@ -1157,27 +1221,25 @@
                                 android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/stt04"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal" >
+                            android:layout_marginLeft="5dip"
+                            android:text="@string/bgopacity"
+                            android:textSize="17sp" />
 
-                            <TextView
-                                android:id="@+id/stt04"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="5dip"
-                                android:text="@string/bgopacity"
-                                android:textSize="17sp" />
-
-                            <SeekBar
-                                android:id="@+id/seekb4"
-                                android:layout_width="0dip"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:paddingLeft="7dip"
-                                android:paddingRight="7dip" />
-                        </LinearLayout>
+                        <SeekBar
+                            android:id="@+id/seekb4"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:maxHeight="10dip"
+                            android:minHeight="10dip"
+                            android:paddingLeft="7dip"
+                            android:paddingRight="7dip"
+                            android:progressDrawable="@layout/seek_style"
+                            android:thumb="@layout/seek_thumb"
+                            android:thumbOffset="12dip" />
                         
                         <LinearLayout
                             android:id="@+id/lay14"
@@ -1253,8 +1315,9 @@
 
                             <TextView
                                 android:id="@+id/stt16"
-                                android:layout_width="fill_parent"
+                                android:layout_width="0dip"
                                 android:layout_height="wrap_content"
+                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
                                 android:text="@string/best_rolling_avg"
                                 android:textSize="17sp"
@@ -1272,9 +1335,13 @@
                             android:id="@+id/seekb3"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
+                            android:minHeight="10dip"
+                            android:maxHeight="10dip"
                             android:paddingLeft="7dip"
                             android:paddingRight="7dip"
-                            android:layout_marginBottom="5dip" />
+                            android:progressDrawable="@layout/seek_style"
+                            android:thumb="@layout/seek_thumb"
+                            android:thumbOffset="12dip" />
 
                     </LinearLayout>
 

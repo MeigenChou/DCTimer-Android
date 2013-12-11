@@ -44,6 +44,7 @@ public class Timer {
 	
 	public void count() {
 		if(state==0 || state==2) {
+			time = 0;
 			if(state==0 && ct.wca) {
 				state = 2;
 				ct.tvTimer.setTextColor(0xffff0000);
