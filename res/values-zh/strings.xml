@@ -109,6 +109,8 @@
     <string name="path_not_exist">路径不存在</string>
     <string name="path_illegal">路径输入无效</string>
     <string name="file_error">文件错误</string>
+    <string name="import_failed">导入数据库失败</string>
+    <string name="import_success">导入数据库成功</string>
 	<!-- 统计 -->
 	<string name="sta_avg">详细成绩：len次去尾平均</string>
 	<string name="sta_mean">详细成绩：len次平均</string>
@@ -165,6 +167,7 @@
     <string name="sel_path">选择路径</string>
     <string name="downloading">正在下载更新…</string>
     <string name="importing">正在导入数据库…</string>
+    <string name="out_db">导出数据库</string>
     <!-- 分享内容 -->
     <string name="share_c1">"我刚刚完成了$len次$scrtype打乱测速，单次最快$best，平均$mean，"</string>
     <string name="share_c2">"最快$flen次平均$favg，"</string>
@@ -180,6 +183,6 @@
     <string name="abt_2">" - 正常计时：按下屏幕计时区在抬起的时候开始计时，再次按下计时区（或打乱区或按返回键）停止计时，并记录成绩。\n - 启动延时：与stackmat等计时器一样支持启动延时，即在启动之前须要按住屏幕一段时间，启动延时的时间可设置。\n - WCA观察：提供WCA的15秒倒计时功能，超过15秒在17秒内启动计时会加罚2秒，超过17秒则直接DNF；观察阶段的+2和结束计时阶段的+2可叠加。\n - 分段计时：支持2～6阶段分段计时，可设置阶段数。每次复原过程中，需要多次按下屏幕，以记录分段时间。\n - 外部输入：提供手动输入和Stackmat记录时间，其中Stackmat支持二代计时器（包括PRO，可精确到三位小数）\n - 确认成绩：每次计时结束后确认无惩罚/+2/DNF，如果不设置确认，则默认按无惩罚记录成绩。\n - 计时精度和时间格式：有0.01秒和0.001秒可选，系统内部使用1毫秒的精确度；超过1分钟的时间可显示成(hh:)mm:ss.xy(z)，也可显示成ss.xy(z)。\n - 更新方式：计时过程中有四种更新方式，分别是实时更新、更新到秒、仅观察更新、不更新。"</string>
     <string name="abt_3">" - 提供所有符合WCA要求的打乱，包括二阶、三阶、金字塔、SQ1的随机状态打乱，并且可查看各打乱的打乱状态图；另外还有各种非WCA官方项目的打乱，这些打乱大部分均来自qqtimer、cstimer和PPT (prisma puzzle timer)，包括各种三阶训练、高阶对棱训练、以及各种异形魔方打乱。\n - 感谢以下提供WCA打乱人员：Jaap Scherphuis (所有打乱)、Syoji Takamatsu (金字塔)、Lucas Garron (金字塔)、Michael Gottlieb (金字塔·SQ1)、Tom van der Zanden (2阶)、Conrad Rider (2阶)、Clément Gallet and Stefan Pochmann (五魔)、Herbert Kociemba (三阶魔方)、Shuang Chen(三阶·SQ1)。"</string>
     <string name="abt_4">" - 成绩分组：适用于不同魔方的计时，最多有15个分组可切换。\n - 时间列表：成绩列表的第一列，单次最快和最慢用不同的颜色标出；每个时间均可修改无惩罚/+2/DNF，或者删除。\n - 滚动平均0：成绩列表的第二列，可显示3次/5次/12次/50次平均（包括是否去尾）每个平均都可以查看详细的统计信息，并可复制；用不同的颜色标出最快平均。\n - 滚动平均1：成绩列表的第三列，可显示5次/12次/50次/100次平均（包括是否去尾）每个平均都可以查看详细的统计信息，并可复制；用不同的颜色标出最快平均。\n - 分组平均：成绩列表最下方的按钮显示还原次数、平均及标准差，点击该按钮会显示出详细的统计信息，并可复制。"</string>
-    <string name="abt_5">" - 提供三阶十字、Xcross（拓展十字）求解、SQ1的最简复形等求解功能\n - 可设置计时器背景颜色或者背景图片\n - 可将成绩分享给好友，随时随地分享你的成绩\n - 0.6.9版本（2013.12.11）更新内容\n1.修复两手启动计时器在4.x系统的bug\n2.增加SQ1立方体形状打乱，SQ1复形求解@twist metric\n3.增加成绩折线图显示\n4.增加拍桌子停表\n5.增加数据库导出和导入"</string>
+    <string name="abt_5">" - 提供三阶十字、Xcross（拓展十字）求解、SQ1的最简复形等求解功能\n - 可设置计时器背景颜色或者背景图片\n - 可将成绩分享给好友，随时随地分享你的成绩\n - 0.6.10版本（2013.12.13）更新内容\n1.修复两手启动计时器在4.x系统的bug\n2.增加SQ1立方体形状打乱，SQ1复形求解@twist metric\n3.增加成绩折线图显示\n4.增加拍桌子停表\n5.增加数据库导出和导入"</string>
     <string name="abt_6">" - Q: 切换打乱到SQ1\n - W, E, R, T, Y, U: 切换打乱到二~七阶\n - P, M, K: 切换打乱到金字塔/五魔方/魔表\n - N: 新打乱\n - Z: 删除当前分组最后一个成绩\n - A: 删除当前分组所有成绩\n - D: 更改最后一个成绩的完成状态(无/+2/DNF)"</string>
 </resources>

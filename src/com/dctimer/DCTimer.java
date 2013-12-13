@@ -69,6 +69,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 	private DisplayMetrics dm;
 	private ProgressDialog proDlg = null;
 	private ProgressDialog dlProg = null;
+	private ProgressDialog impDlg = null;
 	private Vibrator vibrator;
 	private SensorManager sensor;
 
@@ -85,7 +86,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 	private static char[] srate = {48000, 44100, 22050, 16000, 11025, 8000};
 	private float lowZ;
 	private int dbLastId, ttsize, stsize, intv, insType, mulpCount, egoll, sensity;
-	private int verc = 16;
+	private int verc = 17, dbCount;
 	private int[] staid = {R.array.tiwStr, R.array.tupdStr, R.array.preStr, R.array.mulpStr, R.array.samprate, R.array.crsStr,
 			R.array.c2lStr, R.array.mncStr, R.array.fontStr, R.array.soriStr, R.array.vibraStr, R.array.vibTimeStr, R.array.sq1sStr};
 	private int[] screenOri = new int[] {2, 0, 8, 1, 4};
@@ -149,6 +150,10 @@ public class DCTimer extends Activity implements SensorEventListener {
 			case 13: Toast.makeText(DCTimer.this, getString(R.string.file_error), Toast.LENGTH_LONG).show();
 			case 14: seMean.setText(getString(R.string.session_average) + Mi.sesMean());
 				setGridView(true);	break;
+			case 15: impDlg.setMessage(""+dbCount); break;
+			case 16: Toast.makeText(DCTimer.this, getString(R.string.import_failed), Toast.LENGTH_SHORT).show(); break;
+			case 17: Toast.makeText(DCTimer.this, getString(R.string.import_success), Toast.LENGTH_SHORT).show(); break;
+			
 			default: proDlg.setProgress(msw%100);	break;//Message(msw%100 + "/" + msw/100);
 			}
 		}
@@ -468,6 +473,9 @@ public class DCTimer extends Activity implements SensorEventListener {
 		dlProg.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		dlProg.setTitle(getString(R.string.downloading));
 		dlProg.setCancelable(false);
+		impDlg = new ProgressDialog(this);
+		impDlg.setTitle(getString(R.string.importing));
+		impDlg.setCancelable(false);
 		
 		mWeiboAuth = new WeiboAuth(this, APP_KEY, REDIRECT_URL, SCOPE);
 		mAccessToken = AccessTokenKeeper.readAccessToken(this);
@@ -783,9 +791,11 @@ public class DCTimer extends Activity implements SensorEventListener {
 							new AlertDialog.Builder(DCTimer.this).setView(pView)
 							.setNegativeButton(getString(R.string.btn_close), null).show();
 							break;
-						case 4:	//导出数据库
+						case 4:	//导出数据库 TODO
 							try {
-								BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(defPath+"Database.csv"), "UTF-8"));
+								File f = new File(defPath);
+								if(!f.exists()) f.mkdirs();
+								BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(defPath+"Database.dat"), "UTF-8"));
 								for(int i=0; i<15; i++) {
 									Cursor cur = dbh.query(i);
 									int count = cur.getCount();
@@ -793,58 +803,63 @@ public class DCTimer extends Activity implements SensorEventListener {
 									writer.write(i+1+"\r\n");
 									cur.moveToFirst();
 									for(int j=0; j<count; j++) {
-										writer.write(cur.getInt(1)+","+cur.getInt(2)+","+cur.getInt(3)+","
-												+cur.getString(4).replace("\n", "\\n")+","+cur.getString(5)+","+cur.getString(6)
-												+","+cur.getInt(7)+","+cur.getInt(8)+","+cur.getInt(9)+","
-												+cur.getInt(10)+","+cur.getInt(11)+","+cur.getInt(12)+"\r\n");
+										writer.write(cur.getInt(1)+"\t"+cur.getInt(2)+"\t"+cur.getInt(3)+"\t");
+										writer.write(cur.getString(4).replace("\n", "\\n")+"\t"+cur.getString(5)+"\t");
+										if(cur.getString(6) != null) writer.write(cur.getString(6).replace("\t", "\\t")+"\t");
+										else writer.write(cur.getString(6)+"\t");
+										writer.write(cur.getInt(7)+"\t"+cur.getInt(8)+"\t"+cur.getInt(9)+"\t"
+												+cur.getInt(10)+"\t"+cur.getInt(11)+"\t"+cur.getInt(12)+"\r\n");
 										cur.moveToNext();
 									}
 									cur.close();
 								}
 								writer.close();
-								Toast.makeText(DCTimer.this, getString(R.string.saved)+"sdcard/DCTimer/Database.csv", Toast.LENGTH_LONG).show();
+								Toast.makeText(DCTimer.this, getString(R.string.saved)+"sdcard/DCTimer/Database.dat", Toast.LENGTH_LONG).show();
 							} catch (Exception e) {
 								e.printStackTrace();
 								Toast.makeText(DCTimer.this, getString(R.string.save_failed), Toast.LENGTH_LONG).show();
 							}
 							break;
 						case 5:	//导入数据库
-							final ProgressDialog dlg = new ProgressDialog(DCTimer.this);
-							dlg.setTitle(getString(R.string.importing));
-							dlg.show();
+							impDlg.show();
+							dbCount = 0;
 							new Thread() {
 								public void run() {
 									try {
 										int table = 1;
-										BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(defPath+"Database.csv"), "UTF-8"));
+										BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(defPath+"Database.dat"), "UTF-8"));
 										String line = "";
 										ContentValues cv = new ContentValues();
 										int count = 1;
 										while (((line = reader.readLine()) != null)) {
-											if(!line.contains(",")) {
+											if(!line.contains("\t")) {
 												table = Integer.parseInt(line);
 												count = 1;
 											} else {
-												String[] ts = line.split(",");
+												String[] ts = line.split("\t");
 												cv.put("id", count++);
 												cv.put("rest", Integer.parseInt(ts[0]));
 												cv.put("resp", Integer.parseInt(ts[1]));
 												cv.put("resd", Integer.parseInt(ts[2]));
 												cv.put("scr", ts[3].replace("\\n", "\n"));
 												if(!ts[4].equals("null")) cv.put("time", ts[4]);
-												if(!ts[5].equals("null")) cv.put("note", ts[5]);
+												if(!ts[5].equals("null")) cv.put("note", ts[5].replace("\\t", "\t"));
 												for(int i=0; i<6; i++)
 													cv.put("p"+(i+1), Integer.parseInt(ts[i+6]));
 												dbh.insert(table-1, cv);
+												dbCount++;
+												handler.sendEmptyMessage(15);
 											}
 										}
 										reader.close();
+										handler.sendEmptyMessage(17);
 									} catch (Exception e) {
 										e.printStackTrace();
+										handler.sendEmptyMessage(16);
 									}
 									getSession(spSel[5]);
 									handler.sendEmptyMessage(14);
-									dlg.dismiss();
+									impDlg.dismiss();
 								}
 							}.start();
 						}

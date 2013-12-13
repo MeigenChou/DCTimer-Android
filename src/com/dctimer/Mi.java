@@ -1271,7 +1271,7 @@ public class Mi {
 			else data[count++]=DCTimer.rest[i]+DCTimer.resp[i]*2000;
 		}
 		double sum = 0, sum2 = 0;
-		quickSort(data, 0, n-1);
+		heapsort(data, n-1);
 		for(int j=trim;j<DCTimer.resl-trim;j++) {
 			if(DCTimer.stSel[2]==1)sum+=data[j];
 			else sum+=data[j]/10;
@@ -1284,6 +1284,33 @@ public class Mi {
 		int ssd=(int)(Math.sqrt((sum2-sum*sum/num)/num)+(DCTimer.stSel[2]==1?0:0.5));
 		return distime(savg)+" (σ = "+standDev(ssd)+")";
 	}
+	public static void adjust(int[] num, int s, int t) {
+		int i = s;
+		int x = num[s];
+		for (int j = 2 * i; j <= t; j = 2 * j) {
+			if (j < t && num[j] < num[j + 1])
+				j = j + 1;// 找出较大者把较大者给num[i]
+			if (x > num[j])
+				break;
+			num[i] = num[j];
+			i = j;
+		}
+		num[i] = x;
+	}
+	public static void heapsort(int[] num, int n) {
+		// 初始建堆从n/2开始向根调整
+		int i;
+		for (i = n / 2; i >= 1; i--) {
+			adjust(num, i, n);//初始堆过程
+		}
+		for (i = n; i > 1; i--) {
+			num[0] = num[i];// 将堆顶元素与第n,n-1,.....2个元素相交换
+			num[i] = num[1];
+			num[1] = num[0];// 从num[1]到num[i-1]调整成新堆
+			adjust(num, 1, i - 1);
+		}
+	}
+	
 	public static String mulMean(int p) {
 		double sum=0;
 		int n=0;
