@@ -28,7 +28,7 @@ public class WBShareActivity extends Activity implements IWeiboHandler.Response 
         }
         
         if (!mWeiboShareAPI.isWeiboAppInstalled()) {
-			Toast.makeText(this, "没有安装微博客户端", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.not_install), Toast.LENGTH_SHORT).show();
 			this.finish();
 		} else try {
 			mWeiboShareAPI.registerApp();

@@ -53,6 +53,7 @@
 	<string name="stt_csn">NxNxN</string>
     <string name="stt_csp">金字塔</string>
     <string name="stt_csq">Square-1</string>
+    <string name="stt_csw">Skewb</string>
     <string name="mmxcolor">五魔術方塊</string>
 	<string name="stt_share">分享</string>
 	<string name="stt_sina">新浪微博</string>
@@ -81,6 +82,7 @@
 	<string name="scheme_cube">NxNxN配色設定</string>
     <string name="scheme_pyrm">金字塔配色設定</string>
     <string name="scheme_sq">"Square-1配色設定"</string>
+    <string name="scheme_skewb">"Skewb配色設定"</string>
     <string name="scheme_reset">恢復預設</string>
     <!-- 菜单 -->
     <string name="menu_inscr">匯入轉亂</string>
@@ -175,5 +177,4 @@
     <string name="abt_stat">統計</string>
     <string name="abt_shortc">快捷鍵</string>
     <string name="abt_more">更多</string>
-    
 </resources>

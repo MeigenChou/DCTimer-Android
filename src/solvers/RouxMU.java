@@ -21,24 +21,24 @@ public class RouxMU {
 		for (i = 0; i < 720; i++) {
 			for (j = 0; j < 32; j++) ed[i][j]=-1;
 			for (j = 0; j < 2; j++) {
-				Im.indexToPermutation(temp, i, 6);
+				Im.idxToPerm(temp, i, 6);
 				switch(j) {
 				case 0: Im.cir(temp, 0, 4, 5, 2); break;
 				case 1: Im.cir(temp, 0, 3, 2, 1); break;
 				}
-				epm[i][j] = (short) Im.permutationToIndex(temp, 6);
+				epm[i][j] = (short) Im.permToIdx(temp, 6);
 			}
 		}
 		for (i = 0; i < 32; i++) {
 			for (j = 0; j < 2; j++) {
-				Im.indexToZeroSumOrientation(temp, i, 2, 6);
+				Im.idxToZori(temp, i, 2, 6);
 				switch(j) {
 				case 0: Im.cir(temp, 0, 4, 5, 2);
 				temp[0]=1-temp[0];temp[2]=1-temp[2];
 				temp[4]=1-temp[4];temp[5]=1-temp[5];break;
 				case 1: Im.cir(temp, 0, 3, 2, 1); break;
 				}
-				eom[i][j] = (byte) Im.zeroSumOrientationToIndex(temp, 2, 6);
+				eom[i][j] = (byte) Im.zoriToIdx(temp, 2, 6);
 			}
 		}
 		for (i = 0; i < 32; i++) {
@@ -119,7 +119,7 @@ public class RouxMU {
 			ep = r.nextInt(720);
 			ct = r.nextInt(4);
 			cp = r.nextInt(4);
-			Im.indexToPermutation(p, ep, 6);
+			Im.idxToPerm(p, ep, 6);
 		} while(CubeRU.permutationSign(p)!=ctcpSign(ct,cp));
 		int eo = r.nextInt(32);
 		sb = new StringBuffer();

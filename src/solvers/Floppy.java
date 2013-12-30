@@ -23,8 +23,8 @@ public class Floppy {
 				for (int j = 0; j < 16; j++)
 					if (distance[i][j] == depth)
 						for(int k=0; k<4; k++){
-							Im.indexToPermutation(cp, i, 4);
-							Im.indexToOrientation(eo, j, 2, 4);
+							Im.idxToPerm(cp, i, 4);
+							Im.idxToOri(eo, j, 2, 4);
 							switch(k){
 							case 0:Im.cir(cp, 0, 1);break;	//U2
 							case 1:Im.cir(cp, 1, 2);break;	//R2
@@ -32,8 +32,8 @@ public class Floppy {
 							case 3:Im.cir(cp, 0, 3);break;	//L2
 							}
 							eo[k]=1-eo[k];
-							int cpi=Im.permutationToIndex(cp, 4);
-							int eoi=Im.orientationToIndex(eo, 2, 4);
+							int cpi=Im.permToIdx(cp, 4);
+							int eoi=Im.oriToIdx(eo, 2, 4);
 							if (distance[cpi][eoi] == -1) {
 								distance[cpi][eoi] = (byte) (depth + 1);
 								nVisited++;
@@ -56,8 +56,8 @@ public class Floppy {
 					int[] cp = new int[4];
 					int[] eo = new int[4];
 					for (int i=0; i<4; i++) {
-						Im.indexToPermutation(cp, cpi, 4);
-						Im.indexToOrientation(eo, eoi, 2, 4);
+						Im.idxToPerm(cp, cpi, 4);
+						Im.idxToOri(eo, eoi, 2, 4);
 						switch(i){
 						case 0:Im.cir(cp, 0, 1);break;
 						case 1:Im.cir(cp, 1, 2);break;
@@ -65,8 +65,8 @@ public class Floppy {
 						case 3:Im.cir(cp, 0, 3);break;
 						}
 						eo[i]=1-eo[i];
-						int nextCpi = Im.permutationToIndex(cp, 4);
-						int nextEoi = Im.orientationToIndex(eo, 2, 4);
+						int nextCpi = Im.permToIdx(cp, 4);
+						int nextEoi = Im.oriToIdx(eo, 2, 4);
 						if (distance[nextCpi][nextEoi] == distance[cpi][eoi] - 1) {
 							sb.insert(0, turn[i]+" ");
 							cpi = nextCpi;

@@ -126,7 +126,7 @@ public class Pyraminx {
 		//given position p<360 and move m<4, return new position number
 		//convert number into array
 		int[] ps = new int[6];
-		Im.indexToEvenPermutation(ps, p, 6);
+		Im.idxToEperm(ps, p, 6);
 		//perform move on array
 		if(m == 0) {
 			Im.cir(ps, 1, 5, 2);//L
@@ -138,7 +138,7 @@ public class Pyraminx {
 			Im.cir(ps, 0, 3, 1);//U
 		}
 		//convert array back to number
-		return(Im.evenPermutationToIndex(ps, 6));
+		return(Im.epermToIdx(ps, 6));
 	}
 	private static int getflpmv(int p, int m) {
 		//given orientation p<32 and move m<4, return new position number
@@ -184,7 +184,7 @@ public class Pyraminx {
 		//convert number into array;
 		int[] ps = new int[4];
 		//corner orientation
-		Im.indexToOrientation(ps, p, 3, 4);
+		Im.idxToOri(ps, p, 3, 4);
 		//perform move on array
 		switch (m) {
 		case 0:	//L
@@ -202,7 +202,7 @@ public class Pyraminx {
 		}
 		//convert array back to number
 		//corner orientation
-		return(Im.orientationToIndex(ps, 3, 4));
+		return(Im.oriToIdx(ps, 3, 4));
 	}
 	
 	private static void picmove(int type, int direction) {

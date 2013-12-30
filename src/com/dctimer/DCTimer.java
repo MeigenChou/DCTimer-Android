@@ -44,11 +44,11 @@ public class DCTimer extends Activity implements SensorEventListener {
 	private Button seMean, sesOpt;	//分组平均, 分组选项
 	private Button reset, wbAuth;	//设置复位, 微博登录/注销
 	private SeekBar[] skb = new SeekBar[7];	//拖动条
-	private TextView[] stt = new TextView[56];	//设置
+	private TextView[] stt = new TextView[57];	//设置
 	private int sttlen = stt.length;
 	private TextView[] stSwitch = new TextView[13];
 	private TextView[] std = new TextView[13];
-	private LinearLayout[] llay = new LinearLayout[22];
+	private LinearLayout[] llay = new LinearLayout[23];
 	private TextView tvl;
 	private CheckBox[] chkb = new CheckBox[13];
 
@@ -86,7 +86,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 	private static char[] srate = {48000, 44100, 22050, 16000, 11025, 8000};
 	private float lowZ;
 	private int dbLastId, ttsize, stsize, intv, insType, mulpCount, egoll, sensity;
-	private int verc = 17, dbCount;
+	private int verc = 18, dbCount;
 	private int[] staid = {R.array.tiwStr, R.array.tupdStr, R.array.preStr, R.array.mulpStr, R.array.samprate, R.array.crsStr,
 			R.array.c2lStr, R.array.mncStr, R.array.fontStr, R.array.soriStr, R.array.vibraStr, R.array.vibTimeStr, R.array.sq1sStr};
 	private int[] screenOri = new int[] {2, 0, 8, 1, 4};
@@ -126,7 +126,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 		public void handleMessage(Message msg) {
 			int msw = msg.what;
 			switch(msw) {	//TODO
-			case 0: tvScr.setText(crntScr);	break;
+			case 0: tvScr.setText(crntScr); break;
 			case 1: tvScr.setText(crntScr + "\n\n" + getString(R.string.shape) + extsol);	break;
 			case 2: tvScr.setText(getString(R.string.scrambling));	break;
 			case 3: tvScr.setText(crntScr + extsol);	break;
@@ -388,6 +388,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 				R.id.stt34, R.id.stt35, R.id.stt36, R.id.stt37, R.id.stt38, R.id.stt39, R.id.stt40, R.id.stt41,
 				R.id.stt42, R.id.stt43, R.id.stt44, R.id.stt45, R.id.stt46, R.id.stt47, R.id.stt48, R.id.stt49,
 				R.id.stt50, R.id.stt51, R.id.stt52, R.id.stt53, R.id.stt54, R.id.stt55, R.id.stt24, R.id.stt25,
+				R.id.stt56, 
 		};	//DOTO
 		for(int i=0; i<sttlen; i++) stt[i] = (TextView) findViewById(ids[i]);
 		
@@ -398,11 +399,11 @@ public class DCTimer extends Activity implements SensorEventListener {
 				R.id.lay01, R.id.lay02, R.id.lay03, R.id.lay04, R.id.lay05, R.id.lay06,
 				R.id.lay07, R.id.lay08, R.id.lay09, R.id.lay10, R.id.lay11, R.id.lay12,
 				R.id.lay23, R.id.lay14, R.id.lay15, R.id.lay16, R.id.lay17, R.id.lay22,
-				R.id.lay19, R.id.lay20, R.id.lay21, R.id.lay13};//TODO
-		for(int i=0; i<22; i++) llay[i] = (LinearLayout) findViewById(ids[i]);
+				R.id.lay19, R.id.lay20, R.id.lay21, R.id.lay13, R.id.lay24};//TODO
+		for(int i=0; i<23; i++) llay[i] = (LinearLayout) findViewById(ids[i]);
 		reset = (Button) findViewById(R.id.reset);
 		for(int i=0; i<13; i++) llay[i].setOnTouchListener(comboListener);
-		for(int i=13; i<22; i++) llay[i].setOnTouchListener(touchListener);
+		for(int i=13; i<23; i++) llay[i].setOnTouchListener(touchListener);
 		ids = new int[] {95, 25, 41, 100, 20, 100, 50};
 		for(int i=0; i<ids.length; i++) skb[i].setMax(ids[i]);
 		int ssvalue = share.getInt("ssvalue", 50);
@@ -1433,6 +1434,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 			case R.id.lay19: sel = 18; break;
 			case R.id.lay20: sel = 19; break;
 			case R.id.lay21: sel = 20; break;
+			case R.id.lay24: sel = 22; break;
 			default: sel = -1; break;
 			}
 			switch (event.getAction()) {
@@ -1558,6 +1560,19 @@ public class DCTimer extends Activity implements SensorEventListener {
 					dialog.setTitle(getString(R.string.scheme_sq));
 					dialog.show();
 					break;
+				case 22:	//Skewb配色
+					colors = new int[] {share.getInt("csw1", Color.YELLOW), share.getInt("csw2", Color.BLUE), share.getInt("csw3", Color.RED),
+							share.getInt("csw4", Color.WHITE), share.getInt("csw5", 0xff009900), share.getInt("csw6", 0xffff8026)};
+					dialog = new ColorScheme(context, 4, colors, new ColorScheme.OnSchemeChangedListener() {
+						@Override
+						public void schemeChanged(int idx, int color) {
+							edit.putInt("csw"+idx, color);
+							edit.commit();
+						}
+					});
+					dialog.setTitle(getString(R.string.scheme_skewb));
+					dialog.show();
+					break;
 				}
 			case MotionEvent.ACTION_CANCEL:
 				llay[sel].setBackgroundColor(0);
@@ -1598,12 +1613,12 @@ public class DCTimer extends Activity implements SensorEventListener {
 		case 7:s=getResources().getStringArray(R.array.scrPrym);break;
 		case 8:s=getResources().getStringArray(R.array.scrSq1);break;
 		case 9:s=getResources().getStringArray(R.array.scrClk);break;
-		case 10:s=getResources().getStringArray(R.array.scr15p);break;
+		case 15:s=getResources().getStringArray(R.array.scr15p);break;
 		case 11:s=getResources().getStringArray(R.array.scrMxN);break;
 		case 12:s=getResources().getStringArray(R.array.scrCmt);break;
 		case 13:s=getResources().getStringArray(R.array.scrGear);break;
 		case 14:s=getResources().getStringArray(R.array.scrSmc);break;
-		case 15:s=getResources().getStringArray(R.array.scrSkw);break;
+		case 10:s=getResources().getStringArray(R.array.scrSkw);break;
 		case 16:s=getResources().getStringArray(R.array.scrOth);break;
 		case 17:s=getResources().getStringArray(R.array.scr3sst);break;
 		case 18:s=getResources().getStringArray(R.array.scrBdg);break;
@@ -1969,12 +1984,12 @@ public class DCTimer extends Activity implements SensorEventListener {
 		case 7:s=getResources().getStringArray(R.array.scrPrym);break;
 		case 8:s=getResources().getStringArray(R.array.scrSq1);break;
 		case 9:s=getResources().getStringArray(R.array.scrClk);break;
-		case 10:s=getResources().getStringArray(R.array.scr15p);break;
+		case 15:s=getResources().getStringArray(R.array.scr15p);break;
 		case 11:s=getResources().getStringArray(R.array.scrMxN);break;
 		case 12:s=getResources().getStringArray(R.array.scrCmt);break;
 		case 13:s=getResources().getStringArray(R.array.scrGear);break;
 		case 14:s=getResources().getStringArray(R.array.scrSmc);break;
-		case 15:s=getResources().getStringArray(R.array.scrSkw);break;
+		case 10:s=getResources().getStringArray(R.array.scrSkw);break;
 		case 16:s=getResources().getStringArray(R.array.scrOth);break;
 		case 17:s=getResources().getStringArray(R.array.scr3sst);break;
 		case 18:s=getResources().getStringArray(R.array.scrBdg);break;
@@ -2201,7 +2216,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 					String time = Mi.convStr(editText.getText().toString());
 					if(time.equals("Error") || Mi.convTime(time)==0)
 						Toast.makeText(DCTimer.this, getString(R.string.illegal), Toast.LENGTH_SHORT).show();
-					save(Mi.convTime(time), (byte) 0);
+					else save(Mi.convTime(time), (byte) 0);
 					//setGridView(false);
 					//seMean.setText(getString(R.string.session_average) + Mi.sesMean());
 					//newScr(false);
@@ -2937,7 +2952,6 @@ public class DCTimer extends Activity implements SensorEventListener {
 		Rect frame = new Rect();
 		activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
 		int statusBarHeight = frame.top;
-		System.out.println(statusBarHeight);
 		//获取屏幕长和高
 		int width = activity.getWindowManager().getDefaultDisplay().getWidth();
 		int height = activity.getWindowManager().getDefaultDisplay().getHeight();

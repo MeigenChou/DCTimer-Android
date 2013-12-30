@@ -17,7 +17,7 @@ public class HalfTurn {
 		int[] temp=new int[4];
 		for(int i=0; i<24; i++){
 			for(int j=0; j<6; j++){
-				Im.indexToPermutation(temp, i, 4);
+				Im.idxToPerm(temp, i, 4);
 				switch(j){
 				case 0: move(temp, 0, 1);break;
 				case 1: move(temp, 2, 3);break;
@@ -26,31 +26,31 @@ public class HalfTurn {
 				case 4: move(temp, 1, 2);break;
 				case 5: move(temp, 0, 3);break;
 				}
-				cpm[i][j]=(byte) Im.permutationToIndex(temp, 4);
-				Im.indexToPermutation(temp, i, 4);
+				cpm[i][j]=(byte) Im.permToIdx(temp, 4);
+				Im.idxToPerm(temp, i, 4);
 				switch(j){
 				case 0: move(temp, 0, 1);break;
 				case 1: move(temp, 2, 3);break;
 				case 2: move(temp, 0, 3);break;
 				case 3: move(temp, 1, 2);break;
 				}
-				epm[0][i][j]=(byte) Im.permutationToIndex(temp, 4);
-				Im.indexToPermutation(temp, i, 4);
+				epm[0][i][j]=(byte) Im.permToIdx(temp, 4);
+				Im.idxToPerm(temp, i, 4);
 				switch(j){
 				case 0: move(temp, 0, 1);break;
 				case 1: move(temp, 2, 3);break;
 				case 4: move(temp, 0, 3);break;
 				case 5: move(temp, 1, 2);break;
 				}
-				epm[1][i][j]=(byte) Im.permutationToIndex(temp, 4);
-				Im.indexToPermutation(temp, i, 4);
+				epm[1][i][j]=(byte) Im.permToIdx(temp, 4);
+				Im.idxToPerm(temp, i, 4);
 				switch(j){
 				case 2: move(temp, 0, 3);break;
 				case 3: move(temp, 1, 2);break;
 				case 4: move(temp, 0, 1);break;
 				case 5: move(temp, 2, 3);break;
 				}
-				epm[2][i][j]=(byte) Im.permutationToIndex(temp, 4);
+				epm[2][i][j]=(byte) Im.permToIdx(temp, 4);
 			}
 		}
 		for(int i=0; i<24; i++)

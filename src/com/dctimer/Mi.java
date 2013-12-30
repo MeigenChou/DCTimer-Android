@@ -21,7 +21,7 @@ public class Mi {
 	public static int viewType;
 	public static int scrLen = 0;
 	private static short[][] defScrLen = {
-		{0, 15, 15, 0, 0, 0, 0, 0},
+		{0, 15, 15, 0, 0, 0, 0, 0, 0, 0},
 		{25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0},
 		{40, 40, 40, 8, 40},
 		{60, 60, 8},
@@ -31,12 +31,12 @@ public class Mi {
 		{0, 15},
 		{40, 20, 0, 0},
 		{0, 0, 0, 0},
-		{80, 80},
+		{0, 15},
 		{15, 25, 0, 25, 0, 0, 0, 40, 25, 40, 40, 120, 140, 140, 140},
 		{25, 25},
 		{0, 10},
 		{25, 25, 25},
-		{0, 25},
+		{80, 80},
 		{25, 40, 20, 20, 25, 25},
 		{0, 0, 0, 25, 25, 25, 0, 15},
 		{30, 25},
@@ -70,6 +70,18 @@ public class Mi {
 			scr=Cube222.randomXLL();viewType=2;break;
 		case 7:
 			scr=Cube222.egScr(DCTimer.egtype, DCTimer.egolls); viewType=2; break;
+		case 8:
+			scr = Cube222.randomTCLL(1); viewType = 2; break;
+		case 9:
+			scr = Cube222.randomTCLL(2); viewType = 2; break;
+		case 10:
+			scr = Cube222.randomTEG1(1); viewType = 2; break;
+		case 11:
+			scr = Cube222.randomTEG1(2); viewType = 2; break;
+		case 12:
+			scr = Cube222.randomTEG2(1); viewType = 2; break;
+		case 13:
+			scr = Cube222.randomTEG2(2); viewType = 2; break;
 		case 32: //3阶
 			scr=cube(3);viewType=3;
 			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[1], DCTimer.spSel[3]);
@@ -275,10 +287,13 @@ public class Mi {
 			scr=Clock.scrambleOld(true);viewType=12; break;
 		case 291:
 			scr=Clock.scrambleEpo(); viewType=12;break;
-		case 320:	//15puzzles
-			scr=OtherScr.do15puzzle(false);viewType=0;break;
+		case 320:	//Skewb
+			scr=Skewb.solve(new Random());viewType=16;break;
 		case 321:
-			scr=OtherScr.do15puzzle(true);viewType=0;break;
+			turn2=new String[][]{{"R"},{"U"},{"L"},{"B"}};
+			suff=new String[]{"","'"};
+			scr=OtherScr.megascramble(turn2, suff);
+			viewType=16;break;
 		case 352:	//MxNxL
 			turn2=new String[][]{{"R","L"},{"U","D"}};
 			scr=OtherScr.megascramble(turn2, new String[]{"2"});viewType=13;break;
@@ -344,13 +359,10 @@ public class Mi {
 			turn2=new String[][]{{"U"},{"R"},{"F"}};
 			scr=OtherScr.megascramble(turn2, csuff)+"z2 y "+OtherScr.megascramble(turn2, csuff);viewType=0;
 			break;
-		case 480:	//Skewb
-			scr=Skewb.solve(new Random());viewType=16;break;
+		case 480:	//15puzzles
+			scr=OtherScr.do15puzzle(false);viewType=0;break;
 		case 481:
-			turn2=new String[][]{{"R"},{"L"},{"B"},{"D"}};
-			suff=new String[]{"","'"};
-			scr=OtherScr.megascramble(turn2, suff);
-			viewType=16;break;
+			scr=OtherScr.do15puzzle(true);viewType=0;break;
 		case 512:	//Other
 			scr=LatchCube.scramble();viewType=0;break;
 		case 513:
@@ -506,16 +518,14 @@ public class Mi {
 					Color.RED,Color.BLUE,Color.rgb(255, 0, 255),Color.GREEN,Color.rgb(255, 136, 0),Color.YELLOW};
 			else colors=new int[] {Color.WHITE,Color.RED,Color.rgb(0, 161, 0),Color.rgb(123, 0, 123),Color.YELLOW,Color.BLUE,
 					Color.rgb(255, 255, 132),Color.rgb(66, 221, 255),Color.rgb(255, 127, 38),Color.GREEN,Color.rgb(255, 128, 255),Color.GRAY};
-			int defaultWidth = 350;
-			int defaultHeight = 180;
-			float scale = (float) Math.min((double)width/defaultWidth, width*0.75/defaultHeight);
-			int dx = (int) ((width - (defaultWidth * scale))/2);
-			int dy = (int) ((width*0.75 - (defaultHeight * scale))/2);
-			float majorR = 36*scale;
+			float scale = (float) (width / 350.);
+			int dx = (int) ((width - 350 * scale) / 2);
+			int dy = (int) ((width * 0.75 - 180 * scale) / 2);
+			float majorR = 36 * scale;
 			float minorR = majorR * edgeFrac;
-			float pentR = minorR*2;
-			float cx1 = 92*scale + dx;
-			float cy1 = 80*scale + dy;
+			float pentR = minorR * 2;
+			float cx1 = 92 * scale + dx;
+			float cy1 = 80 * scale + dy;
 			float cx2 = cx1 + c18(1)*3*pentR;
 			float cy2 = cy1 + s18(1)*1*pentR;
 			float[] aryx, aryy;
@@ -558,6 +568,10 @@ public class Mi {
 				arys=rotate(a, b, aryx, aryy, trans[side][0]);
 				drawPolygon(p,c,colors[img[d++]],arys[0],arys[1],true);
 			}
+			p.setTextAlign(Align.CENTER);
+			p.setTextSize((float) (width * 0.0593));
+			c.drawText("U", (float)(width*0.262), (float)(width*0.367), p);
+			c.drawText("F", (float)(width*0.262), (float)(width*0.535), p);
 		}
 		//金字塔
 		else if(viewType==17) {	//TODO
@@ -927,27 +941,32 @@ public class Mi {
 		//Skewb
 		else if(viewType==16) {
 			byte[] imst=Skewb.image(DCTimer.crntScr);
-			int a = (width-19)/8, i, d = 0;
-			int stx = (width-8*a-19)/2, sty = (width*3/4-6*a-14)/2;
-			byte[] dxi = {3,7,5,3,3,1}, dyi = {5,3,3,1,3,3};
-			byte[] sxi = {7,19,13,7,7,1}, syi = {13,7,7,1,7,7};
+			colors = new int[] {DCTimer.share.getInt("csw4", Color.WHITE), DCTimer.share.getInt("csw6", 0xffff8026), DCTimer.share.getInt("csw5", 0xff009900),
+					DCTimer.share.getInt("csw3", Color.RED), DCTimer.share.getInt("csw2", Color.BLUE), DCTimer.share.getInt("csw1", Color.YELLOW)};
+			int b = width / 4, a = (int) (b / 2 * Math.sqrt(3));
+			int stx = (width - 4*a) / 2, sty = (width*3/4 - 3*b) / 2, i, d = 0;
+			float e = (float) (3 / Math.sqrt(3)), f = (float) (3 * Math.sqrt(3));
+			float[] dx = {a*2, a*3-6, a+6, a*2, 3, a-3, 3, a-3, a+3, a*2-3, a+3, a*2-3,
+					a*2+3, a*3-3, a*2+3, a*3-3, a*3+3, a*4-3, a*3+3, a*4-3, a+3, a*2-3, a+3, a*2-3};
+			float[] dy = {e*2, b/2, b/2, b-e*2, f, b/2+e, b-e, b*3/2-f, b/2+f, b+e, b*3/2-e, b*2-f,
+					b+e, b/2+f, b*2-f, b*3/2-e, b/2+e, f, b*3/2-f, b-e, b*3/2+f, b*2+e, b*5/2-e, b*3-f};
 			p.setStyle(Paint.Style.FILL);
 			for(i=0; i<6; i++) {
 				drawPolygon(p,c,colors[imst[d++]],
-						new float[]{stx+sxi[i]+(dxi[i]-1)*a+1, stx+sxi[i]+dxi[i]*a, stx+sxi[i]+(dxi[i]-1)*a+1},
-						new float[]{sty+syi[i]+(dyi[i]-1)*a+1, sty+syi[i]+(dyi[i]-1)*a+1, sty+syi[i]+dyi[i]*a},true);
+						new float[]{stx+dx[i*4], stx+(dx[i*4]+dx[i*4+1])/2, stx+(dx[i*4]+dx[i*4+2])/2},
+						new float[]{sty+dy[i*4], sty+(dy[i*4]+dy[i*4+1])/2, sty+(dy[i*4]+dy[i*4+2])/2}, true);
 				drawPolygon(p,c,colors[imst[d++]],
-						new float[]{stx+sxi[i]+dxi[i]*a, stx+sxi[i]+(dxi[i]+1)*a-1, stx+sxi[i]+(dxi[i]+1)*a-1},
-						new float[]{sty+syi[i]+(dyi[i]-1)*a+1, sty+syi[i]+(dyi[i]-1)*a+1, sty+syi[i]+dyi[i]*a},true);
+						new float[]{stx+dx[i*4+1], stx+(dx[i*4]+dx[i*4+1])/2, stx+(dx[i*4+1]+dx[i*4+3])/2},
+						new float[]{sty+dy[i*4+1], sty+(dy[i*4]+dy[i*4+1])/2, sty+(dy[i*4+1]+dy[i*4+3])/2}, true);
 				drawPolygon(p,c,colors[imst[d++]],
-						new float[]{stx+sxi[i]+(dxi[i]+1)*a-1, stx+sxi[i]+(dxi[i]+1)*a-1, stx+sxi[i]+dxi[i]*a},
-						new float[]{sty+syi[i]+dyi[i]*a, sty+syi[i]+(dyi[i]+1)*a-1, sty+syi[i]+(dyi[i]+1)*a-1},true);
+						new float[]{stx+(dx[i*4]+dx[i*4+2])/2, stx+(dx[i*4]+dx[i*4+1])/2, stx+(dx[i*4+1]+dx[i*4+3])/2, stx+(dx[i*4+2]+dx[i*4+3])/2},
+						new float[]{sty+(dy[i*4]+dy[i*4+2])/2, sty+(dy[i*4]+dy[i*4+1])/2, sty+(dy[i*4+1]+dy[i*4+3])/2, sty+(dy[i*4+2]+dy[i*4+3])/2}, true);
 				drawPolygon(p,c,colors[imst[d++]],
-						new float[]{stx+sxi[i]+dxi[i]*a, stx+sxi[i]+(dxi[i]-1)*a+1, stx+sxi[i]+(dxi[i]-1)*a+1},
-						new float[]{sty+syi[i]+(dyi[i]+1)*a-1, sty+syi[i]+(dyi[i]+1)*a-1, sty+syi[i]+dyi[i]*a},true);
+						new float[]{stx+dx[i*4+2], stx+(dx[i*4]+dx[i*4+2])/2, stx+(dx[i*4+2]+dx[i*4+3])/2},
+						new float[]{sty+dy[i*4+2], sty+(dy[i*4]+dy[i*4+2])/2, sty+(dy[i*4+2]+dy[i*4+3])/2}, true);
 				drawPolygon(p,c,colors[imst[d++]],
-						new float[]{stx+sxi[i]+dxi[i]*a, stx+sxi[i]+(dxi[i]+1)*a-1, stx+sxi[i]+dxi[i]*a, stx+sxi[i]+(dxi[i]-1)*a+1},
-						new float[]{sty+syi[i]+(dyi[i]-1)*a+1, sty+syi[i]+dyi[i]*a, sty+syi[i]+(dyi[i]+1)*a-1, sty+syi[i]+dyi[i]*a},true);
+						new float[]{stx+dx[i*4+3], stx+(dx[i*4+3]+dx[i*4+2])/2, stx+(dx[i*4+1]+dx[i*4+3])/2},
+						new float[]{sty+dy[i*4+3], sty+(dy[i*4+3]+dy[i*4+2])/2, sty+(dy[i*4+1]+dy[i*4+3])/2}, true);
 			}
 		}
 		else {

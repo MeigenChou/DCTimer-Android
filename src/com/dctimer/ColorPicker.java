@@ -7,7 +7,9 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Paint.Style;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.graphics.Shader.TileMode;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -36,9 +38,10 @@ public class ColorPicker extends Dialog {
         super.onCreate(savedInstanceState);
         WindowManager manager = getWindow().getWindowManager();
         int size = Math.min(manager.getDefaultDisplay().getHeight(), manager.getDefaultDisplay().getWidth());
-		int height = (int) (size * 0.8);
-		int width = (int) (size * 0.8);
-		ColorPickerView myView = new ColorPickerView(context, height, width);
+        size = size * 8 / 10;
+//		int height = (int) (size * 0.8);
+//		int width = (int) (size * 0.8);
+		ColorPickerView myView = new ColorPickerView(context, size, size);
         setContentView(myView);
     }
     
@@ -61,6 +64,8 @@ public class ColorPicker extends Dialog {
     	private boolean downInCRect = true;//按在七彩图上
     	private boolean downInRect;//按在渐变方块上
     	private int downInBottom; //按在选择块上
+    	private int downInDef;	//按在预设块上
+    	private int[] defColor = {Color.RED, Color.YELLOW, 0xff009900, Color.WHITE, Color.BLUE, 0xffff8026};
     	
     	public ColorPickerView(Context context, int height, int width) {
     		super(context);
@@ -111,7 +116,6 @@ public class ColorPicker extends Dialog {
     		canvas.drawRect((float)(dx+mWidth*0.01), dy-1, (float)(dx+mWidth*0.04), dy+1, paint);
     		canvas.drawRect(dx-1, (float)(dy-mWidth*0.04), dx+1, (float)(dy-mWidth*0.01), paint);
     		canvas.drawRect(dx-1, (float)(dy+mWidth*0.01), dx+1, (float)(dy+mWidth*0.04), paint);
-    		
     		//画亮度条
     		int x = hslToRgb(hue, saturation, 0.5);
     		mRectColors = new int[] {0xffffffff, x, 0xff000000};
@@ -128,16 +132,30 @@ public class ColorPicker extends Dialog {
     		path.close();
     		canvas.drawPath(path, paint);
     		//画选择块
-    		canvas.drawRect(0, (float)(mHeight*0.69), (float)(mWidth*0.49), (float)(mHeight*0.85), mLeftPaint);
-    		canvas.drawRect((float)(mWidth*0.51), (float)(mHeight*0.69), mWidth, (float)(mHeight*0.85), mRightPaint);
+    		float a = (float) (mWidth / 52.);
+    		canvas.drawRoundRect(new RectF(0, (float)(mHeight*0.69), (float)(mWidth*0.49), (float)(mHeight*0.84)), a, a, mLeftPaint);
+    		canvas.drawRoundRect(new RectF((float)(mWidth*0.51), (float)(mHeight*0.69), mWidth, (float)(mHeight*0.84)), a, a, mRightPaint);
+    		paint.setColor((0xffffff - mLeftPaint.getColor()&0xffffff)|0xff000000);
+    		paint.setStyle(Style.STROKE);
+    		canvas.drawRoundRect(new RectF(0, (float)(mHeight*0.69), (float)(mWidth*0.49), (float)(mHeight*0.84)), a, a, paint);
+    		paint.setColor((0xffffff - mRightPaint.getColor()&0xffffff)|0xff000000);
+    		canvas.drawRoundRect(new RectF((float)(mWidth*0.51), (float)(mHeight*0.69), mWidth, (float)(mHeight*0.84)), a, a, paint);
+    		
     		super.onDraw(canvas);
     		Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     		textPaint.setTextSize(mHeight/16);
     		textPaint.setTextAlign(Align.CENTER);
     		textPaint.setColor((0xffffff - mLeftPaint.getColor()&0xffffff)|0xff000000);
-    		canvas.drawText(context.getResources().getString(R.string.btn_ok), mWidth/4, (float)(mHeight*0.79), textPaint);
+    		canvas.drawText(context.getResources().getString(R.string.btn_ok), mWidth/4, (float)(mHeight*0.785), textPaint);
     		textPaint.setColor((0xffffff - mRightPaint.getColor()&0xffffff)|0xff000000);
-    		canvas.drawText(context.getResources().getString(R.string.btn_cancel), mWidth*3/4, (float)(mHeight*0.79), textPaint);
+    		canvas.drawText(context.getResources().getString(R.string.btn_cancel), mWidth*3/4, (float)(mHeight*0.785), textPaint);
+    		
+    		//画预设块
+    		paint.setStyle(Style.FILL);
+    		for(int i=0; i<6; i++) {
+    			paint.setColor(defColor[i]);
+    			canvas.drawRoundRect(new RectF((float)(mWidth*(i*0.172)), (float)(mHeight*0.86), (float)(mHeight*(i*0.172+0.14)), mHeight), a, a, paint);
+        	}
     	}
     	
     	@Override
@@ -147,27 +165,38 @@ public class ColorPicker extends Dialog {
     		boolean inCRect = inColorRect(x, y);
     		int inBottom = inBottom(x, y);
     		boolean inRect = inRect(x, y);
+    		int inDef = inDefault(x, y);
     		
     		switch (event.getAction()) {
     		case MotionEvent.ACTION_DOWN:
     			downInCRect = inCRect;
     			downInRect = inRect;
     			downInBottom = inBottom;
+    			downInDef = inDef;
     		case MotionEvent.ACTION_MOVE:
     			if(downInCRect && inCRect) { //down按在渐变色环内, 且move也在渐变色环内
     				hue = getHue(x);
     				saturation = getSl(y);
     				mLeftPaint.setColor(hslToRgb(hue, saturation, lum));
-    			}else if(downInRect && inRect) { //down在渐变方块内, 且move也在渐变方块内
+    			} else if(downInRect && inRect) { //down在渐变方块内, 且move也在渐变方块内
     				lum = getSl(y);
     				mLeftPaint.setColor(hslToRgb(hue, saturation, lum));
     				//Log.v("text", hue+","+saturation+","+lum);
+    			} else if(downInDef >= 0 && inDef == downInDef) {
+    				double[] hsl = rgbToHSL(defColor[inDef]);
+    				hue = (int)hsl[0];
+    				saturation = hsl[1];
+    	    		lum = hsl[2];
+    	    		mLeftPaint.setColor(defColor[inDef]);
     			}
     			if(downInBottom == 1 && inBottom !=1) {
     				downInBottom = 0;
     			}
     			else if(downInBottom == 2 && inBottom !=2) {
     				downInBottom = 0;
+    			}
+    			else if(downInDef >=0 && inDef < 0) {
+    				downInDef = -1;
     			}
     			invalidate();
             	break;
@@ -185,12 +214,12 @@ public class ColorPicker extends Dialog {
     		}
     		return true;
     	}
-    	
+
     	@Override
 		protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 			super.onMeasure(mWidth, mHeight);
 		}
-    	
+
     	/**
 		 * 坐标是否在七彩图上
 		 * @param x 坐标
@@ -200,7 +229,7 @@ public class ColorPicker extends Dialog {
 		private boolean inColorRect(float x, float y) {
 			return x > 0 && x < mWidth * 0.82 && y>0 && y < mHeight * 0.67;
 		}
-		
+
 		/**
 		 * 坐标是否在选择块上
 		 * @param x 坐标
@@ -211,13 +240,13 @@ public class ColorPicker extends Dialog {
 		 */
 		private int inBottom(float x, float y) {
 			if(y < mHeight * 0.69) return 0;
-			else if(y < mHeight * 0.85){
+			if(y < mHeight * 0.84) {
 				if(x > 0 && x < mWidth / 2) return 1;
 				else if(x > mWidth / 2 && x < mWidth) return 2;
 			}
 			return 0;
 		}
-		
+
 		/**
 		 * 坐标是否在渐变色中
 		 * @param x
@@ -227,7 +256,23 @@ public class ColorPicker extends Dialog {
 		private boolean inRect(float x, float y) {
 			return x > mWidth * 0.84 && x < mWidth && y > 0 && y < mHeight * 0.67;
 		}
-		
+
+		/**
+		 * 坐标是否在预设块中
+		 * @param x
+		 * @param y
+		 * @return color idx
+		 */
+		private int inDefault(float x, float y) {
+			if(y < mHeight * 0.86) return -1;
+			if(x < mWidth * 0.167) return 0;
+			if(x < mWidth * 0.333) return 1;
+			if(x < mWidth / 2) return 2;
+			if(x < mWidth * 0.667) return 3;
+			if(x < mWidth * 0.833) return 4;
+			return 5;
+		}
+
 		/**
 		 * 获取七彩图色调
 		 * @param x

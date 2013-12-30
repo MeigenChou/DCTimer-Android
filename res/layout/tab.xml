@@ -1053,6 +1053,27 @@
                                 android:textSize="17sp"
                                 android:drawableRight="@drawable/arrow" />
                         </LinearLayout>
+                        
+                        <LinearLayout 
+                            android:id="@+id/lay24"
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dip"
+                            android:gravity="center"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip"
+                            android:layout_marginBottom="1dip"
+                            android:longClickable="true"
+                            android:orientation="horizontal" >
+                            
+                            <TextView
+                                android:id="@+id/stt56"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="4dip"
+                                android:text="@string/stt_csw"
+                                android:textSize="17sp"
+                                android:drawableRight="@drawable/arrow" />
+                        </LinearLayout>
                     </LinearLayout>
                     
                     <TextView

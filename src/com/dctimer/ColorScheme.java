@@ -61,6 +61,7 @@ public class ColorScheme extends Dialog {
     		switch(cubeType) {
     		case 1:
     		case 3:
+    		case 4:
     			if(downInPosition>0) {
     				mPaint.setColor(0xff00ff00);
     				switch(downInPosition) {
@@ -98,13 +99,15 @@ public class ColorScheme extends Dialog {
     			canvas.drawRect((float)(mWidth*0.27), (float)(mWidth*0.52), (float)(mWidth*0.48), (float)(mWidth*0.73), mPaint);
     			mPaint.setStyle(Style.STROKE);
     			mPaint.setColor(0xff000000);
+    			mPaint.setTextSize(mWidth/16);
+    			mPaint.setTextAlign(Align.CENTER);
     			canvas.drawRect((float)(mWidth*0.27), (float)(mWidth*0.02), (float)(mWidth*0.48), (float)(mWidth*0.23), mPaint);
     			canvas.drawRect((float)(mWidth*0.02), (float)(mWidth*0.27), (float)(mWidth*0.23), (float)(mWidth*0.48), mPaint);
     			canvas.drawRect((float)(mWidth*0.27), (float)(mWidth*0.27), (float)(mWidth*0.48), (float)(mWidth*0.48), mPaint);
     			canvas.drawRect((float)(mWidth*0.52), (float)(mWidth*0.27), (float)(mWidth*0.73), (float)(mWidth*0.48), mPaint);
     			canvas.drawRect((float)(mWidth*0.77), (float)(mWidth*0.27), (float)(mWidth*0.98), (float)(mWidth*0.48), mPaint);
     			canvas.drawRect((float)(mWidth*0.27), (float)(mWidth*0.52), (float)(mWidth*0.48), (float)(mWidth*0.73), mPaint);
-    			if(cubeType==1){
+    			if(cubeType==1) {
     				canvas.drawRect((float)(mWidth*0.27), (float)(mWidth*0.09), (float)(mWidth*0.48), (float)(mWidth*0.16), mPaint);
     				canvas.drawRect((float)(mWidth*0.34), (float)(mWidth*0.02), (float)(mWidth*0.41), (float)(mWidth*0.23), mPaint);
     				canvas.drawRect((float)(mWidth*0.02), (float)(mWidth*0.34), (float)(mWidth*0.23), (float)(mWidth*0.41), mPaint);
@@ -117,8 +120,10 @@ public class ColorScheme extends Dialog {
     				canvas.drawRect((float)(mWidth*0.84), (float)(mWidth*0.27), (float)(mWidth*0.91), (float)(mWidth*0.48), mPaint);
     				canvas.drawRect((float)(mWidth*0.27), (float)(mWidth*0.59), (float)(mWidth*0.48), (float)(mWidth*0.66), mPaint);
     				canvas.drawRect((float)(mWidth*0.34), (float)(mWidth*0.52), (float)(mWidth*0.41), (float)(mWidth*0.73), mPaint);
+    				canvas.drawText("U", (float)(mWidth*0.375), (float)(mWidth*0.15), mPaint);
+    				canvas.drawText("F", (float)(mWidth*0.375), (float)(mWidth*0.40), mPaint);
     			}
-    			else if(cubeType==3){
+    			else if(cubeType==3) {
     				canvas.drawLine((float)(mWidth*0.347), (float)(mWidth*0.02), (float)(mWidth*0.403), (float)(mWidth*0.23), mPaint);
     				canvas.drawLine((float)(mWidth*0.403), (float)(mWidth*0.02), (float)(mWidth*0.347), (float)(mWidth*0.23), mPaint);
     				canvas.drawLine((float)(mWidth*0.27), (float)(mWidth*0.097), (float)(mWidth*0.48), (float)(mWidth*0.153), mPaint);
@@ -141,7 +146,54 @@ public class ColorScheme extends Dialog {
     				canvas.drawLine((float)(mWidth*0.403), (float)(mWidth*0.52), (float)(mWidth*0.347), (float)(mWidth*0.73), mPaint);
     				canvas.drawLine((float)(mWidth*0.27), (float)(mWidth*0.597), (float)(mWidth*0.48), (float)(mWidth*0.653), mPaint);
     				canvas.drawLine((float)(mWidth*0.27), (float)(mWidth*0.653), (float)(mWidth*0.48), (float)(mWidth*0.597), mPaint);
-    				
+    				canvas.drawText("U", (float)(mWidth*0.42), (float)(mWidth*0.20), mPaint);
+    				canvas.drawText("F", (float)(mWidth*0.375), (float)(mWidth*0.40), mPaint);
+    			}
+    			else if(cubeType==4) {
+    				Path path = new Path();
+    				path.moveTo((float)(mWidth*0.375), (float)(mWidth*0.02));
+    				path.lineTo((float)(mWidth*0.48), (float)(mWidth*0.125));
+    				path.lineTo((float)(mWidth*0.375), (float)(mWidth*0.23));
+    				path.lineTo((float)(mWidth*0.27), (float)(mWidth*0.125));
+    				path.close();
+    				canvas.drawPath(path, mPaint);
+    				path = new Path();
+    				path.moveTo((float)(mWidth*0.125), (float)(mWidth*0.27));
+    				path.lineTo((float)(mWidth*0.23), (float)(mWidth*0.375));
+    				path.lineTo((float)(mWidth*0.125), (float)(mWidth*0.48));
+    				path.lineTo((float)(mWidth*0.02), (float)(mWidth*0.375));
+    				path.close();
+    				canvas.drawPath(path, mPaint);
+    				path = new Path();
+    				path.moveTo((float)(mWidth*0.375), (float)(mWidth*0.27));
+    				path.lineTo((float)(mWidth*0.48), (float)(mWidth*0.375));
+    				path.lineTo((float)(mWidth*0.375), (float)(mWidth*0.48));
+    				path.lineTo((float)(mWidth*0.27), (float)(mWidth*0.375));
+    				path.close();
+    				canvas.drawPath(path, mPaint);
+    				path = new Path();
+    				path.moveTo((float)(mWidth*0.625), (float)(mWidth*0.27));
+    				path.lineTo((float)(mWidth*0.73), (float)(mWidth*0.375));
+    				path.lineTo((float)(mWidth*0.625), (float)(mWidth*0.48));
+    				path.lineTo((float)(mWidth*0.52), (float)(mWidth*0.375));
+    				path.close();
+    				canvas.drawPath(path, mPaint);
+    				path = new Path();
+    				path.moveTo((float)(mWidth*0.875), (float)(mWidth*0.27));
+    				path.lineTo((float)(mWidth*0.98), (float)(mWidth*0.375));
+    				path.lineTo((float)(mWidth*0.875), (float)(mWidth*0.48));
+    				path.lineTo((float)(mWidth*0.77), (float)(mWidth*0.375));
+    				path.close();
+    				canvas.drawPath(path, mPaint);
+    				path = new Path();
+    				path.moveTo((float)(mWidth*0.375), (float)(mWidth*0.52));
+    				path.lineTo((float)(mWidth*0.48), (float)(mWidth*0.625));
+    				path.lineTo((float)(mWidth*0.375), (float)(mWidth*0.73));
+    				path.lineTo((float)(mWidth*0.27), (float)(mWidth*0.625));
+    				path.close();
+    				canvas.drawPath(path, mPaint);
+    				canvas.drawText("U", (float)(mWidth*0.375), (float)(mWidth*0.15), mPaint);
+    				canvas.drawText("FL", (float)(mWidth*0.375), (float)(mWidth*0.40), mPaint);
     			}
     			break;
     		case 2:
@@ -194,7 +246,7 @@ public class ColorScheme extends Dialog {
     		mPaint.setStyle(Style.FILL);
     		mPaint.setColor(0xffc0c0c0);
     		canvas.drawRect(mWidth*2/3, (float)(mHeight*0.81), mWidth, mHeight, mPaint);
-    		mPaint.setTextSize(mWidth/16);
+    		
     		mPaint.setColor(0xff000000);
     		mPaint.setTextAlign(Align.CENTER);
     		canvas.drawText(context.getResources().getString(R.string.scheme_reset), mWidth*5/6, (float)(mHeight*0.93), mPaint);
@@ -205,10 +257,11 @@ public class ColorScheme extends Dialog {
     		float x = event.getX();
     		float y = event.getY();
     		int inPosition = 0;
-    		switch(cubeType){
+    		switch(cubeType) {
     		case 1:
-    		case 3:inPosition=inCube(x, y);break;
-    		case 2:inPosition=inPrym(x, y);break;
+    		case 3:
+    		case 4: inPosition=inCube(x, y); break;
+    		case 2: inPosition=inPrym(x, y); break;
     		}
     		switch (event.getAction()) {
     		case MotionEvent.ACTION_DOWN:
@@ -240,10 +293,12 @@ public class ColorScheme extends Dialog {
     				switch(cubeType) {
     				case 1:
     				case 3:
+    				case 4:
     					color = new int[]{0xffffff00, 0xff0000ff, 0xffff0000, 0xffffffff, 0xff009900, 0xffff8026};
     					for(int i=1; i<7; i++)
     						if(cubeType==1) DCTimer.edit.remove("csn"+i);
-    						else DCTimer.edit.remove("csq"+i);
+    						else if(cubeType==3) DCTimer.edit.remove("csq"+i);
+    						else DCTimer.edit.remove("csw"+i);
     					break;
     				case 2:
     					color = new int[]{0xffff0000, 0xff009900, 0xff0000ff, 0xffffff00};

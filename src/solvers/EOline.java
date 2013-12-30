@@ -12,7 +12,7 @@ public class EOline {
 		int[] arr=new int[12];
 		for(int i=0; i<2048; i++){
 			for(int j=0; j<6; j++) {
-				Im.indexToZeroSumOrientation(arr, i, 2, 12);
+				Im.idxToZori(arr, i, 2, 12);
 				switch(j){
 				case 0: Im.cir(arr, 4, 7, 6, 5); break;
 				case 1: Im.cir(arr, 8, 9, 10, 11); break;
@@ -23,7 +23,7 @@ public class EOline {
 				case 5: Im.cir(arr, 4, 0, 8, 3);
 					arr[4]^=1; arr[0]^=1; arr[8]^=1; arr[3]^=1; break;
 				}
-				eom[i][j] = (short) Im.zeroSumOrientationToIndex(arr, 2, 12);
+				eom[i][j] = (short) Im.zoriToIdx(arr, 2, 12);
 			}
 		}
 		for(int i=0; i<66; i++){
@@ -76,9 +76,9 @@ public class EOline {
 	
 	private static int getEpm(int eci, int epi, int k){
 		boolean[] combination = new boolean[12];
-		Im.indexToCombination(combination, eci, 2, 12);
+		Im.idxToComb(combination, eci, 2, 12);
 		int[] permutation = new int[2];
-		Im.indexToPermutation(permutation, epi, 2);
+		Im.idxToPerm(permutation, epi, 2);
 		byte[] selectedEdges = {8, 10};
 		int next = 0;
 		int[] ep = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
@@ -96,12 +96,12 @@ public class EOline {
 		boolean[] ec = new boolean[12];
 		for (int i = 0; i < 12; i++)
 			ec[i] = ep[i] > 0;
-		eci = Im.combinationToIndex(ec, 2);
+		eci = Im.combToIdx(ec, 2);
 		int[] edgesPermutation = new int[2];
 		next = 0;
 		for (int i = 0; i < 12; i++)
 			if (ec[i]) edgesPermutation[next++] = ep[i] > -1 ? edgesMapping[ep[i]-8] : -1;
-		epi = Im.permutationToIndex(edgesPermutation, 2);
+		epi = Im.permToIdx(edgesPermutation, 2);
 		return eci * 2 + epi;
 	}
 	

@@ -15,28 +15,28 @@ public class Gear {
 		int[] arr = new int[4];
 		for(int i = 0; i < 24; i++){
 			for(int j = 0; j < 3; j++){
-				Im.indexToPermutation(arr, i, 4);
+				Im.idxToPerm(arr, i, 4);
 				Im.cir(arr, 3, j);
-				cpm[i][j] = (byte) Im.permutationToIndex(arr, 4);
+				cpm[i][j] = (byte) Im.permToIdx(arr, 4);
 			}
 		}
 		for(int i = 0; i < 24; i++){
 			for(int j = 0; j < 3; j++){
-				Im.indexToPermutation(arr, i, 4);
+				Im.idxToPerm(arr, i, 4);
 				switch(j){
 				case 0: Im.cir(arr, 0, 3, 2, 1); break;
 				case 1: Im.cir(arr, 0, 1); break;
 				case 2: Im.cir(arr, 1, 2); break;
 				}
-				epm[i][j] = (byte) Im.permutationToIndex(arr, 4);
+				epm[i][j] = (byte) Im.permToIdx(arr, 4);
 			}
 		}
 		arr = new int[3];
 		for(int i = 0; i < 27; i++){
 			for(int j = 0; j < 3; j++){
-				Im.indexToOrientation(arr, i, 3, 3);
+				Im.idxToOri(arr, i, 3, 3);
 				arr[j] = (arr[j] + 1) % 3;
-				eom[i][j] = (byte) Im.orientationToIndex(arr, 3, 3);
+				eom[i][j] = (byte) Im.oriToIdx(arr, 3, 3);
 			}
 		}
 		//int n;

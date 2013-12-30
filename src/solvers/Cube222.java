@@ -133,6 +133,13 @@ public class Cube222 {
 		state[1][corner] += value;
 	}
 
+	private static void reset() {
+		for(int i=0; i<8; i++) {
+			state[0][i] = i;
+			state[1][i] = 0;
+		}
+	}
+
 	public static String randomState() {
 		int p = r.nextInt(5040);
 		int o = r.nextInt(729);
@@ -140,10 +147,7 @@ public class Cube222 {
 	}
 	
 	public static void randomEG(int type, String olls) {
-		for(int i=0; i<8; i++) {
-			state[0][i] = i;
-			state[1][i] = 0;
-		}
+		reset();
 		//整体转动
 		for(int i=0; i<3; i++)
 			doMove(i+6, r.nextInt(4));
@@ -187,9 +191,9 @@ public class Cube222 {
 			swap(i, i+r.nextInt(4-i));
 		}
 		if(olls.equals(""))
-			Im.indexToZeroSumOrientation(state[1], r.nextInt(27), 3, 4);
+			Im.idxToZori(state[1], r.nextInt(27), 3, 4);
 		else if(olls.equals("X") || olls.equals("PHUTLSA")) {
-			Im.indexToZeroSumOrientation(state[1], r.nextInt(26)+1, 3, 4);
+			Im.idxToZori(state[1], r.nextInt(26)+1, 3, 4);
 		}
 		else {
 			char oll = olls.charAt(r.nextInt(olls.length()));
@@ -236,12 +240,78 @@ public class Cube222 {
 		}
 	}
 	
+	public static void randomTEG(int type, int twist) {
+		reset();
+		//整体转动
+		for(int i=0; i<3; i++)
+			doMove(i+6, r.nextInt(4));
+		//交换底层2块
+		//doMove(3, r.nextInt(4));
+		switch (type) {
+		case 4:	//不交换
+			break;
+		case 2:	//交换相邻两块
+			swap(4, 6);
+			break;
+		case 1:	//交换相对两块
+			swap(5, 6);
+			break;
+		case 6:	//不交换或交换相邻块
+			if(r.nextInt(2)==1) 
+				swap(4, 5);
+			break;
+		case 5:	//不交换或交换相对块
+			if(r.nextInt(2)==1)
+				swap(5, 6);
+			break;
+		case 3:	//交换任意两块
+			swap(4+r.nextInt(2), 6);
+			break;
+		default:
+			switch (r.nextInt(3)) {
+			case 0:
+				break;
+			case 1:
+				swap(4, 6);
+				break;
+			case 2:
+				swap(5, 6);
+				break;
+			}
+			break;
+		}
+		//随机顶层
+		for(int i=0; i<4; i++) {
+			swap(i, i+r.nextInt(4-i));
+		}
+		Im.idxToZori(state[1], r.nextInt(27), 3, 4);
+		//一个底角翻转
+		twist(4, twist);
+		//随机一个顶角翻转
+		twist(r.nextInt(4), 3-twist);
+		doMove(0, r.nextInt(4));
+		//将DBL块放到D层
+		while (state[0][4]!=7 && state[0][5]!=7 && state[0][6]!=7
+				&& state[0][7]!=7) {
+			doMove(7, 1);
+		}
+		//将DBL块放回原位
+		while (state[0][7] != 7) {
+			doMove(6, 1);
+		}
+		//调整DBL块色向
+		while (state[1][7]%3 != 0) {
+			doMove(7, 1);
+			doMove(6, 1);
+		}
+	}
+
 	public static String randomCLL() {
 		int p, o;
 		do {
 			randomEG(4, "X");
 			p = prmToIdx(state[0]);
-			o = Im.zeroSumOrientationToIndex(state[1], 3, 7);
+			o = Im.zoriToIdx(state[1], 3, 7);
 		} while (p==0 && o==0);
 		return solve(p, o);
 	}
@@ -251,7 +321,7 @@ public class Cube222 {
 		do {
 			randomEG(2, "X");
 			p = prmToIdx(state[0]);
-			o = Im.zeroSumOrientationToIndex(state[1], 3, 7);
+			o = Im.zoriToIdx(state[1], 3, 7);
 		} while (p==0 && o==0);
 		return solve(p, o);
 	}
@@ -261,7 +331,7 @@ public class Cube222 {
 		do {
 			randomEG(1, "X");
 			p = prmToIdx(state[0]);
-			o = Im.zeroSumOrientationToIndex(state[1], 3, 7);
+			o = Im.zoriToIdx(state[1], 3, 7);
 		} while (p==0 && o==0);
 		return solve(p, o);
 	}
@@ -271,7 +341,37 @@ public class Cube222 {
 		do {
 			randomEG(0, "N");
 			p = prmToIdx(state[0]);
-			o = Im.zeroSumOrientationToIndex(state[1], 3, 7);
+			o = Im.zoriToIdx(state[1], 3, 7);
+		} while (p==0 && o==0);
+		return solve(p, o);
+	}
+	
+	public static String randomTCLL(int twist) {
+		int p, o;
+		do {
+			randomTEG(4, twist);
+			p = prmToIdx(state[0]);
+			o = Im.zoriToIdx(state[1], 3, 7);
+		} while (p==0 && o==0);
+		return solve(p, o);
+	}
+	
+	public static String randomTEG1(int twist) {
+		int p, o;
+		do {
+			randomTEG(2, twist);
+			p = prmToIdx(state[0]);
+			o = Im.zoriToIdx(state[1], 3, 7);
+		} while (p==0 && o==0);
+		return solve(p, o);
+	}
+	
+	public static String randomTEG2(int twist) {
+		int p, o;
+		do {
+			randomTEG(1, twist);
+			p = prmToIdx(state[0]);
+			o = Im.zoriToIdx(state[1], 3, 7);
 		} while (p==0 && o==0);
 		return solve(p, o);
 	}
@@ -281,7 +381,7 @@ public class Cube222 {
 		do {
 			randomEG(type, olls);
 			p = prmToIdx(state[0]);
-			o = Im.zeroSumOrientationToIndex(state[1], 3, 7);
+			o = Im.zoriToIdx(state[1], 3, 7);
 		} while (p==0 && o==0);
 		return solve(p, o);
 	}
@@ -301,11 +401,11 @@ public class Cube222 {
 		//given orientation p<729 and move m<3, return new orientation number
 		//convert number into array;
 		int[] ps=new int[7];
-		Im.indexToZeroSumOrientation(ps, p, 3, 7);
+		Im.idxToZori(ps, p, 3, 7);
 		//perform move on array
 		twistMove(ps, m);
 		//convert array back to number
-		return Im.zeroSumOrientationToIndex(ps, 3, 7);
+		return Im.zoriToIdx(ps, 3, 7);
 	}
 	
 	private static void calcperm(){

@@ -68,7 +68,7 @@ public class Cube2bl {
 	private static int getmv(int c, int po, int v) {
 		int[] n = new int[8], s = new int[4], y = new int[4];
 		Cross.idxToPerm(s, po);
-		Im.indexToOrientation(y, po, 3, 4);
+		Im.idxToOri(y, po, 3, 4);
 		int q=4, t;
 		for(t=0; 8>t; t++)
 			if(c >= Cnk[7-t][q]) {

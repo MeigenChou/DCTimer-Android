@@ -42,7 +42,7 @@ public class RTower {
 		}
 		for (int i = 0; i < 2187; i++) {
 			for (int j = 0; j < 5; j++) {
-				Im.indexToZeroSumOrientation(arr, i, 3, 8);
+				Im.idxToZori(arr, i, 3, 8);
 				switch(j){
 				case 2:Im.cir(arr, 0, 3, 2, 1);break;	//U
 				case 0:Im.cir(arr, 1, 2, 6, 5);
@@ -62,7 +62,7 @@ public class RTower {
 				arr[5]=(arr[5]+1)%3;arr[4]=(arr[4]+2)%3;
 				break;	//B
 				}
-				eom[i][j]=(short) Im.zeroSumOrientationToIndex(arr, 3, 8);
+				eom[i][j]=(short) Im.zoriToIdx(arr, 3, 8);
 			}
 		}
 		for (int i = 1; i < 40320; i++)

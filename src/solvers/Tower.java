@@ -61,14 +61,14 @@ public class Tower {
     		for (int j = 0; j < 6; j++) {
     			if(j<2)epm[i][j]=(byte) i;
     			else {
-    				Im.indexToPermutation(arr, i, 4);
+    				Im.idxToPerm(arr, i, 4);
     				switch(j){
     				case 2:Im.cir(arr, 0, 3);break;	//L
     				case 3:Im.cir(arr, 1, 2);break;	//R
     				case 4:Im.cir(arr, 3, 2);break;	//F
     				case 5:Im.cir(arr, 1, 0);break;	//B
     				}
-    				epm[i][j]=(byte) Im.permutationToIndex(arr, 4);
+    				epm[i][j]=(byte) Im.permToIdx(arr, 4);
     			}
     		}
     	}

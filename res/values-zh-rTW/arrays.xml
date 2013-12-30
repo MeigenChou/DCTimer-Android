@@ -16,12 +16,12 @@
         <item>金字塔</item>
         <item>SQ1</item>
         <item>魔表</item>
-        <item>15 puzzle</item>
+        <item>Skewb</item>
         <item>LxMxN</item>
         <item>Cmetrick</item>
         <item>齒輪魔術方塊</item>
         <item>Siamese Cube</item>
-        <item>Skewb</item>
+        <item>15 puzzle</item>
         <item>其他</item>
         <item>3階子集</item>
         <item>捆綁魔術方塊</item>
@@ -37,6 +37,8 @@
         <item>EG2訓練</item>
         <item>PBL訓練</item>
         <item>EG訓練</item>
+        <item>TCLL+訓練</item>
+        <item>TCLL-訓練</item>
     </array>
     <array name="scr333">
         <item>傳統</item>
@@ -153,7 +155,7 @@
     </array>
     <array name="scrSkw">
         <item>隨機狀態</item>
-        <item>L R D B</item>
+        <item>R U L B</item>
     </array>
     <array name="scrRly">
         <item>2到4階</item>

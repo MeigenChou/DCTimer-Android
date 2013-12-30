@@ -71,7 +71,7 @@ public class Im {
 	}
 	
     // permutation
-    public static int permutationToIndex(int[] permutation, int length) {
+    public static int permToIdx(int[] permutation, int length) {
         int index = 0;
         for (int i = 0; i < length - 1; i++) {
             index *= length - i;
@@ -81,7 +81,7 @@ public class Im {
         return index;
     }
 
-    public static void indexToPermutation(int[] permutation, int index, int length) {
+    public static void idxToPerm(int[] permutation, int index, int length) {
         permutation[length - 1] = 0;
         for (int i = length - 2; i >= 0; i--) {
             permutation[i] = index % (length - i);
@@ -92,7 +92,7 @@ public class Im {
     }
 
     // even permutation
-    public static int evenPermutationToIndex(int[] permutation, int length) {
+    public static int epermToIdx(int[] permutation, int length) {
         int index = 0;
         for (int i = 0; i < length - 2; i++) {
             index *= length - i;
@@ -102,7 +102,7 @@ public class Im {
         return index;
     }
 
-    public static void indexToEvenPermutation(int[] permutation, int index, int length) {
+    public static void idxToEperm(int[] permutation, int index, int length) {
         int sum = 0;
         permutation[length - 1] = 1;
         permutation[length - 2] = 0;
@@ -121,14 +121,14 @@ public class Im {
     }
 
     // orientation
-    public static int orientationToIndex(int[] orientation, int nValues, int length) {
+    public static int oriToIdx(int[] orientation, int nValues, int length) {
         int index = 0;
         for (int i = 0; i < length; i++)
-            index = nValues * index + orientation[i];
+            index = nValues * index + (orientation[i] % nValues);
         return index;
     }
 
-    public static void indexToOrientation(int[] orientation, int index, int nValues, int length) {
+    public static void idxToOri(int[] orientation, int index, int nValues, int length) {
         for (int i = length - 1; i >= 0; i--) {
             orientation[i] = index % nValues;
             index /= nValues;
@@ -136,14 +136,14 @@ public class Im {
     }
 
     // zero sum orientation
-    public static int zeroSumOrientationToIndex(int[] orientation, int nValues, int length) {
+    public static int zoriToIdx(int[] orientation, int nValues, int length) {
         int index = 0;
         for (int i = 0; i < length - 1; i++)
             index = nValues * index + (orientation[i] % nValues);
         return index;
     }
 
-    public static void indexToZeroSumOrientation(int[] orientation, int index, int nValues, int length) {
+    public static void idxToZori(int[] orientation, int index, int nValues, int length) {
         orientation[length - 1] = 0;
         for (int i = length - 2; i >= 0; i--) {
             orientation[i] = index % nValues;
@@ -165,7 +165,7 @@ public class Im {
         return value;
     }
 
-    public static int combinationToIndex(boolean[] combination, int k) {
+    public static int combToIdx(boolean[] combination, int k) {
         int index = 0;
         for (int i = combination.length - 1; i >= 0 && k > 0; i--) {
             if (combination[i]) {
@@ -175,7 +175,7 @@ public class Im {
         return index;
     }
 
-    public static void indexToCombination(boolean[] combination, int index, int k, int length) {
+    public static void idxToComb(boolean[] combination, int index, int k, int length) {
         //boolean[] combination = new boolean[length];
         for (int i = length - 1; i >= 0 && k >= 0; i--) {
             if (index >= nChooseK(i, k)) {

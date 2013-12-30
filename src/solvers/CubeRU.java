@@ -17,31 +17,31 @@ public class CubeRU {
 		int[] arr = new int[6];
 		for(int i=0; i<720; i++){
 			for(int j=0; j<2; j++){
-				Im.indexToPermutation(arr, i, 6);
+				Im.idxToPerm(arr, i, 6);
 				if(j==0)move(arr, 0, 3, 2, 1);
 				else move(arr, 1, 2, 4, 5);
-				cpm[i][j]=(short) Im.permutationToIndex(arr, 6);
+				cpm[i][j]=(short) Im.permToIdx(arr, 6);
 			}
 		}
 		for(int i=0; i<243; i++){
 			for(int j=0; j<2; j++){
-				Im.indexToZeroSumOrientation(arr, i, 3, 6);
+				Im.idxToZori(arr, i, 3, 6);
 				if(j==0)move(arr, 0, 3, 2, 1);
 				else {
 					move(arr, 1, 2, 4, 5);
 					arr[1]=(arr[1]+1)%3;arr[2]=(arr[2]+2)%3;
 					arr[4]=(arr[4]+1)%3;arr[5]=(arr[5]+2)%3;
 				}
-				com[i][j]=(short) Im.zeroSumOrientationToIndex(arr, 3, 6);
+				com[i][j]=(short) Im.zoriToIdx(arr, 3, 6);
 			}
 		}
 		arr = new int[7];
 		for(int i=0; i<5040; i++){
 			for(int j=0; j<2; j++){
-				Im.indexToPermutation(arr, i, 7);
+				Im.idxToPerm(arr, i, 7);
 				if(j==0)move(arr, 0, 3, 2, 1);
 				else move(arr, 1, 6, 5, 4);
-				epm[i][j]=(short) Im.permutationToIndex(arr, 7);
+				epm[i][j]=(short) Im.permToIdx(arr, 7);
 			}
 		}
 		for(int i=0; i<720; i++)
@@ -127,8 +127,8 @@ public class CubeRU {
     		}
     		while (cd[cp][co]<0);
     		ep=r.nextInt(5040);
-    		Im.indexToPermutation(c, cp, 6);
-    		Im.indexToPermutation(e, ep, 7);
+    		Im.idxToPerm(c, cp, 6);
+    		Im.idxToPerm(e, ep, 7);
     	} while(permutationSign(c)!=permutationSign(e));
     	
     	sb=new StringBuffer();
