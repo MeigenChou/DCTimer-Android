@@ -21,9 +21,12 @@ public class FullCube {
 	}
 
 	static Random r = new Random();
+	
+	public static FullCube randomCube() {
+		return randomCube(r.nextInt(3678));
+	}
 
 	public static FullCube randomCube(int shape) {
-		//r.nextInt(3678)
 		shape = Shape.ShapeIdx[shape];
 		FullCube f = new FullCube();
 		int[] pc = new int[8], pe = new int[8];
@@ -189,7 +192,7 @@ public class FullCube {
 		for( ; b<8; a+=3, b++) prm[b]=(byte)(pieceAt(a)>>1);
 		sq.edgeperm=Im.get8Perm(prm);
 
-		sq.qml = ml;
+		sq.ml = ml;
 	}
 }
 

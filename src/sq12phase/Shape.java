@@ -3,17 +3,16 @@ package sq12phase;
 import java.util.Arrays;
 
 class Shape {
-
 	//1 = corner, 0 = edge.
 	static int[] halflayer = {0x00, 0x03, 0x06, 0x0c, 0x0f, 0x18, 0x1b, 0x1e, 
 		0x30, 0x33, 0x36, 0x3c, 0x3f};
 
-	public static int[] ShapeIdx = new int[3678];
-	public static byte[] ShapePrun = new byte[3768 * 2];
+	static int[] ShapeIdx = new int[3678];
+	static byte[] ShapePrun = new byte[3768 * 2];
 
-	public static int[] spTopMove = new int[3678 * 2];
-	public static int[] spBottomMove = new int[3678 * 2];
-	public static char[] spTwistMove = new char[3678 * 2];
+	static int[] spTopMove = new int[3678 * 2];
+	static int[] spBottomMove = new int[3678 * 2];
+	static char[] spTwistMove = new char[3678 * 2];
 
 	private Shape(){}	
 

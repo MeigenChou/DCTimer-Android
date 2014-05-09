@@ -30,9 +30,9 @@ import com.sina.weibo.sdk.auth.Oauth2AccessToken;
  */
 public class AccessTokenKeeper {
     private static final String PREFERENCES_NAME = "com_weibo_sdk_android";
-    private static final String KEY_UID           = "uid";
-    private static final String KEY_ACCESS_TOKEN  = "access_token";
-    private static final String KEY_EXPIRES_IN    = "expires_in";
+    private static final String KEY_UID          = "uid";
+    private static final String KEY_ACCESS_TOKEN = "access_token";
+    private static final String KEY_EXPIRES_IN   = "expires_in";
     
     /**
      * 保存 Token 对象到 SharedPreferences。

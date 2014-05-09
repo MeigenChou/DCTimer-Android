@@ -5,10 +5,9 @@ import java.util.Random;
 public class Skewb {
 	private static short[][] ctm = new short[360][4];
 	private static byte[][] cpm = new byte[36][4];
-	private static byte[][] com = new byte[81][4];
-	private static byte[][] fcm = new byte[27][4];
+	private static short[][] com = new short[2187][4];
 	private static byte[] ctd = new byte[360];
-	private static byte[][][] cd = new byte[36][81][27];
+	private static byte[][] cd = new byte[2187][36];
 	
 	private static boolean ini = false;
 	private static void init() {
@@ -19,7 +18,7 @@ public class Skewb {
 		 *	4	1	2	3
 		 * 		  5
 		 */
-		int[] arr = new int[6];
+		int[] arr = new int[7];
 		for (int i=0; i<360; i++)
 			for (int j=0; j<4; j++) {
 				Im.idxToEperm(arr, i, 6);
@@ -39,7 +38,6 @@ public class Skewb {
 		 *		0
 		 *	1		2
 		 */
-		arr = new int[4];
 		int[] arr2 = new int[3];
 		for (int i=0; i<12; i++)
 			for (int j=0; j<3; j++) {
@@ -56,32 +54,27 @@ public class Skewb {
 				}
 			}
 		//corner orientation
-		for (int i=0; i<81; i++) {
-			for (int j=0; j<4; j++) {
-				Im.idxToOri(arr, i, 3, 4);
-				switch(j) {
-				case 0: Im.cir(arr, 1, 2, 3);	//R
-					arr[1]+=2; arr[2]+=2; arr[3]+=2; break;
-				case 1: Im.cir(arr, 0, 1, 3);	//U
-					arr[0]+=2; arr[1]+=2; arr[3]+=2; break;
-				case 2: Im.cir(arr, 2, 0, 3);	//L
-					arr[0]+=2; arr[2]+=2; arr[3]+=2; break;
-				case 3: arr[3]++; break;	//B
+		/*
+		 *		0
+		 *	1		2
+		 *		3
+		 *	4		5
+		 *		6
+		 */
+		for(int i=0; i<2187; i++) {
+			for(int j=0; j<4; j++) {
+				Im.idxToOri(arr, i, 3, 7);
+				switch (j) {
+				case 0:
+					Im.cir(arr, 2, 6, 3); arr[2]+=2; arr[3]+=2; arr[5]++; arr[6]+=2; break;
+				case 1:
+					Im.cir(arr, 1, 2, 3); arr[0]++; arr[1]+=2; arr[2]+=2; arr[3]+=2; break;
+				case 2:
+					Im.cir(arr, 1, 3, 6); arr[1]+=2; arr[3]+=2; arr[4]++; arr[6]+=2; break;
+				case 3:
+					Im.cir(arr, 0, 5, 4); arr[0]+=2; arr[3]++; arr[4]+=2; arr[5]+=2; break;
 				}
-				com[i][j] = (byte) Im.oriToIdx(arr, 3, 4);
-			}
-		}
-		for (int i=0; i<27; i++) {
-			for (int j=0; j<4; j++) {
-				Im.idxToOri(arr, i, 3, 3);
-				switch(j) {
-				case 0: arr[2]++; break;	//R
-				case 1: arr[0]++; break;	//U
-				case 2: arr[1]++; break;	//L
-				case 3: Im.cir(arr, 0, 2, 1);
-					arr[0]+=2; arr[1]+=2; arr[2]+=2; break;	//B
-				}
-				fcm[i][j] = (byte) Im.oriToIdx(arr, 3, 3);
+				com[i][j] = (short) Im.oriToIdx(arr, 3, 7);
 			}
 		}
 		
@@ -105,30 +98,25 @@ public class Skewb {
 						}
 			//System.out.println(depth+1+" "+c);
 		}
-		for (int i=0; i<36; i++)
-			for (int j=0; j<81; j++)
-				for(int k=0; k<27; k++)
-					cd[i][j][k] = -1;
-		cd[0][0][0] = 0;
-		//c = 1;
+		for(int i=0; i<2187; i++)
+			for(int j=0; j<36; j++) cd[i][j] = -1;
+		cd[0][0] = 0;
+		//c=1;
 		for(int d=0; d<7; d++) {
-			for (int i=0; i<36; i++)
-				for(int j=0; j<81; j++)
-					for(int k=0; k<27; k++)
-						if (cd[i][j][k] == d)
-							for (int m=0; m<4; m++) {
-								int p = i, q = j, r = k;
-								for(int n=0; n<2; n++) {
-									p = cpm[p][m];
-									q = com[q][m];
-									r = fcm[r][m];
-									if (cd[p][q][r] == -1) {
-										cd[p][q][r] = (byte) (d + 1);
-										//c++;
-									}
+			for(int i=0; i<2187; i++)
+				for(int j=0; j<36; j++)
+					if(cd[i][j] == d) 
+						for(int k=0; k<4; k++) {
+							int p = i, q = j;
+							for(int l=0; l<2; l++) {
+								p = com[p][k]; q = cpm[q][k];
+								if(cd[p][q] == -1) {
+									cd[p][q] = (byte)(d+1);
+									//c++;
 								}
 							}
-			//System.out.println(depth+1+" "+c);
+						}
+			//System.out.println(d+1+" "+c);
 		}
 		ini = true;
 	}
@@ -136,16 +124,15 @@ public class Skewb {
 	private static StringBuffer sb;
 	private static String[] turn = {"R", "U", "L", "B"};
 	private static String[] suff = {"'", ""};
-	private static boolean search(int ct, int cp, int co, int fco, int d, int l) {
-		if (d==0) return ctd[ct] == 0 && cd[cp][co][fco] == 0;
-		if (ctd[ct] > d || cd[cp][co][fco] > d) return false;
+	private static boolean search(int ct, int cp, int co, int d, int l) {
+		if (d==0) return ctd[ct] == 0 && cd[co][cp] == 0;
+		if (ctd[ct] > d || cd[co][cp] > d) return false;
 		for (int k=0; k<4; k++)
 			if (k != l) {
-				int p = ct, q = cp, r = co, s = fco;
+				int p = ct, q = cp, r = co;
 				for(int m=0; m<2; m++) {
-					p = ctm[p][k]; q = cpm[q][k];
-					r = com[r][k]; s = fcm[s][k];
-					if(search(p, q, r, s, d-1, k)) {
+					p = ctm[p][k]; q = cpm[q][k]; r = com[r][k];
+					if(search(p, q, r, d-1, k)) {
 						sb.append(turn[k] + suff[m] + " ");
 						return true;
 					}
@@ -155,17 +142,16 @@ public class Skewb {
 	}
 	public static String solve(Random r) {
 		init();
-		int ct = r.nextInt(360), cp, co, fco;
+		int ct = r.nextInt(360), cp, co;
 		do{
 			cp = r.nextInt(36);
-			co = r.nextInt(27);
-			fco = r.nextInt(27);
+			co = r.nextInt(2187);
 		}
-		while (cd[cp][co][fco] < 0);
+		while (cd[co][cp] < 0);
 		
 		sb = new StringBuffer();
 		for(int d=0; d<13; d++) 
-			if(search(ct, cp, co, fco, d, -1)) 
+			if(search(ct, cp, co, d, -1)) 
 				break;
 		return sb.toString();
 	}

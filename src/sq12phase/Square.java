@@ -7,13 +7,13 @@ class Square {
 	int cornperm;		//number encoding the corner permutation 0-40319
 	boolean topEdgeFirst;	//true if top layer starts with edge left of seam
 	boolean botEdgeFirst;	//true if bottom layer starts with edge right of seam
-	int qml;			//shape of middle layer (+/-1, or 0 if ignored)
+	int ml;			//shape of middle layer (+/-1, or 0 if ignored)
 
-	public static byte SquarePrun[] = new byte[40320 * 2];			//pruning table; #twists to solve corner|edge permutation
+	static byte SquarePrun[] = new byte[40320 * 2];			//pruning table; #twists to solve corner|edge permutation
 
-	public static char sqTwistMove[] = new char[40320];			//transition table for twists
-	public static char sqTopMove[] = new char[40320];			//transition table for top layer turns
-	public static char sqBottomMove[] = new char[40320];			//transition table for bottom layer turns
+	static char sqTwistMove[] = new char[40320];			//transition table for twists
+	static char sqTopMove[] = new char[40320];			//transition table for top layer turns
+	static char sqBottomMove[] = new char[40320];			//transition table for bottom layer turns
 
 //	static int get8Comb(byte[] arr) {
 //		int idx = 0, r = 4;
@@ -25,10 +25,10 @@ class Square {
 //		return idx;
 //	}
 
-	static boolean inited = false;
+	static boolean ini = false;
 
 	public static void init() {
-		if (inited) {
+		if (ini) {
 			return;
 		}
 		int[] pos = new int[8];
@@ -88,7 +88,6 @@ class Square {
 							if (inv) continue OUT;
 						}
 					}
-					assert idxx == idx;
 					//try turning bottom layer
 					for(int m=0; m<4; m++) {
 						idxx = sqBottomMove[idxx];
@@ -98,14 +97,13 @@ class Square {
 							if (inv) continue OUT;
 						}
 					}
-
 				}
 			}
 			//System.out.print(depth);
 			//System.out.print('\t');
 			//System.out.println(done);
 		}
-		inited = true;
+		ini = true;
 	}
 
 }

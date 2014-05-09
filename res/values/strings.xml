@@ -28,8 +28,12 @@
 	<string name="time_tap">"Timer start delay time(sec): "</string>
 	<string name="mul_phase">Multi-phase timing</string>
 	<string name="simulss">Emulate a stackmat with two hands</string>
-	<string name="drop_to_stop">Shake to stop</string>
-    <string name="sensitivity">Sensitivity</string>
+	<string name="drop_to_stop">Drop to stop</string>
+    <string name="sensitivity">"Sensitivity: "</string>
+    <string name="sen_low">Low</string>
+    <string name="sen_mid">Medium</string>
+    <string name="sen_high">High</string>
+    <string name="sen_ultra">Ultra</string>
     <string name="stt_stackmat">Stackmat settings</string>
 	<string name="stt_usess">Use Stackmat timer</string>
 	<string name="stt_samprate">Sampling rate(Hz)</string>
@@ -50,7 +54,7 @@
 	<string name="optcross">3x3x3 Solvers</string>
 	<string name="sq1shape">Solve square-1 cube shape</string>
 	<string name="cube2_layer">Solve 2x2x2 first layer</string>
-	<string name="stt_scheme">Color schemes</string>
+	<string name="stt_scheme">Color Schemes</string>
 	<string name="stt_csn">NxNxN</string>
     <string name="stt_csp">Pyraminx</string>
     <string name="stt_csq">Square-1</string>
@@ -85,6 +89,17 @@
     <string name="scheme_sq">"Square-1 Color Schemes"</string>
     <string name="scheme_skewb">"Skewb Color Schemes"</string>
     <string name="scheme_reset">Reset</string>
+    <string name="scr_eg0">EG0(CLL)</string>
+    <string name="scr_eg1">EG1</string>
+    <string name="scr_eg2">EG2</string>
+    <string name="scr_pi">Pi</string>
+    <string name="scr_h">H</string>
+    <string name="scr_u">U</string>
+    <string name="scr_t">T</string>
+    <string name="scr_l">L</string>
+    <string name="scr_s">Sune</string>
+    <string name="scr_as">Anti-sune</string>
+    <string name="scr_n">None</string>
     <!-- Menu -->
 	<string name="menu_inscr">Inport Scrambles</string>
     <string name="menu_outscr">Export Scrambles</string>
@@ -183,11 +198,11 @@
     <string name="abt_stat">Statistics</string>
     <string name="abt_shortc">Keyboard Shotcuts</string>
     <string name="abt_more">More</string>
-    <string name="abt_title">"DCTimer 0.6.11"</string>
+    <string name="abt_title">"DCTimer 0.6.12"</string>
     <string name="abt_1">" - DCTimer is a Rubik's cube timer for Android: smartphone and tablet. It supports scrambles, timing, statistics, and many other features.\n - Timer: Support wca inspection, multi-phase timing, input time through keyboard, confirm OK/+2/DNF. Timer accuracy is 1 millisecond.\n - Scramble: Support all wca scramble include scramble view, and lots of unofficial and training scrambles.\n - Statistics: Show average/mean of 3/5/12/50/100 and session mean or average. Copy results to clipboard, or save it to a text file.\n - More: Support optimal cross, xcross and SQ1 cube shape solver etc. Share your solves to friends. Customize background colour or image."</string>
-    <string name="abt_2">" - 正常计时：按下屏幕计时区在抬起的时候开始计时，再次按下计时区（或打乱区或按返回键）停止计时，并记录成绩。\n - 启动延时：与stackmat等计时器一样支持启动延时，即在启动之前须要按住屏幕一段时间，启动延时的时间可设置。\n - WCA观察：提供WCA的15秒倒计时功能，超过15秒在17秒内启动计时会加罚2秒，超过17秒则直接DNF；观察阶段的+2和结束计时阶段的+2可叠加。\n - 分段计时：支持2～6阶段分段计时，可设置阶段数。每次复原过程中，需要多次按下屏幕，以记录分段时间。\n - 外部输入：提供手动输入和Stackmat记录时间，其中Stackmat支持二代计时器（包括PRO，可精确到三位小数）\n - 确认成绩：每次计时结束后确认无惩罚/+2/DNF，如果不设置确认，则默认按无惩罚记录成绩。\n - Accuracy and time format: The accuracy of the timer is 1 millisecond, and can be showed to 0.01s. When the time is over a minute, you can set the time format to (hh:)mm:ss.xy(z) or ss.xy(z).\n - Time update: For some reasons, timer updateing may be set to: none, seconds or real-time."</string>
-    <string name="abt_3">" - Supports all WCA's official scrambler, including random-state scrambler of 2x2, 3x3, pyraminx, square-1 and skewb. Scramble view is available for all wca scramblers.\n - The most of other unofficial scramblers, such as 3x3 LL training, are from qqtimer, cstimer and PPT (prisma puzzle timer).\n - All scramble programs kindly provided by Jaap Scherphuis (all puzzles), Syoji Takamatsu (Pyraminx), Lucas Garron (Pyraminx), Michael Gottlieb (Pyraminx, SQ1), Tom van der Zanden (2x2), Conrad Rider (2x2), Clément Gallet and Stefan Pochmann (Megaminx), Herbert Kociemba (3x3) and Shuang Chen(3x3, SQ1)."</string>
+    <string name="abt_2">" - 正常计时：按下屏幕计时区在抬起的时候开始计时，再次按下计时区（或打乱区或按返回键）停止计时，并记录成绩。\n - 启动延时：与stackmat等计时器一样支持启动延时，即在启动之前须要按住屏幕一段时间，启动延时的时间可设置。\n - WCA观察：提供WCA的15秒倒计时功能，超过15秒在17秒内启动计时会加罚2秒，超过17秒则直接DNF；观察阶段的+2和结束计时阶段的+2可叠加。\n - 分段计时：支持2～6阶段分段计时，可设置阶段数。每次复原过程中，需要多次按下屏幕，以记录分段时间。\n - 外部输入：提供手动输入和Stackmat记录时间，其中Stackmat支持二代计时器（包括PRO，可精确到三位小数）\n - 确认成绩：每次计时结束后确认无惩罚/+2/DNF，如果不设置确认，则默认按无惩罚记录成绩。\n - 计时精度和时间格式：有0.01秒和0.001秒可选，系统内部使用1毫秒的精确度；超过1分钟的时间可显示成(hh:)mm:ss.xy(z)，也可显示成ss.xy(z)。\n - Time update: For some reasons, timer updateing may be set to: none, seconds or real-time."</string>
+    <string name="abt_3">" - Supports all WCA's official scrambler, including random-state scrambler of 2x2, 3x3, pyraminx, square-1 and skewb. Scramble view is available for all wca scramblers. The most of other unofficial scramblers, such as 3x3 LL training, are from qqtimer, cstimer and PPT (prisma puzzle timer).\n - All scramble programs kindly provided by Jaap Scherphuis (all puzzles), Syoji Takamatsu (Pyraminx), Lucas Garron (Pyraminx), Michael Gottlieb (Pyraminx, SQ1), Tom van der Zanden (2x2), Conrad Rider (2x2), Clément Gallet and Stefan Pochmann (Megaminx), Herbert Kociemba (3x3) and Shuang Chen(3x3, SQ1)."</string>
     <string name="abt_4">" - 成绩分组：适用于不同魔方的计时，最多有15个分组可切换。\n - 时间列表：成绩列表的第一列，单次最快和最慢用不同的颜色标出；每个时间均可修改无惩罚/+2/DNF，或者删除。\n - 滚动平均0：成绩列表的第二列，可显示3次/5次/12次/50次平均（包括是否去尾）每个平均都可以查看详细的统计信息，并可复制；用不同的颜色标出最快平均。\n - 滚动平均1：成绩列表的第三列，可显示5次/12次/50次/100次平均（包括是否去尾）每个平均都可以查看详细的统计信息，并可复制；用不同的颜色标出最快平均。\n - 分组平均：成绩列表最下方的按钮显示还原次数、平均及标准差，点击该按钮会显示出详细的统计信息，并可复制。"</string>
-    <string name="abt_5">" - Solve 3x3x3 cross or xcross, Square-1 shape etc.\n - Change background color or picture.\n - Share the results to your friend or Sina Weibo.\n - What's new in v0.6.11 (2013.12.29)\n1. Fixed bugs\n2. Added 2x2 TCLL scramble\n3. Changed Skewb notation\n4. Added Skewb color scheme settings."</string>
+    <string name="abt_5">" - Solve 3x3x3 cross or xcross, Square-1 shape etc.\n - Change background color or picture.\n - Share the results to your friend.\n - What's new in v0.6.12 (2014.5.8)\nFixed bugs."</string>
     <string name="abt_6">" - Q: Scramble type to SQ1.\n - W, E, R, T, Y, U: Scramble type to 2x2 ~ 7x7.\n - P, M, K: Scramble type to pyra/megaminx/clock.\n - N: New scramble.\n - Z: Delete last time.\n - A: Delete all times in current session.\n - D: Change last time to OK/+2/DNF"</string>
 </resources>

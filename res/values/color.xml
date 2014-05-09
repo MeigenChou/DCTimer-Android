@@ -21,4 +21,5 @@
     <color name="transparent">#00000000</color>
     <color name="text_num_gray">#333</color>
     <color name="dialog_title_blue">#9CCCF7</color>
+    <color name="light_gray">#80808080</color>
 </resources> 

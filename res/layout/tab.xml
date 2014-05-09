@@ -13,8 +13,7 @@
         <TabWidget
             android:id="@android:id/tabs"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true" />
+            android:layout_height="wrap_content" />
 
         <FrameLayout
             android:id="@android:id/tabcontent"
@@ -58,7 +57,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1" >
                     </Spinner>
-                    
+
                     <Button
                         android:id="@+id/myButtonSst"
                         android:layout_width="wrap_content"
@@ -66,7 +65,6 @@
                         android:layout_weight="1"
                         android:text="@string/scramble_view" />
                 </LinearLayout>
-                
             </LinearLayout>
 
             <LinearLayout
@@ -78,8 +76,8 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center" >
+                    android:gravity="center"
+                    android:orientation="horizontal" >
 
                     <TextView
                         android:id="@+id/tv4"
@@ -149,7 +147,7 @@
                         android:layout_marginTop="5dip"
                         android:text="@string/stt_timer"
                         android:textSize="16sp" />
-                    
+
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -160,18 +158,18 @@
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt41"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/wcainsp"
                                 android:textSize="17sp" />
 
@@ -185,18 +183,18 @@
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt42"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/clock_format"
                                 android:textSize="17sp" />
 
@@ -206,15 +204,15 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="3dip" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:id="@+id/lay01"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
 
@@ -222,8 +220,8 @@
                                 android:id="@+id/stt22"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/input_time"
                                 android:textSize="17sp" />
 
@@ -231,18 +229,18 @@
                                 android:id="@+id/std01"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:drawableRight="@drawable/arrow"
+                                android:textSize="17sp" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:id="@+id/lay02"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
 
@@ -250,27 +248,27 @@
                                 android:id="@+id/stt36"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/timer_upd"
                                 android:textSize="17sp" />
-                            
+
                             <TextView
                                 android:id="@+id/std02"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:drawableRight="@drawable/arrow"
+                                android:textSize="17sp" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:id="@+id/lay03"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="7dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="7dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
 
@@ -278,8 +276,8 @@
                                 android:id="@+id/stt21"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/accuracy"
                                 android:textSize="17sp" />
 
@@ -287,10 +285,10 @@
                                 android:id="@+id/std03"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:drawableRight="@drawable/arrow"
+                                android:textSize="17sp" />
                         </LinearLayout>
-                        
+
                         <TextView
                             android:id="@+id/stt31"
                             android:layout_width="wrap_content"
@@ -302,58 +300,56 @@
                             android:id="@+id/seekb5"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:minHeight="10dip"
                             android:maxHeight="10dip"
+                            android:minHeight="10dip"
                             android:paddingLeft="7dip"
                             android:paddingRight="7dip"
                             android:progressDrawable="@layout/seek_style"
                             android:thumb="@layout/seek_thumb"
-                            android:thumbOffset="12dip"
-                            />
-                        
-                        <LinearLayout 
+                            android:thumbOffset="12dip" />
+
+                        <LinearLayout
                             android:id="@+id/lay04"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
+                            android:gravity="center"
                             android:longClickable="true"
-                            android:orientation="horizontal">
-                            
+                            android:orientation="horizontal" >
+
                             <TextView
                                 android:id="@+id/stt40"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/mul_phase"
                                 android:textSize="17sp" />
-                            
+
                             <TextView
                                 android:id="@+id/std04"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
-                            
+                                android:drawableRight="@drawable/arrow"
+                                android:textSize="17sp" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt43"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/simulss"
                                 android:textSize="17sp" />
 
@@ -363,22 +359,22 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="3dip" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="7dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="7dip"
+                            android:gravity="center"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt54"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/drop_to_stop"
                                 android:textSize="17sp" />
 
@@ -388,7 +384,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="3dip" />
                         </LinearLayout>
-                        
+
                         <TextView
                             android:id="@+id/stt55"
                             android:layout_width="wrap_content"
@@ -401,15 +397,13 @@
                             android:id="@+id/seekb7"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:minHeight="10dip"
                             android:maxHeight="10dip"
+                            android:minHeight="10dip"
                             android:paddingLeft="7dip"
                             android:paddingRight="7dip"
                             android:progressDrawable="@layout/seek_style"
                             android:thumb="@layout/seek_thumb"
-                            android:thumbOffset="12dip"
-                            />
-                        
+                            android:thumbOffset="12dip" />
                     </LinearLayout>
 
                     <TextView
@@ -419,7 +413,7 @@
                         android:layout_marginLeft="10dip"
                         android:text="@string/stt_stackmat"
                         android:textSize="16sp" />
-                    
+
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -430,18 +424,18 @@
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt44"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/stt_usess"
                                 android:textSize="17sp" />
 
@@ -451,14 +445,14 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="3dip" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:id="@+id/lay05"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
 
@@ -466,8 +460,8 @@
                                 android:id="@+id/stt20"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/stt_samprate"
                                 android:textSize="17sp" />
 
@@ -475,25 +469,25 @@
                                 android:id="@+id/std05"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:drawableRight="@drawable/arrow"
+                                android:textSize="17sp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="7dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="7dip"
+                            android:gravity="center"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt45"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/stt_invert"
                                 android:textSize="17sp" />
 
@@ -503,20 +497,20 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="3dip" />
                         </LinearLayout>
-                        
+
                         <TextView
                             android:id="@+id/stt39"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dip"
                             android:textSize="17sp" />
-                        
+
                         <SeekBar
                             android:id="@+id/seekb6"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:minHeight="10dip"
                             android:maxHeight="10dip"
+                            android:minHeight="10dip"
                             android:paddingLeft="7dip"
                             android:paddingRight="7dip"
                             android:progressDrawable="@layout/seek_style"
@@ -531,49 +525,49 @@
                         android:layout_marginLeft="10dip"
                         android:text="@string/stt_scramble"
                         android:textSize="16sp" />
-                    
+
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dip"
                         android:background="@drawable/group_back"
                         android:orientation="vertical" >
-                        
+
                         <TextView
                             android:id="@+id/stt09"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dip"
                             android:layout_marginLeft="5dip"
+                            android:layout_marginTop="5dip"
                             android:textSize="17sp" />
 
                         <SeekBar
                             android:id="@+id/seekb2"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:minHeight="10dip"
                             android:maxHeight="10dip"
+                            android:minHeight="10dip"
                             android:paddingLeft="7dip"
                             android:paddingRight="7dip"
                             android:progressDrawable="@layout/seek_style"
                             android:thumb="@layout/seek_thumb"
                             android:thumbOffset="12dip" />
-                    
+
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="7dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="7dip"
+                            android:gravity="center"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt46"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/hidescr"
                                 android:textSize="17sp" />
 
@@ -583,7 +577,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="3dip" />
                         </LinearLayout>
-                        
+
                         <TextView
                             android:id="@+id/stt38"
                             android:layout_width="wrap_content"
@@ -591,121 +585,122 @@
                             android:layout_marginLeft="5dip"
                             android:text="@string/egtrain"
                             android:textSize="17sp" />
-                        
+
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal" >
-                            
+
                             <CheckBox
                                 android:id="@+id/checkcll"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="EG0(CLL)" />
-                            
+                                android:text="@string/scr_eg0" />
+
                             <CheckBox
                                 android:id="@+id/checkeg1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="EG1" />
-                            
+                                android:text="@string/scr_eg1" />
+
                             <CheckBox
                                 android:id="@+id/checkeg2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="EG2" />
+                                android:text="@string/scr_eg2" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal" >
-                            
+
                             <CheckBox
                                 android:id="@+id/checkegpi"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Pi" />
-                            
+                                android:text="@string/scr_pi" />
+
                             <CheckBox
                                 android:id="@+id/checkegh"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="H" />
-                            
+                                android:text="@string/scr_h" />
+
                             <CheckBox
                                 android:id="@+id/checkegu"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="U" />
-                            
+                                android:text="@string/scr_u" />
+
                             <CheckBox
                                 android:id="@+id/checkegt"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="T" />
-                            
+                                android:text="@string/scr_t" />
+
                             <CheckBox
                                 android:id="@+id/checkegl"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="L" />
+                                android:text="@string/scr_l" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal" >
+
                             <CheckBox
                                 android:id="@+id/checkegs"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Sune" />
-                            
+                                android:text="@string/scr_s" />
+
                             <CheckBox
                                 android:id="@+id/checkega"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Anti-sune" />
-                            
+                                android:text="@string/scr_as" />
+
                             <CheckBox
                                 android:id="@+id/checkegn"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="None" />
+                                android:text="@string/scr_n" />
                         </LinearLayout>
                     </LinearLayout>
 
                     <TextView
-                            android:id="@+id/stt03"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dip"
-                            android:text="@string/stt_stats"
-                            android:textSize="16sp" />
-                    
+                        android:id="@+id/stt03"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dip"
+                        android:text="@string/stt_stats"
+                        android:textSize="16sp" />
+
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dip"
                         android:background="@drawable/group_back"
                         android:orientation="vertical" >
-                        
+
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt47"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/confirm_time"
                                 android:textSize="17sp" />
 
@@ -715,22 +710,22 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="3dip" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt48"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/printscr"
                                 android:textSize="17sp" />
 
@@ -740,7 +735,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="3dip" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
@@ -750,8 +745,8 @@
                                 android:id="@+id/stt05"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="5dip"
+                                android:layout_weight="1"
                                 android:text="@string/ra0"
                                 android:textSize="17sp" />
 
@@ -779,8 +774,8 @@
                                 android:id="@+id/stt18"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="5dip"
+                                android:layout_weight="1"
                                 android:text="@string/ra1"
                                 android:textSize="17sp" />
 
@@ -802,18 +797,18 @@
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt49"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/sel_session"
                                 android:textSize="17sp" />
 
@@ -826,28 +821,28 @@
                     </LinearLayout>
 
                     <TextView
-                            android:id="@+id/stt19"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dip"
-                            android:text="@string/stt_tools"
-                            android:textSize="16sp" />
-                    
+                        android:id="@+id/stt19"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dip"
+                        android:text="@string/stt_tools"
+                        android:textSize="16sp" />
+
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dip"
                         android:background="@drawable/group_back"
                         android:orientation="vertical" >
-                        
+
                         <LinearLayout
                             android:id="@+id/lay06"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
-                            android:layout_marginTop="3dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
+                            android:layout_marginTop="3dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
 
@@ -855,8 +850,8 @@
                                 android:id="@+id/stt07"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/optcross"
                                 android:textSize="17sp" />
 
@@ -864,8 +859,8 @@
                                 android:id="@+id/std06"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:drawableRight="@drawable/arrow"
+                                android:textSize="17sp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -893,19 +888,19 @@
                             android:id="@+id/lay23"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt50"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/sq1shape"
                                 android:textSize="17sp" />
 
@@ -913,41 +908,39 @@
                                 android:id="@+id/std13"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:drawableRight="@drawable/arrow"
+                                android:textSize="17sp" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:id="@+id/lay07"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="3dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
+                            android:gravity="center"
                             android:longClickable="true"
-                            android:layout_marginBottom="3dip"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt26"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/cube2_layer"
                                 android:textSize="17sp" />
-                            
+
                             <TextView
                                 android:id="@+id/std07"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
-                            
+                                android:drawableRight="@drawable/arrow"
+                                android:textSize="17sp" />
                         </LinearLayout>
-
                     </LinearLayout>
-                    
+
                     <TextView
                         android:id="@+id/stt10"
                         android:layout_width="wrap_content"
@@ -955,22 +948,22 @@
                         android:layout_marginLeft="10dip"
                         android:text="@string/stt_scheme"
                         android:textSize="16sp" />
-                    
+
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dip"
                         android:background="@drawable/group_back"
                         android:orientation="vertical" >
-                        
+
                         <LinearLayout
                             android:id="@+id/lay19"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
                             android:layout_marginTop="3dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
 
@@ -979,61 +972,61 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="4dip"
+                                android:drawableRight="@drawable/arrow"
                                 android:text="@string/stt_csn"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:textSize="17sp" />
                         </LinearLayout>
-                        
-                        <LinearLayout 
+
+                        <LinearLayout
                             android:id="@+id/lay20"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt28"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="4dip"
+                                android:drawableRight="@drawable/arrow"
                                 android:text="@string/stt_csp"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:textSize="17sp" />
                         </LinearLayout>
 
-                        <LinearLayout 
+                        <LinearLayout
                             android:id="@+id/lay21"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt29"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="4dip"
+                                android:drawableRight="@drawable/arrow"
                                 android:text="@string/stt_csq"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:textSize="17sp" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:id="@+id/lay08"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="3dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="3dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
 
@@ -1041,8 +1034,8 @@
                                 android:id="@+id/stt11"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/mmxcolor"
                                 android:textSize="17sp" />
 
@@ -1050,32 +1043,32 @@
                                 android:id="@+id/std08"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:drawableRight="@drawable/arrow"
+                                android:textSize="17sp" />
                         </LinearLayout>
-                        
-                        <LinearLayout 
+
+                        <LinearLayout
                             android:id="@+id/lay24"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt56"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="4dip"
+                                android:drawableRight="@drawable/arrow"
                                 android:text="@string/stt_csw"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:textSize="17sp" />
                         </LinearLayout>
                     </LinearLayout>
-                    
+
                     <TextView
                         android:id="@+id/stt24"
                         android:layout_width="wrap_content"
@@ -1089,28 +1082,29 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dip"
                         android:background="@drawable/group_back"
-                        android:orientation="horizontal" >
+                        android:orientation="vertical" >
 
-                         <LinearLayout
+                        <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal" > 
+                            android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/stt25"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="5dip"
+                                android:layout_weight="1"
                                 android:text="@string/stt_sina"
                                 android:textSize="17sp" />
 
                             <Button
                                 android:id="@+id/auth_sina"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                         </LinearLayout> 
-
+                                android:layout_height="wrap_content"
+                                 />
+                        </LinearLayout>
+                        
                     </LinearLayout>
 
                     <TextView
@@ -1120,29 +1114,29 @@
                         android:layout_marginLeft="10dip"
                         android:text="@string/stt_interface"
                         android:textSize="16sp" />
-                    
+
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dip"
                         android:background="@drawable/group_back"
                         android:orientation="vertical" >
-                        
+
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt51"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/full_screen"
                                 android:textSize="17sp" />
 
@@ -1152,15 +1146,15 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="3dip" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:id="@+id/lay09"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="7dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="7dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
 
@@ -1168,19 +1162,19 @@
                                 android:id="@+id/stt30"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/timer_font"
                                 android:textSize="17sp" />
-                            
+
                             <TextView
                                 android:id="@+id/std09"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:drawableRight="@drawable/arrow"
+                                android:textSize="17sp" />
                         </LinearLayout>
-                        
+
                         <TextView
                             android:id="@+id/stt08"
                             android:layout_width="fill_parent"
@@ -1192,8 +1186,8 @@
                             android:id="@+id/seekb1"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:minHeight="10dip"
                             android:maxHeight="10dip"
+                            android:minHeight="10dip"
                             android:paddingLeft="7dip"
                             android:paddingRight="7dip"
                             android:progressDrawable="@layout/seek_style"
@@ -1204,10 +1198,10 @@
                             android:id="@+id/lay13"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
 
@@ -1216,19 +1210,19 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="4dip"
+                                android:drawableRight="@drawable/arrow"
                                 android:text="@string/bgcolor"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:textSize="17sp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/lay22"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="7dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="7dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
 
@@ -1237,9 +1231,9 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="4dip"
+                                android:drawableRight="@drawable/arrow"
                                 android:text="@string/bgpicture"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:textSize="17sp" />
                         </LinearLayout>
 
                         <TextView
@@ -1261,15 +1255,15 @@
                             android:progressDrawable="@layout/seek_style"
                             android:thumb="@layout/seek_thumb"
                             android:thumbOffset="12dip" />
-                        
+
                         <LinearLayout
                             android:id="@+id/lay14"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
                             android:layout_marginTop="5dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
 
@@ -1278,18 +1272,18 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="4dip"
+                                android:drawableRight="@drawable/arrow"
                                 android:text="@string/text_color"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:textSize="17sp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/lay15"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
 
@@ -1298,18 +1292,18 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="4dip"
+                                android:drawableRight="@drawable/arrow"
                                 android:text="@string/best_time"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:textSize="17sp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/lay16"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
 
@@ -1318,19 +1312,19 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="4dip"
+                                android:drawableRight="@drawable/arrow"
                                 android:text="@string/worst_time"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:textSize="17sp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/lay17"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="7dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="7dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
 
@@ -1338,11 +1332,11 @@
                                 android:id="@+id/stt16"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
+                                android:drawableRight="@drawable/arrow"
                                 android:text="@string/best_rolling_avg"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:textSize="17sp" />
                         </LinearLayout>
 
                         <TextView
@@ -1356,14 +1350,13 @@
                             android:id="@+id/seekb3"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:minHeight="10dip"
                             android:maxHeight="10dip"
+                            android:minHeight="10dip"
                             android:paddingLeft="7dip"
                             android:paddingRight="7dip"
                             android:progressDrawable="@layout/seek_style"
                             android:thumb="@layout/seek_thumb"
                             android:thumbOffset="12dip" />
-
                     </LinearLayout>
 
                     <TextView
@@ -1373,29 +1366,29 @@
                         android:layout_marginLeft="10dip"
                         android:text="@string/stt_hardw"
                         android:textSize="16sp" />
-                    
+
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dip"
                         android:background="@drawable/group_back"
                         android:orientation="vertical" >
-                        
+
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt52"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/screenon"
                                 android:textSize="17sp" />
 
@@ -1405,22 +1398,22 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="3dip" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt53"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/screengrey"
                                 android:textSize="17sp" />
 
@@ -1430,46 +1423,46 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="3dip" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:id="@+id/lay10"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt37"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/stt_screen_ori"
                                 android:textSize="17sp" />
-                            
+
                             <TextView
                                 android:id="@+id/std10"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:drawableRight="@drawable/arrow"
+                                android:textSize="17sp" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:id="@+id/lay11"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="1dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="1dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt34"
                                 android:layout_width="wrap_content"
@@ -1477,59 +1470,60 @@
                                 android:layout_marginLeft="4dip"
                                 android:text="@string/stt_vibra"
                                 android:textSize="17sp" />
-                            
+
                             <TextView
                                 android:id="@+id/std11"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:drawableRight="@drawable/arrow"
                                 android:gravity="right"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:textSize="17sp" />
                         </LinearLayout>
-                        
+
                         <LinearLayout
                             android:id="@+id/lay12"
                             android:layout_width="fill_parent"
                             android:layout_height="42dip"
-                            android:gravity="center"
+                            android:layout_marginBottom="3dip"
                             android:layout_marginLeft="1dip"
                             android:layout_marginRight="1dip"
-                            android:layout_marginBottom="3dip"
+                            android:gravity="center"
                             android:longClickable="true"
                             android:orientation="horizontal" >
-                            
+
                             <TextView
                                 android:id="@+id/stt35"
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:layout_marginLeft="4dip"
+                                android:layout_weight="1"
                                 android:text="@string/stt_vib_time"
                                 android:textSize="17sp" />
-                            
+
                             <TextView
                                 android:id="@+id/std12"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="17sp"
-                                android:drawableRight="@drawable/arrow" />
+                                android:drawableRight="@drawable/arrow"
+                                android:textSize="17sp" />
                         </LinearLayout>
                     </LinearLayout>
-                    
+
                     <Button
                         android:id="@+id/reset"
-                        android:background="@drawable/button_style"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dip"
                         android:layout_marginLeft="5dip"
                         android:layout_marginRight="5dip"
-                        android:layout_marginBottom="5dip"
+                        android:background="@drawable/button_style"
                         android:text="@string/reset_all"
                         android:textColor="#ffffff"
                         android:textSize="16sp" />
                 </LinearLayout>
             </ScrollView>
         </FrameLayout>
+
     </LinearLayout>
 </TabHost>

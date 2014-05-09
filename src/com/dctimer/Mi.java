@@ -12,13 +12,13 @@ import android.graphics.Paint.FontMetrics;
 
 public class Mi {
 	//public static long stime=0L;
-	public static int[] bavg = {0, 0};
-	public static int[] bidx = {0, 0};
-	public static int sesMean = -1;
-	public static int sesSD;
-	public static int minIdx, maxIdx;
-	public static String sc;
-	public static int viewType;
+	static int[] bavg = {0, 0};
+	static int[] bidx = {0, 0};
+	static int sesMean = -1;
+	static int sesSD;
+	static int minIdx, maxIdx;
+	static String sc;
+	static int viewType;
 	public static int scrLen = 0;
 	private static short[][] defScrLen = {
 		{0, 15, 15, 0, 0, 0, 0, 0, 0, 0},
@@ -44,7 +44,7 @@ public class Mi {
 		{0, 0, 0, 0, 5},
 	};
 
-	public static String SetScr(int n, boolean ch) {
+	static String setScr(int n, boolean ch) {
 		String[][][] turns;
 		String[][] turn2;
 		String[] end, suff0 = {""}, csuff = {"","2","'"}, suff;
@@ -67,9 +67,9 @@ public class Mi {
 		case 5:
 			scr = Cube222.randomEG2(); viewType = 2; break;
 		case 6:
-			scr=Cube222.randomXLL();viewType=2;break;
+			scr = Cube222.randomXLL();viewType=2;break;
 		case 7:
-			scr=Cube222.egScr(DCTimer.egtype, DCTimer.egolls); viewType=2; break;
+			scr = Cube222.egScr(DCTimer.egtype, DCTimer.egolls); viewType=2; break;
 		case 8:
 			scr = Cube222.randomTCLL(1); viewType = 2; break;
 		case 9:
@@ -83,7 +83,7 @@ public class Mi {
 		case 13:
 			scr = Cube222.randomTEG2(2); viewType = 2; break;
 		case 32: //3阶
-			scr=cube(3);viewType=3;
+			scr = cube(3); viewType = 3;
 			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[1], DCTimer.spSel[3]);
 			else if(DCTimer.stSel[5]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[3]);
 			else if(DCTimer.stSel[5]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[3]);
@@ -273,7 +273,7 @@ public class Mi {
 			if(DCTimer.stSel[12]>0) sc=" " + (DCTimer.stSel[12]==1 ? Sq1Shape.solveTrn(scr) : Sq1Shape.solveTws(scr));
 			viewType=1; break;
 		case 258:
-			scr = new SqSearch().solution(FullCube.randomCube(new Random().nextInt(3678)));
+			scr = new SqSearch().solution(FullCube.randomCube());
 			if(DCTimer.stSel[12]>0) sc=" " + (DCTimer.stSel[12]==1 ? Sq1Shape.solveTrn(scr) : Sq1Shape.solveTws(scr));
 			viewType=1; break;
 		case 259:
@@ -468,7 +468,7 @@ public class Mi {
 		return Cube.scramblestring(n, scrLen);
 	}
 
-	public static void drawScr(int sel2, int width, Paint p, Canvas c) {
+	static void drawScr(int sel2, int width, Paint p, Canvas c) {
 		int[] colors={DCTimer.share.getInt("csn1", Color.YELLOW), DCTimer.share.getInt("csn2", Color.BLUE), DCTimer.share.getInt("csn3", Color.RED),
 				DCTimer.share.getInt("csn4", Color.WHITE), DCTimer.share.getInt("csn5", 0xff009900), DCTimer.share.getInt("csn6", 0xffff8026)};
 		//2阶
@@ -1023,6 +1023,7 @@ public class Mi {
 				}
 		}
 	}
+	
 	private static void drawSideBackground(Paint p, Canvas c, int width, int cx, int cy, int clock_radius,
 			int face_background_dist, int face_background_radius) {
 		drawCircle(p, c, width, cx, cy, clock_radius);
@@ -1109,7 +1110,7 @@ public class Mi {
 		c.drawPath(path, p);
 	}
 
-	public static String contime(int hour, int min, int sec, int msec) {
+	static String contime(int hour, int min, int sec, int msec) {
 		StringBuilder time=new StringBuilder();
 		if(hour==0) {
 			if(min==0) time.append(""+sec);
@@ -1135,7 +1136,7 @@ public class Mi {
 		}
 		return time.toString();
 	}
-	public static String distime(int i) {
+	static String distime(int i) {
 		boolean m = i<0;
 		if(m)i = -i;
 		//if(i==0)return "DNF";
@@ -1156,7 +1157,7 @@ public class Mi {
 		int h=DCTimer.clkform?(i/3600000):0;
 		return (m?"-":"")+(h>0?h+":":"")+(h>0?(mi<10?"0"+mi+":":mi+":"):(mi>0?mi+":":""))+(((h>0 || mi>0) && s<10)?"0":"")+s+"."+ms;
 	}
-	public static String distime(int idx, boolean b) {
+	static String distime(int idx, boolean b) {
 		if(idx<0)return "N/A";
 		if(idx>=DCTimer.resl)return "";
 		int i=DCTimer.rest[idx];
@@ -1169,7 +1170,7 @@ public class Mi {
 		else return distime(i);
 	}
 
-	public static String avg(int n, int i, int l) {
+	static String avg(int n, int i, int l) {
 		if(i<n-1) {bidx[l]=-1;return "N/A";}
 		int nDnf=0, cavg;
 		int trim = (int) Math.ceil(n/20.0);
@@ -1229,7 +1230,7 @@ public class Mi {
 		quickSort(a, lo, i-1);
 		quickSort(a, i+1, hi);
 	}
-	public static String mean(int n, int i, int l) {
+	static String mean(int n, int i, int l) {
 		if(i<n-1) {bidx[l]=-1;return "N/A";}
 		int cavg;
 		double sum=0;
@@ -1251,7 +1252,7 @@ public class Mi {
 		if(cavg<=bavg[l]) {bavg[l]=cavg;bidx[l]=i;}
 		return distime(cavg);
 	}
-	public static String sesMean() {
+	static String sesMean() {
 		double sum=0,sum2=0;
 		maxIdx=-1; minIdx=-1; sesMean=-1;
 		int n=DCTimer.resl;
@@ -1276,7 +1277,7 @@ public class Mi {
 		sesSD=(int)(Math.sqrt((sum2-sum*sum/n)/n)+(DCTimer.stSel[2]==1?0:0.5));
 		return ""+n+"/"+DCTimer.resl+"): "+distime(sesMean)+" ("+standDev(sesSD)+")";
 	}
-	public static String sesAvg() {
+	static String sesAvg() {
 		int n=DCTimer.resl;
 		if(n<3)return "N/A";
 		int[] data = new int[n];
@@ -1303,7 +1304,7 @@ public class Mi {
 		int ssd=(int)(Math.sqrt((sum2-sum*sum/num)/num)+(DCTimer.stSel[2]==1?0:0.5));
 		return distime(savg)+" (σ = "+standDev(ssd)+")";
 	}
-	public static void adjust(int[] num, int s, int t) {
+	static void adjust(int[] num, int s, int t) {
 		int i = s;
 		int x = num[s];
 		for (int j = 2 * i; j <= t; j = 2 * j) {
@@ -1316,7 +1317,7 @@ public class Mi {
 		}
 		num[i] = x;
 	}
-	public static void heapsort(int[] num, int n) {
+	static void heapsort(int[] num, int n) {
 		// 初始建堆从n/2开始向根调整
 		int i;
 		for (i = n / 2; i >= 1; i--) {
@@ -1330,7 +1331,7 @@ public class Mi {
 		}
 	}
 	
-	public static String mulMean(int p) {
+	static String mulMean(int p) {
 		double sum=0;
 		int n=0;
 		if(n==DCTimer.resl)return "-";
@@ -1346,7 +1347,7 @@ public class Mi {
 		if(DCTimer.stSel[2]==0)m*=10;
 		return distime(m);
 	}
-	public static String standDev(int i) {
+	static String standDev(int i) {
 		if(i<0)return "N/A";
 		if(DCTimer.stSel[2]==1)i=(i+5)/10;
 		StringBuffer s=new StringBuffer(i/100+".");
@@ -1355,13 +1356,13 @@ public class Mi {
 		return s.toString();
 	}
 
-	public static float s18(int i) {
+	private static float s18(int i) {
 		return (float) Math.sin(Math.PI*i/10);
 	}
-	public static float c18(int i) {
+	private static float c18(int i) {
 		return (float) Math.cos(Math.PI*i/10);
 	}
-	public static float[][] rotate(float a, float b, float[] x, float[] y, int i) {
+	private static float[][] rotate(float a, float b, float[] x, float[] y, int i) {
 		float[][] ary=new float[2][x.length];
 		for(int j=0;j<x.length;j++) {
 			ary[0][j]=(float) (x[j]*Math.cos(Math.toRadians(i))-y[j]*Math.sin(Math.toRadians(i))+a);
@@ -1369,13 +1370,13 @@ public class Mi {
 		}
 		return ary;
 	}
-	public static float cos1(int index, float[] ag, float rd) {
+	private static float cos1(int index, float[] ag, float rd) {
 		return (float) (Math.cos(ag[index])*rd);
 	}
-	public static float sin1(int index, float[] ag, float rd) {
+	private static float sin1(int index, float[] ag, float rd) {
 		return (float) (Math.sin(ag[index])*rd);
 	}
-	public static byte[] rd(byte[] arr) {
+	private static byte[] rd(byte[] arr) {
 		byte[] out = new byte[arr.length];
 		int j=0;
 		for (int i=0; i<arr.length; i++)
@@ -1386,7 +1387,7 @@ public class Mi {
 		return temp;
 	}
 
-	public static String convStr(String s) {
+	static String convStr(String s) {
 		if(s==null || s.length()==0 || s.equals("0"))return "Error";
 		StringBuffer sb=new StringBuffer();
 		byte dot=0, colon=0;
@@ -1401,7 +1402,7 @@ public class Mi {
 		sb.insert(0, dot+""+colon);
 		return sb.toString();
 	}
-	public static int convTime(String s) {
+	static int convTime(String s) {
 		if(s.charAt(1)=='0')return (int)(Double.parseDouble(s.substring(2))*1000+0.5);
 		int hour, min;
 		double sec;
@@ -1429,7 +1430,7 @@ public class Mi {
 			if(ds[i-1] < dv && dv < ds[i]) return ds[i];
 		return (dv/1000+1)*1000;
 	}
-	public static void drawHist(int width, Paint p, Canvas c) {
+	static void drawHist(int width, Paint p, Canvas c) {
 		int[] bins = new int[14];
 		int start;
 		int end;
@@ -1493,7 +1494,7 @@ public class Mi {
 		}
 	}
 
-	public static void drawGraph(int width, Paint p, Canvas c) {
+	static void drawGraph(int width, Paint p, Canvas c) {
 		int up, down, mean;
 		int blk, divi;
 		if(DCTimer.resl==0 || minIdx==-1 || minIdx==maxIdx) {
@@ -1558,7 +1559,8 @@ public class Mi {
 			}
 		}
 	}
-	public static int getSessionType(long sesType, int idx) {
+	
+	static int getSessionType(long sesType, int idx) {
 		return (int) ((sesType >> (7*idx)) & 0x7f);
 	}
 }

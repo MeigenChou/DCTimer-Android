@@ -144,7 +144,6 @@ public class SqSearch {
 		for (int i=0; i<length1; i++) {
 			d.doMove(move[i]);
 		}
-		assert Shape.ShapePrun[d.getShapeIdx()] == 0;
 //		if(1==1)return false;
 //		Square sq = new Square();
 		d.getSquare(sq);
@@ -152,7 +151,7 @@ public class SqSearch {
 
 		int edge = sq.edgeperm;
 		int corner = sq.cornperm;
-		int ml = sq.qml;
+		int ml = sq.ml;
 //		int shp = sq.topEdgeFirst ? 0 : 1;
 //		shp |= sq.botEdgeFirst ? 0 : 2;
 
@@ -214,7 +213,6 @@ public class SqSearch {
 
 	boolean phase2(int edge, int corner, boolean topEdgeFirst, boolean botEdgeFirst, int ml, int maxl, int depth, int lm) {
 		if (maxl == 0 && !topEdgeFirst && botEdgeFirst/*edge==0 && corner==0 && !topEdgeFirst && botEdgeFirst && ml==0*/) {
-			assert edge==0 && corner==0 && ml==0;
 			return true;
 		}
 

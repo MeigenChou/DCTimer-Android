@@ -8,9 +8,9 @@ import java.util.*;
 import com.sina.weibo.sdk.auth.*;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.exception.*;
+
 import sina.weibo.*;
 import solvers.*;
-
 import android.app.*;
 import android.content.*;
 import android.content.res.Configuration;
@@ -21,10 +21,10 @@ import android.graphics.drawable.*;
 import android.hardware.*;
 import android.net.Uri;
 import android.os.*;
-import android.text.ClipboardManager;
-import android.text.TextUtils;
+import android.text.*;
 import android.util.DisplayMetrics;
 import android.view.*;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TabHost.TabSpec;
@@ -33,6 +33,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 public class DCTimer extends Activity implements SensorEventListener {
 	private Context context;
 	private TabHost tabHost;
+	private LayoutInflater layoutInflater;
 	private Button buttonSst;	// 打乱状态
 	public TextView tvTimer;	//计时器
 	private static TextView tvScr;	// 显示打乱
@@ -51,7 +52,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 	private LinearLayout[] llay = new LinearLayout[23];
 	private TextView tvl;
 	private CheckBox[] chkb = new CheckBox[13];
-
+	
 	private Timer timer;
 	private Stackmat stm;
 	private ColorPicker dialog;
@@ -84,9 +85,10 @@ public class DCTimer extends Activity implements SensorEventListener {
 	public static byte[] resp;	// 惩罚
 	public static byte[] listnum = {3, 5, 12, 50, 100};
 	private static char[] srate = {48000, 44100, 22050, 16000, 11025, 8000};
-	private float lowZ;
-	private int dbLastId, ttsize, stsize, intv, insType, mulpCount, egoll, sensity;
-	private int verc = 18, dbCount;
+	private float lowZ = 9.8f;
+	static float fontScale;
+	private int dbLastId, ttsize, stsize, intv, insType, mulpCount, egoll, sensity, listLen, opac;
+	private int verc = 19, dbCount;
 	private int[] staid = {R.array.tiwStr, R.array.tupdStr, R.array.preStr, R.array.mulpStr, R.array.samprate, R.array.crsStr,
 			R.array.c2lStr, R.array.mncStr, R.array.fontStr, R.array.soriStr, R.array.vibraStr, R.array.vibTimeStr, R.array.sq1sStr};
 	private int[] screenOri = new int[] {2, 0, 8, 1, 4};
@@ -98,13 +100,13 @@ public class DCTimer extends Activity implements SensorEventListener {
 	public static int[] rest, stSel = new int[13];
 	static int isp2 = 0, egtype;
 	private long exitTime = 0;
-	private long[] vibTime = new long[] {30, 50, 80, 150, 240};
+	private int[] vibTime = new int[] {30, 50, 80, 150, 240};
 	private static long[] multemp = null;
 	public static short[] sestp = new short[15];
 
 	private String picPath, selFilePath, newver, newupd;
 	private String defPath = Environment.getExternalStorageDirectory().getPath()+"/DCTimer/";
-	private String[] times = null, mItems;
+	private String[] mItems;
 	private String[][] itemStr = new String[13][];
 	private static String nextScr = null, extsol, slist, outPath;
 	private static String[] sesname = new String[15];
@@ -149,11 +151,14 @@ public class DCTimer extends Activity implements SensorEventListener {
 			case 12: dlProg.setProgress(bytesum / 1024);	break;
 			case 13: Toast.makeText(DCTimer.this, getString(R.string.file_error), Toast.LENGTH_LONG).show();
 			case 14: seMean.setText(getString(R.string.session_average) + Mi.sesMean());
-				setGridView(true);	break;
+				setGridView();	break;
 			case 15: impDlg.setMessage(""+dbCount); break;
 			case 16: Toast.makeText(DCTimer.this, getString(R.string.import_failed), Toast.LENGTH_SHORT).show(); break;
 			case 17: Toast.makeText(DCTimer.this, getString(R.string.import_success), Toast.LENGTH_SHORT).show(); break;
-			
+			case 18: 
+				aryAdapter.notifyDataSetChanged();
+				myGridView.setAdapter(aryAdapter);
+				break;
 			default: proDlg.setProgress(msw%100);	break;//Message(msw%100 + "/" + msw/100);
 			}
 		}
@@ -192,14 +197,20 @@ public class DCTimer extends Activity implements SensorEventListener {
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		if(!bgcolor) {
-			try {
-				dm = new DisplayMetrics();
-				getWindowManager().getDefaultDisplay().getMetrics(dm);
-				bitmap = BitmapFactory.decodeFile(picPath);
-				bitmap = getBgPic(bitmap);
-				setBgPic(bitmap, share.getInt("opac", 35));
-			} catch (Exception e) { }
+			dm = new DisplayMetrics();
+			getWindowManager().getDefaultDisplay().getMetrics(dm);
+			bitmap = BitmapFactory.decodeFile(picPath);
+			bitmap = getBgPic(bitmap);
+			setBgPic(bitmap, opac);
 		}
+		new Thread() {
+			public void run() {
+				try {
+					sleep(200);
+					handler.sendEmptyMessage(18);
+				} catch (Exception e) { }
+			}
+		}.start();
 //		if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
 //		} else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
 //		}
@@ -212,59 +223,9 @@ public class DCTimer extends Activity implements SensorEventListener {
 		super.setContentView(R.layout.tab);
 		context = this;
 		share = super.getSharedPreferences("dctimer", Activity.MODE_PRIVATE);
-		selold = spSel[0] = (byte) share.getInt("sel", 1);	//打乱种类
-		cl[0] = share.getInt("cl0", 0xff66ccff);	// 背景颜色
-		cl[1] = share.getInt("cl1", Color.BLACK);	// 文字颜色
-		cl[2] = share.getInt("cl2", 0xffff00ff);	//最快单次颜色
-		cl[3] = share.getInt("cl3", Color.RED);	//最慢单次颜色
-		cl[4] = share.getInt("cl4", 0xff009900);	//最快平均颜色
-		wca = share.getBoolean("wca", false);	//WCA观察
-		hidscr = share.getBoolean("hidscr", true);	//隐藏打乱
-		hidls = share.getBoolean("hidls", false);	//成绩列表隐藏打乱
-		conft = share.getBoolean("conft", true);	//提示确认成绩
-		l1am = share.getBoolean("l1am", true);
-		l2am = share.getBoolean("l2am", true);
-		spSel[1] = (byte) share.getInt("cface", 0);	// 十字求解底面
-		spSel[2] = (byte) share.getInt("list2", 1);
-		spSel[3] = (byte) share.getInt("cside", 1);	// 三阶求解颜色
-		spSel[4] = (byte) share.getInt("list1", 1);
-		spSel[5] = (byte) share.getInt("group", 0);	// 分组
-		spSel[6] = (byte) share.getInt("sel2", 0);	// 二级打乱
-		ttsize = share.getInt("ttsize", 60);	//计时器字体
-		stsize = share.getInt("stsize", 18);	//打乱字体
-		clkform = share.getBoolean("timmh", true);	//时间格式
-		stSel[0] = share.getInt("tiway", 0);	// 计时方式
-		stSel[1] = share.getInt("timerupd", 0);	// 计时器更新
-		stSel[2] = share.getBoolean("prec", true) ? 1 : 0;	// 计时精度
-		stSel[3] = share.getInt("multp", 0);	//分段计时
-		stSel[4] = share.getInt("srate", 1);	// 采样频率
-		Stackmat.samplingRate = srate[stSel[4]];
-		stSel[5] = share.getInt("cxe", 0);	//三阶求解
-		stSel[6] = share.getInt("cube2l", 0);	// 二阶底层求解
-		stSel[7] = share.getInt("minxc", 1);	//五魔配色
-		stSel[8] = share.getInt("tfont", 3);	// 计时器字体
-		stSel[9] = share.getInt("screenori", 0);	// 屏幕方向
-		stSel[10] = share.getInt("vibra", 0);	// 震动反馈
-		stSel[11] = share.getInt("vibtime", 2);	// 震动时长
-		stSel[12] = share.getInt("sq1s", 0);	//SQ1复形计算
-		bgcolor = share.getBoolean("bgcolor", true);
-		fulls = share.getBoolean("fulls", false);	// 全屏显示
-		usess = share.getBoolean("usess", false);	// ss计时器
-		Stackmat.inv = invs = share.getBoolean("invs", false);	// 反转信号
-		opnl = share.getBoolean("scron", false);	// 屏幕常亮
-		opnd = share.getBoolean("scrgry", true);
-		selSes = share.getBoolean("selses", false);	//自动选择分组
-		picPath = share.getString("picpath", "");
-		frzTime = share.getInt("tapt", 0);	//启动延时
-		isMulp = stSel[3] != 0;
-		intv = share.getInt("intv", 30);	//成绩列表行距
-		drop = share.getBoolean("drop", false);
-		outPath = share.getString("scrpath", defPath);
+		readConf();
 		edit = share.edit();
-		for(int i=0; i<15; i++) {
-			sestp[i] = (short) share.getInt("sestp" + i, -1);
-			sesname[i] = share.getString("sesname" + i, "");
-		}
+		fontScale = getResources().getDisplayMetrics().scaledDensity;
 		long sestype = share.getLong("sestype", -1);
 		if(sestype != -1) {
 			for(int i=0; i<9; i++) {
@@ -275,24 +236,22 @@ public class DCTimer extends Activity implements SensorEventListener {
 			edit.remove("sestype");
 			edit.commit();
 		}
-		egtype = share.getInt("egtype", 7);
-		egoll = share.getInt("egoll", 254);
-		simss = share.getBoolean("simss", false);
 		setEgOll();
 
 		if(fulls) getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		if(opnl) {acquireWakeLock(); screenOn = true;}
 		mItems = getResources().getStringArray(R.array.tabInd);
-		tabHost = (TabHost) super.findViewById(R.id.tabhost);	//取得TabHost对象
-		tabHost.setup();	//建立TabHost对象
+		tabHost = (TabHost) super.findViewById(R.id.tabhost);
+		tabHost.setup();
+		layoutInflater = LayoutInflater.from(this);
 		int[] ids = {R.id.tab_timer, R.id.tab_list, R.id.tab_setting};
-		for (int x=0; x<3; x++) {	//循环取出所有布局标记
-			TabSpec myTab = tabHost.newTabSpec("tab" + x);	//定义TabSpec
-			if(x == 0) myTab.setIndicator(mItems[x], getResources().getDrawable(R.drawable.img1));
-			else if(x == 1) myTab.setIndicator(mItems[x], getResources().getDrawable(R.drawable.img2));
-			else myTab.setIndicator(mItems[x], getResources().getDrawable(R.drawable.img3));
-			myTab.setContent(ids[x]);	//设置显示的组件
-			tabHost.addTab(myTab);	//增加标签
+		int[] imgs = {R.drawable.img1, R.drawable.img2, R.drawable.img3};
+		for (int x=0; x<3; x++) {
+			TabSpec myTab = tabHost.newTabSpec("tab" + x);
+			myTab.setIndicator(mItems[x], getResources().getDrawable(imgs[x]));
+			//myTab.setIndicator(getTabItemView(x, imgs)).setContent(ids[x]);
+			myTab.setContent(ids[x]);
+			tabHost.addTab(myTab);
 		}
 
 		dm = new DisplayMetrics();
@@ -302,7 +261,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 			try {
 				bitmap = BitmapFactory.decodeFile(picPath);
 				bitmap = getBgPic(bitmap);
-				setBgPic(bitmap, share.getInt("opac", 35));
+				setBgPic(bitmap, opac);
 			} catch (Exception e) {
 				tabHost.setBackgroundColor(cl[0]);
 				Toast.makeText(DCTimer.this, getString(R.string.not_exist), Toast.LENGTH_SHORT).show();
@@ -407,14 +366,17 @@ public class DCTimer extends Activity implements SensorEventListener {
 		ids = new int[] {95, 25, 41, 100, 20, 100, 50};
 		for(int i=0; i<ids.length; i++) skb[i].setMax(ids[i]);
 		int ssvalue = share.getInt("ssvalue", 50);
-		ids = new int[] {share.getInt("ttsize", 60) - 50, share.getInt("stsize", 18) - 12, share.getInt("intv", 30) - 20,
-				share.getInt("opac", 35), frzTime, ssvalue, share.getInt("sensity", 10)};
+		ids = new int[] {ttsize - 50, stsize - 12, intv - 20,
+				opac, frzTime, ssvalue, sensity};
 		for(int i=0; i<ids.length; i++) skb[i].setProgress(ids[i]);
-		stt[3].setText(getString(R.string.timer_size) + share.getInt("ttsize", 60));
-		stt[4].setText(getString(R.string.scrsize) + share.getInt("stsize", 18));
-		stt[10].setText(getString(R.string.row_spacing) + share.getInt("intv", 30));
+		stt[3].setText(getString(R.string.timer_size) + ttsize);
+		stt[4].setText(getString(R.string.scrsize) + stsize);
+		stt[10].setText(getString(R.string.row_spacing) + intv);
 		stt[29].setText(getString(R.string.time_tap) + frzTime/20D);
 		stt[37].setText(getString(R.string.stt_ssvalue) + ssvalue);
+		stt[53].setText(getString(R.string.sensitivity) + (sensity<15 ? getString(R.string.sen_low) :
+			(sensity<30 ? getString(R.string.sen_mid) :
+				(sensity<45 ? getString(R.string.sen_high) : getString(R.string.sen_ultra)))));
 		Stackmat.switchThreshold = ssvalue;
 		for(int i=0; i<7; i++) skb[i].setOnSeekBarChangeListener(new OnSeekBarChangeListener());
 		stSwitch[0].setBackgroundResource(wca ? R.drawable.switchon : R.drawable.switchoff);
@@ -438,7 +400,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 		seMean.setText(getString(R.string.session_average) + Mi.sesMean());
 		setGvTitle();
 		if(isMulp) multemp = new long[7];
-		setGridView(true);
+		setGridView();
 
 		if(usess && !stm.isStart) stm.start();
 		if((egtype & 4) != 0) chkb[1].setChecked(true);
@@ -520,7 +482,12 @@ public class DCTimer extends Activity implements SensorEventListener {
 					spSel[4] = (byte) arg2;
 					if(!isMulp) {
 						setGvTitle();
-						setGridView(false);
+						new Thread() {
+							public void run() {
+								aryAdapter.refresh(listLen);
+								handler.sendEmptyMessage(18);
+							}
+						}.start();
 					}
 					edit.putInt("list1", spSel[4]);
 					edit.commit();
@@ -535,7 +502,12 @@ public class DCTimer extends Activity implements SensorEventListener {
 					spSel[2] = (byte) arg2;
 					if(!isMulp) {
 						setGvTitle();
-						setGridView(false);
+						new Thread() {
+							public void run() {
+								aryAdapter.refresh(listLen);
+								handler.sendEmptyMessage(18);
+							}
+						}.start();
 					}
 					edit.putInt("list2", spSel[2]);
 					edit.commit();
@@ -551,7 +523,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 					spSel[5] = (byte) arg2;
 					getSession(arg2);
 					seMean.setText(getString(R.string.session_average) + Mi.sesMean());
-					setGridView(true);
+					setGridView();
 					edit.putInt("group", spSel[5]);
 					edit.commit();
 				}
@@ -573,7 +545,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 								extsol = "\n"+Cross.cross(crntScr, spSel[1], spSel[3]);
 								handler.sendEmptyMessage(3);
 								isNextScr = false;
-								nextScr = Mi.SetScr((spSel[0]<<5)|spSel[6], false);
+								nextScr = Mi.setScr((spSel[0]<<5)|spSel[6], false);
 								isNextScr = true;
 							}
 						}.start();
@@ -601,7 +573,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 								}
 								handler.sendEmptyMessage(3);
 								isNextScr=false;
-								nextScr = Mi.SetScr((spSel[0]<<5)|spSel[6], false);
+								nextScr = Mi.setScr((spSel[0]<<5)|spSel[6], false);
 								isNextScr = true;
 							}
 						}.start();
@@ -729,6 +701,8 @@ public class DCTimer extends Activity implements SensorEventListener {
 							adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 							final EditText et= (EditText)view.findViewById(R.id.edit_ses);
 							et.setText(sesname[spSel[5]]);
+							//et.setFocusable(true);
+							//et.setFocusableInTouchMode(true);
 							new AlertDialog.Builder(DCTimer.this).setTitle(getString(R.string.sesname)).setView(view)
 							.setPositiveButton(getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
 								@Override
@@ -746,6 +720,16 @@ public class DCTimer extends Activity implements SensorEventListener {
 									spinner[5].setSelection(spSel[5]);
 								}
 							}).setNegativeButton(getString(R.string.btn_cancel), null).show();
+							et.requestFocus();
+							new Thread() {
+								public void run() {
+									try {
+										sleep(300);
+									} catch (Exception e) { }
+									InputMethodManager inputManager = (InputMethodManager)et.getContext().getSystemService(Context.INPUT_METHOD_SERVICE); 
+									inputManager.showSoftInput(et, 0); 
+								}
+							}.start();
 							break;
 						case 1:	//清空成绩
 							if(resl == 0) Toast.makeText(DCTimer.this, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
@@ -792,7 +776,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 							new AlertDialog.Builder(DCTimer.this).setView(pView)
 							.setNegativeButton(getString(R.string.btn_close), null).show();
 							break;
-						case 4:	//导出数据库 TODO
+						case 4:	//导出数据库
 							try {
 								File f = new File(defPath);
 								if(!f.exists()) f.mkdirs();
@@ -843,8 +827,10 @@ public class DCTimer extends Activity implements SensorEventListener {
 												cv.put("resp", Integer.parseInt(ts[1]));
 												cv.put("resd", Integer.parseInt(ts[2]));
 												cv.put("scr", ts[3].replace("\\n", "\n"));
-												if(!ts[4].equals("null")) cv.put("time", ts[4]);
-												if(!ts[5].equals("null")) cv.put("note", ts[5].replace("\\t", "\t"));
+												if(ts[4].equals("null")) cv.put("time", "");
+												else cv.put("time", ts[4]);
+												if(ts[5].equals("null")) cv.put("note", "");
+												else cv.put("note", ts[5].replace("\\t", "\t"));
 												for(int i=0; i<6; i++)
 													cv.put("p"+(i+1), Integer.parseInt(ts[i+6]));
 												dbh.insert(table-1, cv);
@@ -904,7 +890,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 						for(i=0; i<chkb.length; i++) chkb[i].setTextColor(cl[1]);
 						tvScr.setTextColor(cl[1]);
 						tvTimer.setTextColor(cl[1]);
-						setGridView(false);
+						updateGrid();
 						releaseWakeLock();
 						screenOn=false;
 						edit.remove("cl0");	edit.remove("cl1");	edit.remove("cl2");
@@ -954,6 +940,75 @@ public class DCTimer extends Activity implements SensorEventListener {
 			}
 		});
 	}
+	
+	View getTabItemView(int index, int[] imgs) {	//TODO
+		View view = layoutInflater.inflate(R.layout.tab_item_view, null);
+		TextView textView = (TextView) view.findViewById(R.id.tab_name);		
+		textView.setText(mItems[index]);
+		ImageView imageView = (ImageView) view.findViewById(R.id.tab_img);
+		imageView.setImageResource(imgs[index]);
+		return view;
+	}
+	
+	private void readConf() {
+		selold = spSel[0] = (byte) share.getInt("sel", 1);	//打乱种类
+		cl[0] = share.getInt("cl0", 0xff66ccff);	// 背景颜色
+		cl[1] = share.getInt("cl1", Color.BLACK);	// 文字颜色
+		cl[2] = share.getInt("cl2", 0xffff00ff);	//最快单次颜色
+		cl[3] = share.getInt("cl3", Color.RED);	//最慢单次颜色
+		cl[4] = share.getInt("cl4", 0xff009900);	//最快平均颜色
+		wca = share.getBoolean("wca", false);	//WCA观察
+		hidscr = share.getBoolean("hidscr", true);	//隐藏打乱
+		hidls = share.getBoolean("hidls", false);	//成绩列表隐藏打乱
+		conft = share.getBoolean("conft", true);	//提示确认成绩
+		l1am = share.getBoolean("l1am", true);
+		l2am = share.getBoolean("l2am", true);
+		spSel[1] = (byte) share.getInt("cface", 0);	// 十字求解底面
+		spSel[2] = (byte) share.getInt("list2", 1);
+		spSel[3] = (byte) share.getInt("cside", 1);	// 三阶求解颜色
+		spSel[4] = (byte) share.getInt("list1", 1);
+		spSel[5] = (byte) share.getInt("group", 0);	// 分组
+		spSel[6] = (byte) share.getInt("sel2", 0);	// 二级打乱
+		ttsize = share.getInt("ttsize", 60);	//计时器字体
+		stsize = share.getInt("stsize", 18);	//打乱字体
+		clkform = share.getBoolean("timmh", true);	//时间格式
+		stSel[0] = share.getInt("tiway", 0);	// 计时方式
+		stSel[1] = share.getInt("timerupd", 0);	// 计时器更新
+		stSel[2] = share.getBoolean("prec", true) ? 1 : 0;	// 计时精度
+		stSel[3] = share.getInt("multp", 0);	//分段计时
+		isMulp = stSel[3] != 0;
+		stSel[4] = share.getInt("srate", 1);	// 采样频率
+		Stackmat.samplingRate = srate[stSel[4]];
+		stSel[5] = share.getInt("cxe", 0);	//三阶求解
+		stSel[6] = share.getInt("cube2l", 0);	// 二阶底层求解
+		stSel[7] = share.getInt("minxc", 1);	//五魔配色
+		stSel[8] = share.getInt("tfont", 3);	// 计时器字体
+		stSel[9] = share.getInt("screenori", 0);	// 屏幕方向
+		stSel[10] = share.getInt("vibra", 0);	// 震动反馈
+		stSel[11] = share.getInt("vibtime", 2);	// 震动时长
+		stSel[12] = share.getInt("sq1s", 0);	//SQ1复形计算
+		bgcolor = share.getBoolean("bgcolor", true);
+		opac = share.getInt("opac", 35);
+		fulls = share.getBoolean("fulls", false);	// 全屏显示
+		usess = share.getBoolean("usess", false);	// ss计时器
+		Stackmat.inv = invs = share.getBoolean("invs", false);	// 反转信号
+		opnl = share.getBoolean("scron", false);	// 屏幕常亮
+		opnd = share.getBoolean("scrgry", true);
+		selSes = share.getBoolean("selses", false);	//自动选择分组
+		picPath = share.getString("picpath", "");
+		frzTime = share.getInt("tapt", 0);	//启动延时
+		intv = share.getInt("intv", 30);	//成绩列表行距
+		drop = share.getBoolean("drop", false);	//拍桌子停表
+		sensity = share.getInt("sensity", 25);
+		outPath = share.getString("scrpath", defPath);
+		for(int i=0; i<15; i++) {
+			sestp[i] = (short) share.getInt("sestp" + i, -1);
+			sesname[i] = share.getString("sesname" + i, "");
+		}
+		egtype = share.getInt("egtype", 7);
+		egoll = share.getInt("egoll", 254);
+		simss = share.getBoolean("simss", false);
+	}
 
 	@Override
 	protected void onPause() {
@@ -964,7 +1019,6 @@ public class DCTimer extends Activity implements SensorEventListener {
 	protected void onResume() {
 		super.onResume();
 		if(opnd && screenOn) acquireWakeLock();
-		//TODO
 		List<Sensor> ss = sensor.getSensorList(Sensor.TYPE_ACCELEROMETER);
 		for(Sensor s : ss)
 			sensor.registerListener(this, s, SensorManager.SENSOR_DELAY_NORMAL);
@@ -987,7 +1041,14 @@ public class DCTimer extends Activity implements SensorEventListener {
 			case R.id.stcheck2:	//时间格式
 				stSwitch[1].setBackgroundResource(clkform ? R.drawable.switchoff : R.drawable.switchon);
 				clkform = !clkform; edit.putBoolean("timmh", clkform);
-				if(resl>0) setGridView(false);
+				if(resl>0) {
+					new Thread() {
+						public void run() {
+							aryAdapter.refresh(listLen);
+							handler.sendEmptyMessage(18);
+						}
+					}.start();
+				}
 				break;
 			case R.id.stcheck3:	//模拟ss计时
 				stSwitch[2].setBackgroundResource(simss ? R.drawable.switchoff : R.drawable.switchon);
@@ -1028,23 +1089,6 @@ public class DCTimer extends Activity implements SensorEventListener {
 			case R.id.stcheck10:	//拍桌子停表
 				stSwitch[12].setBackgroundResource(drop ? R.drawable.switchoff : R.drawable.switchon);
 				drop = !drop; edit.putBoolean("drop", drop);
-//				stt[60].setBackgroundResource(sqshp ? R.drawable.switchoff : R.drawable.switchon);
-//				sqshp = !sqshp; edit.putBoolean("sqshp", sqshp);
-//				if(spSel[0]==8) {
-//					if(sqshp) {
-//						new Thread() {
-//							public void run() {
-//								handler.sendEmptyMessage(6);
-//								extsol = " " + Sq1Shape.solveTrn(crntScr);
-//								handler.sendEmptyMessage(1);
-//								isNextScr = false;
-//								nextScr = Mi.SetScr((spSel[0]<<5)|spSel[6], false);
-//								isNextScr = true;
-//							}
-//						}.start();
-//					}
-//					else tvScr.setText(crntScr);
-//				}
 				break;
 			case R.id.stcheck11:	//全屏显示
 				stSwitch[9].setBackgroundResource(fulls ? R.drawable.switchoff : R.drawable.switchon);
@@ -1074,19 +1118,27 @@ public class DCTimer extends Activity implements SensorEventListener {
 	private class OnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
 		@Override
 		public void onStartTrackingTouch(SeekBar seekBar) {
-			if(seekBar.getId()==R.id.seekb1)stt[3].setText(getString(R.string.timer_size) + (seekBar.getProgress()+50));
-			else if(seekBar.getId()==R.id.seekb2)stt[4].setText(getString(R.string.scrsize) + (seekBar.getProgress()+12));
-			else if(seekBar.getId()==R.id.seekb3)stt[10].setText(getString(R.string.row_spacing) + (seekBar.getProgress()+20));
-			else if(seekBar.getId()==R.id.seekb5)stt[29].setText(getString(R.string.time_tap) + (seekBar.getProgress()/20D));
-			else if(seekBar.getId()==R.id.seekb6)stt[37].setText(getString(R.string.stt_ssvalue) + seekBar.getProgress());
+			int prg = seekBar.getProgress();
+			if(seekBar.getId()==R.id.seekb1)stt[3].setText(getString(R.string.timer_size) + (prg+50));
+			else if(seekBar.getId()==R.id.seekb2)stt[4].setText(getString(R.string.scrsize) + (prg+12));
+			else if(seekBar.getId()==R.id.seekb3)stt[10].setText(getString(R.string.row_spacing) + (prg+20));
+			else if(seekBar.getId()==R.id.seekb5)stt[29].setText(getString(R.string.time_tap) + (prg/20D));
+			else if(seekBar.getId()==R.id.seekb6)stt[37].setText(getString(R.string.stt_ssvalue) + prg);
+			else if(seekBar.getId()==R.id.seekb7)stt[53].setText(getString(R.string.sensitivity) + (prg<15 ? getString(R.string.sen_low) :
+				prg<30 ? getString(R.string.sen_mid) :
+					prg < 45 ? getString(R.string.sen_high) : getString(R.string.sen_ultra)));
 		}
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-			if(seekBar.getId()==R.id.seekb1)stt[3].setText(getString(R.string.timer_size)+ (seekBar.getProgress()+50));
-			else if(seekBar.getId()==R.id.seekb2)stt[4].setText(getString(R.string.scrsize)+ (seekBar.getProgress()+12));
-			else if(seekBar.getId()==R.id.seekb3)stt[10].setText(getString(R.string.row_spacing)+ (seekBar.getProgress()+20));
-			else if(seekBar.getId()==R.id.seekb5)stt[29].setText(getString(R.string.time_tap)+ (seekBar.getProgress()/20D));
-			else if(seekBar.getId()==R.id.seekb6)stt[37].setText(getString(R.string.stt_ssvalue) + seekBar.getProgress());
+			int prg = seekBar.getProgress();
+			if(seekBar.getId()==R.id.seekb1)stt[3].setText(getString(R.string.timer_size)+ (prg+50));
+			else if(seekBar.getId()==R.id.seekb2)stt[4].setText(getString(R.string.scrsize)+ (prg+12));
+			else if(seekBar.getId()==R.id.seekb3)stt[10].setText(getString(R.string.row_spacing)+ (prg+20));
+			else if(seekBar.getId()==R.id.seekb5)stt[29].setText(getString(R.string.time_tap)+ (prg/20D));
+			else if(seekBar.getId()==R.id.seekb6)stt[37].setText(getString(R.string.stt_ssvalue) + prg);
+			else if(seekBar.getId()==R.id.seekb7)stt[53].setText(getString(R.string.sensitivity) + (prg<15 ? getString(R.string.sen_low) :
+				prg<30 ? getString(R.string.sen_mid) :
+					prg < 45 ? getString(R.string.sen_high) : getString(R.string.sen_ultra)));
 		}
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
@@ -1104,12 +1156,20 @@ public class DCTimer extends Activity implements SensorEventListener {
 			case R.id.seekb3:	//成绩列表行距
 				intv=seekBar.getProgress()+20;
 				stt[10].setText(getString(R.string.row_spacing)+ intv);
-				if(resl!=0) setGridView(false);
+				if(resl!=0) {
+					new Thread() {
+						public void run() {
+							aryAdapter.setHeight(intv);
+							handler.sendEmptyMessage(18);
+						}
+					}.start();
+				}
 				edit.putInt("intv", seekBar.getProgress()+20);
 				break;
 			case R.id.seekb4:	//背景图不透明度
 				if(!bgcolor) setBgPic(bitmap, seekBar.getProgress());
-				edit.putInt("opac", seekBar.getProgress());
+				opac = seekBar.getProgress();
+				edit.putInt("opac", opac);
 				break;
 			case R.id.seekb5:	//启动延时
 				frzTime=seekBar.getProgress();
@@ -1125,6 +1185,9 @@ public class DCTimer extends Activity implements SensorEventListener {
 			case R.id.seekb7:	//灵敏度
 				sensity = seekBar.getProgress();
 				edit.putInt("sensity", sensity);
+				stt[53].setText(getString(R.string.sensitivity) + (sensity<15 ? getString(R.string.sen_low) :
+					sensity<30 ? getString(R.string.sen_mid) :
+						sensity < 45 ? getString(R.string.sen_high) : getString(R.string.sen_ultra)));
 				break;
 			}
 			edit.commit();
@@ -1147,12 +1210,26 @@ public class DCTimer extends Activity implements SensorEventListener {
 			case R.id.lcheck1:
 				l1am = isChecked; edit.putBoolean("l1am", isChecked);
 				if(!isMulp) setGvTitle();
-				if(resl>0 && !isMulp) setGridView(false);
+				if(resl>0 && !isMulp) {
+					new Thread() {
+						public void run() {
+							aryAdapter.refresh(listLen);
+							handler.sendEmptyMessage(18);
+						}
+					}.start();
+				}
 				break;
 			case R.id.lcheck2:
 				l2am = isChecked; edit.putBoolean("l2am", isChecked);
 				if(!isMulp)setGvTitle();
-				if(resl>0 && !isMulp) setGridView(false);
+				if(resl>0 && !isMulp) {
+					new Thread() {
+						public void run() {
+							aryAdapter.refresh(listLen);
+							handler.sendEmptyMessage(18);
+						}
+					}.start();
+				}
 				break;
 			//EG训练打乱
 			case R.id.checkcll:
@@ -1293,7 +1370,12 @@ public class DCTimer extends Activity implements SensorEventListener {
 								if(which == 0) {edit.putBoolean("prec", false); if(stSel[0]==0) tvTimer.setText("0.00");}
 								else {edit.putBoolean("prec", true); if(stSel[0]==0) tvTimer.setText("0.000");}
 								if(resl != 0) {
-									setGridView(false);
+									new Thread() {
+										public void run() {
+											aryAdapter.refresh(listLen);
+											handler.sendEmptyMessage(18);
+										}
+									}.start();
 									seMean.setText(getString(R.string.session_average) + Mi.sesMean());
 								}
 								break;
@@ -1301,7 +1383,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 								if(which == 0) {
 									isMulp=false; mulp = null; multemp = null;
 									System.gc();
-									times = (resl!=0) ? new String[resl*3] : null;
+									listLen = (resl!=0) ? resl*3 : 0;
 								} else if(!isMulp) {
 									isMulp=true;
 									multemp = new long[7];
@@ -1315,13 +1397,18 @@ public class DCTimer extends Activity implements SensorEventListener {
 										}
 										//cursor.close();
 									}
-									times = (resl!=0) ? new String[(which+2)*(resl+1)]:null;
+									listLen = resl!=0 ? (which+2)*(resl+1) : 0;
 								}
 								else {
-									times = resl!=0 ? new String[(which+2)*(resl+1)] : null;
+									listLen = resl!=0 ? (which+2)*(resl+1) : 0;
 								}
 								edit.putInt("multp", which);
-								setGridView(false);
+								new Thread() {
+									public void run() {
+										aryAdapter.refresh(listLen);
+										handler.sendEmptyMessage(18);
+									}
+								}.start();
 								setGvTitle();
 								break;
 							case 4:	//采样频率
@@ -1348,7 +1435,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 											}
 											handler.sendEmptyMessage(3);
 											isNextScr = false;
-											nextScr = Mi.SetScr((spSel[0]<<5)|spSel[6], false);
+											nextScr = Mi.setScr((spSel[0]<<5)|spSel[6], false);
 											isNextScr = true;
 										}
 									}.start();
@@ -1364,7 +1451,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 											extsol = "\n"+Cube2bl.cube2layer(crntScr, stSel[6]);
 											handler.sendEmptyMessage(3);
 											isNextScr=false;
-											nextScr = Mi.SetScr((spSel[0]<<5)|spSel[6], false);
+											nextScr = Mi.setScr((spSel[0]<<5)|spSel[6], false);
 											isNextScr = true;
 										}
 									}.start();
@@ -1387,7 +1474,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 							case 11:	//触感时间
 								edit.putInt("vibtime", which);
 								break;
-							case 12:	//SQ复形求解 TODO
+							case 12:	//SQ复形求解
 								edit.putInt("sq1s", which);
 								if(spSel[0]==8 && spSel[6]<3) {
 									if(stSel[12] > 0) {
@@ -1397,7 +1484,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 												extsol = " " + (stSel[12]==1 ? Sq1Shape.solveTrn(crntScr) : Sq1Shape.solveTws(crntScr));
 												handler.sendEmptyMessage(1);
 												isNextScr = false;
-												nextScr = Mi.SetScr((spSel[0]<<5)|spSel[6], false);
+												nextScr = Mi.setScr((spSel[0]<<5)|spSel[6], false);
 												isNextScr = true;
 											}
 										}.start();
@@ -1465,8 +1552,12 @@ public class DCTimer extends Activity implements SensorEventListener {
 							tvScr.setTextColor(color);
 							tvTimer.setTextColor(color);
 							cl[1]=color;
-							if(resl!=0)
-								setGridView(false);
+							new Thread() {
+								public void run() {
+									aryAdapter.setTextColor(cl[1]);
+									handler.sendEmptyMessage(18);
+								}
+							}.start();
 							setGvTitle();
 							edit.putInt("cl1", color);edit.commit();
 						}
@@ -1479,8 +1570,12 @@ public class DCTimer extends Activity implements SensorEventListener {
 						@Override
 						public void colorChanged(int color) {
 							cl[2] = color;
-							if(resl != 0)
-								setGridView(false);
+							new Thread() {
+								public void run() {
+									aryAdapter.setBestColor(cl[2]);
+									handler.sendEmptyMessage(18);
+								}
+							}.start();
 							edit.putInt("cl2", color);
 							edit.commit();
 						}
@@ -1493,8 +1588,12 @@ public class DCTimer extends Activity implements SensorEventListener {
 						@Override
 						public void colorChanged(int color) {
 							cl[3]=color;
-							if(resl!=0)
-								setGridView(false);
+							new Thread() {
+								public void run() {
+									aryAdapter.setWorstColor(cl[3]);
+									handler.sendEmptyMessage(18);
+								}
+							}.start();
 							edit.putInt("cl3", color);
 							edit.commit();
 						}
@@ -1507,7 +1606,13 @@ public class DCTimer extends Activity implements SensorEventListener {
 						@Override
 						public void colorChanged(int color) {
 							cl[4]=color;
-							if(resl!=0 && !isMulp) setGridView(false);
+							if(!isMulp) 
+								new Thread() {
+									public void run() {
+										aryAdapter.setBestAvgColor(cl[4]);
+										handler.sendEmptyMessage(18);
+									}
+								}.start();
 							edit.putInt("cl4", color);
 							edit.commit();
 						}
@@ -1652,7 +1757,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 					try {
 						OutputStream out = new BufferedOutputStream(new FileOutputStream(path+fileName));
 						for(int i=0; i<num; i++) {
-							String scr=(i+1)+". "+Mi.SetScr((spSel[0]<<5)|spSel[6], false)+"\r\n";
+							String scr=(i+1)+". "+Mi.setScr((spSel[0]<<5)|spSel[6], false)+"\r\n";
 							handler.sendEmptyMessage(num*100+i);
 							byte [] bytes = scr.toString().getBytes();
 							out.write(bytes);
@@ -1727,6 +1832,15 @@ public class DCTimer extends Activity implements SensorEventListener {
 					if(inScr.size()>0) newScr(false);
 				}
 			}).setNegativeButton(R.string.btn_cancel, null).show();
+			new Thread() {
+				public void run() {
+					try {
+						sleep(300);
+					} catch (Exception e) { }
+					InputMethodManager inputManager = (InputMethodManager)et0.getContext().getSystemService(Context.INPUT_METHOD_SERVICE); 
+					inputManager.showSoftInput(et0, 0); 
+				}
+			}.start();
 			break;
 		case 1:
 			final LayoutInflater factory1 = LayoutInflater.from(DCTimer.this);
@@ -1782,6 +1896,15 @@ public class DCTimer extends Activity implements SensorEventListener {
 					}
 				}
 			}).setNegativeButton(R.string.btn_cancel, null).show();
+			new Thread() {
+				public void run() {
+					try {
+						sleep(300);
+					} catch (Exception e) { }
+					InputMethodManager inputManager = (InputMethodManager)et1.getContext().getSystemService(Context.INPUT_METHOD_SERVICE); 
+					inputManager.showSoftInput(et1, 0); 
+				}
+			}.start();
 			break;
 		case 2:
 			Intent intent=new Intent(Intent.ACTION_SEND);
@@ -1791,7 +1914,6 @@ public class DCTimer extends Activity implements SensorEventListener {
 			startActivity(Intent.createChooser(intent, getTitle()));
 			break;
 		case 3:
-			//savePic(takeScreenShot(DCTimer.this), addstr); TODO
 			isShare = true;
 			if(!isLogin) {
 				auth();
@@ -1849,17 +1971,19 @@ public class DCTimer extends Activity implements SensorEventListener {
             BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream(), "GB2312"));
             StringBuffer sb = new StringBuffer("");
             String line = "";
+            if((line = br.readLine()) != null) sb.append(line);
             while((line = br.readLine()) != null) {
-            	sb.append(line+"\t");
+            	sb.append("\t"+line);
             }
             br.close();
+            System.out.println(sb.toString());
             return sb.toString();
         } catch (Exception e) {
             return "error open url:" + strUrl;
         }
     }
 	
-	private void download(final String fileName) {//TODO
+	private void download(final String fileName) {
 		bytesum = 0;
 		final File f = new File(defPath);
     	if(!f.exists()) f.mkdirs();
@@ -1924,19 +2048,17 @@ public class DCTimer extends Activity implements SensorEventListener {
 		listView.setAdapter(fileList);
 	}
 
-	private void setGridView(boolean ch) {
+	private void setGridView() {	//TODO
 		if(!isMulp) {
-			aryAdapter = new TimesAdapter (DCTimer.this, times, new int[] {
-					cl[1],cl[2],cl[3],cl[4]}, Mi.maxIdx, Mi.minIdx, intv);
+			aryAdapter = new TimesAdapter (DCTimer.this, listLen, new int[] {
+					cl[1],cl[2],cl[3],cl[4]}, intv);
 			myGridView.setNumColumns(3);
 		} else {
-			aryAdapter = new TimesAdapter(DCTimer.this,	times, new int[]{cl[1],
-					cl[2], cl[3], Mi.maxIdx, Mi.minIdx}, intv, stSel[3]+2);
+			aryAdapter = new TimesAdapter(DCTimer.this,	listLen, new int[]{cl[1],
+					cl[2], cl[3]}, intv, stSel[3]+2);
 			myGridView.setNumColumns(stSel[3]+2);
 		}
-		if(ch) myGridView.setStackFromBottom(false);
-		else if(resl>40) myGridView.setStackFromBottom(true);
-		else myGridView.setStackFromBottom(false);
+		myGridView.setStackFromBottom(false);
 		myGridView.setAdapter(aryAdapter);
 	}
 
@@ -2018,7 +2140,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 			spSel[5] = (byte) idx;
 			getSession(idx);
 			seMean.setText(getString(R.string.session_average) + Mi.sesMean());
-			setGridView(true);
+			setGridView();
 			spSel[5] = (byte) idx;
 			edit.putInt("group", idx);
 			edit.commit();
@@ -2207,8 +2329,6 @@ public class DCTimer extends Activity implements SensorEventListener {
 			LayoutInflater factory = LayoutInflater.from(DCTimer.this);
 			final View view = factory.inflate(R.layout.editbox_layout, null);
 			final EditText editText = (EditText) view.findViewById(R.id.editText1);
-			editText.setFocusable(true);
-			editText.requestFocus();
 			new AlertDialog.Builder(DCTimer.this).setTitle(getString(R.string.enter_time)).setView(view)
 			.setPositiveButton(getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
 				@Override
@@ -2222,9 +2342,32 @@ public class DCTimer extends Activity implements SensorEventListener {
 					//newScr(false);
 				}
 			}).setNegativeButton(getString(R.string.btn_cancel), null).show();
+			new Thread() {
+				public void run() {
+					try {
+						sleep(300);
+					} catch (Exception e) { }
+					InputMethodManager inputManager = (InputMethodManager)editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE); 
+					inputManager.showSoftInput(editText, 0); 
+				}
+			}.start();
 		}
 	}
 
+	private void updateGrid() {
+		new Thread() {
+			public void run() {
+				try {
+					sleep(200);
+					aryAdapter.refresh(listLen);
+					handler.sendEmptyMessage(18);
+				} catch (InterruptedException e) { }
+			}
+		}.start();
+		if(resl>30) myGridView.setStackFromBottom(true);
+		else myGridView.setStackFromBottom(false);
+	}
+	
 	private void save(int time, int p) {
 		if(resl >= rest.length) {
 			String[] scr2 = new String[scrst.length*2];
@@ -2268,10 +2411,9 @@ public class DCTimer extends Activity implements SensorEventListener {
 			for(int i=0; i<6; i++)
 				cv.put("p"+(i+1), mulp[i][resl-1]);
 		dbh.insert(spSel[5], cv);
-		if(isMulp) times = new String[(stSel[3]+2)*(resl+1)];
-		else times = new String[resl*3];
+		listLen = isMulp ? (stSel[3]+2)*(resl+1) : resl*3;
 		seMean.setText(getString(R.string.session_average) + Mi.sesMean());
-		setGridView(false);
+		updateGrid();
 		if(selSes && sestp[spSel[5]] != scrType) {
 			sestp[spSel[5]] = (short) scrType;
 			edit.putInt("sestp"+spSel[5], scrType);
@@ -2290,7 +2432,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 			//cursor.close();
 			dbh.update(spSel[5], id, p, d);
 			seMean.setText(getString(R.string.session_average)+Mi.sesMean());
-			setGridView(false);
+			updateGrid();
 		}
 	}
 	private void delete(int idx, int col) {
@@ -2315,25 +2457,24 @@ public class DCTimer extends Activity implements SensorEventListener {
 		//cursor.close();
 		resl--;
 		if(resl > 0) {
-			if(isMulp) times = new String[(resl+1)*col];
-			else times = new String[resl*col];
+			listLen = isMulp ? (resl+1)*col : resl*col;
 		}
 		else {
-			times = null;
+			listLen = 0;
 			sestp[spSel[5]] = -1;
 			edit.remove("sestp"+spSel[5]);
 			edit.commit();
 		}
 		seMean.setText(getString(R.string.session_average) + Mi.sesMean());
-		setGridView(false);
+		updateGrid();
 	}
 	private void deleteAll() {
 		dbh.clear(spSel[5]);
 		resl = dbLastId = 0;
-		times = null;
+		listLen = 0;
 		seMean.setText(getString(R.string.session_average) + "0/0): N/A (N/A)");
 		Mi.maxIdx = Mi.minIdx = -1;
-		setGridView(false);
+		updateGrid();
 		if(sestp[spSel[5]] != -1) {
 			sestp[spSel[5]] = -1;
 			edit.remove("sestp"+spSel[5]);
@@ -2575,7 +2716,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 						if(!ch) {
 							//TODO
 							if(nextScr==null || isChScr) {
-								crntScr = Mi.SetScr((spSel[0]<<5)|spSel[6], ch);
+								crntScr = Mi.setScr((spSel[0]<<5)|spSel[6], ch);
 								isChScr=false;
 								nextScr="";
 							} else {
@@ -2588,7 +2729,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 							}
 						}
 						else {
-							crntScr = Mi.SetScr((spSel[0]<<5)|spSel[6], ch);
+							crntScr = Mi.setScr((spSel[0]<<5)|spSel[6], ch);
 						}
 						extsol = Mi.sc;
 						//crntScr=(!ch && isNextScr)?nextScr:Mi.SetScr((spSel[0]<<5)|spSel[6]);
@@ -2599,14 +2740,14 @@ public class DCTimer extends Activity implements SensorEventListener {
 						else handler.sendEmptyMessage(0);
 						canScr=true;
 						isNextScr = false;
-						nextScr = Mi.SetScr((spSel[0]<<5)|spSel[6], ch);
+						nextScr = Mi.setScr((spSel[0]<<5)|spSel[6], ch);
 						isNextScr = true;
 						System.out.println(nextScr);
 					}
 				}.start();
 			}
 		} else {
-			crntScr=Mi.SetScr(spSel[0]<<5|spSel[6], ch);
+			crntScr=Mi.setScr(spSel[0]<<5|spSel[6], ch);
 			tvScr.setText(crntScr);
 		}
 	}
@@ -2876,9 +3017,9 @@ public class DCTimer extends Activity implements SensorEventListener {
 			}
 			cursor.moveToLast();
 			dbLastId = cursor.getInt(0);
-			times = isMulp ? new String[(stSel[3]+2)*(resl+1)] : new String[resl*3];
+			listLen = isMulp ? (stSel[3]+2)*(resl+1) : resl*3;
 		} else {
-			times = null;
+			listLen = 0;
 			dbLastId = 0;
 		}
 		//cursor.close();
@@ -2925,7 +3066,14 @@ public class DCTimer extends Activity implements SensorEventListener {
 				String text = editText.getText().toString();
 				if(!text.equals(note)) {
 					dbh.update(spSel[5], id, text);
-					//setGridView(false);
+					new Thread() {
+						public void run() {
+							try {
+								sleep(200);
+								handler.sendEmptyMessage(18);
+							} catch (Exception e) { }
+						}
+					}.start();
 				}
 			}
 		}).setNeutralButton(getString(R.string.copy_scr), new DialogInterface.OnClickListener() {
@@ -2985,7 +3133,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 					ContentResolver cr = this.getContentResolver();
 					bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
 					bitmap = getBgPic(bitmap);
-					setBgPic(bitmap, share.getInt("opac", 35));
+					setBgPic(bitmap, opac);
 					bgcolor = false;
 					edit.putString("picpath", picPath);
 					edit.putBoolean("bgcolor", false); edit.commit();
@@ -3010,9 +3158,10 @@ public class DCTimer extends Activity implements SensorEventListener {
 	@Override
 	public void onSensorChanged(SensorEvent e) {
 		float z = e.values[SensorManager.DATA_Z];
-		lowZ = z * 0.9f + lowZ * 0.1f;
+		lowZ = 0.8f * lowZ + 0.2f * z;
 		float highZ = z - lowZ;
-		if(drop && timer.time > 300 && Math.abs(highZ*1000)-30 > sensity && timer.state == 1) {
+		//testView.setText(String.format("%.1f", highZ));
+		if(drop && timer.time > 200 && (highZ-0.1)*20 > (50-sensity) && timer.state == 1) {
 			timer.count();
 			viewsVisibility(true);
 			if(!wca) {isp2=0; idnf=true;}
