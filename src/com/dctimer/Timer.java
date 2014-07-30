@@ -123,9 +123,15 @@ public class Timer {
 		boolean m = i<0;
 		if(m) i = -i;
 		i /= 1000;
-		int sec = DCTimer.clkform ? i%60 : i;
-		int min = DCTimer.clkform ? (i/60)%60 : 0;
-		int hour = DCTimer.clkform ? i/3600 : 0;
+		int sec = i, min = 0, hour = 0;
+		if(DCTimer.stSel[13] < 2) {
+			min = sec / 60;
+			sec = sec % 60;
+			if(DCTimer.stSel[13] < 1) {
+				hour = sec / 60;
+				sec = sec % 60;
+			}
+		}
 		StringBuilder time = new StringBuilder();
 		if(hour == 0) {
 			if(min == 0) time.append(""+sec);

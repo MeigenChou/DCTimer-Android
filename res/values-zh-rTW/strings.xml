@@ -4,7 +4,7 @@
 	<string name="scrambling">轉亂中…</string>
 	<string name="solving">計算中…</string>
 	<string name="scramble_view">轉亂狀態</string>
-	<string name="session">" 分組 "</string>
+	<string name="session">"分組 "</string>
 	<string name="option">選項</string>
 	<string name="inspect">觀察</string>
 	<string name="solve">還原</string>
@@ -20,7 +20,7 @@
 	<!-- 设置 -->
 	<string name="stt_timer">計時</string>
 	<string name="wcainsp">WCA觀察</string>
-	<string name="clock_format">超過1分鐘的用分鐘顯示</string>
+	<string name="time_format">時間格式</string>
 	<string name="input_time">計時與成績輸入方式</string>
 	<string name="timer_upd">計時器更新方式</string>
 	<string name="accuracy">計時器精度</string>
@@ -42,9 +42,10 @@
 	<string name="confirm_time">有新成績時顯示提示</string>
 	<string name="printscr">詳細成績中顯示轉亂</string>
 	<string name="ra0">轉動平均0:</string>
+	<string name="ralen">轉動平均次數：</string>
 	<string name="ra1">轉動平均1:</string>
 	<string name="trimmed">去尾</string>
-	<string name="sel_session">更改轉亂類型時自動切換分組 (15組内有效)</string>
+	<string name="sel_session">更改轉亂類型時自動切換分組</string>
 	<string name="stt_tools">工具</string>
 	<string name="optcross">三階相關求解</string>
 	<string name="sq1shape">Square-1復形求解</string>

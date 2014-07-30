@@ -44,12 +44,10 @@ public class TimesAdapter extends BaseAdapter {
 		} else {
 			for (int i = 0; i < len/col; i++) {
 				times.add(Mi.distime(i, false));
-				times.add(DCTimer.l1am ? Mi.avg(
-						DCTimer.listnum[DCTimer.spSel[4]], i, 0) : Mi.mean(
-						DCTimer.listnum[DCTimer.spSel[4]], i, 0));
-				times.add(DCTimer.l2am ? Mi.avg(
-						DCTimer.listnum[DCTimer.spSel[2] + 1], i, 1) : Mi.mean(
-						DCTimer.listnum[DCTimer.spSel[2] + 1], i, 1));
+				times.add(Mi.average(
+						DCTimer.stSel[14], DCTimer.l1len, i, 0));
+				times.add(Mi.average(
+						DCTimer.stSel[15], DCTimer.l2len, i, 1));
 			}
 		}
 	}

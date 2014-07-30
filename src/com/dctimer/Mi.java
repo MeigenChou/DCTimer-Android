@@ -49,29 +49,47 @@ public class Mi {
 		String[][] turn2;
 		String[] end, suff0 = {""}, csuff = {"","2","'"}, suff;
 		String scr;
-		if(ch)scrLen = defScrLen[n>>5][n&31];
+		if(ch) scrLen = defScrLen[n>>5][n&31];
 		switch(n) {
 		case 0: //2阶
-			scr = Cube222.randomState(); viewType = 2;
-			if(DCTimer.stSel[6]>0) sc = "\n" + Cube2bl.cube2layer(scr, DCTimer.stSel[6]); break;
+			scr = Cube222.randomState();
+			viewType = 2;
+			if(DCTimer.stSel[6]>0) sc = "\n" + Cube2bl.cube2layer(scr, DCTimer.stSel[6]);
+			break;
 		case 1:
-			scr = cube(2); viewType = 2;
-			if(DCTimer.stSel[6]>0) sc = "\n" + Cube2bl.cube2layer(scr, DCTimer.stSel[6]); break;
+			scr = cube(2);
+			viewType = 2;
+			if(DCTimer.stSel[6]>0) sc = "\n" + Cube2bl.cube2layer(scr, DCTimer.stSel[6]);
+			break;
 		case 2:
-			scr = OtherScr.megascramble(new String[][][]{{{"U","D"}}, {{"R","L"}}, {{"F","B"}}}, csuff); viewType = 2;
-			if(DCTimer.stSel[6]>0) sc = "\n" + Cube2bl.cube2layer(scr, DCTimer.stSel[6]); break;
+			scr = OtherScr.megascramble(new String[][][]{{{"U","D"}}, {{"R","L"}}, {{"F","B"}}}, csuff);
+			viewType = 2;
+			if(DCTimer.stSel[6]>0) sc = "\n" + Cube2bl.cube2layer(scr, DCTimer.stSel[6]);
+			break;
 		case 3:
-			scr = Cube222.randomCLL(); viewType = 2; break;
+			scr = Cube222.randomCLL();
+			viewType = 2;
+			break;
 		case 4:
-			scr = Cube222.randomEG1(); viewType = 2; break;
+			scr = Cube222.randomEG1();
+			viewType = 2;
+			break;
 		case 5:
-			scr = Cube222.randomEG2(); viewType = 2; break;
+			scr = Cube222.randomEG2();
+			viewType = 2;
+			break;
 		case 6:
-			scr = Cube222.randomXLL();viewType=2;break;
+			scr = Cube222.randomXLL();
+			viewType = 2;
+			break;
 		case 7:
-			scr = Cube222.egScr(DCTimer.egtype, DCTimer.egolls); viewType=2; break;
+			scr = Cube222.egScr(DCTimer.egtype, DCTimer.egolls);
+			viewType=2;
+			break;
 		case 8:
-			scr = Cube222.randomTCLL(1); viewType = 2; break;
+			scr = Cube222.randomTCLL(1);
+			viewType = 2;
+			break;
 		case 9:
 			scr = Cube222.randomTCLL(2); viewType = 2; break;
 		case 10:
@@ -84,20 +102,20 @@ public class Mi {
 			scr = Cube222.randomTEG2(2); viewType = 2; break;
 		case 32: //3阶
 			scr = cube(3); viewType = 3;
-			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[1], DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[3]);
+			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.solSel[0], DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==2)sc="\n"+Cross.xcross(scr, DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==3)sc="\n"+EOline.eoLine(scr, DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.solSel[1]);
 			break;
 		case 33:
 			scr = new Search().solution(Tools.randomCube(), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;
-			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[1], DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[3]);
+			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.solSel[0], DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==2)sc="\n"+Cross.xcross(scr, DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==3)sc="\n"+EOline.eoLine(scr, DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.solSel[1]);
 			break;
 		case 34:
 			scr = new Search().solution(Tools.randomCrossSolved(), 21, 20000, 200, 2);
@@ -111,11 +129,11 @@ public class Mi {
 		case 37:
 			scr = new Search().solution(Tools.randomCornerSolved(), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;
-			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[1], DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[3]);
+			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.solSel[0], DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==2)sc="\n"+Cross.xcross(scr, DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==3)sc="\n"+EOline.eoLine(scr, DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.solSel[1]);
 			break;
 		case 38:
 			scr = new Search().solution(Tools.randomEdgeSolved(), 21, 20000, 200, 2);
@@ -185,11 +203,11 @@ public class Mi {
 		case 51:
 			scr = new Search().solution(Tools.randomEasyCross(scrLen), 21, 20000, 200, 2);
 			viewType=scr.startsWith("Error")?0:3;
-			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.spSel[1], DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==2)sc="\n"+Cross.xcross(scr, DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==3)sc="\n"+EOline.eoLine(scr, DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.spSel[3]);
-			else if(DCTimer.stSel[5]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.spSel[3]);
+			if(DCTimer.stSel[5]==1)sc="\n"+Cross.cross(scr, DCTimer.solSel[0], DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==2)sc="\n"+Cross.xcross(scr, DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==3)sc="\n"+EOline.eoLine(scr, DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==4)sc="\n"+PetrusxRoux.roux(scr, DCTimer.solSel[1]);
+			else if(DCTimer.stSel[5]==5)sc="\n"+PetrusxRoux.petrus(scr, DCTimer.solSel[1]);
 			break;
 		case 52:
 			scr = new Search().solution(Tools.randomState(Tools.STATE_SOLVED, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,5,6,7,8,9,10,11}, Tools.STATE_SOLVED), 21, 20000, 200, 2);
@@ -1079,7 +1097,7 @@ public class Mi {
 		p.setColor(color);
 		drawCircle(p, c, w, cx, cy, 4);
 	}
-	protected static void drawPolygon(Paint p, Canvas c, int cl, float[] arx, float[] ary, boolean stoke) {
+	public static void drawPolygon(Paint p, Canvas c, int cl, float[] arx, float[] ary, boolean stoke) {
 		p.setColor(cl);
 		Path path=new Path();
 		path.moveTo(arx[0],ary[0]);
@@ -1137,24 +1155,37 @@ public class Mi {
 		return time.toString();
 	}
 	static String distime(int i) {
-		boolean m = i<0;
-		if(m)i = -i;
+		boolean m = i < 0;
+		if(m) i = -i;
 		//if(i==0)return "DNF";
 		//if(DCTimer.stSel[2]==0)i+=5;
-		int msec=i%1000;
-		if(DCTimer.stSel[2]==0)msec/=10;
-		int sec=DCTimer.clkform?(i/1000)%60:i/1000;
-		int min=DCTimer.clkform?(i/60000)%60:0;
-		int hour=DCTimer.clkform?i/3600000:0;
-		return (m?"-":"")+contime(hour, min, sec, msec);
+		int msec = i % 1000;
+		if(DCTimer.stSel[2] == 0) msec /= 10;
+		int sec = i / 1000, min = 0, hour = 0;//DCTimer.clkform?(i/1000)%60:i/1000;
+		if(DCTimer.stSel[13] < 2) {
+			min = sec / 60;
+			sec %= 60;
+			if(DCTimer.stSel[13] < 1) {
+				hour = min / 60;
+				min %= 60;
+			}
+		}
+		return (m ? "-" : "") + contime(hour, min, sec, msec);
 	}
 	private static String distime2(int i) {
 		boolean m = i < 0;
 		i = Math.abs(i) + 5;
-		int ms=(i%1000)/100;
-		int s=DCTimer.clkform?(i/1000)%60:i/1000;
-		int mi=DCTimer.clkform?(i/60000)%60:0;
-		int h=DCTimer.clkform?(i/3600000):0;
+		int ms = (i % 1000) / 100;
+		int s = i / 1000;
+		int mi = 0, h = 0;
+		if(DCTimer.stSel[13] < 2) {
+			mi = s / 60;
+			s %= 60;
+			if(DCTimer.stSel[13] < 1) {
+				h = mi / 60;
+				mi %= 60;
+			}
+		}
 		return (m?"-":"")+(h>0?h+":":"")+(h>0?(mi<10?"0"+mi+":":mi+":"):(mi>0?mi+":":""))+(((h>0 || mi>0) && s<10)?"0":"")+s+"."+ms;
 	}
 	static String distime(int idx, boolean b) {
@@ -1170,10 +1201,10 @@ public class Mi {
 		else return distime(i);
 	}
 
-	static String avg(int n, int i, int l) {
-		if(i<n-1) {bidx[l]=-1;return "N/A";}
+	static String average(int type, int n, int i, int l) {
+		if(i<n-1) {bidx[l]=-1; return "N/A";}
 		int nDnf=0, cavg;
-		int trim = (int) Math.ceil(n/20.0);
+		int trim = type==1 ? 0 : (int) Math.ceil(n/20.0);
 		double sum = 0;
 		for(int j=i-n+1; j<=i; j++)
 			if(DCTimer.resp[j]==2) {
@@ -1183,7 +1214,18 @@ public class Mi {
 					if(i<n)bavg[l]=Integer.MAX_VALUE;
 					return "DNF";
 				}
+			} else if(type == 1) {
+				int time = DCTimer.rest[j]+DCTimer.resp[j]*2000;
+				if(DCTimer.stSel[2]==1)sum += time;
+				else sum+=time/10;
 			}
+		if(type == 1) {
+			cavg=(int) (sum/n+0.5);
+			if(DCTimer.stSel[2]==0)cavg*=10;
+			if(i==n-1) {bavg[l]=cavg;bidx[l]=i;}
+			if(cavg<=bavg[l]) {bavg[l]=cavg;bidx[l]=i;}
+			return distime(cavg);
+		}
 		if(n<20) {
 			int max = Integer.MIN_VALUE;
 			int min = Integer.MAX_VALUE;
@@ -1229,28 +1271,6 @@ public class Mi {
 		a[i] = pivot;
 		quickSort(a, lo, i-1);
 		quickSort(a, i+1, hi);
-	}
-	static String mean(int n, int i, int l) {
-		if(i<n-1) {bidx[l]=-1;return "N/A";}
-		int cavg;
-		double sum=0;
-		for(int j=i-n+1;j<=i;j++) {
-			if(DCTimer.resp[j]==2) {
-				cavg=Integer.MAX_VALUE;
-				if(i==n-1)bavg[l]=Integer.MAX_VALUE;
-				return "DNF";
-			}
-			else {
-				int time = DCTimer.rest[j]+DCTimer.resp[j]*2000;
-				if(DCTimer.stSel[2]==1)sum += time;
-				else sum+=time/10;
-			}
-		}
-		cavg=(int) (sum/n+0.5);
-		if(DCTimer.stSel[2]==0)cavg*=10;
-		if(i==n-1) {bavg[l]=cavg;bidx[l]=i;}
-		if(cavg<=bavg[l]) {bavg[l]=cavg;bidx[l]=i;}
-		return distime(cavg);
 	}
 	static String sesMean() {
 		double sum=0,sum2=0;
@@ -1519,7 +1539,6 @@ public class Mi {
 			mean = sesMean;
 			blk = (up - down) / divi;
 		}
-		System.out.println(up+" "+down+" "+divi+" "+blk);
 		int wBase = 45 * width / 288;
 		p.setTextSize(wBase *2 / 9);
 		p.setTextAlign(Align.RIGHT);

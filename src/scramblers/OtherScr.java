@@ -275,8 +275,8 @@ public class OtherScr {
 						switch(s[i].charAt(1)){
 						case '\'':seq[count]+=2;break;
 						case '2':seq[count]++;break;
-						case '³':k=2;break;
-						case '²':k=1;break;
+						case 0xb3:k=2;break;
+						case 0xb2:k=1;break;
 						case 'w':seq[count]+=24;break;
 						case 'r':seq[count]=16;break;
 						case 'l':seq[count]=4;break;

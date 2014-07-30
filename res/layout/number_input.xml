@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="fill_parent"
+        android:layout_height="42dip"
+        android:layout_margin="2dip"
+        android:background="@drawable/edittext_select"
+        android:inputType="number"
+        android:minWidth="300dip"
+        android:paddingLeft="3dip"
+        android:paddingRight="3dip" />
+
+</LinearLayout>

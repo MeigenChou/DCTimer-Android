@@ -326,4 +326,9 @@
         <item>face turn metric</item>
         <item>twist metric</item>
     </array>
+    
+    <array name="avgStr">
+        <item>去尾平均</item>
+        <item>平均</item>
+    </array>
 </resources>

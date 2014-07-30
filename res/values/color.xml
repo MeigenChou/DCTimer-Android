@@ -22,4 +22,6 @@
     <color name="text_num_gray">#333</color>
     <color name="dialog_title_blue">#9CCCF7</color>
     <color name="light_gray">#80808080</color>
+    <color name="light_white">#80ffffff</color>
+    <color name="light_blue">#d09cccf7</color>
 </resources> 

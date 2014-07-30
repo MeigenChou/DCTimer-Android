@@ -330,4 +330,15 @@
         <item>Face turn metric</item>
         <item>Twist metric</item>
     </array>
+    
+    <array name="timeForm">
+        <item>hh:mm:ss.xy(z)</item>
+        <item>mm:ss.xy(z)</item>
+        <item>ss.xy(z)</item>
+    </array>
+    
+    <array name="avgStr">
+        <item>average</item>
+        <item>mean</item>
+    </array>
 </resources>
