@@ -1,7 +1,5 @@
 package min2phase;
 
-import java.util.Random;
-
 class CubieCube {
 
 	/**
@@ -370,9 +368,6 @@ class CubieCube {
 		return 0;// cube ok
 	}
 
-	void resolve(Random gen) {
-		
-	}
 
 	// ********************************************* Initialization functions *********************************************
 

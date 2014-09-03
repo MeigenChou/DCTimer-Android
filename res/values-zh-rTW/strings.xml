@@ -3,6 +3,7 @@
     <!-- 界面 -->
 	<string name="scrambling">轉亂中…</string>
 	<string name="solving">計算中…</string>
+	<string name="initing">初始化</string>
 	<string name="scramble_view">轉亂狀態</string>
 	<string name="session">"分組 "</string>
 	<string name="option">選項</string>

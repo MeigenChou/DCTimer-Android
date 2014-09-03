@@ -76,7 +76,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 
 	private boolean opnl, opnd, hidscr, conft, isMulp, canScr = true, simss, touchDown = false, isLogin, isShare,
 			scrt = false, bgcolor, fulls, invs, usess, screenOn, selSes, isLongPress, isChScr, drop;
-	private static boolean isNextScr = false;
+	static boolean isNextScr = false, nextScrUsed = false;
 	protected boolean canStart;
 	protected static boolean isInScr = false;
 	public boolean wca;
@@ -87,7 +87,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 	private float lowZ = 9.8f;
 	static float fontScale;
 	private int dbLastId, ttsize, stsize, intv, insType, mulpCount, egoll, sensity, listLen, opac;
-	private int verc = 20, dbCount, scrIdx, scr2idx, sesIdx;
+	private int verc = 21, dbCount, scrIdx, scr2idx, sesIdx;
 	private int[] staid = {R.array.tiwStr, R.array.tupdStr, R.array.preStr, R.array.mulpStr,
 			R.array.samprate, R.array.crsStr, R.array.c2lStr, R.array.mncStr,  
 			R.array.fontStr, R.array.soriStr, R.array.vibraStr, R.array.vibTimeStr,
@@ -103,6 +103,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 	public static int resl;
 	public static int[] rest, stSel = new int[16], solSel = new int[2];
 	static int isp2 = 0, egtype;
+	public static long time;
 	private long exitTime = 0;
 	private static long[] multemp = null;
 	public static short[] sesType = new short[15];
@@ -127,6 +128,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 	private List<String> items = null, paths = null;
 	private ListView listView;
 	private TextView tvFile;
+	private Scrambler scrThread;
 
 	public Handler handler = new Handler() {
 		public void handleMessage(Message msg) {
@@ -163,6 +165,18 @@ public class DCTimer extends Activity implements SensorEventListener {
 				gvTimes.setAdapter(adapter);
 				gvTimes.setSelection(gvTimes.getCount()-1);
 				break;
+			case 19: tvScr.setText(getString(R.string.initing) + " (" + (13 + threephase.Util.prog / 2597) + "%) ..."); break;
+			case 20: tvScr.setText(getString(R.string.initing) + " (0%) ..."); break;
+			case 21: tvScr.setText(getString(R.string.initing) + " (19%) ..."); break;
+			case 22: tvScr.setText(getString(R.string.initing) + " (26%) ..."); break;
+			case 23: tvScr.setText(getString(R.string.initing) + " (" + (33 + threephase.Util.prog / 44098) + "%) ..."); break;
+			case 24: tvScr.setText(getString(R.string.initing) + " (21%) ..."); break;
+			case 25: tvScr.setText(getString(R.string.initing) + " (" + (23 + threephase.Util.prog / 150150) + "%) ..."); break;
+			case 26: tvScr.setText(getString(R.string.initing) + " (" + (26 + threephase.Util.prog / 4200) + "%) ..."); break;
+			case 27: tvScr.setText(getString(R.string.initing) + " (" + (95 + threephase.Util.prog / 252) + "%) ..."); break;
+			case 28: tvScr.setText(getString(R.string.initing) + " (" + (33 + threephase.Util.prog / 28923) + "%) ..."); break;
+			case 29: tvScr.setText(getString(R.string.initing) + " (" + threephase.Util.prog / 1198 + "%) ..."); break;
+			case 30: tvScr.setText(getString(R.string.initing) + " (2%) ..."); break;
 			default: proDlg.setProgress(msw%100);	break;//Message(msw%100 + "/" + msw/100);
 			}
 		}
@@ -450,10 +464,10 @@ public class DCTimer extends Activity implements SensorEventListener {
 			@Override
 			public void onClick(View arg0) {
 				CustomDialog dialog =
-				new CustomDialog.Builder(context).setSingleChoiceItems(R.array.cubeStr, scrIdx, new DialogInterface.OnClickListener() {
+				new CustomDialog.Builder(context).setSingleChoiceItems(R.array.cubeStr, scrIdx+1, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dia, int which) {
-						if(scrIdx != which) {
-							scrIdx = (byte) which;
+						if(scrIdx != which - 1) {	//TODO
+							scrIdx = which - 1;
 							if(scrIdx != selold) {scr2idx = 0; selold = scrIdx;}
 							set2ndsel();
 							setScrType();
@@ -472,7 +486,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 				new CustomDialog.Builder(context).setSingleChoiceItems(get2ndScr(scrIdx), scr2idx, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						if (scr2idx != which) {
-							scr2idx = (byte) which;
+							scr2idx = which;
 							set2ndsel();
 							setScrType();
 							if (selSes) searchSesType();
@@ -622,7 +636,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 								if(len>180) len=180;
 								if(len != Mi.scrLen) {
 									Mi.scrLen = len;
-									if((scrIdx==1 && scr2idx==19) || (scrIdx==20 && scr2idx==4)) isChScr = true;
+									if((scrIdx==-1 && scr2idx==17) || (scrIdx==1 && scr2idx==19) || (scrIdx==20 && scr2idx==4)) isChScr = true;
 									newScr(false);
 								}
 							}
@@ -702,7 +716,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 									edit.putString("sesname" + sesIdx, sesnames[sesIdx]);
 									edit.commit();
 									sesItems[sesIdx] = (sesIdx + 1) + ". " + sesnames[sesIdx];
-									sesName.setText(getString(R.string.session)+sesItems[sesIdx]);
+									sesName.setText(getString(R.string.session)+(sesIdx + 1) + " - " + sesnames[sesIdx]);
 									hideKeyboard(et);
 								}
 							}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
@@ -710,15 +724,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 									hideKeyboard(et);
 								}
 							}).create().show();
-							//et.requestFocus();
-							new Thread() {
-								public void run() {
-									try {
-										sleep(300);
-									} catch (Exception e) { }
-									showKeyboard(et);
-								}
-							}.start();
+							showKeyboard(et);
 							break;
 						case 1:	//清空成绩
 							if(resl == 0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
@@ -909,7 +915,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 	}
 	
 	private void setTextsColor() {
-		// TODO Auto-generated method stub
+		// TODO
 		for(int i=0; i<sttlen; i++) stt[i].setTextColor(cl[1]);
 		for(int i=0; i<chkb.length; i++) chkb[i].setTextColor(cl[1]);
 		tvScr.setTextColor(cl[1]);
@@ -1675,7 +1681,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 					});
 					cpDialog.show();
 					break;
-				case 26:
+				case 26:	//滚动平均1长度
 					LayoutInflater factory = LayoutInflater.from(context);
 					final View view = factory.inflate(R.layout.number_input, null);
 					final EditText editText = (EditText) view.findViewById(R.id.editText1);
@@ -1710,16 +1716,9 @@ public class DCTimer extends Activity implements SensorEventListener {
 							hideKeyboard(editText);
 						}
 					}).create().show();
-					new Thread() {
-						public void run() {
-							try {
-								sleep(300);
-							} catch (Exception e) { }
-							showKeyboard(editText);
-						}
-					}.start();
+					showKeyboard(editText);
 					break;
-				case 27:
+				case 27:	//滚动平均2长度
 					LayoutInflater fact = LayoutInflater.from(context);
 					final View vw = fact.inflate(R.layout.number_input, null);
 					final EditText edt = (EditText) vw.findViewById(R.id.editText1);
@@ -1733,8 +1732,8 @@ public class DCTimer extends Activity implements SensorEventListener {
 							if(len < 3 || len > 1000)
 								Toast.makeText(context, getString(R.string.illegal), Toast.LENGTH_LONG).show();
 							else {
-								l1len = len;
-								edit.putInt("l1len", len);
+								l2len = len;
+								edit.putInt("l2len", len);
 								edit.commit();
 								stdn[1].setText("" + len);
 								if(resl>0 && !isMulp) {
@@ -1754,14 +1753,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 							hideKeyboard(edt);
 						}
 					}).create().show();
-					new Thread() {
-						public void run() {
-							try {
-								sleep(300);
-							} catch (Exception e) { }
-							showKeyboard(edt);
-						}
-					}.start();
+					showKeyboard(edt);
 					break;
 				}
 			case MotionEvent.ACTION_CANCEL:
@@ -1794,12 +1786,13 @@ public class DCTimer extends Activity implements SensorEventListener {
 		String[] s = getResources().getStringArray(get2ndScr(scrIdx));
 		if(scr2idx >= s.length) scr2idx = 0;
 		bt2Scr.setText(s[scr2idx]);
-		btScr.setText(scrStr[scrIdx]);
+		btScr.setText(scrStr[scrIdx+1]);
 		newScr(true);
 	}
 	
 	private int get2ndScr(int s) {
 		switch (s) {
+		case -1: return R.array.scrwca;
 		case 0: return R.array.scr222;
 		case 1: return R.array.scr333;
 		case 2: return R.array.scr444;
@@ -1925,14 +1918,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 					hideKeyboard(et0);
 				}
 			}).create().show();
-			new Thread() {
-				public void run() {
-					try {
-						sleep(300);
-					} catch (Exception e) { }
-					showKeyboard(et0);
-				}
-			}.start();
+			showKeyboard(et0);
 			break;
 		case 1:
 			final LayoutInflater factory1 = LayoutInflater.from(context);
@@ -2002,14 +1988,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 				}
 			}).create();
 			showDialog(dialog);
-			new Thread() {
-				public void run() {
-					try {
-						sleep(300);
-					} catch (Exception e) { }
-					showKeyboard(et1);
-				}
-			}.start();
+			showKeyboard(et1);
 			break;
 		case 2:
 			Intent intent=new Intent(Intent.ACTION_SEND);
@@ -2201,7 +2180,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 	private String getScrName() {
 		String[] mItems = getResources().getStringArray(R.array.cubeStr);
 		String[] s = getResources().getStringArray(get2ndScr(scrIdx));
-		return mItems[scrIdx] + "-" + s[scr2idx];
+		return mItems[scrIdx+1] + "-" + s[scr2idx];
 	}
 
 	private void searchSesType() {
@@ -2232,39 +2211,61 @@ public class DCTimer extends Activity implements SensorEventListener {
 
 	private void setScrType() {
 		switch(scrIdx) {
-		case 0:
-		case 1:
-		case 2:
-		case 3:
-		case 4:
-		case 5:
-		case 6:
-		case 7:
-		case 8:
-		case 9:
-		case 10:
-			scrType = scrIdx; break;
-		case 11:
-			if(scr2idx<3) scrType=11;
-			else if(scr2idx<5) scrType=12;
-			else if(scr2idx<12) scrType=scr2idx+8;
-			else scrType = scr2idx+37;
+		case -1:
+			switch (scr2idx) {
+			case 0: scrType = 1; break;
+			case 1: scrType = 2; break;
+			case 2: scrType = 3; break;
+			case 3: scrType = 0; break;
+			case 4: scrType = 37; break;
+			case 5: scrType = 38; break;
+			case 6: scrType = 39; break;
+			case 7: scrType = 40; break;
+			case 8: scrType = 6; break;
+			case 9: scrType = 7; break;
+			case 10: scrType = 8; break;
+			case 11: scrType = 9; break;
+			case 12: scrType = 10; break;
+			case 13: scrType = 4; break;
+			case 14: scrType = 5; break;
+			case 15: scrType = 41; break;
+			case 16: scrType = 42; break;
+			case 17: scrType = 43; break;
+			}
 			break;
-		case 12:
-		case 13:
-		case 14:
-		case 15:
-			scrType = scrIdx+8; break;
-		case 16:
-			scrType = scr2idx+24; break;
-		case 17:
+		case 0:	//2阶
+		case 1:	//3阶
+		case 2:	//4阶
+		case 3:	//5阶
+		case 4:	//6阶
+		case 5:	//7阶
+		case 6:	//五魔
+		case 7:	//金字塔
+		case 8:	//sq1
+		case 9:	//魔表
+		case 10:	//斜转
+			scrType = scrIdx; break;	//0~10
+		case 11:
+			if(scr2idx<3) scrType = 11;	//1x3x3
+			else if(scr2idx<5) scrType = 12;	//2x3x3
+			else if(scr2idx<12) scrType = scr2idx + 8;	//13~19
+			else scrType = scr2idx + 37;	//49~
+			break;
+		case 12:	//cmetrick
+		case 13:	//齿轮
+		case 14:	//siamese cube
+		case 15:	//15puzzle
+			scrType = scrIdx + 8; break;	//20~23
+		case 16:	//其他
+			scrType = scr2idx + 24; break;	//24~29
+		case 17:	//3阶子集
 			scrType = 1; break;
-		case 18:
-			scrType = scr2idx+30; break;
-		case 19:
+		case 18:	//bandaged cube
+			scrType = scr2idx + 30; break;	//30~31
+		case 19:	//五魔子集
 			scrType = 6; break;
-		case 20:
-			scrType = scr2idx+32; break;
+		case 20:	//连拧
+			scrType = scr2idx + 32; break;	//32~36
 		}
 	}
 
@@ -2363,7 +2364,8 @@ public class DCTimer extends Activity implements SensorEventListener {
 						multemp[0] = timer.time0;
 					}
 					else mulpCount = 0;
-					acquireWakeLock(); screenOn=true;
+					acquireWakeLock();
+					screenOn = true;
 					viewsVisibility(false);
 				} else {
 					timer.stopf();
@@ -2394,8 +2396,6 @@ public class DCTimer extends Activity implements SensorEventListener {
 		} else {
 			if(isLongPress) isLongPress = false;
 			if(!wca) {isp2=0; idnf=true;}
-			//newScr(false);
-			//mTextView2.setText(Mi.distime((int)timer.time));
 			confirmTime((int)timer.time);
 			timer.state = 0;
 			if(!opnl) {releaseWakeLock(); screenOn=false;}
@@ -2430,14 +2430,8 @@ public class DCTimer extends Activity implements SensorEventListener {
 					hideKeyboard(editText);
 				}
 			}).create().show();
-			new Thread() {
-				public void run() {
-					try {
-						sleep(300);
-					} catch (Exception e) { }
-					showKeyboard(editText);
-				}
-			}.start();
+			showKeyboard(editText);
+			break;
 		}
 	}
 
@@ -2451,8 +2445,6 @@ public class DCTimer extends Activity implements SensorEventListener {
 				} catch (InterruptedException e) { }
 			}
 		}.start();
-//		if(resl>25) gvTimes.setStackFromBottom(true); TODO
-//		else gvTimes.setStackFromBottom(false);
 	}
 	
 	private void save(int time, int p) {
@@ -2648,7 +2640,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 		boolean c1 = false, c2 = false;
 		if(scrIdx != s1) {
 			c1 = true;
-			btScr.setText(scrStr[s1]);
+			btScr.setText(scrStr[s1+1]);
 			scrIdx = (byte) s1;
 			if(scrIdx != selold) selold = scrIdx;
 		}
@@ -2759,34 +2751,46 @@ public class DCTimer extends Activity implements SensorEventListener {
 			crntScr = inScr.get(inScrLen++);
 			switch (insType) {
 			case 0:
-				if(crntScr.matches("([FRU][2']?\\s*)+")) Mi.viewType=2;
-				else if(crntScr.matches("([ULRBulrb]'?\\s*)+")) Mi.viewType=17;
-				else if(crntScr.matches("([xFRUBLDMfrubld][2']?\\s*)+")) Mi.viewType=3;
-				else if(crntScr.matches("(([FRUBLDfru]|[FRU]w)[2']?\\s*)+")) Mi.viewType=4;
-				else if(crntScr.matches("(([FRUBLDfrubld]|([FRUBLD]w?))[2']?\\s*)+")) Mi.viewType=5;
-				else if(crntScr.matches("(((2?[FRUBLD])|(3[FRU]w))[2']?\\s*)+")) Mi.viewType=6;
-				else if(crntScr.matches("(((2|3)?[FRUBLD])[2']?\\s*)+")) Mi.viewType=7;
-				else Mi.viewType=0;
+				if(crntScr.matches("([FRU][2']?\\s*)+"))
+					Mi.viewType = 2;
+				else if(crntScr.matches("([ULRBulrb]'?\\s*)+"))
+					Mi.viewType = Mi.TYPE_PYRAM;
+				else if(crntScr.matches("([xFRUBLDMfrubld][2']?\\s*)+"))
+					Mi.viewType = 3;
+				else if(crntScr.matches("(([FRUBLDfru]|[FRU]w)[2']?\\s*)+"))
+					Mi.viewType = 4;
+				else if(crntScr.matches("(([FRUBLDfrubld]|([FRUBLD]w?))[2']?\\s*)+"))
+					Mi.viewType = 5;
+				else if(crntScr.matches("(((2?[FRUBLD])|(3[FRU]w))[2']?\\s*)+"))
+					Mi.viewType = 6;
+				else if(crntScr.matches("(((2|3)?[FRUBLD])[2']?\\s*)+"))
+					Mi.viewType = 7;
+				else Mi.viewType = 0;
 				break;
 			case 1:
-				if(crntScr.matches("([FRUBLD][2']?\\s*)+"))Mi.viewType=2;
-				else Mi.viewType=0;
+				if(crntScr.matches("([FRUBLD][2']?\\s*)+"))
+					Mi.viewType = 2;
+				else Mi.viewType = 0;
 				break;
 			case 2:
-				if(crntScr.matches("([xFRUBLDMfrubld][2']?\\s*)+"))Mi.viewType=3;
-				else Mi.viewType=0;
+				if(crntScr.matches("([xFRUBLDMfrubld][2']?\\s*)+"))
+					Mi.viewType = 3;
+				else Mi.viewType = 0;
 				break;
 			case 3:
-				if(crntScr.matches("(([FRUBLDfru]|[FRU]w)[2']?\\s*)+"))Mi.viewType=4;
-				else Mi.viewType=0;
+				if(crntScr.matches("(([FRUBLDfru]|[FRU]w)[2']?\\s*)+"))
+					Mi.viewType = 4;
+				else Mi.viewType = 0;
 				break;
 			case 4:
-				if(crntScr.matches("(([FRUBLDfrubld]|([FRUBLD]w?))[2']?\\s*)+"))Mi.viewType=5;
-				else Mi.viewType=0;
+				if(crntScr.matches("(([FRUBLDfrubld]|([FRUBLD]w?))[2']?\\s*)+"))
+					Mi.viewType = 5;
+				else Mi.viewType = 0;
 				break;
 			case 5:
-				if(crntScr.matches("([ULRBulrb]'?\\s*)+"))Mi.viewType=17;
-				else Mi.viewType=0;
+				if(crntScr.matches("([ULRBulrb]'?\\s*)+"))
+					Mi.viewType = Mi.TYPE_PYRAM;
+				else Mi.viewType = 0;
 			}
 			if(Mi.viewType==3 && stSel[5]!=0) {
 				new Thread() {
@@ -2802,55 +2806,34 @@ public class DCTimer extends Activity implements SensorEventListener {
 				}.start();
 			}
 			else tvScr.setText(crntScr);
-		}
-		else if((scrIdx==0 && scr2idx<3 && stSel[6]!=0) ||
-			(scrIdx==1 && (scr2idx!=0 || (stSel[5]!=0 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19)))) ||
-			(scrIdx==8 && (scr2idx>1 || (scr2idx<3 && stSel[12]>0))) ||
-			(scrIdx==11 && (scr2idx>3 && scr2idx<7)) ||
-			(scrIdx==17 && (scr2idx<3 || scr2idx==6)) ||
-			scrIdx==20) {
-			if(isInScr)isInScr=false;
-			if(ch)canScr=true;
+		} else if((scrIdx==-1 && (scr2idx==0 || scr2idx==1 || (scr2idx>3 && scr2idx<8) || scr2idx==10 || scr2idx==15 || scr2idx==17)) ||
+				(scrIdx==0 && scr2idx<3 && stSel[6]!=0) ||
+				(scrIdx==1 && (scr2idx!=0 || (stSel[5]!=0 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19)))) ||
+				(scrIdx==2 && scr2idx==5) ||
+				(scrIdx==8 && (scr2idx>1 || (scr2idx<3 && stSel[12]>0))) ||
+				(scrIdx==11 && (scr2idx>3 && scr2idx<7)) ||
+				(scrIdx==17 && (scr2idx<3 || scr2idx==6)) ||
+				scrIdx==20) {	//TODO
+			if(isInScr) isInScr = false;
+			if(ch) canScr = true;
 			if(canScr) {
-				new Thread() {
-					public void run() {
-						canScr=false;
-						handler.sendEmptyMessage(2);
-						if(!ch) {
-							//TODO
-							if(nextScr==null || isChScr) {
-								crntScr = Mi.setScr((scrIdx<<5)|scr2idx, ch);
-								isChScr=false;
-								nextScr="";
-							} else {
-								while (!isNextScr) {
-									try {
-										sleep(100);
-									} catch (InterruptedException e) {}
-								}
-								crntScr = nextScr;
-							}
-						}
-						else {
-							crntScr = Mi.setScr((scrIdx<<5)|scr2idx, ch);
-						}
-						extsol = Mi.sc;
-						//crntScr=(!ch && isNextScr)?nextScr:Mi.SetScr((scridx<<5)|scr2idx);
-						if((scrIdx==0 && stSel[6]!=0) ||
-								(stSel[5]!=0 && scrIdx==1 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19)))
-							handler.sendEmptyMessage(3);
-						else if(scrIdx==8 && scr2idx<3 && stSel[12]>0)handler.sendEmptyMessage(1);
-						else handler.sendEmptyMessage(0);
-						canScr=true;
-						isNextScr = false;
-						nextScr = Mi.setScr((scrIdx<<5)|scr2idx, ch);
-						isNextScr = true;
-						System.out.println(nextScr);
-					}
-				}.start();
+				if(ch) {
+//					if(scrThread != null && scrThread.isAlive()) 
+//						scrThread.interrupt();
+					scrThread = new Scrambler(ch);
+					scrThread.start();
+				} else if(!isNextScr) {
+					nextScrUsed = true;
+					tvScr.setText(getString(R.string.scrambling));
+				} else {
+					scrThread = new Scrambler(ch);
+					scrThread.start();
+				}
 			}
 		} else {
-			crntScr=Mi.setScr(scrIdx<<5|scr2idx, ch);
+//			if(ch && scrThread != null && scrThread.isAlive()) 
+//				scrThread.interrupt();
+			crntScr = Mi.setScr(scrIdx<<5|scr2idx, ch);
 			tvScr.setText(crntScr);
 		}
 	}
@@ -2905,7 +2888,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 		sb.append("(σ = "+Mi.standDev(Mi.sesSD)+")\r\n");
 		sb.append(getString(R.string.ses_avg)+Mi.sesAvg()+"\r\n");
 		if(resl >= l1len && Mi.bidx[0] != -1) 
-			sb.append((stSel[14]==0 ? getString(R.string.stat_best_avg) : getString(R.string.stat_best_mean)).replace("len", ""+l2len)+Mi.distime(Mi.bavg[0])+"\r\n");
+			sb.append((stSel[14]==0 ? getString(R.string.stat_best_avg) : getString(R.string.stat_best_mean)).replace("len", ""+l1len)+Mi.distime(Mi.bavg[0])+"\r\n");
 		if(resl >= l2len && Mi.bidx[1] != -1) 
 			sb.append((stSel[15]==0 ? getString(R.string.stat_best_avg) : getString(R.string.stat_best_mean)).replace("len", ""+l2len)+Mi.distime(Mi.bavg[1])+"\r\n");
 		sb.append(getString(R.string.stat_best)+Mi.distime(Mi.minIdx, false)+"\r\n");
@@ -3232,9 +3215,16 @@ public class DCTimer extends Activity implements SensorEventListener {
 		} catch (IOException e) {}
 	}
 	
-	private void showKeyboard(EditText et) {
-		InputMethodManager inm = (InputMethodManager)et.getContext().getSystemService(Context.INPUT_METHOD_SERVICE); 
-		inm.showSoftInput(et, 0);
+	private void showKeyboard(final EditText et) {
+		new Thread() {
+			public void run() {
+				try {
+					sleep(300);
+				} catch (Exception e) { }
+				InputMethodManager inm = (InputMethodManager)et.getContext().getSystemService(Context.INPUT_METHOD_SERVICE); 
+				inm.showSoftInput(et, 0);
+			}
+		}.start();
 	}
 	
 	private void hideKeyboard(EditText et) {
@@ -3297,6 +3287,71 @@ public class DCTimer extends Activity implements SensorEventListener {
 			confirmTime((int) timer.time);
 			timer.state = 0;
 			if(!opnl) {releaseWakeLock(); screenOn = false;}
+		}
+	}
+	
+	class Scrambler extends Thread {	//TODO
+		boolean ch;
+		public Scrambler(boolean c) {
+			ch = c;
+		}
+		public void showScramble() {
+			if((scrIdx==0 && stSel[6]!=0) ||
+					(stSel[5]!=0 && scrIdx==1 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19)))
+				handler.sendEmptyMessage(3);
+			else if(scrIdx==8 && scr2idx<3 && stSel[12]>0)
+				handler.sendEmptyMessage(1);
+			else handler.sendEmptyMessage(0);
+		}
+		public void run() {
+			canScr = false;
+			if(scrIdx==-1 && (scr2idx==1 || scr2idx == 15)) {
+				threephase.Util.init(handler);
+//				handler.sendEmptyMessage(20);
+//				time = System.currentTimeMillis();
+//				Center1.init(handler);
+//				handler.sendEmptyMessage(21);
+//				Center2.init(handler);
+//				handler.sendEmptyMessage(22);
+//				Center3.init(handler);
+//				handler.sendEmptyMessage(23);
+//				Edge3.init(handler);
+//				time = System.currentTimeMillis() - time;
+//				System.out.println("init4: "+time);
+//				ini4 = true;
+			}
+			handler.sendEmptyMessage(2);
+			if(!ch) {
+				if(nextScr==null || isChScr) {
+					crntScr = Mi.setScr((scrIdx<<5)|scr2idx, ch);
+					isChScr = false;
+					nextScr = "";
+				} else {
+					crntScr = nextScr;
+				}
+			}
+			else {
+				crntScr = Mi.setScr((scrIdx<<5)|scr2idx, ch);
+			}
+			extsol = Mi.sc;
+			showScramble();
+			canScr=true;
+			getNextScr();
+		}
+		public void getNextScr() {
+			System.out.println("get next scramble...");
+			isNextScr = false;
+			nextScr = Mi.setScr((scrIdx<<5)|scr2idx, ch);
+			isNextScr = true;
+			System.out.println("next scr: " + nextScr);
+			System.out.println("isNextScr "+isNextScr+" nextScrUsed "+nextScrUsed);
+			if(nextScrUsed) {
+				crntScr = nextScr;
+				extsol = Mi.sc;
+				showScramble();
+				nextScrUsed = false;
+				getNextScr();
+			}
 		}
 	}
 

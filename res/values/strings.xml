@@ -4,6 +4,7 @@
     <string name="app_name">DCTimer</string>
 	<string name="scrambling">scrambling…</string>
 	<string name="solving">solving…</string>
+	<string name="initing">Initializing</string>
 	<string name="scramble_view">scramble view</string>
 	<string name="session">"Session "</string>
 	<string name="option">Options</string>
@@ -201,7 +202,7 @@
     <string name="abt_shortc">Keyboard Shotcuts</string>
     <string name="abt_more">More</string>
     <string name="abt_title">"DCTimer"</string>
-    <string name="abt_msg">"Version: 0.7 beta 1\nCopyright 2012—2014 MeigenChou\nE-mail: meigenchou@foxmail.com"</string>
+    <string name="abt_msg">"Version: 0.7 beta 2\nCopyright 2012—2014 MeigenChou\nE-mail: meigenchou@foxmail.com"</string>
     <string name="abt_1">" - DCTimer is a Rubik's cube timer for Android: smartphone and tablet. It supports scrambles, timing, statistics, and many other features.\n - Timer: Support wca inspection, multi-phase timing, input time through keyboard, confirm OK/+2/DNF. Timer accuracy is 1 millisecond.\n - Scramble: Support all wca scramble include scramble view, and lots of unofficial and training scrambles.\n - Statistics: Show average/mean of 3/5/12/50/100 and session mean or average. Copy results to clipboard, or save it to a text file.\n - More: Support optimal cross, xcross and SQ1 cube shape solver etc. Share your solves to friends. Customize background colour or image."</string>
     <string name="abt_2">" - 正常计时：按下屏幕计时区在抬起的时候开始计时，再次按下计时区（或打乱区或按返回键）停止计时，并记录成绩。\n - 启动延时：与stackmat等计时器一样支持启动延时，即在启动之前须要按住屏幕一段时间，启动延时的时间可设置。\n - WCA观察：提供WCA的15秒倒计时功能，超过15秒在17秒内启动计时会加罚2秒，超过17秒则直接DNF；观察阶段的+2和结束计时阶段的+2可叠加。\n - 分段计时：支持2～6阶段分段计时，可设置阶段数。每次复原过程中，需要多次按下屏幕，以记录分段时间。\n - 外部输入：提供手动输入和Stackmat记录时间，其中Stackmat支持二代计时器（包括PRO，可精确到三位小数）\n - 确认成绩：每次计时结束后确认无惩罚/+2/DNF，如果不设置确认，则默认按无惩罚记录成绩。\n - 计时精度和时间格式：有0.01秒和0.001秒可选，系统内部使用1毫秒的精确度；超过1分钟的时间可显示成(hh:)mm:ss.xy(z)，也可显示成ss.xy(z)。\n - Time update: For some reasons, timer updateing may be set to: none, seconds or real-time."</string>
     <string name="abt_3">" - Supports all WCA's official scrambler, including random-state scrambler of 2x2, 3x3, pyraminx, square-1 and skewb. Scramble view is available for all wca scramblers. The most of other unofficial scramblers, such as 3x3 LL training, are from qqtimer, cstimer and PPT (prisma puzzle timer).\n - All scramble programs kindly provided by Jaap Scherphuis (all puzzles), Syoji Takamatsu (Pyraminx), Lucas Garron (Pyraminx), Michael Gottlieb (Pyraminx, SQ1), Tom van der Zanden (2x2), Conrad Rider (2x2), Clément Gallet and Stefan Pochmann (Megaminx), Herbert Kociemba (3x3) and Shuang Chen(3x3, SQ1)."</string>

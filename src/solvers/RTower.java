@@ -137,9 +137,8 @@ public class RTower {
 		return false;
 	}
 
-	public static String solve() {
+	public static String solve(Random r) {
 		init();
-		Random r = new Random();
 		int eo = r.nextInt(2187);
 		int ep = r.nextInt(40320);
 		int cp = r.nextInt(40320);

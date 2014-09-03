@@ -6,6 +6,7 @@
         <item>设置</item>
     </array>
     <array name="cubeStr">
+        <item>WCA</item>
         <item>2阶</item>
         <item>3阶</item>
         <item>4阶</item>
@@ -27,6 +28,26 @@
         <item>捆绑魔方</item>
         <item>五魔子集</item>
         <item>连拧</item>
+    </array>
+    <array name="scrwca">
+        <item>三阶速拧</item>
+        <item>四阶速拧</item>
+        <item>五阶速拧</item>
+        <item>二阶速拧</item>
+        <item>三阶盲拧</item>
+        <item>三阶单手</item>
+        <item>三阶最少步</item>
+        <item>三阶脚拧</item>
+        <item>五魔方</item>
+        <item>金字塔</item>
+        <item>Square-1</item>
+        <item>魔表</item>
+        <item>斜转</item>
+        <item>六阶速拧</item>
+        <item>七阶速拧</item>
+        <item>四阶盲拧</item>
+        <item>五阶盲拧</item>
+        <item>三阶多盲</item>
     </array>
     <array name="scr222">
         <item>随机状态</item>
@@ -198,18 +219,6 @@
         <item>mf8</item>
     </array>
     
-    <array name="list1Str">
-        <item>3次</item>
-        <item>5次</item>
-        <item>12次</item>
-        <item>50次</item>
-    </array>
-    <array name="list2Str">
-        <item>5次</item>
-        <item>12次</item>
-        <item>50次</item>
-        <item>100次</item>
-    </array>
     <array name="preStr">
         <item>0.01秒</item>
         <item>0.001秒</item>

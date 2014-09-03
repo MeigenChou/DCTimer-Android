@@ -28,6 +28,26 @@
         <item>五魔子集</item>
         <item>連擰</item>
     </array>
+    <array name="scrwca">
+        <item>三階速解</item>
+        <item>四階速解</item>
+        <item>五階速解</item>
+        <item>二階速解</item>
+        <item>三階盲解</item>
+        <item>三階單手</item>
+        <item>三階最少步</item>
+        <item>三階腳解</item>
+        <item>五魔術方塊</item>
+        <item>金字塔</item>
+        <item>Square-1</item>
+        <item>魔表</item>
+        <item>斜轉方塊</item>
+        <item>六階速解</item>
+        <item>七階速解</item>
+        <item>四階盲解</item>
+        <item>五階盲解</item>
+        <item>三階多盲</item>
+    </array>
     <array name="scr222">
         <item>隨機狀態</item>
         <item>3-gen</item>

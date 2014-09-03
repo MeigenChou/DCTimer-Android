@@ -4,16 +4,15 @@ import java.util.Random;
 
 public class Pyraminx {
 	private static byte[] colmap = new byte[91];
-	private static StringBuffer sb;
 	private static byte[] perm = new byte[360];	// pruning table for edge permutation
 	private static byte[] twst = new byte[2592];	// pruning table for edge orientation+twist
 	private static short[][] permmv = new short[360][4];	// transition table for edge permutation
 	private static byte[][] twstmv = new byte[81][4];	// transition table for corner orientation
 	private static byte[][] flipmv = new byte[32][4];	// transition table for edge orientation
-	private static byte[] sol = new byte[12];
-	private static byte sollen;
 	private static String[] turn = {"L", "R", "B", "U"};
-	private static String[] suff = {"", "'"};
+	private static String[] suff = {"'", ""};
+	private static String[] tip = {"l", "r", "b", "u"};
+	private static StringBuffer sol;
 	private static boolean ini = false;
 	private static byte[] img = new byte[91];
 	private static Random r = new Random();
@@ -35,29 +34,52 @@ public class Pyraminx {
 			calcperm();
 			ini = true;
 		}
-		sollen = 0;
-		int t = r.nextInt(2592), q = r.nextInt(360), l;
-		if(q!=0 || t!=0) {
-			for(l=0; l<12; l++) {
-				if(search(q,t,l,-1)) break;
-			}
-		}
-		sb = new StringBuffer();
+		int t = r.nextInt(2592), q = r.nextInt(360);
+		sol = new StringBuffer();
+		for(int l=0; !search(q,t,l,-1); l++);
 		init_colors();
-		for (i=0; i<sollen; i++) {
-			sb.append(turn[sol[i]&7] + suff[sol[i]>>3] + " ");
-			picmove(sol[i]&7, 1+sol[i]>>3);
-		}
-		String[] tips = {"l", "r", "b", "u"};
 		for (i=0; i<4; i++) {
-			j = (int) (Math.random() * 3);
+			j = r.nextInt(3);
 			if (j < 2) {
-				sb.append(tips[i] + suff[j] + " ");
+				sol.append(tip[i] + suff[j] + " ");
 				picmove(4+i, 1+j);
 			}
 		}
+		return sol.toString();
+	}
+	
+	public static String scramble(int minLen) {
+		int i;
+		if(!ini) {
+			calcperm();
+			ini = true;
+		}
+		int[] tips = new int[4];
+		for(i=0; i<4; i++) {
+			tips[i] = r.nextInt(3);
+			if(tips[i] < 2)
+				minLen--;
+		}
+		int t = r.nextInt(2592), q = r.nextInt(360);
+		sol = new StringBuffer();
+		for(int l=0; ; l++) {
+			if(search(q, t, l, -1)) {
+				System.out.println("len "+l);
+				if (l < minLen) return scramble(minLen);
+				sol = new StringBuffer();
+				search(q, t, 11, -1);
+				break;
+			}
+		}
+		init_colors();
+		for (i=0; i<4; i++) {
+			if (tips[i] < 2) {
+				sol.append(tip[i] + suff[tips[i]] + " ");
+				picmove(4+i, 1+tips[i]);
+			}
+		}
 		//imageString();
-		return sb.toString();
+		return sol.toString();
 	}
 
 	private static boolean search(int q, int t, int l, int lm) {
@@ -71,14 +93,16 @@ public class Pyraminx {
 				for(a=0; a<2; a++) {
 					p = permmv[p][m];
 					s = twstmv[s>>5][m] << 5 | flipmv[s&31][m];
-					sol[sollen++] = (byte) (a<<3|m);
-					if(search(p, s, l-1, m)) return true;
-					sollen--;
+					if(search(p, s, l-1, m)) {
+						sol.append(turn[m]+suff[a]+" ");
+						return true;
+					}
 				}
 			}
 		}
 		return false;
 	}
+	
 	private static void calcperm() {
 		int c, q, l, m, p, r;
 		//calculate solving arrays
@@ -122,6 +146,7 @@ public class Pyraminx {
 						}
 					}
 	}
+	
 	private static int getprmmv(int p, int m) {
 		//given position p<360 and move m<4, return new position number
 		//convert number into array
@@ -140,6 +165,7 @@ public class Pyraminx {
 		//convert array back to number
 		return(Im.epermToIdx(ps, 6));
 	}
+	
 	private static int getflpmv(int p, int m) {
 		//given orientation p<32 and move m<4, return new position number
 		//convert number into array;
@@ -245,6 +271,7 @@ public class Pyraminx {
 			break;
 		}
 	}
+	
 	private static void rotate3(int v1, int v2, int v3, int clockwise) {
 		if(clockwise == 2) {
 			Im.cir(colmap, v3, v2, v1);
@@ -252,12 +279,14 @@ public class Pyraminx {
 			Im.cir(colmap, v1, v2, v3);
 		}
 	}
+	
 	public static byte[] imageString() {
 		int d=0;
 		for(int x = 0; x < 91; x++)
 			img[d++] = (byte) (colmap[x] - 1);
 		return img;
 	}
+	
 	private static String moveIdx = "LRBUlrbu";
 	public static byte[] imageString(String scr) {
 		String[] s=scr.split(" ");

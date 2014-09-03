@@ -24,9 +24,10 @@ public class SqSearch {
 
 	static {
 		try {
-			InputStream in = new BufferedInputStream(new FileInputStream("/data/data/com.dctimer/databases/sqr.dat"));
+			InputStream in = new BufferedInputStream(new FileInputStream("/data/data/com.dctimer/databases/sq1.dat"));
 			Tools.read(Shape.ShapeIdx, in);
 			in.read(Shape.ShapePrun);
+			in.read(Shape.ShapePrunOpt);
 			Tools.read(Shape.spTopMove, in);
 			Tools.read(Shape.spBottomMove, in);
 			Tools.read(Shape.spTwistMove, in);
@@ -39,9 +40,10 @@ public class SqSearch {
 			Shape.init();
 			Square.init();
 			try {
-				OutputStream out = new BufferedOutputStream(new FileOutputStream("/data/data/com.dctimer/databases/sqr.dat"));
+				OutputStream out = new BufferedOutputStream(new FileOutputStream("/data/data/com.dctimer/databases/sq1.dat"));
 				Tools.write(Shape.ShapeIdx, out);
 				out.write(Shape.ShapePrun);
+				out.write(Shape.ShapePrunOpt);
 				Tools.write(Shape.spTopMove, out);
 				Tools.write(Shape.spBottomMove, out);
 				Tools.write(Shape.spTwistMove, out);
@@ -66,6 +68,91 @@ public class SqSearch {
 		}
 		return sol_string;
 	}
+	
+	public String scramble(FullCube c, int minLen) {
+		String sol = solutionOpt(c, minLen);
+		if(sol == null) return solution(c);
+		return scramble(c, minLen);
+	}
+	
+	public String solutionOpt(FullCube c, int maxl) {
+        this.c = c;
+        sol_string = null;
+        int shape = c.getShapeIdx();
+        for (length1=Shape.ShapePrunOpt[shape]; length1<=maxl; length1++) {
+            if (phase1Opt(shape, Shape.ShapePrunOpt[shape], length1, 0, -1)) {
+                break;
+            }
+        }
+        return sol_string;
+    }
+	
+	boolean phase1Opt(int shape, int prunvalue, int maxl, int depth, int lm) {
+        if (maxl == 0) {
+            return isSolvedInPhase1();
+        }
+        //try each possible move. First twist;
+        if (lm != 0) {
+            int shapex = Shape.spTwistMove[shape];
+            int prunx = Shape.ShapePrunOpt[shapex];
+            if (prunx < maxl) {
+                move[depth] = 0;
+                if (phase1Opt(shapex, prunx, maxl-1, depth+1, 0))
+                    return true;
+            }
+        }
+        //Try top layer
+        int shapex = shape;
+        if(lm <= 0) {
+            int m = 0;
+            while (true) {
+                m += Shape.spTopMove[shapex];
+                shapex = m >> 4;
+                m &= 0x0f;
+                if (m >= 12)
+                    break;
+                int prunx = Shape.ShapePrunOpt[shapex];
+                if (prunx > maxl) {
+                    break;
+                } else if (prunx < maxl) {
+                    move[depth] = m;
+                    if (phase1Opt(shapex, prunx, maxl-1, depth+1, 1))
+                        return true;
+                }
+            }
+        }
+        shapex = shape;
+        //Try bottom layer
+        if(lm <= 1) {
+            int m = 0;
+            while (true) {
+                m += Shape.spBottomMove[shapex];
+                shapex = m >> 4;
+                m &= 0x0f;
+                if (m >= 6)
+                    break;
+                int prunx = Shape.ShapePrunOpt[shapex];
+                if (prunx > maxl) {
+                    break;
+                } else if (prunx < maxl) {
+                    move[depth] = -m;
+                    if (phase1Opt(shapex, prunx, maxl-1, depth+1, 2))
+                        return true;
+                }
+            }
+        }
+        return false;
+	}
+	
+	boolean isSolvedInPhase1() {
+        d.copy(c);
+        for (int i=0; i<length1; i++)
+            d.doMove(move[i]);
+        boolean isSolved = d.ul == 0x011233 && d.ur == 0x455677 && d.dl == 0x998bba && d.dr == 0xddcffe && d.ml == 0;
+        if (isSolved)
+            sol_string = move2string(length1);
+        return isSolved;
+    }
 
 	boolean phase1(int shape, int prunvalue, int maxl, int depth, int lm) {
 		if (prunvalue==0 && maxl<4) {

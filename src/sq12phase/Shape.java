@@ -8,7 +8,8 @@ class Shape {
 		0x30, 0x33, 0x36, 0x3c, 0x3f};
 
 	static int[] ShapeIdx = new int[3678];
-	static byte[] ShapePrun = new byte[3768 * 2];
+	static byte[] ShapePrun = new byte[3678 * 2];
+	static byte[] ShapePrunOpt = new byte[3678 * 2];
 
 	static int[] spTopMove = new int[3678 * 2];
 	static int[] spBottomMove = new int[3678 * 2];
@@ -115,8 +116,9 @@ class Shape {
 			s.twistMove();
 			spTwistMove[i] = (char) s.getIdx();
 		}
-		for (int i=0; i<3768*2; i++) {
+		for (int i=0; i<3678*2; i++) {
 			ShapePrun[i] = -1;
+			ShapePrunOpt[i] = -1;
 		}
 
 		//0 110110110110 011011011011
@@ -134,7 +136,7 @@ class Shape {
 			done0 = done;
 			++depth;
 			//System.out.println(done);
-			for (int i=0; i<3768*2; i++) {
+			for (int i=0; i<3678*2; i++) {
 				if (ShapePrun[i] == depth) {
 					// try top
 					int m = 0;
@@ -148,7 +150,6 @@ class Shape {
 							ShapePrun[idx] = (byte) (depth + 1);
 						}
 					} while (m != 12);
-
 					// try bottom
 					m = 0;
 					idx = i;
@@ -161,7 +162,6 @@ class Shape {
 							ShapePrun[idx] = (byte) (depth + 1);
 						}
 					} while (m != 12);
-
 					// try twist
 					idx = spTwistMove[i];
 					if (ShapePrun[idx] == -1) {
@@ -171,6 +171,51 @@ class Shape {
 				}
 			}
 		}
+		ShapePrunOpt[new FullCube().getShapeIdx()] = 0;
+		done = 1;
+        done0 = 0;
+        depth = -1;
+        while (done != done0) {
+            done0 = done;
+            ++depth;
+            System.out.println(depth+" "+done);
+            for (int i=0; i<3678*2; i++) {
+                if (ShapePrunOpt[i] == depth) {
+                    // try top
+                    int m = 0;
+                    int idx = i;
+                    do {
+                        idx = spTopMove[idx];
+                        m += idx & 0xf;
+                        idx >>= 4;
+                        if (ShapePrunOpt[idx] == -1) {
+                            ++done;
+                            ShapePrunOpt[idx] = (byte) (depth + 1);
+                        }
+                    } while (m != 12);
+
+                    // try bottom
+                    m = 0;
+                    idx = i;
+                    do {
+                        idx = spBottomMove[idx];
+                        m += idx & 0xf;
+                        idx >>= 4;
+                        if (ShapePrunOpt[idx] == -1) {
+                            ++done;
+                            ShapePrunOpt[idx] = (byte) (depth + 1);
+                        }
+                    } while (m != 12);
+
+                    // try twist
+                    idx = spTwistMove[i];
+                    if (ShapePrunOpt[idx] == -1) {
+                        ++done;
+                        ShapePrunOpt[idx] = (byte) (depth + 1);
+                    }
+                }
+            }
+        }
 		inited = true;
 	}
 }

@@ -38,6 +38,8 @@
                     android:id="@+id/myTextView1"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="5dip"
+                    android:paddingRight="5dip"
                     android:text="@string/scrambling" />
 
                 <LinearLayout
@@ -963,6 +965,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="4dip"
                                 android:layout_weight="1"
+                                android:paddingLeft="5dip"
+                                android:gravity="center_vertical"
                                 android:background="@drawable/spinner_style"
                                 android:minHeight="40dip"
                                 android:textSize="15sp" />
@@ -972,6 +976,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:paddingLeft="5dip"
+                                android:gravity="center_vertical"
                                 android:background="@drawable/spinner_style"
                                 android:minHeight="40dip"
                                 android:textSize="15sp" />

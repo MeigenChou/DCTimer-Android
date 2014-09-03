@@ -8,6 +8,7 @@ public class Skewb {
 	private static short[][] com = new short[2187][4];
 	private static byte[] ctd = new byte[360];
 	private static byte[][] cd = new byte[2187][36];
+	private static Random r = new Random();
 	
 	private static boolean ini = false;
 	private static void init() {
@@ -121,7 +122,7 @@ public class Skewb {
 		ini = true;
 	}
 	
-	private static StringBuffer sb;
+	private static StringBuffer sol;
 	private static String[] turn = {"R", "U", "L", "B"};
 	private static String[] suff = {"'", ""};
 	private static boolean search(int ct, int cp, int co, int d, int l) {
@@ -133,28 +134,44 @@ public class Skewb {
 				for(int m=0; m<2; m++) {
 					p = ctm[p][k]; q = cpm[q][k]; r = com[r][k];
 					if(search(p, q, r, d-1, k)) {
-						sb.append(turn[k] + suff[m] + " ");
+						sol.append(turn[k] + suff[m] + " ");
 						return true;
 					}
 				}
 			}
 		return false;
 	}
-	public static String solve(Random r) {
+	public static String scramble() {
 		init();
 		int ct = r.nextInt(360), cp, co;
 		do{
 			cp = r.nextInt(36);
 			co = r.nextInt(2187);
-		}
-		while (cd[co][cp] < 0);
-		
-		sb = new StringBuffer();
+		} while (cd[co][cp] < 0);
+		sol = new StringBuffer();
 		for(int d=0; d<13; d++) 
 			if(search(ct, cp, co, d, -1)) 
 				break;
-		return sb.toString();
+		return sol.toString();
 	}
+	public static String scramble(int minLen) {
+		init();
+		int ct = r.nextInt(360), cp, co;
+		do{
+			cp = r.nextInt(36);
+			co = r.nextInt(2187);
+		} while (cd[co][cp] < 0);
+		sol = new StringBuffer();
+		for(int d=0; ; d++) 
+			if(search(ct, cp, co, d, -1)) {
+				System.out.println("len: "+d);
+				if(d < minLen) return scramble(minLen);
+				sol = new StringBuffer();
+				search(ct, cp, co, 11, -1);
+				return sol.toString();
+			}
+	}
+	
 
 	/*
 	 *				0		1

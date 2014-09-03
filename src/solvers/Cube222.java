@@ -491,4 +491,23 @@ public class Cube222 {
 		for(int l=0; !search(p, o, l, -1); l++);
 		return sol.toString();
 	}
+	
+	public static String scramble(int minLen) {
+		if(!ini) {
+			calcperm();
+			ini = true;
+		}
+		int p = r.nextInt(5040);
+		int o = r.nextInt(729);
+		sol = new StringBuffer();
+		for(int l=0; ; l++) {
+			if(search(p, o, l, -1)) {
+				System.out.println("len "+l);
+				if(l < 4) return scramble(minLen);
+				sol = new StringBuffer();
+				search(p, o, 11, -1);
+				return sol.toString();
+			}
+		}
+	}
 }

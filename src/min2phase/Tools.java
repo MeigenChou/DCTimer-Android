@@ -1,7 +1,8 @@
 package min2phase;
 
-import java.io.*;
 import java.util.Random;
+import java.io.*;
+
 import solvers.Cross;
 
 /**
@@ -9,15 +10,12 @@ import solvers.Cross;
  */
 public class Tools implements Runnable {
 	
-	protected static final boolean USE_TWIST_FLIP_PRUN = false;
+	static final boolean USE_TWIST_FLIP_PRUN = true;
 
-	public static boolean inited = false;
+	private static boolean inited = false;
 	
 	private static Random gen = new Random();
-	
-	private static int[] initState = new int[2];
-	private static int[] require = {0x0, 0x1, 0x2, 0x2,  0x2, 0x7, 0xa, 0x3,  0x13, 0x13, 0x3, 0x6e,  0xca, 0xa6, 0x612, 0x512};
-	
+
 	public static void read(char[] arr, InputStream in) throws IOException {
 		int len = arr.length;
 		byte[] buf = new byte[len * 2];
@@ -36,7 +34,7 @@ public class Tools implements Runnable {
 		}
 	}
 	
-	private static void read(char[][] arr, InputStream in) throws IOException {
+	public static void read(char[][] arr, InputStream in) throws IOException {
 		int len = arr[0].length;
 		byte[] buf = new byte[len * 2];
 		for (int i=0, leng=arr.length; i<leng; i++) {
@@ -71,7 +69,7 @@ public class Tools implements Runnable {
 		out.write(buf);
 	}
 	
-	private static void write(char[][] arr, OutputStream out) throws IOException {
+	public static void write(char[][] arr, OutputStream out) throws IOException {
 		int len=arr[0].length;
 		byte[] buf = new byte[len * 2];
 		for (int i=0, leng=arr.length; i<leng; i++) {
@@ -84,7 +82,10 @@ public class Tools implements Runnable {
 		}
 	}
 	
-	public static void initIdx(int idx) {
+	private static int[] initState = new int[2];
+	private static int[] require = {0x0, 0x1, 0x2, 0x2,  0x2, 0x7, 0xa, 0x3,  0x13, 0x13, 0x3, 0x6e,  0xca, 0xa6, 0x612, 0x512};
+	
+	private static void initIdx(int idx) {
 		switch (idx) {
 			case 0 : CubieCube.initMove(); break;//-
 			case 1 : CubieCube.initSym(); break;//0
@@ -137,9 +138,9 @@ public class Tools implements Runnable {
 					}
 				}
 			}
-			//long t = System.nanoTime();
+//			long t = System.nanoTime();
 			initIdx(choice);
-			//System.out.println(choice + "\t" + (System.nanoTime() - t));
+			//System.out.println(choice + "  " + (System.nanoTime() - t));
 			synchronized (initState) {
 				initState[1] |= 1 << choice;
 				initState.notifyAll();
@@ -160,7 +161,7 @@ public class Tools implements Runnable {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			//System.exit(0);
+			System.exit(0);
 		}
 	}
 	
@@ -169,10 +170,11 @@ public class Tools implements Runnable {
 	 * Always below 0.5 seconds with Multiple-Thread.<br>
 	 * call it before first solving, or it will be called by {@link cs.min2phase.Search#solution(java.lang.String facelets, int maxDepth, long timeOut, long timeMin, int verbose)} at first solving.
 	 */
-	public static void init() {
+	public synchronized static void init() {
 		if (inited) {
 			return;
 		}
+		
 		try {
 			InputStream in = new BufferedInputStream(new FileInputStream("/data/data/com.dctimer/databases/rp3.dat"));
 			read(CubieCube.FlipS2R, in);
@@ -198,6 +200,7 @@ public class Tools implements Runnable {
 			CubieCube.initMove();
 			CubieCube.initSym();
 		} catch (Exception e) {
+			e.printStackTrace();
 			// Can be replaced by: new Tools().run();
 			initParallel(2);
 			try {
@@ -224,6 +227,7 @@ public class Tools implements Runnable {
 				out.close();
 			} catch (Exception e1) { }
 		}
+		
 		inited = true;
 	}
 	
@@ -245,11 +249,11 @@ public class Tools implements Runnable {
 	/**
 	 * Generates a random cube.<br>
 	 *
-	 * The random source can be set by {@link Tl.min2phase.Tools#setRandomSource(java.util.Random)}
+	 * The random source can be set by {@link cs.min2phase.Tools#setRandomSource(java.util.Random)}
 	 *
 	 * @return A random cube in the string representation. Each cube of the cube space has almost (depends on randomSource) the same probability.
 	 *
-	 * @see Tl.min2phase.Tools#setRandomSource(java.util.Random)
+	 * @see cs.min2phase.Tools#setRandomSource(java.util.Random)
 	 * @see cs.min2phase.Search#solution(java.lang.String facelets, int maxDepth, long timeOut, long timeMin, int verbose)
 	 */
 	public static String randomCube() {
@@ -331,7 +335,10 @@ public class Tools implements Runnable {
 	public static final byte[] STATE_SOLVED = new byte[0];	
 	
 	public static String randomState(byte[] cp, byte[] co, byte[] ep, byte[] eo) {
-		//Util.init();
+		return randomState(cp, co, ep, eo, 0);
+	}
+	
+	public static String randomState(byte[] cp, byte[] co, byte[] ep, byte[] eo, int rotate) {
 		int parity;
 		int cntUE = ep == STATE_RANDOM ? 12 : countUnknown(ep);
 		int cntUC = cp == STATE_RANDOM ? 8 : countUnknown(cp);
@@ -376,7 +383,7 @@ public class Tools implements Runnable {
 			cpVal, 
 			co == STATE_RANDOM ? gen.nextInt(2187) : (co == STATE_SOLVED ? 0 : resolveOri(co, 3)), 
 			epVal, 
-			eo == STATE_RANDOM ? gen.nextInt(2048) : (eo == STATE_SOLVED ? 0 : resolveOri(eo, 2))));
+			eo == STATE_RANDOM ? gen.nextInt(2048) : (eo == STATE_SOLVED ? 0 : resolveOri(eo, 2))), rotate);
 	}
 	
 
@@ -460,7 +467,7 @@ public class Tools implements Runnable {
 	}
 	
 	public static String superFlip() {
-		return Util.toFaceCube(new CubieCube(0, 0, 0, 2047));
+		return Util.toFaceCube(new CubieCube(0, 0, 0, 2047), 0);
 	}
 	
 	/**
@@ -477,5 +484,5 @@ public class Tools implements Runnable {
 	 */
 	public static int verify(String facelets) {
 		return new Search().verify(facelets);
-	}		
+	}
 }

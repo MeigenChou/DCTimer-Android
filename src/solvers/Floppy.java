@@ -4,11 +4,11 @@ import java.util.Random;
 
 public class Floppy {
 	private static byte[][] distance = new byte[24][16];
-	private static String[] turn={"U", "R", "D", "L"};
+	private static String[] turn = {"U", "R", "D", "L"};
 
-	public static boolean ini=false;
-	public static void init(){
-		if(ini)return;
+	private static boolean ini = false;
+	private static void init() {
+		if(ini) return;
 		for (int i = 0; i < 24; i++)
 			for (int j = 0; j < 16; j++)
 				distance[i][j] = -1;
@@ -42,11 +42,11 @@ public class Floppy {
 			depth++;
 			//System.out.println(depth+" "+nVisited);
 		}
-		ini=true;
+		ini = true;
 	}
 	
 	public static String solve(Random r) {
-		//init();
+		init();
 		for (;;) {
 			int cpi = r.nextInt(24);
 			int eoi = r.nextInt(16);
@@ -80,9 +80,9 @@ public class Floppy {
 		}
 	}
 	
-	private static byte[] img=new byte[30];
-	private static void initColor(){
-		img=new byte[]{
+	private static byte[] img = new byte[30];
+	private static void initColor() {
+		img = new byte[] {
 			  3,3,3,
 			5,4,4,4,2,1,1,1,
 			5,4,4,4,2,1,1,1,
@@ -91,8 +91,8 @@ public class Floppy {
 		};
 	}
 	
-	private static void move(int turn){
-		switch(turn){
+	private static void move(int turn) {
+		switch(turn) {
 		case 0:	//U
 			Im.cir2(img, 0, 2, 3, 7);
 			Im.cir2(img, 4, 8, 6, 10);
@@ -111,12 +111,12 @@ public class Floppy {
 			Im.cir(img, 12, 18); break;
 		}
 	}
-	private static String moveIdx="URDL";
-	public static byte[] image(String scr){
+	private static String moveIdx = "URDL";
+	public static byte[] image(String scr) {
 		initColor();
-		String[] s=scr.split(" ");
-		for(int i=0; i<s.length; i++){
-			if(s[i].length()>0)
+		String[] s = scr.split(" ");
+		for(int i=0; i<s.length; i++) {
+			if(s[i].length() > 0)
 				move(moveIdx.indexOf(s[i].charAt(0)));
 		}
 		return img;

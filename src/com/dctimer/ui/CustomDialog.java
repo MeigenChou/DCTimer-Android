@@ -5,7 +5,6 @@ import com.dctimer.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;

@@ -1,6 +1,6 @@
 package min2phase;
 
-class Util {
+public class Util {
 /*	//Edges
 	static final byte UR = 0;
 	static final byte UF = 1;
@@ -124,6 +124,16 @@ class Util {
 	
 	static boolean[][] ckmv2 = new boolean[11][10];
 
+	static char[][] rotateFaces = {
+		{'U', 'R', 'F', 'D', 'L', 'B'}, {'L', 'U', 'F', 'R', 'D', 'B'}, {'R', 'D', 'F', 'L', 'U', 'B'}, {'L', 'B', 'U', 'R', 'F', 'D'},
+		{'L', 'D', 'B', 'R', 'U', 'F'}, {'L', 'F', 'D', 'R', 'B', 'U'}, {'R', 'B', 'D', 'L', 'F', 'U'}, {'R', 'U', 'B', 'L', 'D', 'F'},
+		{'R', 'F', 'U', 'L', 'B', 'D'}, {'F', 'R', 'D', 'B', 'L', 'U'}, {'D', 'R', 'B', 'U', 'L', 'F'}, {'B', 'R', 'U', 'F', 'L', 'D'},
+		{'F', 'U', 'R', 'B', 'D', 'L'}, {'F', 'L', 'U', 'B', 'R', 'D'}, {'F', 'D', 'L', 'B', 'U', 'R'}, {'D', 'F', 'R', 'U', 'B', 'L'},
+		{'D', 'L', 'F', 'U', 'R', 'B'}, {'D', 'B', 'L', 'U', 'F', 'R'}, {'B', 'D', 'R', 'F', 'U', 'L'}, {'B', 'L', 'D', 'F', 'R', 'U'},
+		{'B', 'U', 'L', 'F', 'D', 'R'}, {'U', 'B', 'R', 'D', 'F', 'L'}, {'U', 'L', 'B', 'D', 'R', 'F'}, {'U', 'F', 'L', 'D', 'B', 'R'}
+	};
+	public static String[] rotateStr = {"", "Fw", "Fw'", "Fw Uw", "Fw Uw2", "Fw Uw'", "Fw' Uw", "Fw' Uw2", "Fw' Uw'", "Rw", "Rw2", "Rw'",
+		"Rw Uw", "Rw Uw2", "Rw Uw'", "Rw2 Uw", "Rw2 Uw2", "Rw2 Uw'", "Rw' Uw", "Rw' Uw2", "Rw' Uw'", "Uw", "Uw2", "Uw'"};
 
 	static void toCubieCube(byte[] f, CubieCube ccRet) {
 		byte ori;
@@ -167,9 +177,9 @@ class Util {
 		}
 	}
 
-	static String toFaceCube(CubieCube cc) {
+	static String toFaceCube(CubieCube cc, int rotate) {
 		char[] f = new char[54];
-		char[] ts = {'U', 'R', 'F', 'D', 'L', 'B'};
+		char[] ts = rotateFaces[rotate];
 		for (int i=0; i<54; i++) {
 			f[i] = ts[i/9];
 		}
@@ -187,7 +197,98 @@ class Util {
 			for (byte n=0; n<2; n++)
 				f[edgeFacelet[e][(n + ori) % 2]] = ts[edgeFacelet[j][n]/9];
 		}
+		if (rotate != 0) doMove(f, rotate);
 		return new String(f);
+	}
+	
+	private static void doMove(char[] f, int m) {
+		switch (m) {
+		case 1:
+			move(f, 2, 2); break;
+		case 2:
+			move(f, 2, 0); break;
+		case 3:
+			move(f, 0, 2); move(f, 2, 2); break;
+		case 4:
+			move(f, 0, 1); move(f, 2, 2); break;
+		case 5:
+			move(f, 0, 0); move(f, 2, 2); break;
+		case 6:
+			move(f, 0, 2); move(f, 2, 0); break;
+		case 7:
+			move(f, 0, 1); move(f, 2, 0); break;
+		case 8:
+			move(f, 0, 0); move(f, 2, 0); break;
+		case 9:
+			move(f, 1, 2); break;
+		case 10:
+			move(f, 1, 1); break;
+		case 11:
+			move(f, 1, 0); break;
+		case 12:
+			move(f, 0, 2); move(f, 1, 2); break;
+		case 13:
+			move(f, 0, 1); move(f, 1, 2); break;
+		case 14:
+			move(f, 0, 0); move(f, 1, 2); break;
+		case 15:
+			move(f, 0, 2); move(f, 1, 1); break;
+		case 16:
+			move(f, 0, 1); move(f, 1, 1); break;
+		case 17:
+			move(f, 0, 0); move(f, 1, 1); break;
+		case 18:
+			move(f, 0, 2); move(f, 1, 0); break;
+		case 19:
+			move(f, 0, 1); move(f, 1, 0); break;
+		case 20:
+			move(f, 0, 0); move(f, 1, 0); break;
+		case 21:
+			move(f, 0, 2); break;
+		case 22:
+			move(f, 0, 1); break;
+		case 23:
+			move(f, 0, 0); break;
+		default:
+			break;
+		}
+	}
+	
+	private static void move(char[] f, int m, int t) {
+		switch (m) {
+		case 0:	//Uw
+			circle8(f, 0, 6, 8, 2, 1, 3, 7, 5);
+			circle8(f, 36, 18, 9, 45, 37, 19, 10, 46);
+			circle8(f, 38, 20, 11, 47, 39, 21, 12, 48);
+			circle8(f, 40, 22, 13, 49, 41, 23, 14, 50);
+			break;
+		case 1:	//Rw
+			circle8(f, 9, 15, 17, 11, 10, 12, 16, 14);
+			circle8(f, 2, 20, 29, 51, 5, 23, 32, 48);
+			circle8(f, 8, 26, 35, 45, 1, 19, 28, 52);
+			circle8(f, 4, 22, 31, 49, 7, 25, 34, 46);
+			break;
+		case 2:	//Fw
+			circle8(f, 18, 24, 26, 20, 19, 21, 25, 23);
+			circle8(f, 8, 38, 27, 15, 7, 41, 28, 12);
+			circle8(f, 6, 44, 29, 9, 5, 37, 30, 16);
+			circle8(f, 4, 40, 31, 13, 3, 43, 32, 10);
+			break;
+		}
+		if (t > 0) move(f, m, --t);
+	}
+	
+	private static void circle8(char[] arr, int a, int b, int c, int d, int e, int f, int g, int h) {
+		char temp = arr[a];
+		arr[a] = arr[b];
+		arr[b] = arr[c];
+		arr[c] = arr[d];
+		arr[d] = temp;
+		temp = arr[e];
+		arr[e] = arr[f];
+		arr[f] = arr[g];
+		arr[g] = arr[h];
+		arr[h] = temp;
 	}
 	
 	static int binarySearch(char[] arr, int key) {

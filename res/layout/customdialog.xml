@@ -71,6 +71,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:background="@drawable/left_btn_select"
+            android:textColor="#000"
             android:textSize="17sp" />
 
         <LinearLayout
@@ -86,6 +87,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:background="@drawable/mid_btn_select"
+            android:textColor="#000"
             android:textSize="17sp" />
 
         <LinearLayout
@@ -101,6 +103,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:background="@drawable/right_btn_select"
+            android:textColor="#000"
             android:textSize="17sp" />
     </LinearLayout>
 </LinearLayout>

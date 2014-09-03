@@ -6,6 +6,7 @@
         <item>Settings</item>
     </array>
     <array name="cubeStr">
+        <item>WCA</item>
         <item>2x2</item>
         <item>3x3</item>
         <item>4x4</item>
@@ -27,6 +28,26 @@
         <item>Bandaged Cube</item>
         <item>Megaminx subsets</item>
         <item>Relays</item>
+    </array>
+    <array name="scrwca">
+        <item>Rubik\'s cube</item>
+        <item>4x4 cube</item>
+        <item>5x5 cube</item>
+        <item>2x2 cube</item>
+        <item>3x3 blindfolded</item>
+        <item>3x3 one-handed</item>
+        <item>3x3 feweset moves</item>
+        <item>3x3 with feet</item>
+        <item>Megaminx</item>
+        <item>Pyraminx</item>
+        <item>Square-1</item>
+        <item>Rubik\'s clock</item>
+        <item>Skewb</item>
+        <item>6x6 cube</item>
+        <item>7x7 cube</item>
+        <item>4x4 blindfolded</item>
+        <item>5x5 blindfolded</item>
+        <item>3x3 multi blind</item>
     </array>
     <array name="scr222">
         <item>random state</item>
@@ -196,20 +217,6 @@
     <array name="mncStr">
         <item>Default</item>
         <item>mf8</item>
-    </array>
-    
-    <array name="list1Str">
-        <item>"3"</item>
-        <item>"5"</item>
-        <item>"12"</item>
-        <item>"50"</item>
-    </array>
-    
-    <array name="list2Str">
-        <item>"5"</item>
-        <item>"12"</item>
-        <item>"50"</item>
-        <item>"100"</item>
     </array>
     
     <array name="preStr">
