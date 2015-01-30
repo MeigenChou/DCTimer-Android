@@ -220,47 +220,25 @@ public class SqSearch {
 		return false;
 	}
 
-//	int count = 0;
 	Square sq = new Square();
 
 
 	boolean init2() {
-//		System.out.print(count++);
-//		System.out.print('\r');
 		d.copy(c);
 		for (int i=0; i<length1; i++) {
 			d.doMove(move[i]);
 		}
-//		if(1==1)return false;
-//		Square sq = new Square();
 		d.getSquare(sq);
-		//TODO
 
 		int edge = sq.edgeperm;
 		int corner = sq.cornperm;
 		int ml = sq.ml;
-//		int shp = sq.topEdgeFirst ? 0 : 1;
-//		shp |= sq.botEdgeFirst ? 0 : 2;
 
 		int prun = Math.max(Square.SquarePrun[sq.edgeperm<<1|ml], Square.SquarePrun[sq.cornperm<<1|ml]);
 
 		for (int i=prun; i<maxlen2; i++) {
-//			System.out.println(i);
 			if (phase2(edge, corner, sq.topEdgeFirst, sq.botEdgeFirst, ml, i, length1, 0)) {
-
 				sol_string = move2string(i + length1);
-
-//Unnecessary Code. Just for checking whether the solution is correct.
-//				for (int j=0; j<i; j++) {
-//					d.doMove(move[length1+j]);
-//					System.out.println(pruncomb[length1+j]);
-//				}
-//				System.out.println();
-//				System.out.println(d.getShapeIdx());
-//				System.out.println(Integer.toHexString(d.ul));
-//				System.out.println(Integer.toHexString(d.ur));
-//				System.out.println(Integer.toHexString(d.dl));
-//				System.out.println(Integer.toHexString(d.dr));
 				return true;
 			}
 		}

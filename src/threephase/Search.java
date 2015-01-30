@@ -12,8 +12,8 @@ import static threephase.Center1.symmove;
 import java.util.*;
 
 public class Search {
-	static final int PHASE1_SOLUTIONS = 5000;
-	static final int PHASE2_ATTEMPTS = 500;
+	static final int PHASE1_SOLUTIONS = 4000;
+	static final int PHASE2_ATTEMPTS = 400;
 	static final int PHASE2_SOLUTIONS = 100;
 	static final int PHASE3_ATTEMPTS = 100;
 	
@@ -33,7 +33,7 @@ public class Search {
 	Edge3 e12 = new Edge3();
 	Edge3[] tempe = new Edge3[20];
 
-	min2phase.Search search333 = new min2phase.Search();
+	min2phase.Search3 search333 = new min2phase.Search3();
 
 	int valid1 = 0;
 	public String solution = "";
@@ -178,8 +178,7 @@ public class Search {
 			solcube.move(move3std[move3[i]]);
 		}
 
-		String facelet = solcube.to333Facelet();
-		String sol = search333.solution(facelet, 21, 100000, 100, 0);
+		String sol = search333.solution(solcube.to333Facelet(), 0);
 //		if (sol.startsWith("Error 8")) {
 //			sol = search333.solution(facelet, 21, 1000000, 30, 0);
 //		}
@@ -204,8 +203,7 @@ public class Search {
 		tottime += time;
 		count++;
 		totlen += length1 + length2 + length + len333;
-		System.out.println(time+" ms, "+(length1 + length2 + length + len333)+" f");
-		System.out.println(String.format("%d %2.2f %d", count, (double)totlen / count, tottime / count));
+		//System.out.println(time+" ms, "+(length1 + length2 + length + len333)+" f  "+String.format("%3d %2.2f %d", count, (double)totlen / count, tottime / count));
 	}
 
 	public static String tostr(int[] moves) {

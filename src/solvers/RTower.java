@@ -3,202 +3,249 @@ package solvers;
 import java.util.Random;
 
 public class RTower {
-	private static char[][] cpm = new char[40320][4];
-	private static char[][] epm = new char[40320][5];
-	private static short[][] eom = new short[2187][5];
-	private static byte[] cpd = new byte[40320];
-	private static byte[] epd = new byte[40320];
-	private static byte[] eod = new byte[2187];
-	private static byte[] faces = {1, 1, 3, 3};
-	private static String[] turn1 = {"R", "F", "Uw", "L", "B"};
-	private static String[] turn2 = {"R", "F", "U", "D"};
-	private static String[] suff={"'", "2", ""};
-	private static int[] seq = new int[35];
-	private static int len1;
+	private static short[][] epm = new short[5040][3];
+	private static short[][] eom = new short[729][3];
+	private static byte[] epd = new byte[5040];
+	private static byte[] eod = new byte[729];
+	private static byte[] faces = {3, 1, 1, 3};
+	private static String[] turn1 = {"Uw", "R", "F"};
+	private static String[] turn2 = {"U", "R", "F", "D"};
+	private static String[] suff = {"'", "2", ""};
+	private static int[] sol = new int[25];
+	private static int len1, len2;
+	private static int ep, eo, cp;
 	
-	private static boolean ini=false;
-	public static void init(){
-		if(ini)return;
+	private static boolean ini = false;
+	public static void init() {
+		if(ini) return;
+		Tower.init();
 		int[] arr = new int[8];
-		int[] idx = {3,0,1,2};
-		for (int i = 0; i < 40320; i++) {
-			for (int j = 0; j < 6; j++) {
-				Im.set8Perm(arr, i);
-				switch(j){
-				case 0:Im.cir(arr, 4, 5, 6, 7);break;	//D
-				case 1:Im.cir(arr, 1, 2, 6, 5);break;	//R
-				case 2:Im.cir(arr, 2, 3, 7, 6);break;	//F
-				case 3:Im.cir(arr, 0, 3, 2, 1);break;	//U
-				case 4:Im.cir(arr, 0, 4, 7, 3);break;	//L
-				case 5:Im.cir(arr, 0, 1, 5, 4);break;	//B
+		
+		/*	0	1
+		 *	3	2
+		 *
+		 *	4	5
+		 *	-	6
+		 */
+		for (int i=0; i<5040; i++) {
+			for (int j=0; j<3; j++) {
+				Im.set7Perm(arr, i);
+				switch (j) {
+				case 0: Im.cir(arr, 0, 3, 2, 1); break;	//Uw
+				case 1: Im.cir(arr, 1, 2, 5, 6); break;	//R
+				case 2: Im.cir(arr, 2, 3, 4, 5); break;	//F
 				}
-				if(j>0)epm[i][j-1]=(char) Im.get8Perm(arr);
-				switch(j){
-				case 1:Im.cir(arr, 1, 2, 6, 5);break;	//R
-				case 2:Im.cir(arr, 2, 3, 7, 6);break;	//F
-				}
-				if(j<4)cpm[i][idx[j]]=(char) Im.get8Perm(arr);
+				epm[i][j] = (short) Im.get7Perm(arr);
 			}
 		}
-		for (int i = 0; i < 2187; i++) {
-			for (int j = 0; j < 5; j++) {
-				Im.idxToZori(arr, i, 3, 8);
-				switch(j){
-				case 2:Im.cir(arr, 0, 3, 2, 1);break;	//U
-				case 0:Im.cir(arr, 1, 2, 6, 5);
-				arr[1]=(arr[1]+1)%3;arr[2]=(arr[2]+2)%3;
-				arr[6]=(arr[6]+1)%3;arr[5]=(arr[5]+2)%3;
-				break;	//R
-				case 1:Im.cir(arr, 2, 3, 7, 6);
-				arr[2]=(arr[2]+1)%3;arr[3]=(arr[3]+2)%3;
-				arr[7]=(arr[7]+1)%3;arr[6]=(arr[6]+2)%3;
-				break;	//F
-				case 3:Im.cir(arr, 0, 4, 7, 3);
-				arr[3]=(arr[3]+1)%3;arr[0]=(arr[0]+2)%3;
-				arr[4]=(arr[4]+1)%3;arr[7]=(arr[7]+2)%3;
-				break;	//L
-				case 4:Im.cir(arr, 0, 1, 5, 4);
-				arr[0]=(arr[0]+1)%3;arr[1]=(arr[1]+2)%3;
-				arr[5]=(arr[5]+1)%3;arr[4]=(arr[4]+2)%3;
-				break;	//B
+		for (int i=0; i<729; i++) {
+			for (int j=0; j<3; j++) {
+				Im.idxToZori(arr, i, 3, 7);
+				switch(j) {
+				case 0: Im.cir(arr, 0, 3, 2, 1); break;	//Uw
+				case 1: Im.cir(arr, 1, 2, 5, 6);
+					arr[1]+=2; arr[2]++; arr[5]+=2; arr[6]++;
+					break;	//R
+				case 2:Im.cir(arr, 2, 3, 4, 5);
+					arr[2]+=2; arr[3]++; arr[4]+=2; arr[5]++;
+					break;	//F
 				}
-				eom[i][j]=(short) Im.zoriToIdx(arr, 3, 8);
+				eom[i][j] = (short) Im.zoriToIdx(arr, 3, 7);
 			}
 		}
-		for (int i = 1; i < 40320; i++)
-			cpd[i]=epd[i]=-1;
-		cpd[0]=epd[0]=0;
-		//int nVisited=1;
-		for(int d=0; d<13; d++) {
-			//nVisited = 0;
-			for (int i = 0; i < 40320; i++)
-				if (cpd[i] == d)
-					for (int k = 0; k < 4; k++)
-						for(int y = i, m = 0; m < faces[k]; m++) {
-							y = cpm[y][k];
-							if (cpd[y] < 0) {
-								cpd[y] = (byte) (d + 1);
-								//nVisited++;
-							}
-						}
-			//System.out.println(d+1+" "+nVisited);
+		
+		
+		//n = 1;
+		for (int i=1; i<5040; i++) {
+			Im.set7Perm(arr, i);
+			if(checkEp1(arr)) {
+				epd[i] = 0;
+				//n++;
+			}
+			else epd[i] = -1;
 		}
-		for(int d=0; d<7; d++) {
-			//nVisited = 0;
-			for (int i = 0; i < 40320; i++)
+		//System.out.println("0 "+n);
+		epd[0] = 0;
+		for(int d=0; d<4; d++) {
+			for (int i=0; i<5040; i++)
 				if (epd[i] == d)
-					for (int k = 0; k < 5; k++)
-						for(int y = i, m = 0; m < 3; m++) {
+					for (int k=0; k<3; k++)
+						for(int y=i, m=0; m<3; m++) {
 							y = epm[y][k];
 							if (epd[y] < 0) {
 								epd[y] = (byte) (d + 1);
-								//nVisited++;
+								//n++;
 							}
 						}
-			//System.out.println(d+" "+nVisited);
+			//System.out.println(d+1+" "+n);
 		}
-		for (int i = 1; i < 2187; i++)
-			eod[i]=-1;
-		eod[0]=0;
+		
+		for (int i=1; i<729; i++) eod[i]=-1;
+		eod[0] = 0;
+		//n = 1;
 		for(int d=0; d<6; d++) {
 			//nVisited = 0;
-			for (int i = 0; i < 2187; i++) 
+			for (int i=0; i<729; i++) 
 				if (eod[i] == d) {
-					for (int k = 0; k < 5; k++)
-						for(int y = i, m = 0; m < 3; m++) {
+					for (int k=0; k<3; k++)
+						for(int y=i, m=0; m<3; m++) {
 							y = eom[y][k];
 							if (eod[y] < 0) {
 								eod[y] = (byte) (d + 1);
-								//nVisited++;
+								//n++;
 							}
 						}
 				}
-			//System.out.println(d+" "+nVisited);
+			//System.out.println(d+1+" "+n);
 		}
-		ini=true;
+		ini = true;
 	}
-
-	private static boolean search(int ep, int eo, int d, int lf) {
-		if (d == 0) return eo == 0 && ep == 0;
-		if (epd[ep] > d || eod[eo] > d) return false;
-		for (int i = 0; i < 5; i++) {
-			if (i != lf) {
-				int y=eo, s=ep;
-				for(int j=0; j<3; j++){
-					y=eom[y][i]; s=epm[s][i];
-					if (search(s, y, d - 1, i)) {
-						//sb.insert(0, turn1[i]+suff[j]+" ");
-						seq[d] = i*3+j;
-						return true;
-					}
-				}
-			}
+	
+	static boolean checkEp1(int[] arr) {
+		if(arr[0] != 0) return false;
+		for(int i=1; i<4; i++) {
+			if(arr[i] + arr[7-i] != 7) return false;
 		}
-		return false;
+		return true;
 	}
-
-	public static String solve(Random r) {
+	
+	static int getMi(int ep) {
+		int[] arr = new int[7];
+		Im.set7Perm(arr, ep);
+		for(int i=0; i<3; i++) {
+			if(arr[i+1] < 4) arr[i] = arr[i+1];
+			else arr[i] = 6 - arr[i+1];
+		}
+		return Im.permToIdx(arr, 3);
+	}
+	
+	public static String scramble(Random r) {
 		init();
-		int eo = r.nextInt(2187);
-		int ep = r.nextInt(40320);
-		int cp = r.nextInt(40320);
-		for (int depth = 0; ; depth++) {
-			if(search(ep, eo, depth, -1)) {
-				len1 = depth;
-        		int lf = seq[1]/3;
-        		if(lf > 2) lf = -1;
-				//System.out.print(sb.toString()+".");
-				return solve2(cp, lf);
-			}
-		}
-	}
-
-	private static boolean search2(int cp, int ep, int d, int lf) {
-		if (d == 0) return cp == 0 && ep == 0;
-		if (epd[ep] > d || cpd[cp] > d) return false;
-		for (int i = 0; i < 4; i++) {
-			if (i != lf) {
-				int y = cp, s = ep;
-				for(int k = 0; k < faces[i]; k++){
-					y = cpm[y][i]; if(i<2)s = epm[epm[s][i]][i];
-					if(search2(y, s, d - 1, i)){
-						//sb.insert(0, turn2[i]+(i<2?"2":suff[k])+" ");
-						seq[d + len1] = i*3+(i<2?1:k);
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-	private static String solve2(int cp, int lf) {
-		for(int i=len1; i>0; i--) {
-			int t = seq[i]/3, s = seq[i]%3;
-			cp = epm[cp][t];
-			if(s>0) {
-				cp = epm[cp][t];
-				if(s>1) cp = epm[cp][t];
-			}
-		}
-		//sb = new StringBuffer();
-		for (int depth = 0; ; depth++) {
-			if(search2(cp, 0, depth, lf)) {
-				StringBuffer sb=new StringBuffer();
-				for(int i=len1+1; i<=depth+len1; i++) 
-					sb.append(turn2[seq[i]/3]+suff[seq[i]%3]+" ");
+		eo = r.nextInt(729);
+		ep = r.nextInt(5040);
+		cp = r.nextInt(40320);
+		for (len1=0; ; len1++) {
+			if(search1(ep, eo, len1, -1)) {
+        		StringBuffer sb = new StringBuffer();
+				for(int i=len1+1; i<=len2+len1; i++) 
+					sb.append(turn2[sol[i]/3] + suff[sol[i]%3] + " ");
 				for(int i=1; i<=len1; i++)
-					sb.append(turn1[seq[i]/3]+suff[seq[i]%3]+" ");
+					sb.append(turn1[sol[i]/3] + suff[sol[i]%3] + " ");
 				return sb.toString();
 			}
 		}
 	}
 
-//	public static void main(String[] args) {
-//		long tm = System.currentTimeMillis();
-//		init();
-//		System.out.println(System.currentTimeMillis()-tm);
-//		for(int i=0; i<10; i++)
-//		System.out.println(solve());
-//	}
+	private static boolean search1(int ep, int eo, int d, int lf) {
+		if (d == 0) return eo == 0 && epd[ep] == 0 && init2();
+		if (epd[ep] > d || eod[eo] > d) return false;
+		for (int i=0; i<3; i++) {
+			if (i != lf) {
+				int y = eo, s = ep;
+				for (int j=0; j<3; j++) {
+					y = eom[y][i]; s = epm[s][i];
+					sol[d] = i * 3 + j;
+					if (search1(s, y, d - 1, i)) {
+						//sb.insert(0, turn1[i]+suff[j]+" ");
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	static boolean init2() {
+		int epx = ep, cpx = cp;
+		for (int i=len1; i>0; i--) {
+			int m = sol[i]/3, t = sol[i]%3;
+			epx = epm[epx][m]; cpx = Tower.cpm[cpx][m];
+			if (t > 0) {
+				epx = epm[epx][m]; cpx = Tower.cpm[cpx][m];
+				if (t > 1) {
+					epx = epm[epx][m]; cpx = Tower.cpm[cpx][m];
+				}
+			}
+		}
+		epx = getMi(epx);
+		//int lf = sol[1]/3;
+		for (len2=0; len2<19-len1; len2++) {
+			if (search2(cpx, epx, len2, -1)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean search2(int cp, int ep, int d, int lf) {
+		if (d == 0) return cp == 0 && ep == 0;
+		if (Tower.epd[ep] > d || Tower.cpd[cp] > d) return false;
+		for (int i=0; i<4; i++) {
+			if (i != lf) {
+				int y = cp, s = ep;
+				for (int k=0; k<faces[i]; k++) {
+					y = Tower.cpm[y][i];
+					if(faces[i] == 1) y = Tower.cpm[y][i];
+					s = Tower.epm[s][i];
+					sol[d + len1] = i * 3 + (faces[i]==1 ? 1 : k);
+					if (search2(y, s, d - 1, i)) {
+						//sb.insert(0, turn2[i]+(i<2?"2":suff[k])+" ");
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	/*
+	private static byte[] img = new byte[96];
+	private static void initColor() {
+		img = new byte[] {
+						-1,-1,-1,-1,
+						-1, 0, 0,-1,
+						-1, 0, 0,-1,
+						-1,-1,-1,-1,
+			-1, 2, 2,-1,-1, 4, 4,-1,-1, 3, 3,-1,-1, 5, 5,-1,
+			-1, 2, 2,-1,-1, 4, 4,-1,-1, 3, 3,-1,-1, 5, 5,-1,
+			-1, 2, 2,-1,-1, 4, 4,-1,-1, 3, 3,-1,-1, 5, 5,-1,
+			-1, 2, 2,-1,-1, 4, 4,-1,-1, 3, 3,-1,-1, 5, 5,-1,
+						-1,-1,-1,-1,
+						-1, 1, 1,-1,
+						-1, 1, 1,-1,
+						-1,-1,-1,-1,
+		};
+	}
+	/*			5	6
+	 *			9	10
+	 *	17	18	21	22	25	26	29	30
+	 *	33	34	37	38	41	42	45	46
+	 *	49	50	53	54	57	58	61	62
+	 *	65	66	69	70	73	74	77	78
+	 *			85	86
+	 *			89	90
+	 
+	private static void move(int m) {
+		switch (m) {
+		case 0: //U
+			Im.cir(img, 5, 9, 10, 6); Im.cir(img, 17, 21, 25, 29);
+			Im.cir(img, 18, 22, 26, 30); break;
+		case 1:	//R
+			Im.cir(img, 41, 57, 58, 42); Im.cir(img, 26, 40, 73, 59);
+			Im.cir(img, 25, 56, 74, 43);
+			Im.cir(img, 2, 22, 82, 77); Im.cir(img, 6, 38, 86, 61);
+			Im.cir(img, 10, 54, 90, 45); Im.cir(img, 14, 70, 94, 29);
+			Im.cir(img, 7, 39, 87, 60); Im.cir(img, 11, 55, 91, 44);
+			break;
+		case 2:	//F
+			Im.cir(img, 37, 53, 54, 38); Im.cir(img, 21, 52, 70, 39);
+			Im.cir(img, 22, 36, 69, 55);
+			
+			break;
+		default:
+			break;
+		}
+	}
+	*/
+	
 }

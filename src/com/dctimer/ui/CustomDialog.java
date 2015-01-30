@@ -32,6 +32,9 @@ public class CustomDialog extends Dialog {
 		private int mCheckedItem;
 		private boolean mIsSingleChoice;
 		private View contentView; //对话框中间加载的其他布局界面
+		private ProgressBar mProgress;
+		private boolean showProgress;
+		private TextView tvMsg;
 		
 		private DialogInterface.OnClickListener left_btnClickListener;
 		private DialogInterface.OnClickListener mid_btnClickListener;
@@ -40,6 +43,12 @@ public class CustomDialog extends Dialog {
 
 		public Builder(Context context) {
 			this.context = context;
+			this.showProgress = false;
+		}
+		
+		public Builder(Context context, boolean showProgress) {
+			this.context = context;
+			this.showProgress = showProgress;
 		}
 
 		public Builder setMessage(String message) {
@@ -208,9 +217,9 @@ public class CustomDialog extends Dialog {
 				midBtn.setBackgroundResource(R.drawable.right_btn_select);
 			}
 			
-			TextView messageTv = (TextView) layout.findViewById(R.id.message);
+			tvMsg = (TextView) layout.findViewById(R.id.message);
 			if (message != null) {
-				messageTv.setText(message);
+				tvMsg.setText(message);
 				//messageTv.setAutoLinkMask(Linkify.ALL);
 			} else if (contentView != null) {
 				// if no message set
@@ -234,11 +243,28 @@ public class CustomDialog extends Dialog {
 				lvListItem.setItemChecked(mCheckedItem, true);
 				lvListItem.setSelection(mCheckedItem);
 			}
-			else {
-				messageTv.setVisibility(View.GONE);
+			else if (showProgress) {
+				tvMsg.setText("");
+			} else {
+				tvMsg.setVisibility(View.GONE);
 			}
+			
+			mProgress = (ProgressBar) layout.findViewById(R.id.progBar);
+			if(showProgress) {
+				mProgress.setVisibility(View.VISIBLE);
+				mProgress.setProgress(0);
+			}
+			
 			dialog.setContentView(layout);
 			return dialog;
+		}
+		
+		public void setProgress(int p, int s, boolean file) {
+			int per = p * 100 / s;
+			mProgress.setProgress(per);
+			if(file)
+				tvMsg.setText(String.format("%.2f K / %.2f K (%d %%)", p/1024.0, s/1024., per));
+			else tvMsg.setText(p+" / "+s+" ("+per+" %)");
 		}
 	}
 }

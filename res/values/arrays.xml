@@ -328,8 +328,6 @@
         <item>Clear session</item>
         <item>Histogram</item>
         <item>Graph</item>
-        <item>Export database</item>
-        <item>Inport database</item>
     </array>
     
     <array name="sq1sStr">

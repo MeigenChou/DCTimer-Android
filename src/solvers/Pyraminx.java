@@ -42,7 +42,6 @@ public class Pyraminx {
 			j = r.nextInt(3);
 			if (j < 2) {
 				sol.append(tip[i] + suff[j] + " ");
-				picmove(4+i, 1+j);
 			}
 		}
 		return sol.toString();
@@ -71,14 +70,11 @@ public class Pyraminx {
 				break;
 			}
 		}
-		init_colors();
 		for (i=0; i<4; i++) {
 			if (tips[i] < 2) {
 				sol.append(tip[i] + suff[tips[i]] + " ");
-				picmove(4+i, 1+tips[i]);
 			}
 		}
-		//imageString();
 		return sol.toString();
 	}
 
@@ -280,12 +276,12 @@ public class Pyraminx {
 		}
 	}
 	
-	public static byte[] imageString() {
-		int d=0;
-		for(int x = 0; x < 91; x++)
-			img[d++] = (byte) (colmap[x] - 1);
-		return img;
-	}
+//	public static byte[] imageString() {
+//		int d=0;
+//		for(int x = 0; x < 91; x++)
+//			img[d++] = (byte) (colmap[x] - 1);
+//		return img;
+//	}
 	
 	private static String moveIdx = "LRBUlrbu";
 	public static byte[] imageString(String scr) {
@@ -299,6 +295,9 @@ public class Pyraminx {
 				picmove(turn, suff);
 			}
 		}
-		return imageString();
+		int d=0;
+		for(int x = 0; x < 91; x++)
+			img[d++] = (byte) (colmap[x] - 1);
+		return img;
 	}
 }

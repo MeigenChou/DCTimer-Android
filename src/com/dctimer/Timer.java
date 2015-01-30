@@ -2,6 +2,8 @@ package com.dctimer;
 
 import java.util.TimerTask;
 
+import com.dctimer.db.Statistics;
+
 import android.os.Handler;
 import android.os.Message;
 
@@ -153,9 +155,9 @@ public class Timer {
 	private class TimeHandler extends Handler {
 		public void handleMessage (Message msg) {
 			if(msg.what==1) ct.tvTimer.setTextColor(0xff00ff00);
-			else if(msg.what==2) ct.tvTimer.setText(Mi.distime((int)time));
+			else if(msg.what==2) ct.tvTimer.setText(Statistics.distime((int)time));
 			else if(state==1) {
-				if(DCTimer.stSel[1]==0) ct.tvTimer.setText(Mi.distime((int)time));
+				if(DCTimer.stSel[1]==0) ct.tvTimer.setText(Statistics.distime((int)time));
 				else if(DCTimer.stSel[1]==1)ct.tvTimer.setText(contime((int)time));
 				else ct.tvTimer.setText(ct.getResources().getString(R.string.solve));
 			}

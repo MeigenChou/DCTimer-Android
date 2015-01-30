@@ -8,14 +8,11 @@ import solvers.Cross;
 /**
  * Some useful functions.
  */
-public class Tools implements Runnable {
-	
-	static final boolean USE_TWIST_FLIP_PRUN = true;
-
-	private static boolean inited = false;
-	
+public class Tools {
+	protected static final boolean USE_TWIST_FLIP_PRUN = false;
+	public static boolean inited = false;
 	private static Random gen = new Random();
-
+	
 	public static void read(char[] arr, InputStream in) throws IOException {
 		int len = arr.length;
 		byte[] buf = new byte[len * 2];
@@ -82,99 +79,11 @@ public class Tools implements Runnable {
 		}
 	}
 	
-	private static int[] initState = new int[2];
-	private static int[] require = {0x0, 0x1, 0x2, 0x2,  0x2, 0x7, 0xa, 0x3,  0x13, 0x13, 0x3, 0x6e,  0xca, 0xa6, 0x612, 0x512};
-	
-	private static void initIdx(int idx) {
-		switch (idx) {
-			case 0 : CubieCube.initMove(); break;//-
-			case 1 : CubieCube.initSym(); break;//0
-			case 2 : CubieCube.initFlipSym2Raw(); break;//1
-			case 3 : CubieCube.initTwistSym2Raw(); break;//1
-			
-			case 4 : CubieCube.initPermSym2Raw(); break;//1
-			case 5 : CoordCube.initFlipMove(); break;//0, 1, 2
-			case 6 : CoordCube.initTwistMove(); break;//0, 1, 3
-			case 7 : CoordCube.initUDSliceMoveConj(); break;//0, 1
-			
-			case 8 : CoordCube.initCPermMove(); break;//0, 1, 4
-			case 9 : CoordCube.initEPermMove(); break;//0, 1, 4
-			case 10 : CoordCube.initMPermMoveConj(); break;//0, 1
-			case 11 : if (USE_TWIST_FLIP_PRUN) {CoordCube.initTwistFlipPrun();}	break;//1, 2, 3, 5, 6
-			
-			case 12 : CoordCube.initSliceTwistPrun(); break;//1, 3, 6, 7
-			case 13 : CoordCube.initSliceFlipPrun(); break;//1, 2, 5, 7
-			case 14 : CoordCube.initMEPermPrun(); break;//1, 4, 9, 10
-			case 15 : CoordCube.initMCPermPrun(); break;//1, 4, 8, 10
-		}
-	}
-	
 	protected Tools() {}
 	
-	/**
-	 * Main Initialization Function, can be ignored.
-	 */
-	public void run() {
-		while (true) {
-			int choice = -1;
-			synchronized (initState) {
-				if (initState[0] == 0xffff) {
-					return;
-				}
-				for (int i=0; i<16; i++) {
-					if (((initState[0]>>i)&1)==0 && ((initState[1]&require[i])==require[i])) {
-						choice = i;
-						initState[0] |= 1 << choice;
-						break;
-					}
-				}
-				if (choice == -1) {
-					try {
-						initState.wait();
-						continue;
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-						System.exit(1);
-					}
-				}
-			}
-//			long t = System.nanoTime();
-			initIdx(choice);
-			//System.out.println(choice + "  " + (System.nanoTime() - t));
-			synchronized (initState) {
-				initState[1] |= 1 << choice;
-				initState.notifyAll();
-			}
-		}	
-	}
-	
-	private static void initParallel(int N_thread) {
-		Thread[] initThreads = new Thread[N_thread-1];
-		for (int i=0; i<N_thread-1; i++) {
-			initThreads[i] = new Thread(new Tools());
-			initThreads[i].start();
-		}
-		new Tools().run();
-		try {
-			for (int i=0; i<N_thread-1; i++) {
-				initThreads[i].join();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
-	}
-	
-	/**
-	 * Initialization of the Solver.<br>
-	 * Always below 0.5 seconds with Multiple-Thread.<br>
-	 * call it before first solving, or it will be called by {@link cs.min2phase.Search#solution(java.lang.String facelets, int maxDepth, long timeOut, long timeMin, int verbose)} at first solving.
-	 */
 	public synchronized static void init() {
-		if (inited) {
+		if (inited)
 			return;
-		}
-		
 		try {
 			InputStream in = new BufferedInputStream(new FileInputStream("/data/data/com.dctimer/databases/rp3.dat"));
 			read(CubieCube.FlipS2R, in);
@@ -200,9 +109,28 @@ public class Tools implements Runnable {
 			CubieCube.initMove();
 			CubieCube.initSym();
 		} catch (Exception e) {
-			e.printStackTrace();
-			// Can be replaced by: new Tools().run();
-			initParallel(2);
+			//e.printStackTrace();
+			CubieCube.initMove();
+	        CubieCube.initSym();
+	        CubieCube.initFlipSym2Raw();
+	        CubieCube.initTwistSym2Raw();
+	        CubieCube.initPermSym2Raw();
+
+	        CoordCube.initFlipMove();
+	        CoordCube.initTwistMove();
+	        CoordCube.initUDSliceMoveConj();
+
+	        CoordCube.initCPermMove();
+	        CoordCube.initEPermMove();
+	        CoordCube.initMPermMoveConj();
+
+	        if (USE_TWIST_FLIP_PRUN) {
+	            CoordCube.initTwistFlipPrun();
+	        }
+	        CoordCube.initSliceTwistPrun();
+	        CoordCube.initSliceFlipPrun();
+	        CoordCube.initMEPermPrun();
+	        CoordCube.initMCPermPrun();
 			try {
 				OutputStream out = new BufferedOutputStream(new FileOutputStream("/data/data/com.dctimer/databases/rp3.dat"));
 				write(CubieCube.FlipS2R, out);			//        672 Bytes
@@ -230,13 +158,7 @@ public class Tools implements Runnable {
 		
 		inited = true;
 	}
-	
-	/**
-	 * @return whether the package is initialized.
-	 */
-	public static boolean isInited() {
-		return inited;
-	}
+    
 	
 	/**
 	 * Set Random Source.
@@ -245,7 +167,7 @@ public class Tools implements Runnable {
 	public static void setRandomSource(Random gen) {
 		Tools.gen = gen;
 	}
-
+	
 	/**
 	 * Generates a random cube.<br>
 	 *
@@ -254,7 +176,7 @@ public class Tools implements Runnable {
 	 * @return A random cube in the string representation. Each cube of the cube space has almost (depends on randomSource) the same probability.
 	 *
 	 * @see cs.min2phase.Tools#setRandomSource(java.util.Random)
-	 * @see cs.min2phase.Search#solution(java.lang.String facelets, int maxDepth, long timeOut, long timeMin, int verbose)
+	 * @see Search3.min2phase.Search#solution(java.lang.String facelets, int maxDepth, long timeOut, long timeMin, int verbose)
 	 */
 	public static String randomCube() {
 		return randomState(STATE_RANDOM, STATE_RANDOM, STATE_RANDOM, STATE_RANDOM);
@@ -470,10 +392,22 @@ public class Tools implements Runnable {
 		return Util.toFaceCube(new CubieCube(0, 0, 0, 2047), 0);
 	}
 	
-	/**
+	public static String fromScramble(int[] scramble) {
+        CubieCube c1 = new CubieCube();
+        CubieCube c2 = new CubieCube();
+        CubieCube tmp;
+        for (int i = 0; i < scramble.length; i++) {
+            CubieCube.CornMult(c1, CubieCube.moveCube[scramble[i]], c2);
+            CubieCube.EdgeMult(c1, CubieCube.moveCube[scramble[i]], c2);
+            tmp = c1; c1 = c2; c2 = tmp;
+        }
+        return Util.toFaceCube(c1, 0);
+    }
+    
+    /**
 	 * Check whether the cube definition string s represents a solvable cube.
 	 * 
-	 * @param facelets is the cube definition string , see {@link cs.min2phase.Search#solution(java.lang.String facelets, int maxDepth, long timeOut, long timeMin, int verbose)}
+	 * @param facelets is the cube definition string , see {@link Search3.min2phase.Search#solution(java.lang.String facelets, int maxDepth, long timeOut, long timeMin, int verbose)}
 	 * @return 0: Cube is solvable<br>
 	 *         -1: There is not exactly one facelet of each colour<br>
 	 *         -2: Not all 12 edges exist exactly once<br>
@@ -483,6 +417,6 @@ public class Tools implements Runnable {
 	 *         -6: Parity error: Two corners or two edges have to be exchanged
 	 */
 	public static int verify(String facelets) {
-		return new Search().verify(facelets);
+		return new Search3().verify(facelets);
 	}
 }

@@ -3,64 +3,87 @@ package solvers;
 import java.util.Random;
 
 public class Domino {
+	private static char[][] cpm = new char[40320][5];
 	private static char[][] epm = new char[40320][5];
+	private static byte[] cpd = new byte[40320];
 	private static byte[] epd = new byte[40320];
     private static byte[] faces = {3, 1, 1, 1, 1};
-    private static byte[] idx = {0, 2, 3, 4, 5};
     private static String[] turn = {"U", "L", "R", "F", "B"};
     private static String[] suff = {"'", "2", ""};
-    private static int[] seq = new int[25];
-    private static boolean ini=false;
-    private static void init(){
-    	if(ini)return;
-    	Tower.init0();
+    private static int[] seq = new int[20];
+    
+    private static boolean ini = false;
+    private static void init() {
+    	if(ini) return;
     	int[] arr = new int[8];
-    	for (int i = 0; i < 40320; i++) {
-    		for (int j = 0; j < 5; j++) {
+    	for (int i=0; i<40320; i++) {
+    		for (int j=0; j<5; j++) {
     			Im.set8Perm(arr, i);
-    			switch(j){
-    			case 0:Im.cir(arr, 0, 3, 2, 1);break;	//U
-    			//case 1:Im.cir(arr, 4, 5, 6, 7);break;	//D
-    			case 1:Im.cir(arr, 3, 7);break;	//L
-    			case 2:Im.cir(arr, 1, 5);break;	//R
-    			case 3:Im.cir(arr, 2, 6);break;	//F
-    			case 4:Im.cir(arr, 0, 4);break;	//B
+    			switch(j) {
+    			case 0: Im.cir(arr, 0, 3, 2, 1); break;	//U
+    			case 1: Im.cir2(arr, 0, 7, 3, 4); break;	//L
+    			case 2: Im.cir2(arr, 1, 6, 2, 5); break;	//R
+    			case 3: Im.cir2(arr, 3, 6, 2, 7); break;	//F
+    			case 4: Im.cir2(arr, 0, 5, 1, 4); break;	//B
     			}
-    			epm[i][j]=(char) Im.get8Perm(arr);
+    			cpm[i][j] = (char) Im.get8Perm(arr);
+    			Im.set8Perm(arr, i);
+    			switch(j) {
+    			case 0: Im.cir(arr, 0, 3, 2, 1); break;	//U
+    			case 1: Im.cir(arr, 3, 7); break;	//L
+    			case 2: Im.cir(arr, 1, 5); break;	//R
+    			case 3: Im.cir(arr, 2, 6); break;	//F
+    			case 4: Im.cir(arr, 0, 4); break;	//B
+    			}
+    			epm[i][j] = (char) Im.get8Perm(arr);
     		}
     	}
-    	for (int i = 1; i < 40320; i++)
-    		epd[i]=-1;
-    	epd[0]=0;
     	
-        //int nVisited = 1;
+    	for (int i=1; i<40320; i++)
+    		cpd[i] = epd[i] = -1;
+    	cpd[0] = epd[0] = 0;
+    	//int n = 1;
+        for (int d=0; d<13; d++) {
+        	for (int i=0; i<40320; i++)
+        		if (cpd[i] == d)
+        			for (int k=0; k<5; k++)
+        				for(int y=i, m=0; m<faces[k]; m++) {
+        					y = cpm[y][k];
+        					if (cpd[y] < 0) {
+        						cpd[y] = (byte) (d + 1);
+        						//n++;
+        					}
+        				}
+        	//System.out.println(d+1+" "+n);
+        }
+        //n = 1;
         for (int d = 0; d < 11; d++) {
-        	//nVisited = 0;
-        	for (int i = 0; i < 40320; i++)
+        	for (int i=0; i<40320; i++)
         		if (epd[i] == d)
-        			for (int k = 0; k < 5; k++)
-        				for(int y = i, m = 0; m < faces[k]; m++) {
+        			for (int k=0; k<5; k++)
+        				for(int y=i, m=0; m<faces[k]; m++) {
         					y = epm[y][k];
         					if (epd[y] < 0) {
         						epd[y] = (byte) (d + 1);
-        						//nVisited++;
+        						//n++;
         					}
         				}
-        	//System.out.println(d+1+" "+nVisited);
+        	//System.out.println(d+1+" "+n);
         }
-    	ini=true;
+    	ini = true;
     }
-    private static boolean search(int cp, int ep, int depth, int lastFace){
-    	if (depth == 0) return cp == 0 && ep == 0;
-    	if (Tower.cpd[cp] > depth || epd[ep] > depth) return false;
+    
+    private static boolean search(int cp, int ep, int d, int lf) {
+    	if (d == 0) return cp == 0 && ep == 0;
+    	if (cpd[cp] > d || epd[ep] > d) return false;
     	int y, s;
-    	for (int i = 0; i < 5; i++)
-    		if(i != lastFace){
+    	for (int i=0; i<5; i++)
+    		if(i != lf) {
     			y = cp; s = ep;
-    			for(int k = 0; k < faces[i]; k++){
-    				y = Tower.cpm[y][idx[i]]; s = epm[s][i];
-    				if(search(y, s, depth - 1, i)){
-    					seq[depth] = i*3+(i<1?k:1);
+    			for (int k=0; k<faces[i]; k++) {
+    				y = cpm[y][i]; s = epm[s][i];
+    				if (search(y, s, d - 1, i)) {
+    					seq[d] = i * 3 + (i<1 ? k : 1);
     					//sb.append(turn[i]+(i<1?suff[k]:"2")+" ");
     					return true;
     				}
@@ -68,25 +91,26 @@ public class Domino {
     		}
     	return false;
     }
-    public static String solve(Random r) {
+    
+    public static String scramble(Random r) {
     	init();
     	int cp = r.nextInt(40320);
     	int ep = r.nextInt(40320);
     	
-    	for (int depth = 0; ; depth++) {
-    		if(search(cp, ep, depth, -1)) {
+    	for (int d = 0; ; d++) {
+    		if(search(cp, ep, d, -1)) {
     			StringBuffer s = new StringBuffer();
-    			for(int i=1; i<=depth; i++) {
-    				s.append(turn[seq[i]/3]+suff[seq[i]%3]+" ");
+    			for(int i=1; i<=d; i++) {
+    				s.append(turn[seq[i]/3] + suff[seq[i]%3] + " ");
     			}
     			return s.toString();
     		}
     	}
     }
     
-    private static byte[] img=new byte[42];
-    private static void initColor(){
-		img=new byte[]{
+    private static byte[] img = new byte[42];
+    private static void initColor() {
+		img = new byte[] {
 			      3,3,3,
 			      3,3,3,
 			      3,3,3,
@@ -97,8 +121,8 @@ public class Domino {
 			      0,0,0
 		};
 	}
-    private static void move(int turn){
-    	switch(turn){
+    private static void move(int turn) {
+    	switch (turn) {
     	case 0:	//U
     		Im.cir(img,0,6,8,2);
     		Im.cir(img,1,3,7,5);
@@ -139,17 +163,17 @@ public class Domino {
     		break;
     	}
     }
-    private static String moveIdx="UDLRFB";
-    public static byte[] image(String scr){
+    private static String moveIdx = "UDLRFB";
+    public static byte[] image(String scr) {
     	initColor();
-    	String[] s=scr.split(" ");
+    	String[] s = scr.split(" ");
     	for(int i=0; i<s.length; i++)
-    		if(s[i].length()>0){
+    		if(s[i].length() > 0) {
     			int mov = moveIdx.indexOf(s[i].charAt(0));
     			move(mov);
-    			if(s[i].length()>1 && mov<2){
+    			if (s[i].length()>1 && mov<2) {
     				move(mov);
-    				if(s[i].charAt(1)=='\'')move(mov);
+    				if(s[i].charAt(1)=='\'') move(mov);
     			}
     		}
     	return img;

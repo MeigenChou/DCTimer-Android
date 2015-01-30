@@ -119,6 +119,7 @@ public class Util {
 	static int[][] permMult = new int[24][24];
 	static String[] move2str = {"U", "U2", "U'", "R", "R2", "R'", "F", "F2", "F'", 
 								"D", "D2", "D'", "L", "L2", "L'", "B", "B2", "B'"};
+	static int[] preMove = { -1, 3, 5, 6, 8, 12, 14, 15, 17};
 	static int[] ud2std = {Ux1, Ux2, Ux3, Rx2, Fx2, Dx1, Dx2, Dx3, Lx2, Bx2};
 	static int[] std2ud = new int[18];
 	
@@ -134,6 +135,11 @@ public class Util {
 	};
 	public static String[] rotateStr = {"", "Fw", "Fw'", "Fw Uw", "Fw Uw2", "Fw Uw'", "Fw' Uw", "Fw' Uw2", "Fw' Uw'", "Rw", "Rw2", "Rw'",
 		"Rw Uw", "Rw Uw2", "Rw Uw'", "Rw2 Uw", "Rw2 Uw2", "Rw2 Uw'", "Rw' Uw", "Rw' Uw2", "Rw' Uw'", "Uw", "Uw2", "Uw'"};
+	public static int[][] rotLast = {
+		{-3, 15, 15, 15, 15, 15, 15, 15, 15, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 9, 9, 9},
+		{-3, 9, 9, 9, 9, 9, 9, 9, 9, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 12, 12, 12},
+		{-3, 12, 12, 12, 12, 12, 12, 12, 12, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 15, 15, 15},
+	};
 
 	static void toCubieCube(byte[] f, CubieCube ccRet) {
 		byte ori;

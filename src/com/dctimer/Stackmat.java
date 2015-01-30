@@ -52,33 +52,6 @@ public class Stackmat {
 		}
 	}
 
-//	private byte[] readPackage2(byte[] samples){
-//		isValid = true; isMsec = false;
-//		int offset = 0, sum = 0;
-//    	byte[] data=new byte[9];
-//    	for(int i=0; i<9; i++){
-//    		data[i]=(byte) parseData(samples, i, inv);
-//    		if(i==0 && !" ACILRS".contains(String.valueOf((char) data[i]))){
-//    			isValid = false; return data;
-//    		}
-//    		if(i>0 && i<6){
-//    			if(!Character.isDigit(data[i])){
-//    				isValid = false; return data;
-//    			}
-//    			data[i] -= 48; sum += data[i];
-//    		}
-//    		if(i==6 && Character.isDigit(data[i])){
-//    			offset = 1; isMsec = true; data[i] -= 48; sum += data[i];
-//    		}
-//    		if(i==6+offset && data[i]!=sum+64){
-//    			isValid = false; return data;
-//    		}
-//    		if(i==7+offset && data[i]!= '\n'){
-//    			isValid = false; return data;
-//    		}
-//    	}
-//    	return data;
-//    }
 	private byte[] readPackage(byte[] samples) {
 		isValid = true;
 		int sum = 0;
@@ -96,6 +69,7 @@ public class Stackmat {
     	if(data[7]!='\n' && data[8]!='\n') isValid = false;
     	return data;
     }
+	
 	private int parseData(byte[] periodData, int pos, boolean inv) {
 		int temp = 0;
 		for(int i = 1; i < 9; i++) temp |= periodData[pos * 10 + i] << (i - 1);

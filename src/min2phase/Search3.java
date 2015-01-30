@@ -23,19 +23,25 @@ package min2phase;
  * Total Memory used is about 1MB.<br>
  * @author Shuang Chen
  */
-public class Search {
-
+public class Search3 {
 	private int[] move = new int[31];
 
 	private int[] corn = new int[20];
 	private int[] mid4 = new int[20];
 	private int[] ud8e = new int[20];
-
+	
+	private int[] twist = new int[6];
+	private int[] flip = new int[6];
+	private int[] slice = new int[6];
+	
+	private int[] corn0 = new int[6];
+	private int[] ud8e0 = new int[6];
+	private int[] prun = new int[6];
+    
 	private byte[] f = new byte[54];
 
 	private int urfIdx;
 	private int depth1;
-	private int realdepth1;
 	private int maxDep2;
 	private int sol;
 	private int valid1;
@@ -44,35 +50,40 @@ public class Search {
 	private long timeOut;
 	private long timeMin;
 	private int verbose;
+	int rotIdx = 0;
 	private CubieCube cc = new CubieCube();
-	private int slice;
-
-	private CubieCube cur_search = null;
-
-	private int[] ckSym = new int[3];
-
-	private static final int MAXDEP2 = 13;
-	private static final int PRESCR = 2;
-	
-	private int[] prescr = new int[PRESCR];
 	
 	/**
-	 *     Verbose_Mask determines if a " . " separates the phase1 and phase2 parts of the solver string like in F' R B R L2 F .
-	 *     U2 U D for example.<br>
-	 */
-	public static final int USE_SEPARATOR = 0x1;
+     *     Verbose_Mask determines if a " . " separates the phase1 and phase2 parts of the solver string like in F' R B R L2 F .
+     *     U2 U D for example.<br>
+     */
+    public static final int USE_SEPARATOR = 0x1;
 
-	/**
-	 *     Verbose_Mask determines if the solution will be inversed to a scramble/state generator.
-	 */
-	public static final int INVERSE_SOLUTION = 0x2;
+    /**
+     *     Verbose_Mask determines if the solution will be inversed to a scramble/state generator.
+     */
+    public static final int INVERSE_SOLUTION = 0x2;
 
-	/**
-	 *     Verbose_Mask determines if a tag such as "(21f)" will be appended to the solution.
-	 */
-	public static final int APPEND_LENGTH = 0x4;
-
-	/**
+    /**
+     *     Verbose_Mask determines if a tag such as "(21f)" will be appended to the solution.
+     */
+    public static final int APPEND_LENGTH = 0x4;
+    
+    public synchronized String solution(String facelets, int verbose) {
+    	return solution(facelets, 0, verbose);
+    }
+    
+    public synchronized String solution(String facelets, int rotation, int verbose) {
+    	rotIdx = rotation;
+    	return solution(facelets, 21, 100000, 200, verbose);
+    }
+    
+    public synchronized String solution(String facelets, int rotation, long timeMin, int verbose) {
+    	rotIdx = rotation;
+    	return solution(facelets, 21, 100000, timeMin, verbose);
+    }
+    
+    /**
 	 * Computes the solver string for a given cube.
 	 *
 	 * @param facelets
@@ -132,18 +143,67 @@ public class Search {
 	 * 		Error 7: No solution exists for the given maxDepth<br>
 	 * 		Error 8: Timeout, no solution within given time
 	 */
-	public synchronized String solution(String facelets, int maxDepth, long timeOut, long timeMin, int verbose) {
+	private synchronized String solution(String facelets, int maxDepth, long timeOut, long timeMin, int verbose) {
 		int check = verify(facelets);
 		if (check != 0) {
 			return "Error " + Math.abs(check);
 		}
-		this.sol = maxDepth+1;
+		this.sol = maxDepth + 1;
 		this.timeOut = System.currentTimeMillis() + timeOut;
 		this.timeMin = this.timeOut + Math.min(timeMin - timeOut, 0);
-		this.verbose = verbose;
-		this.solution = null;
-		return solve(cc);
+        this.verbose = verbose;
+        this.solution = null;
+        
+        Tools.init();
+        int conjMask = 0;
+        for (int i=0; i<6; i++) {
+			twist[i] = cc.getTwistSym();
+			flip[i] = cc.getFlipSym();
+			slice[i] = cc.getUDSlice();
+			corn0[i] = cc.getCPermSym();
+			ud8e0[i] = cc.getU4Comb() << 16 | cc.getD4Comb();
+			
+			for (int j=0; j<i; j++) {	//If S_i^-1 * C * S_i == C, It's unnecessary to compute it again. 
+				if (twist[i] == twist[j] && flip[i] == flip[j] && slice[i] == slice[j]
+						&& corn0[i] == corn0[j] && ud8e0[i] == ud8e0[j]) {
+					conjMask |= 1 << i;
+					break;
+				}
+			}
+			if ((conjMask & (1 << i)) == 0) {
+				prun[i] = Math.max(Math.max(
+					CoordCube.getPruning(CoordCube.UDSliceTwistPrun, 
+						(twist[i]>>>3) * 495 + CoordCube.UDSliceConj[slice[i]&0x1ff][twist[i]&7]),
+					CoordCube.getPruning(CoordCube.UDSliceFlipPrun, 
+						(flip[i]>>>3) * 495 + CoordCube.UDSliceConj[slice[i]&0x1ff][flip[i]&7])),
+					Tools.USE_TWIST_FLIP_PRUN ? CoordCube.getPruning(CoordCube.TwistFlipPrun, 
+							(twist[i]>>>3) * 2688 + (flip[i] & 0xfff8 | CubieCube.Sym8MultInv[flip[i]&7][twist[i]&7])) : 0);
+			}
+			cc.URFConjugate();
+			if (i==2) {
+				cc.invCubieCube();
+			}
+		}
+		for (depth1=0; depth1<sol; depth1++) {
+			maxDep2 = Math.min(12, sol-depth1);
+			for (urfIdx=0; urfIdx<6; urfIdx++) {
+				if ((conjMask & (1 << urfIdx)) != 0) {
+					continue;
+				}
+				corn[0] = corn0[urfIdx];
+				mid4[0] = slice[urfIdx];
+				ud8e[0] = ud8e0[urfIdx];
+				valid1 = 0;
+				if ((prun[urfIdx] <= depth1)
+						&& phase1(twist[urfIdx]>>>3, twist[urfIdx]&7, flip[urfIdx]>>>3, flip[urfIdx]&7,
+							slice[urfIdx]&0x1ff, depth1, urfIdx<3 ? Util.rotLast[urfIdx][rotIdx] : -1) == 0) {
+					return solution == null ? "Error 8" : solution;
+				}
+			}
+		}
+		return solution == null ? "Error 7" : solution;
 	}
+    
 	
 	int verify(String facelets) {
 		int count = 0x000000;
@@ -171,77 +231,6 @@ public class Search {
 		}
 		Util.toCubieCube(f, cc);
 		return cc.verify();
-	}
-
-	private boolean preScramble(CubieCube c, int depth1, int maxPre, int lm) {
-		int twist = c.getTwistSym();
-		int flip = c.getFlipSym();
-		slice = c.getUDSlice();
-
-		if (urfIdx != 0 && twist == ckSym[0] && flip == ckSym[1] && slice == ckSym[2]) {
-			return false;
-		}
-
-		int prun = Math.max(Math.max(
-			CoordCube.getPruning(CoordCube.UDSliceTwistPrun, 
-				(twist>>>3) * 495 + CoordCube.UDSliceConj[slice&0x1ff][twist&7]),
-			CoordCube.getPruning(CoordCube.UDSliceFlipPrun, 
-				(flip>>>3) * 495 + CoordCube.UDSliceConj[slice&0x1ff][flip&7])),
-			Tools.USE_TWIST_FLIP_PRUN ? CoordCube.getPruning(CoordCube.TwistFlipPrun, 
-				(twist>>>3) * 2688 + (flip & 0xfff8 | CubieCube.Sym8MultInv[flip&7][twist&7])) : 0);
-		this.depth1 = depth1;
-
-		this.cur_search = c;
-		this.corn[0] = -1;
-
-		if ((prun <= depth1)
-				&& phase1(twist>>>3, twist&7, flip>>>3, flip&7,
-					slice&0x1ff, depth1, -1) == 0) {
-			return true;
-		}
-
-		if (maxPre > 0) {
-			CubieCube d = new CubieCube();
-			d.temps = new CubieCube();
-			for (int k=0; k<18; k++) {
-				if (k / 3 % 3 == 0 || k % 3 == 1) {
-					continue;
-				}
-				if ((k / 3 == lm / 3) || ((k/3%3 == lm/3%3) && (lm>=k))) {
-					continue;	
-				}
-				prescr[realdepth1 - depth1] = k;
-				CubieCube.CornMult(CubieCube.moveCube[k], c, d);
-				CubieCube.EdgeMult(CubieCube.moveCube[k], c, d);
-				if (preScramble(d, depth1 - 1, maxPre - 1, k)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	private String solve(CubieCube c) {
-		Tools.init();
-//		int conjMask = 0;
-		c.temps = new CubieCube();
-		ckSym[0] = c.getTwistSym();
-		ckSym[1] = c.getFlipSym();
-		ckSym[2] = c.getUDSlice();
-
-		for (realdepth1=0; realdepth1<sol; realdepth1++) {
-			maxDep2 = Math.min(MAXDEP2, sol-realdepth1);
-			for (urfIdx=0; urfIdx<6; urfIdx++) {
-				if (preScramble(c, realdepth1, PRESCR, -3)) {
-					return solution == null ? "Error 8" : solution;
-				}
-				c.URFConjugate();
-				if (urfIdx%3==2) {
-					c.invCubieCube();
-				}
-			}
-		}
-		return solution == null ? "Error 7" : solution;
 	}
 	
 	/**
@@ -301,13 +290,6 @@ public class Search {
 		}
 		return 1;
 	}
-
-
-	void init_cur() {
-		corn[0] = cur_search.getCPermSym();
-		mid4[0] = slice;
-		ud8e[0] = cur_search.getU4Comb() << 16 | cur_search.getD4Comb();
-	}
 	
 	/**
 	 * @return
@@ -315,14 +297,10 @@ public class Search {
 	 * 		1: Try Next Power
 	 * 		2: Try Next Axis
 	 */
-	public int probe2;
+	//public int probe2;
 	private int initPhase2() {
-		probe2++;
 		if (System.currentTimeMillis() >= (solution == null ? timeOut : timeMin)) {
 			return 0;
-		}
-		if (corn[0] == -1) {
-			init_cur();
 		}
 		valid2 = Math.min(valid2, valid1);
 		int cidx = corn[valid1] >>> 4;
@@ -371,11 +349,8 @@ public class Search {
 		int lm = depth1==0 ? 10 : Util.std2ud[move[depth1-1]/3*3+1];
 		for (int depth2=prun; depth2<maxDep2; depth2++) {
 			if (phase2(edge, esym, cidx, csym, mid, depth2, depth1, lm)) {
-				sol = realdepth1 + depth2;
-				for (int i=depth1 + depth2; i<sol; i++) {
-					move[i] = prescr[i - depth1 - depth2];
-				}
-				maxDep2 = Math.min(MAXDEP2, depth2);
+				sol = depth1 + depth2;
+				maxDep2 = Math.min(12, sol-depth1);
 				solution = solutionToString();
 				return System.currentTimeMillis() >= timeMin ? 0 : 1;
 			}
@@ -385,6 +360,8 @@ public class Search {
 
 	private boolean phase2(int eidx, int esym, int cidx, int csym, int mid, int maxl, int depth, int lm) {
 		if (eidx==0 && cidx==0 && mid==0) {
+			if(urfIdx>2 && move[depth-1]/3==Util.rotLast[urfIdx-3][rotIdx]/3)
+				return false;
 			return true;
 		}
 		for (int m=0; m<10; m++) {
@@ -406,8 +383,8 @@ public class Search {
 					eidxx * 24 + CoordCube.MPermConj[midx][esymx]) >= maxl) {
 				continue;
 			}
+			move[depth] = Util.ud2std[m];
 			if (phase2(eidxx, esymx, cidxx, csymx, midx, maxl-1, depth+1, m)) {
-				move[depth] = Util.ud2std[m];
 				return true;
 			}
 		}
@@ -442,5 +419,5 @@ public class Search {
 			sb.append("(").append(sol).append("f)");
 		}
 		return sb.toString();
-	}
+    }
 }

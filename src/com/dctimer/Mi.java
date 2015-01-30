@@ -1,8 +1,10 @@
 ﻿package com.dctimer;
 
-import java.util.Arrays;
 import java.util.Random;
 
+import com.dctimer.db.*;
+
+import min2phase.Search3;
 import min2phase.Tools;
 import static min2phase.Util.rotateStr;
 import scramblers.*;
@@ -14,22 +16,26 @@ import android.graphics.Paint.FontMetrics;
 
 public class Mi {
 	static final int TYPE_SQ1 = 1;
-	static final int TYPE_CLOCK = 12;
+	static final int TYPE_CLK = 12;
 	static final int TYPE_MINX = 18;
-	static final int TYPE_PYRAM = 17;
-	static final int TYPE_SKEWB = 16;
+	static final int TYPE_PYR = 17;
+	static final int TYPE_SKW = 16;
 	static final int TYPE_FLPY = 13;
 	static final int TYPE_DMN = 14;
 	static final int TYPE_TOW = 15;
-	static int[] bavg = {0, 0};
-	static int[] bidx = {0, 0};
-	static int sesMean = -1;
-	static int sesSD;
-	static int minIdx, maxIdx;
+	static final int TYPE_RTW = 19;
+	static final int TYPE_334 = 20;
+	static final int TYPE_335 = 21;
+	static final int TYPE_336 = 22;
+	static final int TYPE_337 = 23;
+	static final int TYPE_GEAR = 24;
+	static final int TYPE_15P = 25;
+	static final int TYPE_HLC = 26;
+	static final int TYPE_UFO = 27;
+	
 	static String sc;
 	static int viewType;
 	public static int scrLen = 0;
-	static min2phase.Search cube3 = new min2phase.Search();
 	static threephase.Search cube4 = new threephase.Search();
 	static Random r = new Random();
 	private static short[][] defScrLen = {
@@ -84,18 +90,19 @@ public class Mi {
 			scr = Cube222.scramble(4); viewType = 2; break;
 		case -28:	//三盲
 			int rotate = r.nextInt(24);
-			scr = cube3.solution(Tools.randomState(null, null, null, null, rotate), 21, 20000, 200, 2) + rotateStr[rotate];
+			String cube = Tools.randomState(null, null, null, null, rotate);
+			scr = new Search3().solution(cube, rotate, 2) + rotateStr[rotate];
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case -24:	//五魔
 			scr = Megaminx.scramblestring(); viewType = TYPE_MINX; break;
 		case -23:	//金字塔
-			scr = Pyraminx.scramble(7); viewType = TYPE_PYRAM; break;
+			scr = Pyraminx.scramble(7); viewType = TYPE_PYR; break;
 		case -22:	//SQ1
 			scr = new SqSearch().scramble(FullCube.randomCube(), 11); viewType = TYPE_SQ1; break;
 		case -21:	//魔表
-			scr = Clock.scramble(); viewType = TYPE_CLOCK; break;
+			scr = Clock.scramble(); viewType = TYPE_CLK; break;
 		case -20:	//斜转
-			scr = Skewb.scramble(7); viewType = TYPE_SKEWB; break;
+			scr = Skewb.scramble(7); viewType = TYPE_SKW; break;
 		case -19:	//六阶
 			turn2 = new String[][]{{"U","D","Uw","Dw","3Uw"}, {"R","L","Rw","Lw","3Rw"}, {"F","B","Fw","Bw","3Fw"}};
 			scr = OtherScr.megascramble(turn2, csuff); viewType = 6; break;
@@ -110,7 +117,8 @@ public class Mi {
 			sb = new StringBuffer();
 			for(int j=1; j<=scrLen; j++) {
 				int rot = r.nextInt(24);
-				sb.append(j + ") " + cube3.solution(Tools.randomState(null, null, null, null, rot), 21, 20000, 200, 2) + rotateStr[rot]);
+				String face = Tools.randomState(null, null, null, null, rot);
+				sb.append(j + ") " + new Search3().solution(face, rot, 50, 2) + rotateStr[rot]);
 				if(j < scrLen) sb.append("\n");
 			}
 			scr = sb.toString(); viewType = 0; break;
@@ -168,16 +176,16 @@ public class Mi {
 			else if(DCTimer.stSel[5]==5) sc = "\n"+PetrusxRoux.petrus(scr, DCTimer.solSel[1]);
 			break;
 		case 34:
-			scr = cube3.solution(Tools.randomCrossSolved(), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomCrossSolved(), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 35:
-			scr = cube3.solution(Tools.randomLastLayer(), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomLastLayer(), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 36:
-			scr = cube3.solution(Tools.randomPLL(), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomPLL(), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 37:
-			scr = cube3.solution(Tools.randomCornerSolved(), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomCornerSolved(), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3;
 			if(DCTimer.stSel[5]==1) sc = "\n"+Cross.cross(scr, DCTimer.solSel[0], DCTimer.solSel[1]);
 			else if(DCTimer.stSel[5]==2) sc = "\n"+Cross.xcross(scr, DCTimer.solSel[1]);
@@ -186,72 +194,72 @@ public class Mi {
 			else if(DCTimer.stSel[5]==5) sc = "\n"+PetrusxRoux.petrus(scr, DCTimer.solSel[1]);
 			break;
 		case 38:
-			scr = cube3.solution(Tools.randomEdgeSolved(), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomEdgeSolved(), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 39:
-			scr = cube3.solution(Tools.randomLastSlot(), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomLastSlot(), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 40:
-			scr = cube3.solution(Tools.randomZBLastLayer(), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomZBLastLayer(), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 41:
-			scr = cube3.solution(Tools.randomEdgeOfLastLayer(), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomEdgeOfLastLayer(), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 42:
-			scr = cube3.solution(Tools.randomCornerOfLastLayer(), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomCornerOfLastLayer(), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 43:
 			switch (r.nextInt(4)) {
 			case 0:
-				scr = cube3.solution(Tools.randomState(new byte[]{0,1,2,3,4,5,6,7}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 21, 20000, 200, 2);
+				scr = new Search3().solution(Tools.randomState(new byte[]{0,1,2,3,4,5,6,7}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 2);
 				break;
 			case 1:
-				scr = cube3.solution(Tools.randomState(new byte[]{3,2,6,7,0,1,5,4}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 21, 20000, 200, 2) + "x'";
+				scr = new Search3().solution(Tools.randomState(new byte[]{3,2,6,7,0,1,5,4}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 2) + "x'";
 				break;
 			case 2:
-				scr = cube3.solution(Tools.randomState(new byte[]{7,6,5,4,3,2,1,0}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 21, 20000, 200, 2) + "x2";
+				scr = new Search3().solution(Tools.randomState(new byte[]{7,6,5,4,3,2,1,0}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 2) + "x2";
 				break;
 			default:
-				scr = cube3.solution(Tools.randomState(new byte[]{4,5,1,0,7,6,2,3}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 21, 20000, 200, 2) + "x";
+				scr = new Search3().solution(Tools.randomState(new byte[]{4,5,1,0,7,6,2,3}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 2) + "x";
 				break;
 			}
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 44:
 			switch (r.nextInt(4)) {
 			case 0:
-				scr = cube3.solution(Tools.randomState(new byte[]{-1,-1,-1,-1,4,5,6,7}, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 21, 20000, 200, 2);
+				scr = new Search3().solution(Tools.randomState(new byte[]{-1,-1,-1,-1,4,5,6,7}, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 2);
 				break;
 			case 1:
-				scr = cube3.solution(Tools.randomState(new byte[]{3,2,-1,-1,0,1,-1,-1}, new byte[]{2,1,-1,-1,1,2,-1,-1}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 21, 20000, 200, 2) + "x'";
+				scr = new Search3().solution(Tools.randomState(new byte[]{3,2,-1,-1,0,1,-1,-1}, new byte[]{2,1,-1,-1,1,2,-1,-1}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 2) + "x'";
 				break;
 			case 2:
-				scr = cube3.solution(Tools.randomState(new byte[]{7,6,5,4,-1,-1,-1,-1}, new byte[]{0,0,0,0,-1,-1,-1,-1}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 21, 20000, 200, 2) + "x2";
+				scr = new Search3().solution(Tools.randomState(new byte[]{7,6,5,4,-1,-1,-1,-1}, new byte[]{0,0,0,0,-1,-1,-1,-1}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 2) + "x2";
 				break;
 			default:
-				scr = cube3.solution(Tools.randomState(new byte[]{-1,-1,1,0,-1,-1,2,3}, new byte[]{-1,-1,2,1,-1,-1,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 21, 20000, 200, 2) + "x";
+				scr = new Search3().solution(Tools.randomState(new byte[]{-1,-1,1,0,-1,-1,2,3}, new byte[]{-1,-1,2,1,-1,-1,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 2) + "x";
 				break;
 			}
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 45:
-			scr = cube3.solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 46:
-			scr = cube3.solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_RANDOM), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_RANDOM), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 47:
-			scr = cube3.solution(Tools.randomState(Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_SOLVED), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomState(Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_SOLVED), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 48:
-			scr = cube3.solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_SOLVED), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_SOLVED), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 49:
-			scr = cube3.solution(Tools.randomState(Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomState(Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 50:
-			scr = cube3.solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_RANDOM), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_RANDOM), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 51:
-			scr = cube3.solution(Tools.randomEasyCross(scrLen), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomEasyCross(scrLen), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; 
 			if(DCTimer.stSel[5]==1) sc = "\n"+Cross.cross(scr, DCTimer.solSel[0], DCTimer.solSel[1]);
 			else if(DCTimer.stSel[5]==2) sc = "\n"+Cross.xcross(scr, DCTimer.solSel[1]);
@@ -260,7 +268,7 @@ public class Mi {
 			else if(DCTimer.stSel[5]==5) sc = "\n"+PetrusxRoux.petrus(scr, DCTimer.solSel[1]);
 			break;
 		case 52:
-			scr = cube3.solution(Tools.randomState(Tools.STATE_SOLVED, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,5,6,7,8,9,10,11}, Tools.STATE_SOLVED), 21, 20000, 200, 2);
+			scr = new Search3().solution(Tools.randomState(Tools.STATE_SOLVED, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,5,6,7,8,9,10,11}, Tools.STATE_SOLVED), 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 64: //4阶
 			scr = cube(4); viewType = 4; break;
@@ -312,7 +320,7 @@ public class Mi {
 		case 193:
 			scr = OtherScr.oldminxscramble(); viewType = 0; break;
 		case 224: //金字塔
-			scr = Pyraminx.scramble(); viewType = TYPE_PYRAM; break;
+			scr = Pyraminx.scramble(); viewType = TYPE_PYR; break;
 		case 225:
 			turn2 = new String[][]{{"U"}, {"L"}, {"R"}, {"B"}};
 			suff = new String[]{"", "'"};
@@ -327,7 +335,7 @@ public class Mi {
 			scrLen -= cnt;
 			scr = ss[0][rnd[0]] + ss[1][rnd[1]] + ss[2][rnd[2]] + ss[3][rnd[3]] + OtherScr.megascramble(turn2, suff);
 			scrLen += cnt;
-			viewType = TYPE_PYRAM;
+			viewType = TYPE_PYR;
 			break;
 		case 256:  //SQ1
 			scr = SQ1.scramblestring();
@@ -344,20 +352,20 @@ public class Mi {
 		case 259:
 			scr = new SqSearch().solution(FullCube.randomCube(1037)); viewType = TYPE_SQ1; break;
 		case 288:	//魔表
-			scr = Clock.scramble(); viewType = TYPE_CLOCK; break;
+			scr = Clock.scramble(); viewType = TYPE_CLK; break;
 		case 289:
-			scr = Clock.scrambleOld(false); viewType = TYPE_CLOCK; break;
+			scr = Clock.scrambleOld(false); viewType = TYPE_CLK; break;
 		case 290:
-			scr = Clock.scrambleOld(true); viewType = TYPE_CLOCK; break;
+			scr = Clock.scrambleOld(true); viewType = TYPE_CLK; break;
 		case 291:
-			scr = Clock.scrambleEpo(); viewType = TYPE_CLOCK; break;
+			scr = Clock.scrambleEpo(); viewType = TYPE_CLK; break;
 		case 320:	//Skewb
-			scr = Skewb.scramble(); viewType = TYPE_SKEWB; break;
+			scr = Skewb.scramble(); viewType = TYPE_SKW; break;
 		case 321:
 			turn2 = new String[][]{{"R"}, {"U"}, {"L"}, {"B"}};
 			suff = new String[]{"", "'"};
 			scr = OtherScr.megascramble(turn2, suff);
-			viewType = TYPE_SKEWB; break;
+			viewType = TYPE_SKW; break;
 		case 352:	//MxNxL
 			turn2 = new String[][]{{"R","L"}, {"U","D"}};
 			scr = OtherScr.megascramble(turn2, new String[]{"2"}); viewType = TYPE_FLPY; break;
@@ -370,11 +378,11 @@ public class Mi {
 			turns = new String[][][]{{{"R2","L2","R2 L2"}}, {{"U","U'","U2"}}, {{"F2","B2","F2 B2"}}};
 			scr = OtherScr.megascramble(turns, suff0); viewType = 14; break;
 		case 356:
-			scr = Domino.solve(r); viewType = TYPE_DMN; break;
+			scr = Domino.scramble(r); viewType = TYPE_DMN; break;
 		case 357:
 			scr = Tower.solve(r); viewType = TYPE_TOW; break;
 		case 358:
-			scr = RTower.solve(r); viewType = 0; break;
+			scr = RTower.scramble(r); viewType = 0; break;
 		case 359:	//334
 			turns = new String[][][]{{{"U", "U'", "U2"}, {"u", "u'", "u2"}}, {{"R2","L2","M2"}}, {{"F2","B2","S2"}}};
 			scr = OtherScr.megascramble(turns, suff0); viewType = 0; break;
@@ -522,7 +530,7 @@ public class Mi {
 		return Cube.scramblestring(n, scrLen);
 	}	
 	private static String cube333() {
-		return cube3.solution(Tools.randomCube(), 21, 20000, 200, 2);
+		return new Search3().solution(Tools.randomCube(), 2);
 	}
 	private static String cube4(String[] suf) {
 		return OtherScr.megascramble(new String[][]{{"U","D","u"}, {"R","L","r"}, {"F","B","f"}}, suf, 40);
@@ -579,13 +587,12 @@ public class Mi {
 					c.drawRect(stx+7+(j+2)*a, sty+13+(i+4)*a, stx+6+(j+3)*a, sty+12+(i+5)*a, p);
 				}
 		}
-		//五魔
 		else if(viewType == TYPE_MINX) {
 			float edgeFrac = (float) ((1+Math.sqrt(5))/4);
 			float centerFrac = 0.5F;
 			if(DCTimer.stSel[7]==0)
-				colors = new int[] {Color.WHITE, 0xff000088, 0xff008800, 0xff880088, 0xff882222, 0xff88ddff,
-					Color.RED, Color.BLUE, 0xffff44ff, Color.GREEN, 0xffff8800,Color.YELLOW};
+				colors = new int[] {Color.WHITE, 0xff000088, 0xff008800, 0xff00ffff, 0xff882222, 0xff88aaff,
+					Color.RED, Color.BLUE, 0xffff00ff, Color.GREEN, 0xffff8800, Color.YELLOW};
 			else colors = new int[] {Color.WHITE, Color.RED, 0xff008800, 0xff880088, Color.YELLOW, Color.BLUE,
 					0xffffff88, 0xff88ddff, 0xffff8800, Color.GREEN, 0xffff44ff, Color.GRAY};
 			float scale = (float) (width / 350.);
@@ -643,11 +650,8 @@ public class Mi {
 			c.drawText("U", (float)(width*0.262), (float)(width*0.367), p);
 			c.drawText("F", (float)(width*0.262), (float)(width*0.535), p);
 		}
-		//金字塔
-		else if(viewType == TYPE_PYRAM) {
-			byte[] imst;
-			if(!DCTimer.isInScr && sel2==0) imst = Pyraminx.imageString();
-			else imst = Pyraminx.imageString(DCTimer.crntScr);
+		else if(viewType == TYPE_PYR) {
+			byte[] imst = Pyraminx.imageString(DCTimer.crntScr);
 			int b = (width * 3 / 4 - 15) / 6;
 			int a = (int) (b * 2 / Math.sqrt(3));
 			int d = (int) ((width - a * 6 - 21) / 2);
@@ -857,8 +861,7 @@ public class Mi {
 				}
 			}
 		}
-		//魔表
-		else if(viewType == TYPE_CLOCK) {
+		else if(viewType == TYPE_CLK) {
 			byte[] posit;
 			posit = Clock.posit();
 			int face_dist = 30;
@@ -1011,8 +1014,7 @@ public class Mi {
 					c.drawRect(stx+7+(j+2)*a, sty+13+(5+i)*a, stx+6+(j+3)*a, sty+12+(6+i)*a, p);
 				}
 		}
-		//Skewb
-		else if(viewType == TYPE_SKEWB) {
+		else if(viewType == TYPE_SKW) {
 			byte[] imst = Skewb.image(DCTimer.crntScr);
 			colors = new int[] {DCTimer.share.getInt("csw4", Color.WHITE), DCTimer.share.getInt("csw6", 0xffff8026), DCTimer.share.getInt("csw5", 0xff009900),
 					DCTimer.share.getInt("csw3", Color.RED), DCTimer.share.getInt("csw2", Color.BLUE), DCTimer.share.getInt("csw1", Color.YELLOW)};
@@ -1183,261 +1185,16 @@ public class Mi {
 		c.drawPath(path, p);
 	}
 
-	static String contime(int hour, int min, int sec, int msec) {
-		StringBuilder time=new StringBuilder();
-		if(hour==0) {
-			if(min==0) time.append(""+sec);
-			else {
-				if(sec<10)time.append(""+min+":0"+sec);
-				else time.append(""+min+":"+sec);
-			}
-		}
-		else {
-			time.append(""+hour);
-			if(min<10)time.append(":0"+min);
-			else time.append(":"+min);
-			if(sec<10)time.append(":0"+sec);
-			else time.append(":"+sec);
-		}
-		if(DCTimer.stSel[2]==1) {
-			if(msec<10)time.append(".00"+msec);
-			else if(msec<100)time.append(".0"+msec);
-			else time.append("."+msec);}
-		else {
-			if(msec<10)time.append(".0"+msec);
-			else time.append("."+msec);
-		}
-		return time.toString();
-	}
-	static String distime(int i) {
-		boolean m = i < 0;
-		if(m) i = -i;
-		//if(i==0)return "DNF";
-		//if(DCTimer.stSel[2]==0)i+=5;
-		int msec = i % 1000;
-		if(DCTimer.stSel[2] == 0) msec /= 10;
-		int sec = i / 1000, min = 0, hour = 0;//DCTimer.clkform?(i/1000)%60:i/1000;
-		if(DCTimer.stSel[13] < 2) {
-			min = sec / 60;
-			sec %= 60;
-			if(DCTimer.stSel[13] < 1) {
-				hour = min / 60;
-				min %= 60;
-			}
-		}
-		return (m ? "-" : "") + contime(hour, min, sec, msec);
-	}
-	private static String distime2(int i) {
-		boolean m = i < 0;
-		i = Math.abs(i) + 5;
-		int ms = (i % 1000) / 100;
-		int s = i / 1000;
-		int mi = 0, h = 0;
-		if(DCTimer.stSel[13] < 2) {
-			mi = s / 60;
-			s %= 60;
-			if(DCTimer.stSel[13] < 1) {
-				h = mi / 60;
-				mi %= 60;
-			}
-		}
-		return (m?"-":"")+(h>0?h+":":"")+(h>0?(mi<10?"0"+mi+":":mi+":"):(mi>0?mi+":":""))+(((h>0 || mi>0) && s<10)?"0":"")+s+"."+ms;
-	}
-	static String distime(int idx, boolean b) {
-		if(idx<0)return "N/A";
-		if(idx>=DCTimer.resl)return "";
-		int i=DCTimer.rest[idx];
-		if(DCTimer.resp[idx]==2) {
-			if(b)return "DNF ("+distime(i)+")";
-			else return "DNF";
-		}
-		else if(DCTimer.resp[idx]==1)
-			return distime(i+2000)+"+";
-		else return distime(i);
-	}
-
-	static String average(int type, int n, int i, int l) {
-		if(i<n-1) {bidx[l]=-1; return "N/A";}
-		int nDnf=0, cavg;
-		int trim = type==1 ? 0 : (int) Math.ceil(n/20.0);
-		double sum = 0;
-		for(int j=i-n+1; j<=i; j++)
-			if(DCTimer.resp[j]==2) {
-				nDnf++;
-				if(nDnf>trim) {
-					cavg=Integer.MAX_VALUE;
-					if(i<n)bavg[l]=Integer.MAX_VALUE;
-					return "DNF";
-				}
-			} else if(type == 1) {
-				int time = DCTimer.rest[j]+DCTimer.resp[j]*2000;
-				if(DCTimer.stSel[2]==1)sum += time;
-				else sum+=time/10;
-			}
-		if(type == 1) {
-			cavg=(int) (sum/n+0.5);
-			if(DCTimer.stSel[2]==0)cavg*=10;
-			if(i==n-1) {bavg[l]=cavg;bidx[l]=i;}
-			if(cavg<=bavg[l]) {bavg[l]=cavg;bidx[l]=i;}
-			return distime(cavg);
-		}
-		if(n<20) {
-			int max = Integer.MIN_VALUE;
-			int min = Integer.MAX_VALUE;
-			for (int j=i-n+1;j<=i;j++)
-				if(DCTimer.resp[j]!=2) {
-					int time = DCTimer.rest[j]+DCTimer.resp[j]*2000;
-					if(time>max) max = time;
-					if(time<min) min = time;
-					if(DCTimer.stSel[2]==1) sum+=time;
-					else sum+=time/10;
-				}
-			if(nDnf!=0) max = 0;
-			if(DCTimer.stSel[2]==1)sum-=min+max;
-			else sum-=min/10+max/10;
-			cavg=(int) (sum/(n-2)+0.5);
-		}
-		else {
-			int[] data=new int[n-nDnf];
-			int len=0;
-			for(int j=i-n+1;j<=i;j++)
-				if(DCTimer.resp[j]!=2) data[len++]=DCTimer.rest[j]+DCTimer.resp[j]*2000;
-			quickSort(data, 0, n-nDnf-1);
-			for(int j=trim;j<n-trim;j++) {
-				if(DCTimer.stSel[2]==1)sum+=data[j];
-				else sum+=data[j]/10;
-			}
-			cavg=(int) (sum/(n-2*trim)+0.5);
-		}
-		if(DCTimer.stSel[2]==0)cavg*=10;
-		if(i==n-1) {bavg[l]=cavg;bidx[l]=i;}
-		if(cavg<=bavg[l]) {bavg[l]=cavg;bidx[l]=i;}
-		return distime(cavg);
-	}
-	private static void quickSort(int[] a, int lo, int hi) {
-		if(lo >= hi) return;
-		int pivot = a[lo], i = lo, j = hi;
-		while(i < j) {
-			while(i<j && a[j]>=pivot) j--;
-			a[i] = a[j];
-			while(i<j && a[i]<=pivot) i++;
-			a[j] = a[i];
-		}
-		a[i] = pivot;
-		quickSort(a, lo, i-1);
-		quickSort(a, i+1, hi);
-	}
-	static String sesMean() {
-		double sum=0,sum2=0;
-		maxIdx=-1; minIdx=-1; sesMean=-1;
-		int n=DCTimer.resl;
-		if(n==0)return "0/0): N/A (N/A)";
-		for(int i=0;i<DCTimer.resl;i++) {
-			if(DCTimer.resp[i]==2)n--;
-			else {
-				int time = DCTimer.rest[i]+DCTimer.resp[i]*2000;
-				if(maxIdx==-1)maxIdx=i;
-				else if(time>DCTimer.rest[maxIdx]+DCTimer.resp[maxIdx]*2000)maxIdx=i;
-				if(minIdx==-1)minIdx=i;
-				else if(time<=DCTimer.rest[minIdx]+DCTimer.resp[minIdx]*2000)minIdx=i;
-				if(DCTimer.stSel[2]==1)sum+=time;
-				else sum+=time/10;
-				if(DCTimer.stSel[2]==1)sum2+=Math.pow(time, 2);
-				else sum2+=Math.pow(time/10, 2);
-			}
-		}
-		if(n==0)return "0/"+DCTimer.resl+"): N/A (N/A)";
-		sesMean=(int)(sum/n+0.5);
-		if(DCTimer.stSel[2]==0)sesMean*=10;
-		sesSD=(int)(Math.sqrt((sum2-sum*sum/n)/n)+(DCTimer.stSel[2]==1?0:0.5));
-		return ""+n+"/"+DCTimer.resl+"): "+distime(sesMean)+" ("+standDev(sesSD)+")";
-	}
-	static String sesAvg() {
-		int n = DCTimer.resl;
-		if(n < 3) return "N/A";
-		int[] data = new int[n];
-		int count = 0;
-		int trim = (int) Math.ceil(n / 20.0);
-		for(int i=0; i<DCTimer.resl; i++) {
-			if(DCTimer.resp[i] == 2) {
-				n--;
-				if(n < DCTimer.resl-trim) return "DNF";
-			}
-			else data[count++] = DCTimer.rest[i] + DCTimer.resp[i] * 2000;
-		}
-		double sum = 0, sum2 = 0;
-		Arrays.sort(data);
-		//heapsort(data, n);
-		for(int j=trim; j<DCTimer.resl-trim; j++) {
-			if(DCTimer.stSel[2] == 1) sum += data[j];
-			else sum += data[j] / 10;
-			if(DCTimer.stSel[2] == 1) sum2 += Math.pow(data[j], 2);
-			else sum2 += Math.pow(data[j] / 10, 2);
-		}
-		int num = DCTimer.resl - 2 * trim;
-		int savg = (int) (sum / num + 0.5);
-		if(DCTimer.stSel[2] == 0) savg *= 10;
-		int ssd = (int)(Math.sqrt((sum2-sum*sum/num)/num)+(DCTimer.stSel[2]==1?0:0.5));
-		return distime(savg) + " (σ = " + standDev(ssd) + ")";
-	}
-//	static void adjust(int[] num, int s, int t) {
-//		int i = s;
-//		int x = num[s];
-//		for (int j = 2 * i; j <= t; j = 2 * j) {
-//			if (j < t && num[j] < num[j + 1])
-//				j = j + 1;// 找出较大者把较大者给num[i]
-//			if (x > num[j])
-//				break;
-//			num[i] = num[j];
-//			i = j;
-//		}
-//		num[i] = x;
-//	}
-//	static void heapsort(int[] num, int n) {
-//		// 初始建堆从n/2开始向根调整
-//		int i;
-//		for (i = n / 2; i >= 1; i--) {
-//			adjust(num, i, n);//初始堆过程
-//		}
-//		for (i = n; i > 1; i--) {
-//			num[0] = num[i];// 将堆顶元素与第n,n-1,.....2个元素相交换
-//			num[i] = num[1];
-//			num[1] = num[0];// 从num[1]到num[i-1]调整成新堆
-//			adjust(num, 1, i - 1);
-//		}
-//	}
 	
-	static String mulMean(int p) {
-		double sum=0;
-		int n=0;
-		if(n==DCTimer.resl)return "-";
-		for(int i=0;i<DCTimer.resl;i++) {
-			if(DCTimer.mulp[p][i]!=0) {
-				if(DCTimer.stSel[2]==1)sum+=(double)DCTimer.mulp[p][i];
-				else sum+=DCTimer.mulp[p][i]/10;
-				n++;
-			}
-		}
-		if(n==0)return "-";
-		int m=(int)(sum/n+0.5);
-		if(DCTimer.stSel[2]==0)m*=10;
-		return distime(m);
-	}
-	static String standDev(int i) {
-		if(i<0)return "N/A";
-		if(DCTimer.stSel[2]==1)i=(i+5)/10;
-		StringBuffer s=new StringBuffer(i/100+".");
-		if(i%100<10)s.append("0");
-		s.append(""+i%100);
-		return s.toString();
-	}
-
+	
 	private static float s18(int i) {
 		return (float) Math.sin(Math.PI*i/10);
 	}
+	
 	private static float c18(int i) {
 		return (float) Math.cos(Math.PI*i/10);
 	}
+	
 	private static float[][] rotate(float a, float b, float[] x, float[] y, int i) {
 		float[][] ary=new float[2][x.length];
 		for(int j=0;j<x.length;j++) {
@@ -1446,12 +1203,15 @@ public class Mi {
 		}
 		return ary;
 	}
+	
 	private static float cos1(int index, float[] ag, float rd) {
 		return (float) (Math.cos(ag[index])*rd);
 	}
+	
 	private static float sin1(int index, float[] ag, float rd) {
 		return (float) (Math.sin(ag[index])*rd);
 	}
+	
 	private static byte[] rd(byte[] arr) {
 		byte[] out = new byte[arr.length];
 		int j=0;
@@ -1506,16 +1266,17 @@ public class Mi {
 			if(ds[i-1] < dv && dv < ds[i]) return ds[i];
 		return (dv/1000+1)*1000;
 	}
+	
 	static void drawHist(int width, Paint p, Canvas c) {
 		int[] bins = new int[14];
 		int start;
 		int end;
-		if(DCTimer.resl==0 || minIdx==-1 || maxIdx==-1) {
+		if(Session.resl==0 || Statistics.minIdx==-1 || Statistics.maxIdx==-1) {
 			start = 13000;
 			end = 27000;
 		} else {
-			int max = DCTimer.rest[maxIdx]+DCTimer.resp[maxIdx]*2000;
-			int min = DCTimer.rest[minIdx]+DCTimer.resp[minIdx]*2000;
+			int max = Session.rest[Statistics.maxIdx]+Session.resp[Statistics.maxIdx]*2000;
+			int min = Session.rest[Statistics.minIdx]+Session.resp[Statistics.minIdx]*2000;
 			int divi = getDivision((max - min) / 14);
 			int mean = (min & max) + ((min ^ max) >> 1);
 			mean = ((mean + divi / 2) / divi) * divi;
@@ -1524,9 +1285,9 @@ public class Mi {
 		}
 		for (int i = 0; i < bins.length; i++)
 			bins[i] = 0;
-		for (int i = 0; i < DCTimer.resl; i++) {
-			if(DCTimer.resp[i]!=2) {
-				int time=DCTimer.rest[i]+DCTimer.resp[i]*2000;
+		for (int i = 0; i < Session.resl; i++) {
+			if(Session.resp[i]!=2) {
+				int time=Session.rest[i]+Session.resp[i]*2000;
 				if(time >= start && time < end) {
 					int bin = (int) (bins.length * (time - start) / (end - start));
 					bins[bin]++;
@@ -1548,7 +1309,7 @@ public class Mi {
 		for (int i = 0; i < bins.length+1; i++) {
 			int value = (int)(start + i * binInterval);
 			float y = (float) ((i + 0.5) * wBar + fontHeight / 2 - fm.bottom);
-			c.drawText(distime2(value), wBase-5, y, p);
+			c.drawText(distime(value), wBase-5, y, p);
 		}
 		int maxValue = 0;
 		for (int i = 0; i < bins.length; i++) {
@@ -1573,15 +1334,15 @@ public class Mi {
 	static void drawGraph(int width, Paint p, Canvas c) {
 		int up, down, mean;
 		int blk, divi;
-		if(DCTimer.resl==0 || minIdx==-1 || minIdx==maxIdx) {
+		if(Session.resl==0 || Statistics.minIdx==-1 || Statistics.minIdx==Statistics.maxIdx) {
 			up = 20000;
 			down = 12000;
 			mean = 16000;
 			blk = 8;
 			divi = 1000;
 		} else {
-			int max = DCTimer.rest[maxIdx]+DCTimer.resp[maxIdx]*2000;
-			int min = DCTimer.rest[minIdx]+DCTimer.resp[minIdx]*2000;
+			int max = Session.rest[Statistics.maxIdx]+Session.resp[Statistics.maxIdx]*2000;
+			int min = Session.rest[Statistics.minIdx]+Session.resp[Statistics.minIdx]*2000;
 			divi = getDivision((max-min)/8);
 			mean = (min & max) + ((min ^ max) >> 1);
 			mean = ((mean + divi / 2) / divi) * divi;
@@ -1592,7 +1353,7 @@ public class Mi {
 			while (down > min) {
 				down -= divi;
 			}
-			mean = sesMean;
+			mean = Statistics.sesMean;
 			blk = (up - down) / divi;
 		}
 		int wBase = 45 * width / 288;
@@ -1614,17 +1375,17 @@ public class Mi {
 		for (int i = 0; i < blk+1; i++) {
 			int value = (int)(up - i * divi);
 			y = (float) (i * wBar + wBase/9. + fontHeight / 2 - fm.bottom);
-			c.drawText(distime2(value), wBase-4, y, p);
+			c.drawText(distime(value), wBase-4, y, p);
 		}
 		int count = 0;
-		for(int i=0; i<DCTimer.resl; i++) 
-			if(DCTimer.resp[i] != 2) count++;
+		for(int i=0; i<Session.resl; i++) 
+			if(Session.resp[i] != 2) count++;
 		float rsp = (float) ((double)(width - 8 - wBase) / (count-1));
 		count = 0;
 		float lastx = -1, lasty = -1;
-		for(int i=0; i<DCTimer.resl; i++) {
-			if(DCTimer.resp[i] != 2) {
-				int time = DCTimer.rest[i] + DCTimer.resp[i] * 2000;
+		for(int i=0; i<Session.resl; i++) {
+			if(Session.resp[i] != 2) {
+				int time = Session.rest[i] + Session.resp[i] * 2000;
 				float x = (float) (wBase + 4.0 + (count++) * rsp);
 				y = (float) ((double)(up - time) / divi * wBar + wBase/9.);
 				//c.drawRect(x-2, y-2, x+2, y-2, p);
@@ -1633,6 +1394,23 @@ public class Mi {
 				lastx = x; lasty = y;
 			}
 		}
+	}
+	
+	private static String distime(int i) {
+		boolean m = i < 0;
+		i = Math.abs(i) + 5;
+		int ms = (i % 1000) / 100;
+		int s = i / 1000;
+		int mi = 0, h = 0;
+		if(DCTimer.stSel[13] < 2) {
+			mi = s / 60;
+			s %= 60;
+			if(DCTimer.stSel[13] < 1) {
+				h = mi / 60;
+				mi %= 60;
+			}
+		}
+		return (m?"-":"")+(h>0?h+":":"")+(h>0?(mi<10?"0"+mi+":":mi+":"):(mi>0?mi+":":""))+(((h>0 || mi>0) && s<10)?"0":"")+s+"."+ms;
 	}
 	
 	static int getSessionType(long sesType, int idx) {

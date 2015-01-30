@@ -5,6 +5,7 @@ import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.dctimer.db.*;
 import com.dctimer.ui.*;
 import com.dctimer.ui.CustomDialog.Builder;
 import com.sina.weibo.sdk.auth.*;
@@ -56,56 +57,56 @@ public class DCTimer extends Activity implements SensorEventListener {
 	private Timer timer;
 	private Stackmat stm;
 	private ColorPicker cpDialog;
-	private DBHelper dbh;
+	private Session session;
+	private SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
 	private TimesAdapter adapter;
 	private WeiboAuth mWeiboAuth;
 	private Oauth2AccessToken mAccessToken;
 	private SsoHandler mSsoHandler;
-	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	protected static SharedPreferences share;
 	public static SharedPreferences.Editor edit;
-	private Cursor cursor;
 	private Bitmap bitmap;
 	private PowerManager.WakeLock wakeLock = null;
 	public static DisplayMetrics dm;
-	private ProgressDialog proDlg = null;
-	private ProgressDialog dlProg = null;
-	private ProgressDialog impDlg = null;
+	private CustomDialog.Builder outBuilder = null;
+	private CustomDialog.Builder dlBuilder = null;
 	private Vibrator vibrator;
 	private SensorManager sensor;
 
-	private boolean opnl, opnd, hidscr, conft, isMulp, canScr = true, simss, touchDown = false, isLogin, isShare,
-			scrt = false, bgcolor, fulls, invs, usess, screenOn, selSes, isLongPress, isChScr, drop;
-	static boolean isNextScr = false, nextScrUsed = false;
+	private boolean opnl, opnd, hidscr, conft, isMulp, simss, touchDown = false, isLogin, isShare,
+			scrt = false, bgcolor, fulls, invs, usess, screenOn, selSes, isLongPress, drop;
+	//static boolean isNextScr = false, nextScrUsed = false;
+	static boolean nextScrWaiting = false;
 	protected boolean canStart;
 	protected static boolean isInScr = false;
 	public boolean wca;
 	public static boolean hidls;
 	static boolean idnf = true;
-	public static byte[] resp;	// 惩罚
 	private static char[] srate = {48000, 44100, 22050, 16000, 11025, 8000};
 	private float lowZ = 9.8f;
 	static float fontScale;
-	private int dbLastId, ttsize, stsize, intv, insType, mulpCount, egoll, sensity, listLen, opac;
-	private int verc = 21, dbCount, scrIdx, scr2idx, sesIdx;
+	private int ttsize, stsize, intv, insType, mulpCount, egoll, sensity, listLen, opac;
+	private int verc = 22, scrIdx, scr2idx, sesIdx;
 	private int[] staid = {R.array.tiwStr, R.array.tupdStr, R.array.preStr, R.array.mulpStr,
 			R.array.samprate, R.array.crsStr, R.array.c2lStr, R.array.mncStr,  
 			R.array.fontStr, R.array.soriStr, R.array.vibraStr, R.array.vibTimeStr,
 			R.array.sq1sStr, R.array.timeForm, R.array.avgStr, R.array.avgStr};
 	private int[] screenOri = new int[] {2, 0, 8, 1, 4};
-	private static int selold, scrType, inScrLen, bytesum;
+	private static int selold, scrType, inScrLen, bytesum, filesum, scrnum, scrsum;
 	static int l1len, l2len;
-	public static int dip300;
+	static int scrState = 0;
+	final static int SCRNONE = 0;
+	final static int SCRING = 1;
+	final static int NEXTSCRING = 2;
+	final static int SCRDONE = 3;
+	public static int dip300, dip450;
 	protected int frzTime;
-	protected static int[][] mulp = null;
 	public int[] cl = new int[5];
 	private int[] vibTime = new int[] {30, 50, 80, 150, 240};
-	public static int resl;
-	public static int[] rest, stSel = new int[16], solSel = new int[2];
+	public static int[] stSel = new int[16], solSel = new int[2];
 	static int isp2 = 0, egtype;
 	public static long time;
 	private long exitTime = 0;
-	private static long[] multemp = null;
 	public static short[] sesType = new short[15];
 
 	private String picPath, selFilePath, newver, newupd;
@@ -128,7 +129,6 @@ public class DCTimer extends Activity implements SensorEventListener {
 	private List<String> items = null, paths = null;
 	private ListView listView;
 	private TextView tvFile;
-	private Scrambler scrThread;
 
 	public Handler handler = new Handler() {
 		public void handleMessage(Message msg) {
@@ -153,11 +153,12 @@ public class DCTimer extends Activity implements SensorEventListener {
 						download("DCTimer"+newver+".apk");
 					}
 				}).setNegativeButton(R.string.btn_cancel, null).create().show();
-			case 12: dlProg.setProgress(bytesum / 1024);	break;
+				break;
+			case 12: dlBuilder.setProgress(bytesum, filesum, true);	break;
 			case 13: Toast.makeText(context, getString(R.string.file_error), Toast.LENGTH_LONG).show();
-			case 14: seMean.setText(getString(R.string.session_average) + Mi.sesMean());
+			case 14: seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
 				setGridView();	break;
-			case 15: impDlg.setMessage(""+dbCount); break;
+			//case 15: impDlg.setMessage(""+dbCount); break;
 			case 16: Toast.makeText(context, getString(R.string.import_failed), Toast.LENGTH_SHORT).show(); break;
 			case 17: Toast.makeText(context, getString(R.string.import_success), Toast.LENGTH_SHORT).show(); break;
 			case 18: 
@@ -177,7 +178,8 @@ public class DCTimer extends Activity implements SensorEventListener {
 			case 28: tvScr.setText(getString(R.string.initing) + " (" + (33 + threephase.Util.prog / 28923) + "%) ..."); break;
 			case 29: tvScr.setText(getString(R.string.initing) + " (" + threephase.Util.prog / 1198 + "%) ..."); break;
 			case 30: tvScr.setText(getString(R.string.initing) + " (2%) ..."); break;
-			default: proDlg.setProgress(msw%100);	break;//Message(msw%100 + "/" + msw/100);
+			case 31: outBuilder.setProgress(scrnum, scrsum, false);	break;
+			//default: proDlg.setProgress(msw%100);	break;//Message(msw%100 + "/" + msw/100);
 			}
 		}
 	};
@@ -217,9 +219,15 @@ public class DCTimer extends Activity implements SensorEventListener {
 		dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		if(!bgcolor) {
-			bitmap = BitmapFactory.decodeFile(picPath);
-			bitmap = getBgPic(bitmap);
-			setBgPic(bitmap, opac);
+			try {
+				FileInputStream fis = new FileInputStream(picPath);
+				bitmap = BitmapFactory.decodeStream(fis);
+				bitmap = getBgPic(bitmap);
+				setBgPic(bitmap, opac);
+				fis.close();
+			} catch (Exception e) {
+				Toast.makeText(context, getString(R.string.not_exist), Toast.LENGTH_SHORT).show();
+			}
 		}
 		new Thread() {
 			public void run() {
@@ -280,9 +288,11 @@ public class DCTimer extends Activity implements SensorEventListener {
 		if(bgcolor) tabHost.setBackgroundColor(cl[0]);
 		else {
 			try {
-				bitmap = BitmapFactory.decodeFile(picPath);
+				FileInputStream fis = new FileInputStream(picPath);
+				bitmap = BitmapFactory.decodeStream(fis);
 				bitmap = getBgPic(bitmap);
 				setBgPic(bitmap, opac);
+				fis.close();
 			} catch (Exception e) {
 				tabHost.setBackgroundColor(cl[0]);
 				Toast.makeText(context, getString(R.string.not_exist), Toast.LENGTH_SHORT).show();
@@ -342,7 +352,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 		}
 
 		timer = new Timer(this);
-		dbh = new DBHelper(this);
+		session = new Session(this);
 
 		gvTimes = (GridView) findViewById(R.id.myGridView);
 		gvTitle = (GridView) findViewById(R.id.gv_title);
@@ -412,9 +422,8 @@ public class DCTimer extends Activity implements SensorEventListener {
 		for(int i=0; i<13; i++) stSwitch[i].setOnClickListener(new OnClickListener());
 
 		getSession(sesIdx);
-		seMean.setText(getString(R.string.session_average) + Mi.sesMean());
+		seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
 		setGvTitle();
-		if(isMulp) multemp = new long[7];
 		setGridView();
 
 		if(usess && !stm.isStart) stm.start();
@@ -437,17 +446,6 @@ public class DCTimer extends Activity implements SensorEventListener {
 		vibrator = (Vibrator) getApplication().getSystemService(Service.VIBRATOR_SERVICE);
 		
 		sensor = (SensorManager) this.getSystemService(SENSOR_SERVICE);
-		proDlg = new ProgressDialog(this);
-		proDlg.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		proDlg.setTitle(getString(R.string.menu_outscr));
-		proDlg.setCancelable(false);
-		dlProg = new ProgressDialog(this);
-		dlProg.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		dlProg.setTitle(getString(R.string.downloading));
-		dlProg.setCancelable(false);
-		impDlg = new ProgressDialog(this);
-		impDlg.setTitle(getString(R.string.importing));
-		impDlg.setCancelable(false);
 		
 		mWeiboAuth = new WeiboAuth(this, APP_KEY, REDIRECT_URL, SCOPE);
 		mAccessToken = AccessTokenKeeper.readAccessToken(this);
@@ -458,6 +456,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 			//wbAuth.setText(R.string.logout);
 		}
 		dip300 = (int) (getResources().getDisplayMetrics().density * 300 + 0.5);
+		dip450 = (int) (getResources().getDisplayMetrics().density * 450 + 0.5);
 		
 		//打乱类型
 		btScr.setOnClickListener(new OnClickListener() {
@@ -507,7 +506,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 						if(sesIdx != which) {
 							sesIdx = (byte) which;
 							getSession(which);
-							seMean.setText(getString(R.string.session_average) + Mi.sesMean());
+							seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
 							setGridView();
 							edit.putInt("group", sesIdx);
 							edit.commit();
@@ -537,9 +536,9 @@ public class DCTimer extends Activity implements SensorEventListener {
 											handler.sendEmptyMessage(6);
 											extsol = "\n"+Cross.cross(crntScr, solSel[0], solSel[1]);
 											handler.sendEmptyMessage(3);
-											isNextScr = false;
+											scrState = NEXTSCRING;
 											nextScr = Mi.setScr((scrIdx<<5)|scr2idx, false);
-											isNextScr = true;
+											scrState = SCRDONE;
 										}
 									}.start();
 							}
@@ -572,9 +571,9 @@ public class DCTimer extends Activity implements SensorEventListener {
 											case 5: extsol="\n"+PetrusxRoux.petrus(crntScr, solSel[1]); break;
 											}
 											handler.sendEmptyMessage(3);
-											isNextScr=false;
+											scrState = NEXTSCRING;
 											nextScr = Mi.setScr((scrIdx<<5)|scr2idx, false);
-											isNextScr = true;
+											scrState = SCRDONE;
 										}
 									}.start();
 							}
@@ -636,7 +635,8 @@ public class DCTimer extends Activity implements SensorEventListener {
 								if(len>180) len=180;
 								if(len != Mi.scrLen) {
 									Mi.scrLen = len;
-									if((scrIdx==-1 && scr2idx==17) || (scrIdx==1 && scr2idx==19) || (scrIdx==20 && scr2idx==4)) isChScr = true;
+									if((scrIdx==-1 && scr2idx==17) || (scrIdx==1 && scr2idx==19) || (scrIdx==20 && scr2idx==4))
+										scrState = SCRNONE;
 									newScr(false);
 								}
 							}
@@ -670,7 +670,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 		gvTimes.setOnItemClickListener(new GridView.OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View v, int p, long arg3) {
 				if(isMulp) {
-					if(p/(stSel[3]+2)<resl && p%(stSel[3]+2)==0) singTime(p, stSel[3]+2);
+					if(p/(stSel[3]+2)<Session.resl && p%(stSel[3]+2)==0) singTime(p, stSel[3]+2);
 				}
 				else if(p%3 == 0)
 					singTime(p, 3);
@@ -684,8 +684,8 @@ public class DCTimer extends Activity implements SensorEventListener {
 		//分组平均
 		seMean.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				for(int i=0; i<resl; i++)
-					if(resp[i] != 2) {
+				for(int i=0; i<Session.resl; i++)
+					if(Session.resp[i] != 2) {
 						showAlertDialog(3, 0);
 						return;
 					}
@@ -727,7 +727,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 							showKeyboard(et);
 							break;
 						case 1:	//清空成绩
-							if(resl == 0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
+							if(Session.resl == 0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
 							else {
 								builder = new Builder(context);
 								builder.setTitle(R.string.confirm_clear_session)
@@ -771,79 +771,79 @@ public class DCTimer extends Activity implements SensorEventListener {
 							builder.setContentView(pView)
 							.setNegativeButton(R.string.btn_close, null).create().show();
 							break;
-						case 4:	//导出数据库
-							try {
-								File f = new File(defPath);
-								if(!f.exists()) f.mkdirs();
-								BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(defPath+"Database.dat"), "UTF-8"));
-								for(int i=0; i<15; i++) {
-									Cursor cur = dbh.query(i);
-									int count = cur.getCount();
-									if(count == 0) continue;
-									writer.write(i+1+"\r\n");
-									cur.moveToFirst();
-									for(int j=0; j<count; j++) {
-										writer.write(cur.getInt(1)+"\t"+cur.getInt(2)+"\t"+cur.getInt(3)+"\t");
-										writer.write(cur.getString(4).replace("\n", "\\n")+"\t"+cur.getString(5)+"\t");
-										if(cur.getString(6) != null) writer.write(cur.getString(6).replace("\t", "\\t")+"\t");
-										else writer.write(cur.getString(6)+"\t");
-										writer.write(cur.getInt(7)+"\t"+cur.getInt(8)+"\t"+cur.getInt(9)+"\t"
-												+cur.getInt(10)+"\t"+cur.getInt(11)+"\t"+cur.getInt(12)+"\r\n");
-										cur.moveToNext();
-									}
-									cur.close();
-								}
-								writer.close();
-								Toast.makeText(context, getString(R.string.saved)+"sdcard/DCTimer/Database.dat", Toast.LENGTH_LONG).show();
-							} catch (Exception e) {
-								e.printStackTrace();
-								Toast.makeText(context, getString(R.string.save_failed), Toast.LENGTH_LONG).show();
-							}
-							break;
-						case 5:	//导入数据库
-							impDlg.show();
-							dbCount = 0;
-							new Thread() {
-								public void run() {
-									try {
-										int table = 1;
-										BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(defPath+"Database.dat"), "UTF-8"));
-										String line = "";
-										ContentValues cv = new ContentValues();
-										int count = 1;
-										while (((line = reader.readLine()) != null)) {
-											if(!line.contains("\t")) {
-												table = Integer.parseInt(line);
-												count = 1;
-											} else {
-												String[] ts = line.split("\t");
-												cv.put("id", count++);
-												cv.put("rest", Integer.parseInt(ts[0]));
-												cv.put("resp", Integer.parseInt(ts[1]));
-												cv.put("resd", Integer.parseInt(ts[2]));
-												cv.put("scr", ts[3].replace("\\n", "\n"));
-												if(ts[4].equals("null")) cv.put("time", "");
-												else cv.put("time", ts[4]);
-												if(ts[5].equals("null")) cv.put("note", "");
-												else cv.put("note", ts[5].replace("\\t", "\t"));
-												for(int i=0; i<6; i++)
-													cv.put("p"+(i+1), Integer.parseInt(ts[i+6]));
-												dbh.insert(table-1, cv);
-												dbCount++;
-												handler.sendEmptyMessage(15);
-											}
-										}
-										reader.close();
-										handler.sendEmptyMessage(17);
-									} catch (Exception e) {
-										e.printStackTrace();
-										handler.sendEmptyMessage(16);
-									}
-									getSession(sesIdx);
-									handler.sendEmptyMessage(14);
-									impDlg.dismiss();
-								}
-							}.start();
+//						case 4:	//导出数据库
+//							try {
+//								File f = new File(defPath);
+//								if(!f.exists()) f.mkdirs();
+//								BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(defPath+"Database.dat"), "UTF-8"));
+//								for(int i=0; i<15; i++) {
+//									Cursor cur = dbh.query(i);
+//									int count = cur.getCount();
+//									if(count == 0) continue;
+//									writer.write(i+1+"\r\n");
+//									cur.moveToFirst();
+//									for(int j=0; j<count; j++) {
+//										writer.write(cur.getInt(1)+"\t"+cur.getInt(2)+"\t"+cur.getInt(3)+"\t");
+//										writer.write(cur.getString(4).replace("\n", "\\n")+"\t"+cur.getString(5)+"\t");
+//										if(cur.getString(6) != null) writer.write(cur.getString(6).replace("\t", "\\t")+"\t");
+//										else writer.write(cur.getString(6)+"\t");
+//										writer.write(cur.getInt(7)+"\t"+cur.getInt(8)+"\t"+cur.getInt(9)+"\t"
+//												+cur.getInt(10)+"\t"+cur.getInt(11)+"\t"+cur.getInt(12)+"\r\n");
+//										cur.moveToNext();
+//									}
+//									cur.close();
+//								}
+//								writer.close();
+//								Toast.makeText(context, getString(R.string.saved)+"sdcard/DCTimer/Database.dat", Toast.LENGTH_LONG).show();
+//							} catch (Exception e) {
+//								e.printStackTrace();
+//								Toast.makeText(context, getString(R.string.save_failed), Toast.LENGTH_LONG).show();
+//							}
+//							break;
+//						case 5:	//导入数据库
+//							impDlg.show();
+//							dbCount = 0;
+//							new Thread() {
+//								public void run() {
+//									try {
+//										int table = 1;
+//										BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(defPath+"Database.dat"), "UTF-8"));
+//										String line = "";
+//										ContentValues cv = new ContentValues();
+//										int count = 1;
+//										while (((line = reader.readLine()) != null)) {
+//											if(!line.contains("\t")) {
+//												table = Integer.parseInt(line);
+//												count = 1;
+//											} else {
+//												String[] ts = line.split("\t");
+//												cv.put("id", count++);
+//												cv.put("rest", Integer.parseInt(ts[0]));
+//												cv.put("resp", Integer.parseInt(ts[1]));
+//												cv.put("resd", Integer.parseInt(ts[2]));
+//												cv.put("scr", ts[3].replace("\\n", "\n"));
+//												if(ts[4].equals("null")) cv.put("time", "");
+//												else cv.put("time", ts[4]);
+//												if(ts[5].equals("null")) cv.put("note", "");
+//												else cv.put("note", ts[5].replace("\\t", "\t"));
+//												for(int i=0; i<6; i++)
+//													cv.put("p"+(i+1), Integer.parseInt(ts[i+6]));
+//												dbh.insert(table-1, cv);
+//												dbCount++;
+//												handler.sendEmptyMessage(15);
+//											}
+//										}
+//										reader.close();
+//										handler.sendEmptyMessage(17);
+//									} catch (Exception e) {
+//										e.printStackTrace();
+//										handler.sendEmptyMessage(16);
+//									}
+//									getSession(sesIdx);
+//									handler.sendEmptyMessage(14);
+//									impDlg.dismiss();
+//								}
+//							}.start();
 						}
 					}
 				})
@@ -1157,7 +1157,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 			case R.id.seekb3:	//成绩列表行距
 				intv=seekBar.getProgress()+20;
 				stt[10].setText(getString(R.string.row_spacing)+ intv);
-				if(resl!=0) {
+				if(Session.resl!=0) {
 					new Thread() {
 						public void run() {
 							adapter.setHeight(intv);
@@ -1350,38 +1350,29 @@ public class DCTimer extends Activity implements SensorEventListener {
 							case 2:	//计时精确度
 								if(which == 0) {edit.putBoolean("prec", false); if(stSel[0]==0) tvTimer.setText("0.00");}
 								else {edit.putBoolean("prec", true); if(stSel[0]==0) tvTimer.setText("0.000");}
-								if(resl != 0) {
+								if(Session.resl != 0) {
 									new Thread() {
 										public void run() {
 											adapter.refresh(listLen);
 											handler.sendEmptyMessage(18);
 										}
 									}.start();
-									seMean.setText(getString(R.string.session_average) + Mi.sesMean());
+									seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
 								}
 								break;
 							case 3:	//分段计时
 								if(which == 0) {
-									isMulp=false; mulp = null; multemp = null;
-									System.gc();
-									listLen = (resl!=0) ? resl*3 : 0;
+									isMulp = false; Session.mulp = null;
+									listLen = (Session.resl!=0) ? Session.resl*3 : 0;
 								} else if(!isMulp) {
 									isMulp=true;
-									multemp = new long[7];
-									mulp = new int[6][rest.length];
-									if(resl>0) {
-										cursor = dbh.query(sesIdx);
-										for(int i=0; i<resl; i++) {
-											cursor.moveToPosition(i);
-											for(int j=0; j<6; j++)
-												mulp[j][i] = cursor.getInt(7+j);
-										}
-										//cursor.close();
-									}
-									listLen = resl!=0 ? (which+2)*(resl+1) : 0;
+									Session.mulp = new int[6][Session.rest.length];
+									if(Session.resl > 0)
+										session.getMultData();
+									listLen = Session.resl!=0 ? (which+2)*(Session.resl+1) : 0;
 								}
 								else {
-									listLen = resl!=0 ? (which+2)*(resl+1) : 0;
+									listLen = Session.resl!=0 ? (which+2)*(Session.resl+1) : 0;
 								}
 								edit.putInt("multp", which);
 								setGridView();
@@ -1407,9 +1398,9 @@ public class DCTimer extends Activity implements SensorEventListener {
 											case 5: extsol="\n"+PetrusxRoux.petrus(crntScr, solSel[1]); break;
 											}
 											handler.sendEmptyMessage(3);
-											isNextScr = false;
+											scrState = NEXTSCRING;
 											nextScr = Mi.setScr((scrIdx<<5)|scr2idx, false);
-											isNextScr = true;
+											scrState = SCRDONE;
 										}
 									}.start();
 								}
@@ -1423,9 +1414,9 @@ public class DCTimer extends Activity implements SensorEventListener {
 											handler.sendEmptyMessage(6);
 											extsol = "\n"+Cube2bl.cube2layer(crntScr, stSel[6]);
 											handler.sendEmptyMessage(3);
-											isNextScr=false;
+											scrState = NEXTSCRING;
 											nextScr = Mi.setScr((scrIdx<<5)|scr2idx, false);
-											isNextScr = true;
+											scrState = SCRDONE;
 										}
 									}.start();
 								}
@@ -1456,9 +1447,9 @@ public class DCTimer extends Activity implements SensorEventListener {
 												handler.sendEmptyMessage(6);
 												extsol = " " + (stSel[12]==1 ? Sq1Shape.solveTrn(crntScr) : Sq1Shape.solveTws(crntScr));
 												handler.sendEmptyMessage(1);
-												isNextScr = false;
+												scrState = NEXTSCRING;
 												nextScr = Mi.setScr((scrIdx<<5)|scr2idx, false);
-												isNextScr = true;
+												scrState = SCRDONE;
 											}
 										}.start();
 									}
@@ -1467,7 +1458,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 								break;
 							case 13:	//时间格式
 								edit.putInt("timeform", which);
-								if(resl>0) {
+								if(Session.resl > 0) {
 									new Thread() {
 										public void run() {
 											adapter.refresh(listLen);
@@ -1479,7 +1470,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 							case 14:	//滚动平均1类型
 								edit.putInt("l1tp", which);
 								if(!isMulp) setGvTitle();
-								if(resl>0 && !isMulp) {
+								if(Session.resl>0 && !isMulp) {
 									setGvTitle();
 									new Thread() {
 										public void run() {
@@ -1492,7 +1483,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 							case 15:	//滚动平均2类型
 								edit.putInt("l2tp", which);
 								if(!isMulp) setGvTitle();
-								if(resl>0 && !isMulp) {
+								if(Session.resl>0 && !isMulp) {
 									setGvTitle();
 									new Thread() {
 										public void run() {
@@ -1699,7 +1690,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 								edit.putInt("l1len", len);
 								edit.commit();
 								stdn[0].setText("" + len);
-								if(resl>0 && !isMulp) {
+								if(Session.resl>0 && !isMulp) {
 									setGvTitle();
 									new Thread() {
 										public void run() {
@@ -1736,7 +1727,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 								edit.putInt("l2len", len);
 								edit.commit();
 								stdn[1].setText("" + len);
-								if(resl>0 && !isMulp) {
+								if(Session.resl>0 && !isMulp) {
 									setGvTitle();
 									new Thread() {
 										public void run() {
@@ -1825,19 +1816,23 @@ public class DCTimer extends Activity implements SensorEventListener {
 		}
 	}
 
-	private void outScr(final String path, final String fileName, final int num) {
+	private void outScr(final String path, final String fileName, int num) {
+		scrsum = num;
 		File fPath = new File(path);
-		if(fPath.exists() || fPath.mkdir() || fPath.mkdirs()) {
-			proDlg.setMax(num);
-			proDlg.show();
-			//proDlg = ProgressDialog.show(context, getString(R.string.menu_outscr), "");
+		if(fPath.exists() || fPath.mkdirs()) {
+			if (outBuilder == null) {
+				outBuilder = new CustomDialog.Builder(context, true).setTitle(R.string.menu_outscr)
+						.setNegativeButton(R.string.btn_back, null);
+			}
+			final CustomDialog outDlg = outBuilder.create();
+			showDialog(outDlg);
 			new Thread() {
 				public void run() {
 					try {
 						OutputStream out = new BufferedOutputStream(new FileOutputStream(path+fileName));
-						for(int i=0; i<num; i++) {
-							String scr=(i+1)+". "+Mi.setScr((scrIdx<<5)|scr2idx, false)+"\r\n";
-							handler.sendEmptyMessage(num*100+i);
+						for(scrnum=0; scrnum<scrsum; scrnum++) {
+							handler.sendEmptyMessage(31);
+							String scr=(scrnum+1)+". "+Mi.setScr((scrIdx<<5)|scr2idx, false)+"\r\n";
 							byte [] bytes = scr.toString().getBytes();
 							out.write(bytes);
 						}
@@ -1846,7 +1841,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 					} catch (IOException e) {
 						handler.sendEmptyMessage(4);
 					}
-					proDlg.dismiss();
+					outDlg.dismiss();
 				}
 			}.start();
 		}
@@ -2041,8 +2036,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 			.setNegativeButton(R.string.btn_close, null).create().show();
 			break;
 		case 5:
-			cursor.close();
-			dbh.close();
+			session.closeDB();
 			edit.putInt("sel", scrIdx);
 			edit.putInt("sel2", scr2idx);
 			edit.commit();
@@ -2061,7 +2055,7 @@ public class DCTimer extends Activity implements SensorEventListener {
             	sb.append(line+"\t");
             }
             br.close();
-            System.out.println(sb.toString());
+            //System.out.println(sb.toString());
             return sb.toString();
         } catch (Exception e) {
             return "error open url:" + strUrl;
@@ -2072,7 +2066,12 @@ public class DCTimer extends Activity implements SensorEventListener {
 		bytesum = 0;
 		final File f = new File(defPath);
     	if(!f.exists()) f.mkdirs();
-    	dlProg.show();
+    	if(dlBuilder == null) {
+    		dlBuilder = new CustomDialog.Builder(context, true).setTitle(R.string.downloading)
+    				.setNegativeButton(R.string.btn_back, null);
+    	}
+    	final CustomDialog dlProg = dlBuilder.create();
+    	showDialog(dlProg);
         new Thread() {
         	public void run() {
         		try {
@@ -2080,15 +2079,14 @@ public class DCTimer extends Activity implements SensorEventListener {
                 	URLConnection conn = url.openConnection();
                 	conn.connect();
                 	InputStream is = conn.getInputStream();
-                	int filesum = conn.getContentLength();
+                	filesum = conn.getContentLength();
                 	if(filesum == 0) {
-                		handler.sendEmptyMessage(13);
                 		dlProg.dismiss();
+                		handler.sendEmptyMessage(13);
                 		return;
                 	}
-                	dlProg.setMax(filesum / 1024);
                 	FileOutputStream fs = new FileOutputStream(defPath+fileName);
-                	byte[] buffer = new byte[2096];
+                	byte[] buffer = new byte[4096];
                 	int byteread;
                 	while ((byteread = is.read(buffer)) != -1) {
                 		bytesum += byteread;
@@ -2167,12 +2165,12 @@ public class DCTimer extends Activity implements SensorEventListener {
 	}
 
 	private String getShareContext() {
-		String s1 = getString(R.string.share_c1).replace("$len", ""+resl).replace("$scrtype", getScrName())
-				.replace("$best", Mi.distime(Mi.minIdx, false)).replace("$mean", Mi.distime(Mi.sesMean));
-		String s2 = (resl>l1len)?getString(R.string.share_c2).replace("$flen", ""+l1len).
-				replace("$favg", Mi.distime(Mi.bavg[0])):"";
-		String s3 = (resl>l2len)?getString(R.string.share_c2).replace("$flen", ""+l2len).
-				replace("$favg", Mi.distime(Mi.bavg[1])):"";
+		String s1 = getString(R.string.share_c1).replace("$len", ""+Session.resl).replace("$scrtype", getScrName())
+				.replace("$best", Statistics.distime(Statistics.minIdx, false)).replace("$mean", Statistics.distime(Statistics.sesMean));
+		String s2 = (Session.resl>l1len) ? getString(R.string.share_c2).replace("$flen", ""+l1len).
+				replace("$favg", Statistics.distime(Statistics.bavg[0])):"";
+		String s3 = (Session.resl>l2len) ? getString(R.string.share_c2).replace("$flen", ""+l2len).
+				replace("$favg", Statistics.distime(Statistics.bavg[1])):"";
 		String s4 = getString(R.string.share_c3);
 		return s1 + s2 + s3 + s4;
 	}
@@ -2201,7 +2199,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 			sesIdx = (byte) idx;
 			sesName.setText(getString(R.string.session) + sesItems[idx]);
 			getSession(idx);
-			seMean.setText(getString(R.string.session_average) + Mi.sesMean());
+			seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
 			setGridView();
 			sesIdx = (byte) idx;
 			edit.putInt("group", idx);
@@ -2327,13 +2325,13 @@ public class DCTimer extends Activity implements SensorEventListener {
 				if(stSel[10]==1 || stSel[10]==3)
 					vibrator.vibrate(vibTime[stSel[11]]);
 				tvTimer.setTextColor(Color.GREEN);
-				multemp[stSel[3]+1-mulpCount] = System.currentTimeMillis();
+				Session.multemp[stSel[3]+1-mulpCount] = System.currentTimeMillis();
 			}
 			else {
 				if(stSel[10]>1)
 					vibrator.vibrate(vibTime[stSel[11]]);
 				timer.count();
-				if(isMulp) multemp[stSel[3]+1]=timer.time1;
+				if(isMulp) Session.multemp[stSel[3]+1]=timer.time1;
 				viewsVisibility(true);
 			}
 		} else if(timer.state != 3) {
@@ -2361,7 +2359,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 					timer.count();
 					if(isMulp) {
 						mulpCount = stSel[3];
-						multemp[0] = timer.time0;
+						Session.multemp[0] = timer.time0;
 					}
 					else mulpCount = 0;
 					acquireWakeLock();
@@ -2386,7 +2384,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 				if(stSel[10]==1 || stSel[10]==3)
 					vibrator.vibrate(vibTime[stSel[11]]);
 				timer.count();
-				if(isMulp) multemp[0] = timer.time0;
+				if(isMulp) Session.multemp[0] = timer.time0;
 				acquireWakeLock(); screenOn=true;
 				viewsVisibility(false);
 			} else {
@@ -2421,7 +2419,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 						Toast.makeText(context, getString(R.string.illegal), Toast.LENGTH_SHORT).show();
 					else save(Mi.convTime(time), (byte) 0);
 					//setGridView(false);
-					//seMean.setText(getString(R.string.session_average) + Mi.sesMean());
+					//seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
 					//newScr(false);
 					hideKeyboard(editText);
 				}
@@ -2448,50 +2446,9 @@ public class DCTimer extends Activity implements SensorEventListener {
 	}
 	
 	private void save(int time, int p) {
-		if(resl >= rest.length) {
-			String[] scr2 = new String[scrst.length*2];
-			byte[] rep2 = new byte[resp.length*2];
-			int res2[] = new int[rest.length*2];
-			for(int i=0; i<resl; i++) {
-				scr2[i]=scrst[i]; rep2[i]=resp[i]; res2[i]=rest[i];
-			}
-			scrst=scr2; resp=rep2; rest=res2;
-			if(isMulp) {
-				int[][] mulp2 = new int[6][rest.length];
-				for(int i=0;i<resl;i++)
-					for(int j=0; j<6; j++)
-						mulp2[j][i] = mulp[j][i];
-				mulp = mulp2;
-			}
-			System.gc();
-		}
-		scrst[resl]=crntScr; resp[resl]=(byte) p; rest[resl++]=time;
-		if(isMulp) {
-			boolean temp = true;
-			for(int i=0; i<stSel[3]+1; i++) {
-				if(temp)
-					mulp[i][resl-1] = (int)(multemp[i+1]-multemp[i]);
-				else mulp[i][resl-1] = 0;
-				if(mulp[i][resl-1]<0 || mulp[i][resl-1]>rest[resl-1]) {
-					mulp[i][resl-1]=0; temp=false;
-				}
-			}
-		}
-		int d = 1;
-		if(p==2) p=d=0;
-		ContentValues cv = new ContentValues();
-		cv.put("id", ++dbLastId);
-		cv.put("rest", time);
-		cv.put("resp", p);
-		cv.put("resd", d);
-		cv.put("scr", crntScr);
-		cv.put("time", formatter.format(new Date()));
-		if(isMulp)
-			for(int i=0; i<6; i++)
-				cv.put("p"+(i+1), mulp[i][resl-1]);
-		dbh.insert(sesIdx, cv);
-		listLen = isMulp ? (stSel[3]+2)*(resl+1) : resl*3;
-		seMean.setText(getString(R.string.session_average) + Mi.sesMean());
+		session.insert(time, p, crntScr, isMulp);
+		listLen = isMulp ? (stSel[3]+2)*(Session.resl+1) : Session.resl*3;
+		seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
 		updateGrid();
 		if(selSes && sesType[sesIdx] != scrType) {
 			sesType[sesIdx] = (short) scrType;
@@ -2500,59 +2457,34 @@ public class DCTimer extends Activity implements SensorEventListener {
 		}
 		newScr(false);
 	}
+	
 	private void update(int idx, byte p) {
-		if(resp[idx] != p) {
-			resp[idx] = p;
-			byte d = 1;
-			if(p==2) p=d=0;
-			cursor = dbh.query(sesIdx);
-			cursor.moveToPosition(idx);
-			int id=cursor.getInt(0);
-			//cursor.close();
-			dbh.update(sesIdx, id, p, d);
-			seMean.setText(getString(R.string.session_average)+Mi.sesMean());
+		if(Session.resp[idx] != p) {
+			session.update(idx, p);
+			seMean.setText(getString(R.string.session_average)+Statistics.sesMean());
 			updateGrid();
 		}
 	}
+	
 	private void delete(int idx, int col) {
-		int delId;
-		if(idx != resl-1) {
-			for(int i=idx; i<resl-1; i++) {
-				rest[i]=rest[i+1]; resp[i]=resp[i+1]; scrst[i]=scrst[i+1];
-				if(isMulp)
-					for(int j=0; j<stSel[3]+1; j++)
-						mulp[j][i] = mulp[j][i+1];
-			}
-			cursor.moveToPosition(idx);
-			delId = cursor.getInt(0);
+		session.delete(idx, isMulp);
+		if(Session.resl > 0) {
+			listLen = isMulp ? (Session.resl+1)*col : Session.resl*col;
 		} else {
-			delId = dbLastId;
-			if(resl > 1) {
-				cursor.moveToPosition(resl-2);
-				dbLastId = cursor.getInt(0);
-			} else dbLastId = 0;
-		}
-		dbh.del(sesIdx, delId);
-		//cursor.close();
-		resl--;
-		if(resl > 0) {
-			listLen = isMulp ? (resl+1)*col : resl*col;
-		}
-		else {
 			listLen = 0;
 			sesType[sesIdx] = -1;
 			edit.remove("sestp"+sesIdx);
 			edit.commit();
 		}
-		seMean.setText(getString(R.string.session_average) + Mi.sesMean());
+		seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
 		updateGrid();
 	}
+	
 	private void deleteAll() {
-		dbh.clear(sesIdx);
-		resl = dbLastId = 0;
+		session.clear();
 		listLen = 0;
 		seMean.setText(getString(R.string.session_average) + "0/0): N/A (N/A)");
-		Mi.maxIdx = Mi.minIdx = -1;
+		Statistics.maxIdx = Statistics.minIdx = -1;
 		updateGrid();
 		if(sesType[sesIdx] != -1) {
 			sesType[sesIdx] = -1;
@@ -2600,33 +2532,32 @@ public class DCTimer extends Activity implements SensorEventListener {
 		else if(keyCode == KeyEvent.KEYCODE_K) chScr(9, 0);
 		else if(keyCode == KeyEvent.KEYCODE_N) newScr(false);
 		else if(keyCode == KeyEvent.KEYCODE_Z) {
-			if(resl==0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
+			if(Session.resl==0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
 			else new CustomDialog.Builder(context).setTitle(R.string.confirm_del_last)
 			.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-					cursor = dbh.query(sesIdx);
-					delete(resl-1, isMulp ? stSel[3]+2 : 3);
+					delete(Session.resl-1, isMulp ? stSel[3]+2 : 3);
 				}
 			}).setNegativeButton(R.string.btn_cancel, null).create().show();
 		}
 		else if(keyCode == KeyEvent.KEYCODE_A) {
-			if(resl==0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
+			if(Session.resl==0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
 			else new CustomDialog.Builder(context).setTitle(R.string.confirm_clear_session)
 			.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {deleteAll();}
 			}).setNegativeButton(R.string.btn_cancel, null).create().show();
 		}
 		else if(keyCode == KeyEvent.KEYCODE_D) {
-			if(resl==0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
+			if(Session.resl==0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
 			else {
 				CustomDialog cdialog = 
-						new CustomDialog.Builder(context).setTitle(getString(R.string.show_time)+Mi.distime(resl-1, true))
+						new CustomDialog.Builder(context).setTitle(getString(R.string.show_time) + Statistics.distime(Session.resl-1, true))
 						.setItems(R.array.rstcon, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								switch (which) {
-								case 0: update(resl-1, (byte) 0); break;
-								case 1: update(resl-1, (byte) 1); break;
-								case 2: update(resl-1, (byte) 2); break;
+								case 0: update(Session.resl-1, (byte) 0); break;
+								case 1: update(Session.resl-1, (byte) 1); break;
+								case 2: update(Session.resl-1, (byte) 2); break;
 								}
 							}
 						}).setNegativeButton(getString(R.string.btn_cancel), null).create();
@@ -2668,8 +2599,8 @@ public class DCTimer extends Activity implements SensorEventListener {
 			slist=stSel[15]==0 ? ao(l2len, j):mo(l2len, j);
 			break;
 		case 3:
-			t=getString(R.string.sta_session_mean);
-			slist=sesMean();
+			t = getString(R.string.sta_session_mean);
+			slist = sesMean();
 			break;
 		}
 		new CustomDialog.Builder(context).setTitle(t).setMessage(slist)
@@ -2687,7 +2618,6 @@ public class DCTimer extends Activity implements SensorEventListener {
 				final Button btn = (Button) view.findViewById(R.id.btn_browse);
 				et1.setText(outPath);
 				final EditText et2 = (EditText) view.findViewById(R.id.edit_scrfile);
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
 				et2.requestFocus();
 				et2.setText(getString(R.string.def_sname).replace("$datetime", formatter.format(new Date())));
 				et2.setSelection(et2.getText().length());
@@ -2754,7 +2684,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 				if(crntScr.matches("([FRU][2']?\\s*)+"))
 					Mi.viewType = 2;
 				else if(crntScr.matches("([ULRBulrb]'?\\s*)+"))
-					Mi.viewType = Mi.TYPE_PYRAM;
+					Mi.viewType = Mi.TYPE_PYR;
 				else if(crntScr.matches("([xFRUBLDMfrubld][2']?\\s*)+"))
 					Mi.viewType = 3;
 				else if(crntScr.matches("(([FRUBLDfru]|[FRU]w)[2']?\\s*)+"))
@@ -2789,7 +2719,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 				break;
 			case 5:
 				if(crntScr.matches("([ULRBulrb]'?\\s*)+"))
-					Mi.viewType = Mi.TYPE_PYRAM;
+					Mi.viewType = Mi.TYPE_PYR;
 				else Mi.viewType = 0;
 			}
 			if(Mi.viewType==3 && stSel[5]!=0) {
@@ -2815,26 +2745,59 @@ public class DCTimer extends Activity implements SensorEventListener {
 				(scrIdx==17 && (scr2idx<3 || scr2idx==6)) ||
 				scrIdx==20) {	//TODO
 			if(isInScr) isInScr = false;
-			if(ch) canScr = true;
-			if(canScr) {
-				if(ch) {
-//					if(scrThread != null && scrThread.isAlive()) 
-//						scrThread.interrupt();
-					scrThread = new Scrambler(ch);
-					scrThread.start();
-				} else if(!isNextScr) {
-					nextScrUsed = true;
+			if(ch) scrState = SCRNONE;
+			if(scrState == SCRNONE || scrState == SCRDONE) {
+				new Thread() {
+					public void run() {
+						if(scrState == SCRDONE) {
+							crntScr = nextScr;
+						} else {
+							scrState = SCRING;
+							if(scrIdx==-1 && (scr2idx==1 || scr2idx == 15)) {
+								threephase.Util.init(handler);
+							}
+							handler.sendEmptyMessage(2);
+							crntScr = Mi.setScr((scrIdx<<5)|scr2idx, ch);
+							extsol = Mi.sc;
+						}
+						showScramble();
+						scrState = NEXTSCRING;
+						getNextScr(ch);
+					}
+				}.start();
+			} else if(scrState == NEXTSCRING) {
+				if(!nextScrWaiting) {
+					nextScrWaiting = true;
 					tvScr.setText(getString(R.string.scrambling));
-				} else {
-					scrThread = new Scrambler(ch);
-					scrThread.start();
 				}
 			}
 		} else {
-//			if(ch && scrThread != null && scrThread.isAlive()) 
-//				scrThread.interrupt();
 			crntScr = Mi.setScr(scrIdx<<5|scr2idx, ch);
 			tvScr.setText(crntScr);
+		}
+	}
+	
+	public void showScramble() {
+		if((scrIdx==0 && stSel[6]!=0) ||
+				(stSel[5]!=0 && scrIdx==1 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19)))
+			handler.sendEmptyMessage(3);
+		else if(scrIdx==8 && scr2idx<3 && stSel[12]>0)
+			handler.sendEmptyMessage(1);
+		else handler.sendEmptyMessage(0);
+	}
+	
+	public void getNextScr(boolean ch) {
+		System.out.println("get next scramble...");
+		scrState = NEXTSCRING;
+		nextScr = Mi.setScr((scrIdx<<5)|scr2idx, ch);
+		System.out.println("next scr: " + nextScr);
+		scrState = SCRDONE;
+		if(nextScrWaiting) {
+			crntScr = nextScr;
+			extsol = Mi.sc;
+			showScramble();
+			nextScrWaiting = false;
+			getNextScr(ch);
 		}
 	}
 
@@ -2842,7 +2805,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 		if(idnf) {
 			if(conft) {
 				CustomDialog cdialog = 
-				new CustomDialog.Builder(context).setTitle(getString(R.string.show_time)+Mi.distime(time + isp2))
+				new CustomDialog.Builder(context).setTitle(getString(R.string.show_time)+Statistics.distime(time + isp2))
 						.setItems(R.array.rstcon, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						switch (which) {
@@ -2878,31 +2841,26 @@ public class DCTimer extends Activity implements SensorEventListener {
 	}
 
 	public String sesMean() {
-		StringBuffer sb=new StringBuffer();
-		int n=resl;
-		for(int i=0;i<resl;i++)
-			if(resp[i]==2) n--;
-		sb.append(getString(R.string.stat_title)+new java.sql.Date(new Date().getTime())+"\r\n");
-		sb.append(getString(R.string.stat_solve)+n+"/"+resl+"\r\n");
-		sb.append(getString(R.string.ses_mean)+Mi.distime(Mi.sesMean)+" ");
-		sb.append("(σ = "+Mi.standDev(Mi.sesSD)+")\r\n");
-		sb.append(getString(R.string.ses_avg)+Mi.sesAvg()+"\r\n");
-		if(resl >= l1len && Mi.bidx[0] != -1) 
-			sb.append((stSel[14]==0 ? getString(R.string.stat_best_avg) : getString(R.string.stat_best_mean)).replace("len", ""+l1len)+Mi.distime(Mi.bavg[0])+"\r\n");
-		if(resl >= l2len && Mi.bidx[1] != -1) 
-			sb.append((stSel[15]==0 ? getString(R.string.stat_best_avg) : getString(R.string.stat_best_mean)).replace("len", ""+l2len)+Mi.distime(Mi.bavg[1])+"\r\n");
-		sb.append(getString(R.string.stat_best)+Mi.distime(Mi.minIdx, false)+"\r\n");
-		sb.append(getString(R.string.stat_worst)+Mi.distime(Mi.maxIdx, false)+"\r\n");
+		StringBuffer sb = new StringBuffer();
+		sb.append(getString(R.string.stat_title) + new java.sql.Date(new Date().getTime()) + "\r\n");
+		sb.append(getString(R.string.stat_solve) + Statistics.solved + "/" + Session.resl + "\r\n");
+		sb.append(getString(R.string.ses_mean) + Statistics.distime(Statistics.sesMean) + " ");
+		sb.append("(σ = " + Statistics.standDev(Statistics.sesSD) + ")\r\n");
+		sb.append(getString(R.string.ses_avg) + Statistics.sesAvg() + "\r\n");
+		if(Session.resl >= l1len && Statistics.bidx[0] != -1) 
+			sb.append((stSel[14]==0 ? getString(R.string.stat_best_avg) : getString(R.string.stat_best_mean)).replace("len", ""+l1len)+Statistics.distime(Statistics.bavg[0])+"\r\n");
+		if(Session.resl >= l2len && Statistics.bidx[1] != -1) 
+			sb.append((stSel[15]==0 ? getString(R.string.stat_best_avg) : getString(R.string.stat_best_mean)).replace("len", ""+l2len)+Statistics.distime(Statistics.bavg[1])+"\r\n");
+		sb.append(getString(R.string.stat_best)+Statistics.distime(Statistics.minIdx, false)+"\r\n");
+		sb.append(getString(R.string.stat_worst)+Statistics.distime(Statistics.maxIdx, false)+"\r\n");
 		sb.append(getString(R.string.stat_list));
 		if(hidls)sb.append("\r\n");
-		cursor = dbh.query(sesIdx);
-		for(int i=0;i<resl;i++) {
+		for(int i=0; i<Session.resl; i++) {
 			if(!hidls)sb.append("\r\n"+(i+1)+". ");
-			sb.append(Mi.distime(i, true));
-			cursor.moveToPosition(i);
-			String s = cursor.getString(6);
-			if(s!=null && !s.equals(""))sb.append("["+s+"]");
-			if(hidls && i<resl-1)sb.append(", ");
+			sb.append(Statistics.distime(i, true));
+			String s = session.getString(i, 6);
+			if(s!=null && !s.equals("")) sb.append("["+s+"]");
+			if(hidls && i<Session.resl-1) sb.append(", ");
 			if(!hidls)sb.append("  "+scrst[i]);
 		}
 		return sb.toString();
@@ -2915,15 +2873,15 @@ public class DCTimer extends Activity implements SensorEventListener {
 		ArrayList<Integer> dnfIdx=new ArrayList<Integer>();
 		ArrayList<Integer> midx = new ArrayList<Integer>();
 		for(int j=i-n+1;j<=i;j++)
-			if(resp[j]==2)
+			if(Session.resp[j]==2)
 				dnfIdx.add(j);
 		int dnf = dnfIdx.size();
 		int[] data=new int[n-dnf];
 		int[] idx=new int[n-dnf];
 		int len=0;
 		for(int j=i-n+1;j<=i;j++)
-			if(resp[j]!=2) {
-				data[len]=rest[j]+resp[j]*2000;
+			if(Session.resp[j]!=2) {
+				data[len]=Session.rest[j]+Session.resp[j]*2000;
 				idx[len++]=j;
 			}
 		quickSort(data, idx, 0, n-dnf-1);
@@ -2954,19 +2912,17 @@ public class DCTimer extends Activity implements SensorEventListener {
 		max = midx.get(midx.size()-1);
 		StringBuffer sb=new StringBuffer();
 		sb.append(getString(R.string.stat_title)+new java.sql.Date(new Date().getTime())+"\r\n");
-		sb.append(getString(R.string.stat_avg)+(m?"DNF":Mi.distime(cavg))+" ");
-		sb.append("(σ = "+Mi.standDev(csdv)+")\r\n");
-		sb.append(getString(R.string.stat_best)+Mi.distime(min,false)+"\r\n");
-		sb.append(getString(R.string.stat_worst)+Mi.distime(max,false)+"\r\n");
+		sb.append(getString(R.string.stat_avg)+(m?"DNF":Statistics.distime(cavg))+" ");
+		sb.append("(σ = "+Statistics.standDev(csdv)+")\r\n");
+		sb.append(getString(R.string.stat_best)+Statistics.distime(min,false)+"\r\n");
+		sb.append(getString(R.string.stat_worst)+Statistics.distime(max,false)+"\r\n");
 		sb.append(getString(R.string.stat_list));
 		if(hidls)sb.append("\r\n");
-		cursor = dbh.query(sesIdx);
 		for(int j=i-n+1;j<=i;j++) {
-			cursor.moveToPosition(j);
-			String s = cursor.getString(6);
+			String s = session.getString(j, 6);
 			if(!hidls)sb.append("\r\n"+(ind++)+". ");
 			if(midx.indexOf(j)>-1)sb.append("(");
-			sb.append(Mi.distime(j, false));
+			sb.append(Statistics.distime(j, false));
 			if(s!=null && !s.equals(""))sb.append("["+s+"]");
 			if(midx.indexOf(j)>-1)sb.append(")");
 			if(hidls && j<i)sb.append(", ");
@@ -3001,36 +2957,34 @@ public class DCTimer extends Activity implements SensorEventListener {
 		max=min=i-n+1;
 		boolean m=false;
 		for(int j=i-n+1; j<=i; j++) {
-			if(resp[j]!=2 && !m) {min=j; m=true;}
-			if(resp[j]==2) {max=j; dnf++;}
+			if(Session.resp[j]!=2 && !m) {min=j; m=true;}
+			if(Session.resp[j]==2) {max=j; dnf++;}
 		}
 		m = dnf > 0;
 		if(!m) {
 			for (int j=i-n+1;j<=i;j++) {
-				if(rest[j]+resp[j]*2000>rest[max]+resp[max]*2000)max=j;
-				if(rest[j]+resp[j]*2000<=rest[min]+resp[min]*2000)min=j;
-				if(stSel[2]==1)sum+=(double)(rest[j]+resp[j]*2000);
-				else sum+=(rest[j]+resp[j]*2000+5)/10;
-				if(stSel[2]==1)sum2+=Math.pow(rest[j]+resp[j]*2000, 2);
-				else sum2+=Math.pow((rest[j]+resp[j]*2000+5)/10, 2);
+				if(Session.rest[j]+Session.resp[j]*2000>Session.rest[max]+Session.resp[max]*2000)max=j;
+				if(Session.rest[j]+Session.resp[j]*2000<=Session.rest[min]+Session.resp[min]*2000)min=j;
+				if(stSel[2]==1)sum+=(double)(Session.rest[j]+Session.resp[j]*2000);
+				else sum+=(Session.rest[j]+Session.resp[j]*2000+5)/10;
+				if(stSel[2]==1)sum2+=Math.pow(Session.rest[j]+Session.resp[j]*2000, 2);
+				else sum2+=Math.pow((Session.rest[j]+Session.resp[j]*2000+5)/10, 2);
 			}
 			cavg=(int) (sum/n+0.5);
 			csdv=(int) (Math.sqrt(sum2/n-sum*sum/n/n)+(stSel[2]==1?0:0.5));
 		}
 		if(stSel[2]==0)cavg*=10;
 		sb.append(getString(R.string.stat_title)+new java.sql.Date(new Date().getTime())+"\r\n");
-		sb.append(getString(R.string.stat_mean)+(m?"DNF":Mi.distime(cavg))+" ");
-		sb.append("(σ = "+Mi.standDev(csdv)+")\r\n");
-		sb.append(getString(R.string.stat_best)+Mi.distime(min,false)+"\r\n");
-		sb.append(getString(R.string.stat_worst)+Mi.distime(max,false)+"\r\n");
+		sb.append(getString(R.string.stat_mean)+(m?"DNF":Statistics.distime(cavg))+" ");
+		sb.append("(σ = "+Statistics.standDev(csdv)+")\r\n");
+		sb.append(getString(R.string.stat_best)+Statistics.distime(min,false)+"\r\n");
+		sb.append(getString(R.string.stat_worst)+Statistics.distime(max,false)+"\r\n");
 		sb.append(getString(R.string.stat_list));
 		if(hidls)sb.append("\r\n");
-		cursor = dbh.query(sesIdx);
 		for(int j=i-n+1;j<=i;j++) {
-			cursor.moveToPosition(j);
 			if(!hidls)sb.append("\r\n"+(ind++)+". ");
-			sb.append(Mi.distime(j, false));
-			String s = cursor.getString(6);
+			sb.append(Statistics.distime(j, false));
+			String s = session.getString(j, 6);
 			if(s!=null && !s.equals(""))sb.append("["+s+"]");
 			if(hidls && j<i)sb.append(", ");
 			if(!hidls)sb.append("  "+scrst[j]);
@@ -3084,40 +3038,18 @@ public class DCTimer extends Activity implements SensorEventListener {
 	}
 
 	private void getSession(int i) {
-		cursor = dbh.query(i);
-		resl = cursor.getCount();
-		rest = new int[resl+12];
-		resp = new byte[resl+12];
-		scrst = new String[resl+12];
-		if(isMulp) mulp = new int[6][resl+12];
-		if(resl != 0) {
-			cursor.moveToFirst();
-			for(int k=0; k<resl; k++) {
-				rest[k] = cursor.getInt(1);
-				resp[k] = (byte) cursor.getInt(2);
-				if(cursor.getInt(3) == 0) resp[k]=2;
-				scrst[k] = cursor.getString(4);
-				if(isMulp)
-					for(int j=0; j<6; j++)
-						mulp[j][k] = cursor.getInt(7+j);
-				cursor.moveToNext();
-			}
-			cursor.moveToLast();
-			dbLastId = cursor.getInt(0);
-			listLen = isMulp ? (stSel[3]+2)*(resl+1) : resl*3;
+		session.getSession(i, isMulp);
+		if(Session.resl != 0) {
+			listLen = isMulp ? (stSel[3]+2)*(Session.resl+1) : Session.resl*3;
 		} else {
 			listLen = 0;
-			dbLastId = 0;
 		}
-		//cursor.close();
 	}
 
 	private void singTime(final int p, final int col) {
-		cursor = dbh.query(sesIdx);
-		cursor.moveToPosition(p/col);
-		final int id = cursor.getInt(0);
-		String time=cursor.getString(5);
-		String n=cursor.getString(6);
+		session.move(p/col);
+		String time = session.getString(5);
+		String n = session.getString(6);
 		if(n==null) n="";
 		final String comment = n;
 		if(time!=null) time="\n("+time+")";
@@ -3127,12 +3059,12 @@ public class DCTimer extends Activity implements SensorEventListener {
 		final EditText editText=(EditText) view.findViewById(R.id.etnote);
 		final TextView tvTime=(TextView) view.findViewById(R.id.st_time);
 		final TextView tvScr=(TextView) view.findViewById(R.id.st_scr);
-		tvTime.setText(getString(R.string.show_time)+Mi.distime(p/col,true)+time);
+		tvTime.setText(getString(R.string.show_time)+Statistics.distime(p/col,true)+time);
 		tvScr.setText(scrst[p/col]);
-		if(resp[p/col]==2) {
+		if(Session.resp[p/col]==2) {
 			RadioButton rb = (RadioButton) view.findViewById(R.id.st_pe3);
 			rb.setChecked(true);
-		} else if(resp[p/col]==1) {
+		} else if(Session.resp[p/col]==1) {
 			RadioButton rb = (RadioButton) view.findViewById(R.id.st_pe2);
 			rb.setChecked(true);
 		} else {
@@ -3156,7 +3088,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 				}
 				String text = editText.getText().toString();
 				if(!text.equals(comment)) {
-					dbh.update(sesIdx, id, text);
+					session.update(text);
 					new Thread() {
 						public void run() {
 							try {
@@ -3236,13 +3168,13 @@ public class DCTimer extends Activity implements SensorEventListener {
 		Window dw = dialog.getWindow();
 		WindowManager.LayoutParams p = dw.getAttributes();
 		p.width = dip300;
+		//p.height = dip450;
 		dw.setAttributes(p);
 		dialog.show();
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		System.out.println("request " + requestCode);
-		if (requestCode == 1) {
+		if (requestCode == 1) {	//设置背景图片
 			if (resultCode == RESULT_OK) {
 				try {
 					Uri uri = data.getData();
@@ -3287,71 +3219,6 @@ public class DCTimer extends Activity implements SensorEventListener {
 			confirmTime((int) timer.time);
 			timer.state = 0;
 			if(!opnl) {releaseWakeLock(); screenOn = false;}
-		}
-	}
-	
-	class Scrambler extends Thread {	//TODO
-		boolean ch;
-		public Scrambler(boolean c) {
-			ch = c;
-		}
-		public void showScramble() {
-			if((scrIdx==0 && stSel[6]!=0) ||
-					(stSel[5]!=0 && scrIdx==1 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19)))
-				handler.sendEmptyMessage(3);
-			else if(scrIdx==8 && scr2idx<3 && stSel[12]>0)
-				handler.sendEmptyMessage(1);
-			else handler.sendEmptyMessage(0);
-		}
-		public void run() {
-			canScr = false;
-			if(scrIdx==-1 && (scr2idx==1 || scr2idx == 15)) {
-				threephase.Util.init(handler);
-//				handler.sendEmptyMessage(20);
-//				time = System.currentTimeMillis();
-//				Center1.init(handler);
-//				handler.sendEmptyMessage(21);
-//				Center2.init(handler);
-//				handler.sendEmptyMessage(22);
-//				Center3.init(handler);
-//				handler.sendEmptyMessage(23);
-//				Edge3.init(handler);
-//				time = System.currentTimeMillis() - time;
-//				System.out.println("init4: "+time);
-//				ini4 = true;
-			}
-			handler.sendEmptyMessage(2);
-			if(!ch) {
-				if(nextScr==null || isChScr) {
-					crntScr = Mi.setScr((scrIdx<<5)|scr2idx, ch);
-					isChScr = false;
-					nextScr = "";
-				} else {
-					crntScr = nextScr;
-				}
-			}
-			else {
-				crntScr = Mi.setScr((scrIdx<<5)|scr2idx, ch);
-			}
-			extsol = Mi.sc;
-			showScramble();
-			canScr=true;
-			getNextScr();
-		}
-		public void getNextScr() {
-			System.out.println("get next scramble...");
-			isNextScr = false;
-			nextScr = Mi.setScr((scrIdx<<5)|scr2idx, ch);
-			isNextScr = true;
-			System.out.println("next scr: " + nextScr);
-			System.out.println("isNextScr "+isNextScr+" nextScrUsed "+nextScrUsed);
-			if(nextScrUsed) {
-				crntScr = nextScr;
-				extsol = Mi.sc;
-				showScramble();
-				nextScrUsed = false;
-				getNextScr();
-			}
 		}
 	}
 

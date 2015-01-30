@@ -326,8 +326,6 @@
         <item>清空成绩</item>
         <item>时间分布</item>
         <item>折线图</item>
-        <item>导出数据库</item>
-        <item>导入数据库</item>
     </array>
     
     <array name="sq1sStr">

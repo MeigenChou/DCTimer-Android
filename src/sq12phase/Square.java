@@ -99,9 +99,7 @@ class Square {
 					}
 				}
 			}
-			//System.out.print(depth);
-			//System.out.print('\t');
-			//System.out.println(done);
+			//System.out.println(depth+'\t'+done);
 		}
 		ini = true;
 	}

@@ -105,7 +105,6 @@ public class Util {
 				arr[start++] = (buf[i*4]<<24)&0xff000000 | (buf[i*4+1]<<16)&0xff0000 | (buf[i*4+2]<<8)&0xff00 | (buf[i*4+3])&0xff;
 			}
 		}
-		System.out.println("read "+start);
 	}
 	
 	static void write(int[] arr, int s, OutputStream out, Handler handler) throws Exception {

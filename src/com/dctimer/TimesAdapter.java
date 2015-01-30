@@ -2,6 +2,8 @@ package com.dctimer;
 
 import java.util.ArrayList;
 
+import com.dctimer.db.*;
+
 import android.content.Context;
 import android.view.*;
 import android.widget.*;
@@ -31,22 +33,22 @@ public class TimesAdapter extends BaseAdapter {
 		times = new ArrayList<String>(len);
 		if(isMulp) {
 			for (int i = 0; i < len / col - 1; i++) {
-				times.add(Mi.distime(i, false));
+				times.add(Statistics.distime(i, false));
 				for (int j = 1; j < col; j++) {
-					int temp = DCTimer.mulp[j - 1][i];
-					times.add(temp == 0 ? "-" : Mi.distime(temp));
+					int temp = Session.mulp[j - 1][i];
+					times.add(temp == 0 ? "-" : Statistics.distime(temp));
 				}
 			}
 			times.add(context.getResources().getString(R.string.mulp_mean));
 			for (int j = 1; j < col; j++) {
-				times.add(Mi.mulMean(j - 1));
+				times.add(Statistics.mulMean(j - 1));
 			}
 		} else {
 			for (int i = 0; i < len/col; i++) {
-				times.add(Mi.distime(i, false));
-				times.add(Mi.average(
+				times.add(Statistics.distime(i, false));
+				times.add(Statistics.average(
 						DCTimer.stSel[14], DCTimer.l1len, i, 0));
-				times.add(Mi.average(
+				times.add(Statistics.average(
 						DCTimer.stSel[15], DCTimer.l2len, i, 1));
 			}
 		}
@@ -109,18 +111,18 @@ public class TimesAdapter extends BaseAdapter {
 		tv.setLayoutParams(new GridView.LayoutParams(-1, h));
 		tv.setTextSize(16);
 		tv.setGravity(Gravity.CENTER);
-		if (po / col == Mi.minIdx && po % col == 0)
+		if (po / col == Statistics.minIdx && po % col == 0)
 			tv.setTextColor(cl[1]);
-		else if (po / col == Mi.maxIdx && po % col == 0)
+		else if (po / col == Statistics.maxIdx && po % col == 0)
 			tv.setTextColor(cl[2]);
 		else if (!isMulp) {
-			if (po / col == Mi.bidx[0] && po % col == 1)
+			if (po / col == Statistics.bidx[0] && po % col == 1)
 				tv.setTextColor(cl[3]);
-			else if (po / col == Mi.bidx[1] && po % col == 2)
+			else if (po / col == Statistics.bidx[1] && po % col == 2)
 				tv.setTextColor(cl[3]);
 			else
 				tv.setTextColor(cl[0]);
-		} else if (po / col >= DCTimer.resl)
+		} else if (po / col >= Session.resl)
 			tv.setTextColor((cl[0] & 0xffffff) | (153 << 24));
 		else
 			tv.setTextColor(cl[0]);

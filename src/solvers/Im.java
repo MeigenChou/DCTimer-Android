@@ -36,6 +36,31 @@ public class Im {
 		return idx;
 	}
 	
+	public static void set7Perm(int[] ps, int idx) {
+		int val = 0x6543210;
+		for (int i=0; i<6; i++) {
+			int p = fact[6-i];
+			int v = idx / p;
+			idx -= v*p;
+			v <<= 2;
+			ps[i] = (val >> v) & 7;
+			int m = (1 << v) - 1;
+			val = (val & m) + ((val >> 4) & ~m);
+		}
+		ps[6] = val;
+	}
+	
+	public static int get7Perm(int[] ps) {
+		int idx = 0;
+		int val = 0x6543210;
+		for (int i=0; i<6; i++) {
+			int v = ps[i] << 2;
+			idx = (7 - i) * idx + ((val >> v) & 07);
+			val -= 0x1111110 << v;
+		}
+		return idx;
+	}
+	
 	public static void cir(int[] arr, int a, int b, int c, int d) {
     	int temp=arr[a]; arr[a]=arr[b]; arr[b]=arr[c]; arr[c]=arr[d]; arr[d]=temp;
     }

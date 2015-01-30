@@ -12,7 +12,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:minHeight="55dip"
+        android:minHeight="44dip"
         android:textColor="#000"
         android:textSize="18sp" />
 
@@ -21,24 +21,41 @@
         android:layout_width="fill_parent"
         android:layout_height="0dip"
         android:layout_weight="1" >
-
+        
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scrollbars="vertical" >
 
-            <TextView
-                android:id="@+id/message"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:maxWidth="300dip"
-                android:paddingLeft="10dip"
-                android:paddingRight="10dip"
-                android:paddingBottom="5dip"
-                android:textColor="#000"
-                android:textSize="15sp"
-                android:autoLink="email" />
+                android:orientation="vertical" >
+
+                <ProgressBar
+                    android:id="@+id/progBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="300dip"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:paddingLeft="10dip"
+                    android:paddingRight="10dip"
+                    android:progress="0"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoLink="email"
+                    android:gravity="center_vertical"
+                    android:maxWidth="300dip"
+                    android:paddingBottom="5dip"
+                    android:paddingLeft="10dip"
+                    android:paddingRight="10dip"
+                    android:textColor="#000"
+                    android:textSize="15sp" />
+            </LinearLayout>
         </ScrollView>
         
         <ListView

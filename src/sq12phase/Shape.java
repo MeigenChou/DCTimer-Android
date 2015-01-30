@@ -103,7 +103,6 @@ class Shape {
 				ShapeIdx[count++] = value;
 			}
 		}
-		//System.out.println(count);
 		Shape s = new Shape();
 		for (int i=0; i<3678*2; i++) {
 			s.setIdx(i);
@@ -178,7 +177,7 @@ class Shape {
         while (done != done0) {
             done0 = done;
             ++depth;
-            System.out.println(depth+" "+done);
+            //System.out.println(depth+" "+done);
             for (int i=0; i<3678*2; i++) {
                 if (ShapePrunOpt[i] == depth) {
                     // try top
