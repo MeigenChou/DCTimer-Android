@@ -1,233 +1,412 @@
 package com.dctimer;
 
+import static com.dctimer.Configs.*;
+
 import java.io.*;
-import java.net.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.dctimer.adapter.*;
 import com.dctimer.db.*;
-import com.dctimer.ui.*;
-import com.dctimer.ui.CustomDialog.Builder;
-import com.sina.weibo.sdk.auth.*;
-import com.sina.weibo.sdk.auth.sso.SsoHandler;
-import com.sina.weibo.sdk.exception.*;
+import com.dctimer.ui.CustomDialog;
+import com.dctimer.util.*;
+import com.dctimer.view.ColorPickerView;
+import com.dctimer.view.ColorSchemeView;
 
-import sina.weibo.*;
-import solvers.*;
-import android.app.*;
+import scrambler.Scrambler;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.*;
+import android.content.DialogInterface.OnClickListener;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.graphics.*;
 import android.graphics.Bitmap.Config;
-import android.graphics.drawable.*;
-import android.hardware.*;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.*;
-import android.text.*;
+import android.os.Build.VERSION;
 import android.util.DisplayMetrics;
 import android.view.*;
+import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.TabHost.TabSpec;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TabHost.TabSpec;
 
-public class DCTimer extends Activity implements SensorEventListener {
+@SuppressLint("NewApi")
+public class DCTimer extends Activity {
 	private Context context;
 	private TabHost tabHost;
-	private LayoutInflater layoutInflater;
-	private Button btScr, bt2Scr, btScrv;	// 打乱状态
+	private RadioButton[] rbTab = new RadioButton[3];
+	private RadioGroup rGroup;
+	private Button btScramble;	//打乱按钮
 	public TextView tvTimer;	//计时器
-	private static TextView tvScr;	// 显示打乱
-	private ImageView iv;
-	private GridView gvTimes = null, gvTitle = null;
-	private Button seMean, sesOpt, sesName;	//分组平均, 分组选项, 分组名称
-	private Button[] btnSol3 = new Button[2];	//三阶求解
-	private Button reset;	//设置复位
-	private SeekBar[] skb = new SeekBar[7];	//拖动条
-	private TextView[] stt = new TextView[59];	//设置
-	private int sttlen = stt.length;
-	private TextView[] stSwitch = new TextView[13];
-	private TextView[] std = new TextView[16];
+	private TextView tvScramble;	// 显示打乱
+	private ImageView scrambleView;	//打乱状态图
+	private GridView gvTimes, gvTitle;	//成绩列表
+	private Button btSesMean, btSesOptn, btSession;	//分组平均, 分组选项, 分组
+	private TextView tvSesName;	//分组名称
+	private Button[] btSolver3 = new Button[2];	//三阶求解
+	private Button btReset;	//设置复位
+	private SeekBar[] seekBar = new SeekBar[5];	//拖动条
+	private TextView[] tvSettings = new TextView[50];	//设置
+	//private int sttlen = tvSettings.length;
+	private ImageButton[] ibSwitch = new ImageButton[9];	//开关
+	private TextView[] std = new TextView[15];
 	private TextView[] stdn = new TextView[2];
-	private LinearLayout[] llay = new LinearLayout[28];
-	private CheckBox[] chkb = new CheckBox[11];
+	private LinearLayout[] llayout = new LinearLayout[27];
+	private LinearLayout[] lborder = new LinearLayout[7];
+	private CheckBox[] checkBox = new CheckBox[11];	//EG打乱设置
+	private PopupWindow popupWindow;	//打乱弹出窗口
+	private TextView tvFile;
+	private View view;
+	private ListView listView;
+	private ProgressDialog progressDialog;
+	private Bitmap bitmap;
+	private Bitmap bmScrView;
+	public SharedPreferences share;
+	public static SharedPreferences.Editor edit;
+	public static DisplayMetrics dm;
+	private Vibrator vibrator;
 	
 	private Timer timer;
-	private Stackmat stm;
-	private ColorPicker cpDialog;
+	private Scrambler scrambler;
 	private Session session;
-	private SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
-	private TimesAdapter adapter;
-	private WeiboAuth mWeiboAuth;
-	private Oauth2AccessToken mAccessToken;
-	private SsoHandler mSsoHandler;
-	protected static SharedPreferences share;
-	public static SharedPreferences.Editor edit;
-	private Bitmap bitmap;
-	private PowerManager.WakeLock wakeLock = null;
-	public static DisplayMetrics dm;
-	private CustomDialog.Builder outBuilder = null;
-	private CustomDialog.Builder dlBuilder = null;
-	private Vibrator vibrator;
-	private SensorManager sensor;
-
-	private boolean opnl, opnd, hidscr, conft, isMulp, simss, touchDown = false, isLogin, isShare,
-			scrt = false, bgcolor, fulls, invs, usess, screenOn, selSes, isLongPress, drop;
-	//static boolean isNextScr = false, nextScrUsed = false;
-	static boolean nextScrWaiting = false;
-	protected boolean canStart;
-	protected static boolean isInScr = false;
-	public boolean wca;
-	public static boolean hidls;
-	static boolean idnf = true;
-	private static char[] srate = {48000, 44100, 22050, 16000, 11025, 8000};
-	private float lowZ = 9.8f;
-	static float fontScale;
-	private int ttsize, stsize, intv, insType, mulpCount, egoll, sensity, listLen, opac;
-	private int verc = 22, scrIdx, scr2idx, sesIdx;
-	private int[] staid = {R.array.tiwStr, R.array.tupdStr, R.array.preStr, R.array.mulpStr,
-			R.array.samprate, R.array.crsStr, R.array.c2lStr, R.array.mncStr,  
-			R.array.fontStr, R.array.soriStr, R.array.vibraStr, R.array.vibTimeStr,
-			R.array.sq1sStr, R.array.timeForm, R.array.avgStr, R.array.avgStr};
-	private int[] screenOri = new int[] {2, 0, 8, 1, 4};
-	private static int selold, scrType, inScrLen, bytesum, filesum, scrnum, scrsum;
-	static int l1len, l2len;
-	static int scrState = 0;
+	private SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+	private TimesAdapter timesAdapter;
+	private TextAdapter scr1Adapter;
+	private TextAdapter scr2Adapter;
+	
 	final static int SCRNONE = 0;
 	final static int SCRING = 1;
 	final static int NEXTSCRING = 2;
 	final static int SCRDONE = 3;
-	public static int dip300, dip450;
-	protected int frzTime;
-	public int[] cl = new int[5];
+	
+	public boolean isInScr, nextScrWaiting, scrt;
+	private boolean isLongPress;
+	protected boolean canStart;
+	private boolean idnf = true;
+	private boolean touchDown;
+	static int scrState = 0;
+	private static int inScrLen;
+	private static int crntScrType = -64;
+	private int selScr1, selScr2;
+	private int crntProgress;
+	private int insType;
+	private int mulpCount;
+	private int listLen;
+	private int version;
 	private int[] vibTime = new int[] {30, 50, 80, 150, 240};
-	public static int[] stSel = new int[16], solSel = new int[2];
-	static int isp2 = 0, egtype;
-	public static long time;
+	private int[] screenOri = new int[] {2, 0, 8, 1, 4};
+	private int[] resId = {R.drawable.img1, R.drawable.img2, R.drawable.img3, R.drawable.img1_selected, R.drawable.img2_selected, R.drawable.img3_selected};
+	static int isp2 = 0;
+	public static int dip300;
+	private int[] staid = {R.array.tiwStr, R.array.tupdStr, R.array.preStr, R.array.mulpStr,
+			R.array.avgStr, R.array.crsStr, R.array.c2lStr, R.array.mncStr,  
+			R.array.fontStr, R.array.soriStr, R.array.vibraStr, R.array.vibTimeStr,
+			R.array.sq1sStr, R.array.timeForm, R.array.avgStr};
 	private long exitTime = 0;
-	public static short[] sesType = new short[15];
-
-	private String picPath, selFilePath, newver, newupd;
-	private String defPath = Environment.getExternalStorageDirectory().getPath()+"/DCTimer/";
-	private String[] mItems, scrStr, sesItems, sol31, sol32;
-	private String[][] itemStr = new String[16][];
-	private static String nextScr = null, extsol, slist, outPath;
-	private static String[] sesnames = new String[15];
+	public static float scale, fontScale;
+	private String selFilePath;
+	private String newVersion, updateCont;
+	private String defPath = null;// = Environment.getExternalStorageDirectory().getPath()+"/DCTimer/";
+	private String[] sesItems, sol31, sol32;
+	private String[][] itemStr = new String[15][];
 	public static String crntScr;	// 当前打乱
-	public static String[] scrst;	// 打乱列表
-	static String egolls;
-	//private static String addstr = "/data/data/com.dctimer/databases/main.png";
-	public static final String APP_KEY = "3318942954";	// 替换为开发者的appkey，例如"1646212960";
-	private static final String REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
-	public static final String SCOPE = 
-            "email,direct_messages_read,direct_messages_write,"
-            + "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
-            + "follow_app_official_microblog," + "invitation_write";
+	private static String nextScr = null, extsol, slist;
+	private String[] scrStr;
 	private static ArrayList<String> inScr = null;
 	private List<String> items = null, paths = null;
-	private ListView listView;
-	private TextView tvFile;
-
-	public Handler handler = new Handler() {
+	
+	@SuppressLint("HandlerLeak")
+	private Handler handler = new Handler() {
+		@Override
 		public void handleMessage(Message msg) {
 			int msw = msg.what;
-			switch(msw) {	//TODO
-			case 0: tvScr.setText(crntScr); break;
-			case 1: tvScr.setText(crntScr + "\n\n" + getString(R.string.shape) + extsol);	break;
-			case 2: tvScr.setText(getString(R.string.scrambling));	break;
-			case 3: tvScr.setText(crntScr + extsol);	break;
-			case 4: Toast.makeText(context, getString(R.string.outscr_failed), Toast.LENGTH_SHORT).show();	break;
-			case 5: tvTimer.setText("IMPORT");	break;
-			case 6: tvScr.setText(crntScr + "\n\n" + getString(R.string.solving));	break;
-			case 7: Toast.makeText(context, getString(R.string.outscr_success), Toast.LENGTH_SHORT).show();	break;
+			switch (msw) {
+			case 0: tvScramble.setText(crntScr); break;
+			case 1: tvScramble.setText(crntScr + "\n\n" + getString(R.string.shape) + extsol);	break;
+			case 2: tvScramble.setText(getString(R.string.scrambling));	break;
+			case 3: tvScramble.setText(crntScr + extsol);	break;
+			case 4: tvScramble.setText(crntScr + "\n\n" + getString(R.string.solving));	break;
+			case 5: Toast.makeText(context, getString(R.string.save_failed), Toast.LENGTH_SHORT).show();	break;
+			//case 5: tvTimer.setText("IMPORT");	break;
+			case 6: Toast.makeText(context, getString(R.string.file_error), Toast.LENGTH_LONG).show();
+			case 7: Toast.makeText(context, getString(R.string.save_success), Toast.LENGTH_SHORT).show();	break;
 			case 8: Toast.makeText(context, getString(R.string.conning), Toast.LENGTH_SHORT).show();	break;
 			case 9: Toast.makeText(context, getString(R.string.net_error), Toast.LENGTH_LONG).show();	break;
 			case 10: Toast.makeText(context, getString(R.string.lastest), Toast.LENGTH_LONG).show();	break;
 			case 11:
-				new CustomDialog.Builder(context).setTitle(getString(R.string.havenew)+newver)
-				.setMessage(newupd)
-				.setPositiveButton(R.string.btn_download, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						download("DCTimer"+newver+".apk");
-					}
-				}).setNegativeButton(R.string.btn_cancel, null).create().show();
+				if(defPath == null)
+					Toast.makeText(context, getString(R.string.sd_not_exist), Toast.LENGTH_SHORT).show();
+				else
+					new CustomDialog.Builder(context).setTitle(getString(R.string.havenew)+newVersion).setMessage(updateCont)
+					.setPositiveButton(R.string.btn_download, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							download("DCTimer"+newVersion+".apk");
+						}
+					}).setNegativeButton(R.string.btn_cancel, null).show();
 				break;
-			case 12: dlBuilder.setProgress(bytesum, filesum, true);	break;
-			case 13: Toast.makeText(context, getString(R.string.file_error), Toast.LENGTH_LONG).show();
-			case 14: seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
+			case 13:
+				scrambleView.setVisibility(View.GONE);
+				break;
+			case 14: btSesMean.setText(getString(R.string.session_average) + Statistics.sesMean());
 				setGridView();	break;
-			//case 15: impDlg.setMessage(""+dbCount); break;
+			case 15:
+				scrambleView.setVisibility(View.VISIBLE);
+				scrambleView.setImageBitmap(bmScrView);
+				break;
 			case 16: Toast.makeText(context, getString(R.string.import_failed), Toast.LENGTH_SHORT).show(); break;
 			case 17: Toast.makeText(context, getString(R.string.import_success), Toast.LENGTH_SHORT).show(); break;
 			case 18: 
-				adapter.notifyDataSetChanged();
-				gvTimes.setAdapter(adapter);
+				timesAdapter.notifyDataSetChanged();
+				gvTimes.setAdapter(timesAdapter);
 				gvTimes.setSelection(gvTimes.getCount()-1);
 				break;
-			case 19: tvScr.setText(getString(R.string.initing) + " (" + (13 + threephase.Util.prog / 2597) + "%) ..."); break;
-			case 20: tvScr.setText(getString(R.string.initing) + " (0%) ..."); break;
-			case 21: tvScr.setText(getString(R.string.initing) + " (19%) ..."); break;
-			case 22: tvScr.setText(getString(R.string.initing) + " (26%) ..."); break;
-			case 23: tvScr.setText(getString(R.string.initing) + " (" + (33 + threephase.Util.prog / 44098) + "%) ..."); break;
-			case 24: tvScr.setText(getString(R.string.initing) + " (21%) ..."); break;
-			case 25: tvScr.setText(getString(R.string.initing) + " (" + (23 + threephase.Util.prog / 150150) + "%) ..."); break;
-			case 26: tvScr.setText(getString(R.string.initing) + " (" + (26 + threephase.Util.prog / 4200) + "%) ..."); break;
-			case 27: tvScr.setText(getString(R.string.initing) + " (" + (95 + threephase.Util.prog / 252) + "%) ..."); break;
-			case 28: tvScr.setText(getString(R.string.initing) + " (" + (33 + threephase.Util.prog / 28923) + "%) ..."); break;
-			case 29: tvScr.setText(getString(R.string.initing) + " (" + threephase.Util.prog / 1198 + "%) ..."); break;
-			case 30: tvScr.setText(getString(R.string.initing) + " (2%) ..."); break;
-			case 31: outBuilder.setProgress(scrnum, scrsum, false);	break;
-			//default: proDlg.setProgress(msw%100);	break;//Message(msw%100 + "/" + msw/100);
+			case 19: tvScramble.setText(getString(R.string.initing) + " (" + (13 + threephase.Util.prog / 2597) + "%) ..."); break;
+			case 20: tvScramble.setText(getString(R.string.initing) + " (0%) ..."); break;
+			case 21: tvScramble.setText(getString(R.string.initing) + " (19%) ..."); break;
+			case 22: tvScramble.setText(getString(R.string.initing) + " (26%) ..."); break;
+			case 23: tvScramble.setText(getString(R.string.initing) + " (" + (33 + threephase.Util.prog / 44098) + "%) ..."); break;
+			case 24: tvScramble.setText(getString(R.string.initing) + " (21%) ..."); break;
+			case 25: tvScramble.setText(getString(R.string.initing) + " (" + (23 + threephase.Util.prog / 150150) + "%) ..."); break;
+			case 26: tvScramble.setText(getString(R.string.initing) + " (" + (26 + threephase.Util.prog / 4200) + "%) ..."); break;
+			case 27: tvScramble.setText(getString(R.string.initing) + " (" + (95 + threephase.Util.prog / 252) + "%) ..."); break;
+			case 28: tvScramble.setText(getString(R.string.initing) + " (" + (33 + threephase.Util.prog / 28923) + "%) ..."); break;
+			case 29: tvScramble.setText(getString(R.string.initing) + " (" + threephase.Util.prog / 1198 + "%) ..."); break;
+			case 30: tvScramble.setText(getString(R.string.initing) + " (2%) ..."); break;
+//			case 31: tvProg.setText(sesNum+" / 15 ("+dbCount+")");
+//				prgBar.setProgress((sesNum-1) * 15 / 100);
+			default:
+				progressDialog.setProgress(msw - 100);	break;
 			}
 		}
 	};
-
-	class TitleAdapter extends BaseAdapter {
-		private Context context;
-		private String[] times;
-		private TextView tv;
-		private int cl;
-		public TitleAdapter(Context context, String[] times, int cl) {
-			this.context = context;
-			this.times = times;
-			this.cl = cl;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		//System.out.println("onCreate");
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+//		if(VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+//			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//		}
+		super.setContentView(R.layout.tab);
+		context = this;
+		share = super.getSharedPreferences("dctimer", Activity.MODE_PRIVATE);
+		edit = share.edit();
+		dm = getResources().getDisplayMetrics();
+		scale = dm.density;
+		fontScale = dm.scaledDensity;
+		dip300 = (int) (scale * 300 + 0.5);
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+			defPath = Environment.getExternalStorageDirectory().getPath()+"/DCTimer/";
+			System.out.println("SD卡 "+defPath);
 		}
-		public int getCount() {
-			if(times != null) return times.length;
-			return 0;
-		}
-		public Object getItem(int position) {return position;}
-		public long getItemId(int position) {return position;}
-		public View getView(int po, View convertView, ViewGroup parent) {
-			if (convertView == null) {
-				tv = new TextView(context);
-				tv.setLayoutParams(new GridView.LayoutParams(-1, -2));
+		readConf();
+		scrStr = getResources().getStringArray(R.array.cubeStr);
+		sol31 = getResources().getStringArray(R.array.faceStr);
+		sol32 = getResources().getStringArray(R.array.sideStr);
+		
+		scrambler = new Scrambler(this);
+		timer = new Timer(this);
+		session = new Session(context);
+		
+		if(fulls) getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		if(opnl) acquireWakeLock();
+		
+		tabHost = (TabHost) findViewById(R.id.tabhost);
+		tabHost.setup();
+		int[] ids = {R.id.tab_timer, R.id.tab_list, R.id.tab_setting};
+		int[] rbIds = {R.id.radio_1, R.id.radio_2, R.id.radio_3};
+		for (int x=0; x<3; x++) {
+			TabSpec myTab = tabHost.newTabSpec("tab" + x);
+			myTab.setIndicator("tab");
+			myTab.setContent(ids[x]);
+			tabHost.addTab(myTab);
+			
+			rbTab[x] = (RadioButton) findViewById(rbIds[x]);
+			rbTab[x].setOnCheckedChangeListener(mOnTabChangeListener);
+			if(x == 0) {
+				rbTab[x].setTextColor(0xff3d9ee8);
+				Drawable dr = getResources().getDrawable(resId[x + 3]);
+				rbTab[x].setCompoundDrawablesWithIntrinsicBounds(null, dr, null, null);
+			} else {
+				rbTab[x].setTextColor(0xff747474);
+				Drawable dr = getResources().getDrawable(resId[x]);
+				rbTab[x].setCompoundDrawablesWithIntrinsicBounds(null, dr, null, null);
 			}
-			else tv = (TextView) convertView;
-			tv.setTextSize(16);
-			tv.setGravity(Gravity.CENTER);
-			tv.setTextColor(cl);
-			tv.setText(times[po]);
-			return tv;
 		}
+		tabHost.setCurrentTab(0);
+		if(bgcolor) tabHost.setBackgroundColor(colors[0]);
+		else try {
+			FileInputStream fis = new FileInputStream(picPath);
+			bitmap = BitmapFactory.decodeStream(fis);
+			bitmap = getBgPic(bitmap);
+			setBgPic(bitmap, opac);
+			fis.close();
+		} catch (Exception e) {
+			tabHost.setBackgroundColor(colors[0]);
+			Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+		rGroup = (RadioGroup) findViewById(R.id.main_radio);
+		
+		tvScramble = (TextView) findViewById(R.id.tv_scr);	//打乱显示
+		tvScramble.setOnTouchListener(mOnTouchListener);
+		tvScramble.setOnLongClickListener(mOnLongClickListener);
+		tvTimer = (TextView) findViewById(R.id.tv_timer);	//计时器
+		tvTimer.setOnTouchListener(mOnTouchListener);
+		btScramble = (Button) findViewById(R.id.bt_scr);	//打乱按钮
+		btScramble.setOnClickListener(mOnClickListener);
+		scrambleView = (ImageView) findViewById(R.id.iv_scr);	//打乱状态图
+		//设置选项
+		ids = new int[] {R.id.std01, R.id.std02, R.id.std03, R.id.std04, R.id.std16, R.id.std06, R.id.std07, R.id.std08, 
+				R.id.std09, R.id.std10, R.id.std11, R.id.std12, R.id.std13, R.id.std14, R.id.std15};
+		for(int i=0; i<std.length; i++) {
+			itemStr[i] = getResources().getStringArray(staid[i]);
+			std[i] = (TextView) findViewById(ids[i]);
+		}
+		stdn[0] = (TextView) findViewById(R.id.std17);	//平均1长度
+		stdn[1] = (TextView) findViewById(R.id.std18);	//平均2长度
+		btSolver3[0] = (Button) findViewById(R.id.solve1);	//十字底面
+		btSolver3[0].setOnClickListener(mOnClickListener);
+		btSolver3[1] = (Button) findViewById(R.id.solve2);	//颜色
+		btSolver3[1].setOnClickListener(mOnClickListener);
+		//分组名称
+		sesItems = new String[15];
+		for (int j = 0; j < 15; j++)
+			sesItems[j] = (j + 1) + ". " + sesnames[j];
+		tvSesName = (TextView) findViewById(R.id.sesname);
+		tvSesName.setText(sesnames[sesIdx].equals("") ? getString(R.string.session) + (sesIdx+1) : sesnames[sesIdx]);
+		//成绩列表
+		gvTimes = (GridView) findViewById(R.id.myGridView);
+		gvTimes.setOnItemClickListener(new GridView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+				if(isMulp) {
+					if(pos/(stSel[3]+2)<Session.resl && pos%(stSel[3]+2)==0) singTime(pos, stSel[3]+2);
+				}
+				else if(pos%3 == 0)
+					singTime(pos, 3);
+				else if(pos%3==1 && pos/3>l1len-2)
+					showAlertDialog(1, pos/3);
+				else if(pos%3==2 && pos/3>l2len-2)
+					showAlertDialog(2, pos/3);
+			}
+		});
+		gvTitle = (GridView) findViewById(R.id.gv_title);
+		btSesMean = (Button) findViewById(R.id.bt_ses_mean);	//分组平均
+		getSession(sesIdx);
+		btSesMean.setOnClickListener(mOnClickListener);
+		setGvTitle();
+		setGridView();
+		btSession = (Button) findViewById(R.id.bt_session);	//分组按钮
+		btSession.setOnClickListener(mOnClickListener);
+		btSesOptn = (Button) findViewById(R.id.bt_optn);	//分组选项
+		btSesOptn.setOnClickListener(mOnClickListener);
+		//EG打乱
+		setEgOll();
+		ids = new int[] {R.id.checkeg2, R.id.checkcll, R.id.checkegu, R.id.checkegh, R.id.checkeg1, R.id.checkegn,
+				R.id.checkegs, R.id.checkega, R.id.checkegpi, R.id.checkegl, R.id.checkegt};
+		for(int i=0; i<checkBox.length; i++) {
+			checkBox[i] = (CheckBox) findViewById(ids[i]);
+			checkBox[i].setOnCheckedChangeListener(mOnCheckedChangeListener);
+		}
+		if((egtype & 4) != 0) checkBox[1].setChecked(true);
+		if((egtype & 2) != 0) checkBox[4].setChecked(true);
+		if((egtype & 1) != 0) checkBox[0].setChecked(true);
+		if((egoll & 128) != 0) checkBox[8].setChecked(true);
+		if((egoll & 64) != 0) checkBox[3].setChecked(true);
+		if((egoll & 32) != 0) checkBox[2].setChecked(true);
+		if((egoll & 16) != 0) checkBox[10].setChecked(true);
+		if((egoll & 8) != 0) checkBox[9].setChecked(true);
+		if((egoll & 4) != 0) checkBox[6].setChecked(true);
+		if((egoll & 2) != 0) checkBox[7].setChecked(true);
+		if((egoll & 1) != 0) checkBox[5].setChecked(true);
+		//拖动条
+		ids = new int[] {R.id.seekb1, R.id.seekb2, R.id.seekb3, R.id.seekb4, R.id.seekb5};
+		for(int i=0; i<ids.length; i++) seekBar[i] = (SeekBar) findViewById(ids[i]);
+		ids = new int[] {95, 25, 41, 100, 20};
+		for(int i=0; i<ids.length; i++) seekBar[i].setMax(ids[i]);
+		for(int i=0; i<seekBar.length; i++) seekBar[i].setOnSeekBarChangeListener(mOnSeekBarChangeListener);
+		//设置TextView
+		ids = new int[] {
+				R.id.stt00, R.id.stt01, R.id.stt02, R.id.stt08, R.id.stt09, R.id.stt05, R.id.stt21, R.id.stt07,
+				R.id.stt03, R.id.stt22, R.id.stt17, R.id.stt11, R.id.stt12, R.id.stt13, R.id.stt14, R.id.stt15,
+				R.id.stt16, R.id.stt10, R.id.stt18, R.id.stt19, R.id.stt23, R.id.stt04, R.id.stt52, R.id.stt56,
+				R.id.stt26, R.id.stt27, R.id.stt28, R.id.stt29, R.id.stt30, R.id.stt31, R.id.stt33, R.id.stt33,
+				R.id.stt34, R.id.stt35, R.id.stt36, R.id.stt37, R.id.stt38, R.id.stt59, R.id.stt40, R.id.stt41,
+				R.id.stt42, R.id.stt43, R.id.stt57, R.id.stt58, R.id.stt46, R.id.stt47, R.id.stt48, R.id.stt49,
+				R.id.stt50, R.id.stt51,
+		};
+		for(int i=0; i<ids.length; i++) tvSettings[i] = (TextView) findViewById(ids[i]);
+		//设置开关
+		ids = new int[] {R.id.stcheck1, R.id.stcheck15, R.id.stcheck3, R.id.stcheck12, R.id.stcheck11, R.id.stcheck6,
+				R.id.stcheck7, R.id.stcheck8, R.id.stcheck9};
+		for(int i=0; i<ids.length; i++) {
+			ibSwitch[i] = (ImageButton) findViewById(ids[i]);
+			ibSwitch[i].setOnClickListener(mOnClickListener);
+		}
+		//设置Layout
+		ids = new int[] {
+				R.id.lay01, R.id.lay02, R.id.lay03, R.id.lay04, R.id.lay26, R.id.lay06,
+				R.id.lay07, R.id.lay08, R.id.lay09, R.id.lay10, R.id.lay11, R.id.lay12,
+				R.id.lay23, R.id.lay18, R.id.lay25,
+				R.id.lay16, R.id.lay17, R.id.lay22, R.id.lay19, R.id.lay20, R.id.lay21,
+				R.id.lay13, R.id.lay24, R.id.lay14, R.id.lay15, R.id.lay27, R.id.lay28,
+		};
+		for(int i=0; i<ids.length; i++)
+			llayout[i] = (LinearLayout) findViewById(ids[i]);
+		for(int i=0; i<15; i++) llayout[i].setOnTouchListener(comboListener);
+		for(int i=15; i<27; i++) llayout[i].setOnTouchListener(touchListener);
+		ids = new int[] {
+				R.id.sl01, R.id.sl02, R.id.sl03, R.id.sl04, R.id.sl05, R.id.sl06, R.id.sl07, 
+		};
+		for(int i=0; i<ids.length; i++)
+			lborder[i] = (LinearLayout) findViewById(ids[i]);
+		//复位按钮
+		btReset = (Button) findViewById(R.id.reset);
+		btReset.setOnClickListener(mOnClickListener);
+		//震动器
+		vibrator = (Vibrator) getSystemService(Service.VIBRATOR_SERVICE);
+		//进度条
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		progressDialog.setCancelable(false);
+		
+		version = Utils.getVersion(context);
+		setBorders();
+		setViews();
+		setTextsColor();
+		set2ndsel();
 	}
-
+	
+	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		dm = new DisplayMetrics();
+		//System.out.println("旋转屏幕");
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
-		if(!bgcolor) {
-			try {
-				FileInputStream fis = new FileInputStream(picPath);
-				bitmap = BitmapFactory.decodeStream(fis);
-				bitmap = getBgPic(bitmap);
-				setBgPic(bitmap, opac);
-				fis.close();
-			} catch (Exception e) {
-				Toast.makeText(context, getString(R.string.not_exist), Toast.LENGTH_SHORT).show();
-			}
+		if(!bgcolor) try {
+			FileInputStream fis = new FileInputStream(picPath);
+			bitmap = BitmapFactory.decodeStream(fis);
+			bitmap = getBgPic(bitmap);
+			setBgPic(bitmap, opac);
+			fis.close();
+		} catch (Exception e) {
+			Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
 		}
 		new Thread() {
 			public void run() {
@@ -237,1169 +416,457 @@ public class DCTimer extends Activity implements SensorEventListener {
 				} catch (Exception e) { }
 			}
 		}.start();
-//		if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//		} else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-//		}
-	}
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		super.setContentView(R.layout.tab);
-		context = this;
-		share = super.getSharedPreferences("dctimer", Activity.MODE_PRIVATE);
-		readConf();
-		edit = share.edit();
-		fontScale = getResources().getDisplayMetrics().scaledDensity;
-		long sestype = share.getLong("sestype", -1);
-		if(sestype != -1) {
-			for(int i=0; i<9; i++) {
-				int temp = Mi.getSessionType(sestype, i);
-				if(temp != 0x7f)
-					edit.putInt("sestp" + i, temp);
-			}
-			edit.remove("sestype");
-			edit.commit();
-		}
-		setEgOll();
-		scrStr = getResources().getStringArray(R.array.cubeStr);
-		sol31 = getResources().getStringArray(R.array.faceStr);
-		sol32 = getResources().getStringArray(R.array.sideStr);
-
-		if(fulls) getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		if(opnl) {acquireWakeLock(); screenOn = true;}
-		mItems = getResources().getStringArray(R.array.tabInd);
-		tabHost = (TabHost) super.findViewById(R.id.tabhost);
-		tabHost.setup();
-		layoutInflater = LayoutInflater.from(this);
-		int[] ids = {R.id.tab_timer, R.id.tab_list, R.id.tab_setting};
-		int[] imgs = {R.drawable.img1, R.drawable.img2, R.drawable.img3};
-		for (int x=0; x<3; x++) {
-			TabSpec myTab = tabHost.newTabSpec("tab" + x);
-			//myTab.setIndicator(mItems[x], getResources().getDrawable(imgs[x]));
-			myTab.setIndicator(getTabItemView(x, imgs));
-			myTab.setContent(ids[x]);
-			tabHost.addTab(myTab);
-		}
-
-		dm = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
-		if(bgcolor) tabHost.setBackgroundColor(cl[0]);
-		else {
-			try {
-				FileInputStream fis = new FileInputStream(picPath);
-				bitmap = BitmapFactory.decodeStream(fis);
-				bitmap = getBgPic(bitmap);
-				setBgPic(bitmap, opac);
-				fis.close();
-			} catch (Exception e) {
-				tabHost.setBackgroundColor(cl[0]);
-				Toast.makeText(context, getString(R.string.not_exist), Toast.LENGTH_SHORT).show();
-			}
-		}
-		tabHost.setCurrentTab(0);
-
-		tvScr = (TextView) findViewById(R.id.myTextView1);
-		tvTimer = (TextView) findViewById(R.id.myTextView2);
-		btScr = (Button) findViewById(R.id.spScr);
-		bt2Scr = (Button) findViewById(R.id.sp2ndScr);
-		btScrv = (Button) findViewById(R.id.myButtonSst);
-		ids = new int[] {R.id.std01, R.id.std02, R.id.std03, R.id.std04, R.id.std05, R.id.std06, R.id.std07, R.id.std08, 
-				R.id.std09, R.id.std10, R.id.std11, R.id.std12, R.id.std13, R.id.std14, R.id.std15, R.id.std16};
-		for(int i=0; i<std.length; i++) {
-			itemStr[i] = getResources().getStringArray(staid[i]);
-			std[i] = (TextView) findViewById(ids[i]);
-			std[i].setText(itemStr[i][stSel[i]]);
-		}
-		stdn[0] = (TextView) findViewById(R.id.std17);
-		stdn[0].setText(""+l1len);
-		stdn[1] = (TextView) findViewById(R.id.std18);
-		stdn[1].setText(""+l2len);
-		
-		btnSol3[0] = (Button) findViewById(R.id.solve1);
-		btnSol3[1] = (Button) findViewById(R.id.solve2);
-		btnSol3[0].setText(sol31[solSel[0]]);
-		btnSol3[1].setText(sol32[solSel[1]]);
-		
-		sesItems = new String[15];
-		for (int j = 0; j < 15; j++)
-			sesItems[j] = (j + 1) + ". " + sesnames[j];
-		sesName = (Button) findViewById(R.id.sesname);
-		sesName.setText(getString(R.string.session) + (sesIdx+1) + (sesnames[sesIdx].equals("") ? "" : " - "+sesnames[sesIdx]));
-		
-		set2ndsel();
-		
-		tvScr.setTextSize(stsize);
-		tvTimer.setTextSize(ttsize);
-		setTimerFont(stSel[8]);
-		if(stSel[9] > 0) this.setRequestedOrientation(screenOri[stSel[9]]);
-
-		stm = new Stackmat(this);
-		if(usess) {
-			tvTimer.setText("OFF");
-			if(stm.creatAudioRecord((int)srate[stSel[4]]));
-			else {
-				edit.putInt("srate", 1);
-				edit.commit();
-			}
-		} else {
-			if(stSel[0] == 0) {
-				if(stSel[2] == 0) tvTimer.setText("0.00");
-				else tvTimer.setText("0.000");
-			}
-			else if(stSel[0] == 1) tvTimer.setText("IMPORT");
-		}
-
-		timer = new Timer(this);
-		session = new Session(this);
-
-		gvTimes = (GridView) findViewById(R.id.myGridView);
-		gvTitle = (GridView) findViewById(R.id.gv_title);
-		seMean = (Button) findViewById(R.id.mButtonoa);
-		sesOpt = (Button) findViewById(R.id.mButtonOpt);
-		//rsauth = (Button) findViewById(R.id.auth_sina);
-		ids = new int[] {R.id.checkeg2, R.id.checkcll, R.id.checkegu, R.id.checkegh, R.id.checkeg1, R.id.checkegn,
-				R.id.checkegs, R.id.checkega, R.id.checkegpi, R.id.checkegl, R.id.checkegt};
-		for(int i=0; i<chkb.length; i++) chkb[i] = (CheckBox) findViewById(ids[i]);
-		ids = new int[] {R.id.seekb1, R.id.seekb2, R.id.seekb3, R.id.seekb4, R.id.seekb5, R.id.seekb6, R.id.seekb7};
-		for(int i=0; i<ids.length; i++) skb[i] = (SeekBar) findViewById(ids[i]);
-		ids = new int[] {
-				R.id.stt00, R.id.stt01, R.id.stt02, R.id.stt08, R.id.stt09, R.id.stt05, R.id.stt21, R.id.stt07,
-				R.id.stt03, R.id.stt22, R.id.stt17, R.id.stt11, R.id.stt12, R.id.stt13, R.id.stt14, R.id.stt15,
-				R.id.stt16, R.id.stt10, R.id.stt18, R.id.stt19, R.id.stt23, R.id.stt04, R.id.stt06, R.id.stt20,
-				R.id.stt26, R.id.stt27, R.id.stt28, R.id.stt29, R.id.stt30, R.id.stt31, R.id.stt33, R.id.stt33,
-				R.id.stt34, R.id.stt35, R.id.stt36, R.id.stt37, R.id.stt38, R.id.stt39, R.id.stt40, R.id.stt41,
-				R.id.stt42, R.id.stt43, R.id.stt44, R.id.stt45, R.id.stt46, R.id.stt47, R.id.stt48, R.id.stt49,
-				R.id.stt50, R.id.stt51, R.id.stt52, R.id.stt53, R.id.stt54, R.id.stt55, R.id.stt24, R.id.stt25,
-				R.id.stt56, R.id.stt57, R.id.stt58, 
-		};	//DOTO
-		for(int i=0; i<sttlen; i++) stt[i] = (TextView) findViewById(ids[i]);
-		
-		ids = new int[] {R.id.stcheck1, R.id.stcheck14, R.id.stcheck3, R.id.stcheck4, R.id.stcheck5, R.id.stcheck6, R.id.stcheck7, 
-				R.id.stcheck8, R.id.stcheck9, R.id.stcheck11, R.id.stcheck12, R.id.stcheck13, R.id.stcheck10};
-		for(int i=0; i<ids.length; i++) stSwitch[i] = (TextView) findViewById(ids[i]);
-		ids = new int[] {
-				R.id.lay01, R.id.lay02, R.id.lay03, R.id.lay04, R.id.lay05, R.id.lay06,
-				R.id.lay07, R.id.lay08, R.id.lay09, R.id.lay10, R.id.lay11, R.id.lay12,
-				R.id.lay23, R.id.lay18, R.id.lay25, R.id.lay26, 
-				R.id.lay16, R.id.lay17, R.id.lay22, R.id.lay19, R.id.lay20, R.id.lay21,
-				R.id.lay13, R.id.lay24, R.id.lay14, R.id.lay15, R.id.lay27, R.id.lay28,
-		};//TODO
-		for(int i=0; i<llay.length; i++) llay[i] = (LinearLayout) findViewById(ids[i]);
-		reset = (Button) findViewById(R.id.reset);
-		for(int i=0; i<16; i++) llay[i].setOnTouchListener(comboListener);
-		for(int i=16; i<28; i++) llay[i].setOnTouchListener(touchListener);
-		ids = new int[] {95, 25, 41, 100, 20, 100, 50};
-		for(int i=0; i<ids.length; i++) skb[i].setMax(ids[i]);
-		int ssvalue = share.getInt("ssvalue", 50);
-		ids = new int[] {ttsize - 50, stsize - 12, intv - 20,
-				opac, frzTime, ssvalue, sensity};
-		for(int i=0; i<ids.length; i++) skb[i].setProgress(ids[i]);
-		stt[3].setText(getString(R.string.timer_size) + ttsize);
-		stt[4].setText(getString(R.string.scrsize) + stsize);
-		stt[10].setText(getString(R.string.row_spacing) + intv);
-		stt[29].setText(getString(R.string.time_tap) + frzTime/20D);
-		stt[37].setText(getString(R.string.stt_ssvalue) + ssvalue);
-		stt[53].setText(getString(R.string.sensitivity) + (sensity<15 ? getString(R.string.sen_low) :
-			(sensity<30 ? getString(R.string.sen_mid) :
-				(sensity<45 ? getString(R.string.sen_high) : getString(R.string.sen_ultra)))));
-		Stackmat.switchThreshold = ssvalue;
-		for(int i=0; i<7; i++) skb[i].setOnSeekBarChangeListener(new OnSeekBarChangeListener());
-		stSwitch[0].setBackgroundResource(wca ? R.drawable.switch_on : R.drawable.switch_off);
-		//stSwitch[1].setBackgroundResource(clkform ? R.drawable.switch_on : R.drawable.switch_off);
-		stSwitch[2].setBackgroundResource(simss ? R.drawable.switch_on : R.drawable.switch_off);
-		stSwitch[3].setBackgroundResource(usess ? R.drawable.switch_on : R.drawable.switch_off);
-		stSwitch[4].setBackgroundResource(invs ? R.drawable.switch_on : R.drawable.switch_off);
-		stSwitch[5].setBackgroundResource(hidscr ? R.drawable.switch_on : R.drawable.switch_off);
-		stSwitch[6].setBackgroundResource(conft ? R.drawable.switch_on : R.drawable.switch_off);
-		stSwitch[7].setBackgroundResource(hidls ? R.drawable.switch_off : R.drawable.switch_on);
-		stSwitch[8].setBackgroundResource(selSes ? R.drawable.switch_on : R.drawable.switch_off);
-		stSwitch[9].setBackgroundResource(fulls ? R.drawable.switch_on : R.drawable.switch_off);
-		stSwitch[10].setBackgroundResource(opnl ? R.drawable.switch_on : R.drawable.switch_off);
-		stSwitch[11].setBackgroundResource(opnd ? R.drawable.switch_on : R.drawable.switch_off);
-		stSwitch[12].setBackgroundResource(drop ? R.drawable.switch_on : R.drawable.switch_off);
-		for(int i=0; i<13; i++) stSwitch[i].setOnClickListener(new OnClickListener());
-
-		getSession(sesIdx);
-		seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
-		setGvTitle();
-		setGridView();
-
-		if(usess && !stm.isStart) stm.start();
-		if((egtype & 4) != 0) chkb[1].setChecked(true);
-		if((egtype & 2) != 0) chkb[4].setChecked(true);
-		if((egtype & 1) != 0) chkb[0].setChecked(true);
-		if((egoll & 128) != 0) chkb[8].setChecked(true);
-		if((egoll & 64) != 0) chkb[3].setChecked(true);
-		if((egoll & 32) != 0) chkb[2].setChecked(true);
-		if((egoll & 16) != 0) chkb[10].setChecked(true);
-		if((egoll & 8) != 0) chkb[9].setChecked(true);
-		if((egoll & 4) != 0) chkb[6].setChecked(true);
-		if((egoll & 2) != 0) chkb[7].setChecked(true);
-		if((egoll & 1) != 0) chkb[5].setChecked(true);
-		for(int i=0; i<chkb.length; i++)
-			chkb[i].setOnCheckedChangeListener(listener);
-
-		setTextsColor();
-
-		vibrator = (Vibrator) getApplication().getSystemService(Service.VIBRATOR_SERVICE);
-		
-		sensor = (SensorManager) this.getSystemService(SENSOR_SERVICE);
-		
-		mWeiboAuth = new WeiboAuth(this, APP_KEY, REDIRECT_URL, SCOPE);
-		mAccessToken = AccessTokenKeeper.readAccessToken(this);
-		if(!mAccessToken.isSessionValid()) stSwitch[1].setBackgroundResource(R.drawable.switch_off);//wbAuth.setText(R.string.login);
-		else {
-			isLogin = true;
-			stSwitch[1].setBackgroundResource(R.drawable.switch_on);
-			//wbAuth.setText(R.string.logout);
-		}
-		dip300 = (int) (getResources().getDisplayMetrics().density * 300 + 0.5);
-		dip450 = (int) (getResources().getDisplayMetrics().density * 450 + 0.5);
-		
-		//打乱类型
-		btScr.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				CustomDialog dialog =
-				new CustomDialog.Builder(context).setSingleChoiceItems(R.array.cubeStr, scrIdx+1, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dia, int which) {
-						if(scrIdx != which - 1) {	//TODO
-							scrIdx = which - 1;
-							if(scrIdx != selold) {scr2idx = 0; selold = scrIdx;}
-							set2ndsel();
-							setScrType();
-							if(selSes) searchSesType();
-							if(inScr != null && inScr.size() != 0) inScr = null;
-						}
-					}
-				}).setNegativeButton(R.string.btn_close, null).create();
-				showDialog(dialog);
-			}
-		});
-		bt2Scr.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				CustomDialog dialog =
-				new CustomDialog.Builder(context).setSingleChoiceItems(get2ndScr(scrIdx), scr2idx, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						if (scr2idx != which) {
-							scr2idx = which;
-							set2ndsel();
-							setScrType();
-							if (selSes) searchSesType();
-							if (inScr != null && inScr.size() != 0) inScr = null;
-						}
-					}
-				}).setNegativeButton(R.string.btn_close, null).create();
-				showDialog(dialog);
-			}
-		});
-
-		//分组
-		sesName.setOnClickListener(new OnClickListener() {
-			public void onClick(View arg0) {
-				CustomDialog dialog =
-				new CustomDialog.Builder(context).setSingleChoiceItems(sesItems, sesIdx, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						if(sesIdx != which) {
-							sesIdx = (byte) which;
-							getSession(which);
-							seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
-							setGridView();
-							edit.putInt("group", sesIdx);
-							edit.commit();
-							sesName.setText(getString(R.string.session) + (sesIdx+1) + (sesnames[sesIdx].equals("") ? "" : " - "+sesnames[sesIdx]));
-						}
-					}
-				}).setNegativeButton(R.string.btn_close, null).create();
-				showDialog(dialog);
-			}
-		});
-
-		//十字底面
-		btnSol3[0].setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				CustomDialog dialog =
-					new CustomDialog.Builder(context).setSingleChoiceItems(R.array.faceStr, solSel[0], new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dia, int which) {
-							if(solSel[0] != which) {
-								solSel[0] = which;
-								btnSol3[0].setText(sol31[solSel[0]]);
-								edit.putInt("cface", solSel[0]);
-								edit.commit();
-								if(scrIdx==1 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19))
-									new Thread() {
-										public void run() {
-											handler.sendEmptyMessage(6);
-											extsol = "\n"+Cross.cross(crntScr, solSel[0], solSel[1]);
-											handler.sendEmptyMessage(3);
-											scrState = NEXTSCRING;
-											nextScr = Mi.setScr((scrIdx<<5)|scr2idx, false);
-											scrState = SCRDONE;
-										}
-									}.start();
-							}
-						}
-					}).setNegativeButton(R.string.btn_close, null).create();
-				showDialog(dialog);
-			}
-		});
-		//颜色
-		btnSol3[1].setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				CustomDialog dialog =
-					new CustomDialog.Builder(context).setSingleChoiceItems(R.array.sideStr, solSel[1], new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dia, int which) {
-							if(solSel[1] != which) {
-								solSel[1] = which;
-								btnSol3[1].setText(sol32[solSel[1]]);
-								edit.putInt("cside", solSel[1]);
-								edit.commit();
-								if(scrIdx==1 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19))
-									new Thread() {
-										public void run() {
-											handler.sendEmptyMessage(6);
-											switch(stSel[5]) {
-											case 1: extsol="\n"+Cross.cross(crntScr, solSel[0], solSel[1]); break;
-											case 2: extsol="\n"+Cross.xcross(crntScr, solSel[1]); break;
-											case 3: extsol="\n"+EOline.eoLine(crntScr, solSel[1]); break;
-											case 4: extsol="\n"+PetrusxRoux.roux(crntScr, solSel[1]); break;
-											case 5: extsol="\n"+PetrusxRoux.petrus(crntScr, solSel[1]); break;
-											}
-											handler.sendEmptyMessage(3);
-											scrState = NEXTSCRING;
-											nextScr = Mi.setScr((scrIdx<<5)|scr2idx, false);
-											scrState = SCRDONE;
-										}
-									}.start();
-							}
-						}
-					}).setNegativeButton(R.string.btn_close, null).create();
-				showDialog(dialog);
-			}
-		});
-
-		//打乱状态
-		btScrv.setOnClickListener(new Button.OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				if(Mi.viewType > 0) {
-					LayoutInflater inflater = LayoutInflater.from(context);	// 取得LayoutInflater对象
-					final View popView = inflater.inflate(R.layout.popwindow, null);	// 读取布局管理器
-					iv = (ImageView) popView.findViewById(R.id.ImageView1);
-					Bitmap bm = Bitmap.createBitmap(dip300, dip300*3/4, Config.ARGB_8888);
-					Canvas c = new Canvas(bm);
-					c.drawColor(0);
-					Paint p = new Paint();
-					p.setAntiAlias(true);
-					Mi.drawScr(scr2idx, dip300, p, c);
-					iv.setImageBitmap(bm);
-					CustomDialog.Builder builder = new Builder(context);
-					builder.setContentView(popView).setNegativeButton(R.string.btn_close, null);
-					builder.create().show();
-				} else Toast.makeText(context, getString(R.string.not_support), Toast.LENGTH_SHORT).show();
-			}
-		});
-
-		//打乱
-		tvScr.setOnTouchListener(new View.OnTouchListener() {
-			public boolean onTouch(View v, MotionEvent event) {
-				scrt = true;
-				setTouch(event);
-				return timer.state != 0;
-			}
-		});
-		tvScr.setOnLongClickListener(new View.OnLongClickListener() {
-			public boolean onLongClick(View v) {
-				if(timer.state == 0) {
-					isLongPress = true;
-					LayoutInflater factory = LayoutInflater.from(context);
-					final View view = factory.inflate(R.layout.scr_layout, null);
-					final EditText editText = (EditText) view.findViewById(R.id.etslen);
-					final TextView tvScr = (TextView) view.findViewById(R.id.cnt_scr);
-					tvScr.setMaxWidth((int) (dm.widthPixels * 0.95));
-					tvScr.setText(crntScr);
-					editText.setText(""+Mi.scrLen);
-					if(Mi.scrLen==0) editText.setEnabled(false);
-					else editText.setSelection(editText.getText().length());
-					new CustomDialog.Builder(context).setContentView(view)
-					.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							String et = editText.getText().toString();
-							int len = et.equals("")?0:Integer.parseInt(editText.getText().toString());
-							if(editText.isEnabled() && len>0) {
-								if(len>180) len=180;
-								if(len != Mi.scrLen) {
-									Mi.scrLen = len;
-									if((scrIdx==-1 && scr2idx==17) || (scrIdx==1 && scr2idx==19) || (scrIdx==20 && scr2idx==4))
-										scrState = SCRNONE;
-									newScr(false);
-								}
-							}
-							hideKeyboard(editText);
-						}
-					}).setNegativeButton(R.string.copy_scr, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							ClipboardManager clip=(ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
-							clip.setText(crntScr);
-							Toast.makeText(context, getString(R.string.copy_to_clip), Toast.LENGTH_SHORT).show();
-							hideKeyboard(editText);
-						}
-					}).create().show();
-				}
-				return true;
-			}
-		});
-
-		//计时器
-		tvTimer.setOnTouchListener(new View.OnTouchListener() {
-			public boolean onTouch(View v, MotionEvent event) {
-				scrt = false;
-				if(!usess) {
-					if(stSel[0] == 0) setTouch(event);
-					else if(stSel[0] == 1) inputTime(event.getAction());
-				}
-				return true;
-			}
-		});
-
-		gvTimes.setOnItemClickListener(new GridView.OnItemClickListener() {
-			public void onItemClick(AdapterView<?> arg0, View v, int p, long arg3) {
-				if(isMulp) {
-					if(p/(stSel[3]+2)<Session.resl && p%(stSel[3]+2)==0) singTime(p, stSel[3]+2);
-				}
-				else if(p%3 == 0)
-					singTime(p, 3);
-				else if(p%3==1 && p/3>l1len-2)
-					showAlertDialog(1, p/3);
-				else if(p%3==2 && p/3>l2len-2)
-					showAlertDialog(2, p/3);
-			}
-		});
-
-		//分组平均
-		seMean.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-				for(int i=0; i<Session.resl; i++)
-					if(Session.resp[i] != 2) {
-						showAlertDialog(3, 0);
-						return;
-					}
-			}
-		});
-
-		//分组选项
-		sesOpt.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-				CustomDialog cdialog =
-				new CustomDialog.Builder(context).
-				setItems(R.array.optStr, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						CustomDialog.Builder builder;
-						switch (which) {
-						case 0:	//分组命名
-							LayoutInflater factory = LayoutInflater.from(context);
-							final View view = factory.inflate(R.layout.ses_name, null);
-							final EditText et= (EditText) view.findViewById(R.id.edit_ses);
-							et.setText(sesnames[sesIdx]);
-							et.setSelection(sesnames[sesIdx].length());
-							builder = new Builder(context);
-							builder.setTitle(R.string.sesname).setContentView(view)
-							.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									sesnames[sesIdx]=et.getText().toString();
-									edit.putString("sesname" + sesIdx, sesnames[sesIdx]);
-									edit.commit();
-									sesItems[sesIdx] = (sesIdx + 1) + ". " + sesnames[sesIdx];
-									sesName.setText(getString(R.string.session)+(sesIdx + 1) + " - " + sesnames[sesIdx]);
-									hideKeyboard(et);
-								}
-							}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									hideKeyboard(et);
-								}
-							}).create().show();
-							showKeyboard(et);
-							break;
-						case 1:	//清空成绩
-							if(Session.resl == 0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
-							else {
-								builder = new Builder(context);
-								builder.setTitle(R.string.confirm_clear_session)
-								.setNegativeButton(R.string.btn_cancel, null)
-								.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface arg0, int arg1) {
-										deleteAll();
-									}
-								}).create().show();
-							}
-							break;
-						case 2:	//时间分布直方图
-							int width = dip300;
-							LayoutInflater inflater = LayoutInflater.from(context);
-							final View popView = inflater.inflate(R.layout.popwindow, null);
-							iv = (ImageView) popView.findViewById(R.id.ImageView1);
-							Bitmap bm = Bitmap.createBitmap(width, (int)(width*1.2), Config.ARGB_8888);
-							Canvas c = new Canvas(bm);
-							c.drawColor(0);
-							Paint p = new Paint();
-							p.setAntiAlias(true);
-							Mi.drawHist(width, p, c);
-							iv.setImageBitmap(bm);
-							builder = new Builder(context);
-							builder.setContentView(popView)
-							.setNegativeButton(R.string.btn_close, null).create().show();
-							break;
-						case 3:	//折线图
-							int wid = dip300;
-							inflater = LayoutInflater.from(context);
-							final View pView = inflater.inflate(R.layout.popwindow, null);
-							iv = (ImageView) pView.findViewById(R.id.ImageView1);
-							bm = Bitmap.createBitmap(wid, (int)(wid*0.8), Config.ARGB_8888);
-							c = new Canvas(bm);
-							//c.drawColor(0);
-							p = new Paint();
-							p.setAntiAlias(true);
-							Mi.drawGraph(wid, p, c);
-							iv.setImageBitmap(bm);
-							builder = new Builder(context);
-							builder.setContentView(pView)
-							.setNegativeButton(R.string.btn_close, null).create().show();
-							break;
-//						case 4:	//导出数据库
-//							try {
-//								File f = new File(defPath);
-//								if(!f.exists()) f.mkdirs();
-//								BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(defPath+"Database.dat"), "UTF-8"));
-//								for(int i=0; i<15; i++) {
-//									Cursor cur = dbh.query(i);
-//									int count = cur.getCount();
-//									if(count == 0) continue;
-//									writer.write(i+1+"\r\n");
-//									cur.moveToFirst();
-//									for(int j=0; j<count; j++) {
-//										writer.write(cur.getInt(1)+"\t"+cur.getInt(2)+"\t"+cur.getInt(3)+"\t");
-//										writer.write(cur.getString(4).replace("\n", "\\n")+"\t"+cur.getString(5)+"\t");
-//										if(cur.getString(6) != null) writer.write(cur.getString(6).replace("\t", "\\t")+"\t");
-//										else writer.write(cur.getString(6)+"\t");
-//										writer.write(cur.getInt(7)+"\t"+cur.getInt(8)+"\t"+cur.getInt(9)+"\t"
-//												+cur.getInt(10)+"\t"+cur.getInt(11)+"\t"+cur.getInt(12)+"\r\n");
-//										cur.moveToNext();
-//									}
-//									cur.close();
-//								}
-//								writer.close();
-//								Toast.makeText(context, getString(R.string.saved)+"sdcard/DCTimer/Database.dat", Toast.LENGTH_LONG).show();
-//							} catch (Exception e) {
-//								e.printStackTrace();
-//								Toast.makeText(context, getString(R.string.save_failed), Toast.LENGTH_LONG).show();
-//							}
-//							break;
-//						case 5:	//导入数据库
-//							impDlg.show();
-//							dbCount = 0;
-//							new Thread() {
-//								public void run() {
-//									try {
-//										int table = 1;
-//										BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(defPath+"Database.dat"), "UTF-8"));
-//										String line = "";
-//										ContentValues cv = new ContentValues();
-//										int count = 1;
-//										while (((line = reader.readLine()) != null)) {
-//											if(!line.contains("\t")) {
-//												table = Integer.parseInt(line);
-//												count = 1;
-//											} else {
-//												String[] ts = line.split("\t");
-//												cv.put("id", count++);
-//												cv.put("rest", Integer.parseInt(ts[0]));
-//												cv.put("resp", Integer.parseInt(ts[1]));
-//												cv.put("resd", Integer.parseInt(ts[2]));
-//												cv.put("scr", ts[3].replace("\\n", "\n"));
-//												if(ts[4].equals("null")) cv.put("time", "");
-//												else cv.put("time", ts[4]);
-//												if(ts[5].equals("null")) cv.put("note", "");
-//												else cv.put("note", ts[5].replace("\\t", "\t"));
-//												for(int i=0; i<6; i++)
-//													cv.put("p"+(i+1), Integer.parseInt(ts[i+6]));
-//												dbh.insert(table-1, cv);
-//												dbCount++;
-//												handler.sendEmptyMessage(15);
-//											}
-//										}
-//										reader.close();
-//										handler.sendEmptyMessage(17);
-//									} catch (Exception e) {
-//										e.printStackTrace();
-//										handler.sendEmptyMessage(16);
-//									}
-//									getSession(sesIdx);
-//									handler.sendEmptyMessage(14);
-//									impDlg.dismiss();
-//								}
-//							}.start();
-						}
-					}
-				})
-				.setNegativeButton(getString(R.string.btn_cancel), null).create();
-				showDialog(cdialog);
-			}
-		});
-
-		//恢复默认设置
-		reset.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-				new CustomDialog.Builder(context)
-				.setTitle(R.string.confirm_reset)
-				.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialoginterface, int j) {
-						//TODO
-						wca=false; simss=false; usess=false; invs=Stackmat.inv=false;
-						hidscr=true; conft=true; hidls=false; selSes=false; fulls=false;
-						bgcolor=true; opnl=false; opnd=true; isMulp=false;
-						solSel[0]=0; solSel[1]=1;
-						stSel[0]=0; stSel[1]=0; stSel[2]=1; stSel[3]=0; stSel[4]=1;
-						stSel[5]=0; stSel[6]=0; stSel[7]=1; stSel[8]=3; stSel[9]=0;
-						stSel[10]=0; stSel[11]=2; stSel[12]=0;
-						tvTimer.setTextSize(60); tvScr.setTextSize(18);
-						cl[0] = 0xff66ccff;	cl[1] = 0xff000000;	cl[2] = 0xffff00ff;
-						cl[3] = 0xffff0000;	cl[4] = 0xff009900;
-						int i;
-						for(i=2;i<4;i++) chkb[i].setChecked(true);
-						for(i=0; i<std.length; i++) std[i].setText(itemStr[i][stSel[i]]);
-						btnSol3[0].setText(sol31[solSel[0]]);
-						btnSol3[1].setText(sol32[solSel[1]]);
-						int is[] = {1, 5, 6, 7, 11};
-						for(i=0; i<is.length; i++) stSwitch[is[i]].setBackgroundResource(R.drawable.switch_on);
-						is = new int[] {0, 2, 3, 4, 8, 9, 10, 12};
-						for(i=0; i<is.length; i++) stSwitch[is[i]].setBackgroundResource(R.drawable.switch_off);
-						is = new int[] {10, 6, 10, 35, 0, 50, 10};
-						for(i=0; i<7; i++) skb[i].setProgress(is[i]);
-						intv = 25; frzTime = 0;
-						tabHost.setBackgroundColor(cl[0]);
-						setTextsColor();
-						updateGrid();
-						releaseWakeLock();
-						screenOn=false;
-						edit.remove("cl0");	edit.remove("cl1");	edit.remove("cl2");
-						edit.remove("cl3");	edit.remove("cl4");	edit.remove("wca");
-						edit.remove("cxe");
-						edit.remove("l1am");	edit.remove("l2am");	edit.remove("mnxc");
-						edit.remove("prec");	edit.remove("mulp");	edit.remove("invs");
-						edit.remove("tapt");	edit.remove("intv");	edit.remove("opac");
-						edit.remove("mclr");	edit.remove("prom");	edit.remove("sq1s");
-						edit.remove("l1tp");	edit.remove("l2tp");
-						edit.remove("hidls");	edit.remove("conft");	edit.remove("list1");
-						edit.remove("list2");	edit.remove("timmh");	edit.remove("tiway");
-						edit.remove("cface");	edit.remove("cside");	edit.remove("srate");
-						edit.remove("tfont");	edit.remove("vibra");	edit.remove("sqshp");
-						edit.remove("fulls");	edit.remove("usess");	edit.remove("scron");
-						edit.remove("multp");	edit.remove("minxc");
-						edit.remove("hidscr");	edit.remove("ttsize");	edit.remove("stsize");
-						edit.remove("cube2l");	edit.remove("scrgry");	edit.remove("selses");
-						edit.remove("ismulp");
-						edit.remove("vibtime");	edit.remove("bgcolor");	edit.remove("ssvalue");
-						edit.remove("timerupd");	edit.remove("timeform");
-						edit.remove("screenori");
-						edit.commit();
-					}
-				}).setNegativeButton(R.string.btn_cancel, null).create().show();
-			}
-		});
 	}
 	
-	private void setTextsColor() {
-		// TODO
-		for(int i=0; i<sttlen; i++) stt[i].setTextColor(cl[1]);
-		for(int i=0; i<chkb.length; i++) chkb[i].setTextColor(cl[1]);
-		tvScr.setTextColor(cl[1]);
-		tvTimer.setTextColor(cl[1]);
-		btScr.setTextColor(cl[1]);
-		bt2Scr.setTextColor(cl[1]);
-		btScrv.setTextColor(cl[1]);
-		sesName.setTextColor(cl[1]);
-		seMean.setTextColor(cl[1]);
-		sesOpt.setTextColor(cl[1]);
-		for(int i=0; i<btnSol3.length; i++) 
-			btnSol3[i].setTextColor(cl[1]);
-		for(int i=0; i<std.length; i++)
-			std[i].setTextColor(0x80000000 | (cl[1] & 0xffffff));
-		for(int i=0; i<stdn.length; i++)
-			stdn[i].setTextColor(0x80000000 | (cl[1] & 0xffffff));
-	}
-
-	private View getTabItemView(int index, int[] imgs) {
-		View view = layoutInflater.inflate(R.layout.tab_item_view, null);
-		TextView textView = (TextView) view.findViewById(R.id.tab_name);		
-		textView.setText(mItems[index]);
-		ImageView imageView = (ImageView) view.findViewById(R.id.tab_img);
-		imageView.setImageResource(imgs[index]);
-		return view;
+//	@Override
+//	protected void onStart() {
+//		System.out.println("onStart");
+//		super.onStart();
+//	}
+	
+//	@Override
+//	protected void onPause() {
+//		System.out.println("onPause");
+//		super.onPause();
+//	}
+	
+//	@Override
+//	protected void onResume() {
+//		System.out.println("onResume");
+//		super.onResume();
+//	}
+	
+//	@Override
+//	protected void onStop() {
+//		System.out.println("onStop");
+//		super.onStop();
+//	}
+	
+	@Override
+	protected void onDestroy() {
+		//System.out.println("onDestroy");
+		if(session != null)
+			session.closeDB();
+		super.onDestroy();
 	}
 	
-	private void readConf() {	//TODO
-		selold = scrIdx = (byte) share.getInt("sel", 1);	//打乱种类
-		cl[0] = share.getInt("cl0", 0xff66ccff);	// 背景颜色
-		cl[1] = share.getInt("cl1", Color.BLACK);	// 文字颜色
-		cl[2] = share.getInt("cl2", 0xffff00ff);	//最快单次颜色
-		cl[3] = share.getInt("cl3", Color.RED);	//最慢单次颜色
-		cl[4] = share.getInt("cl4", 0xff009900);	//最快平均颜色
-		wca = share.getBoolean("wca", false);	//WCA观察
-		hidscr = share.getBoolean("hidscr", true);	//隐藏打乱
-		hidls = share.getBoolean("hidls", false);	//成绩列表隐藏打乱
-		conft = share.getBoolean("conft", true);	//提示确认成绩
-		solSel[0] = (byte) share.getInt("cface", 0);	// 十字求解底面
-		solSel[1] = (byte) share.getInt("cside", 1);	// 三阶求解颜色
-		sesIdx = (byte) share.getInt("group", 0);	// 分组
-		scr2idx = (byte) share.getInt("sel2", 0);	// 二级打乱
-		ttsize = share.getInt("ttsize", 60);	//计时器字体
-		stsize = share.getInt("stsize", 18);	//打乱字体
-		stSel[0] = share.getInt("tiway", 0);	// 计时方式
-		stSel[1] = share.getInt("timerupd", 0);	// 计时器更新
-		stSel[2] = share.getBoolean("prec", true) ? 1 : 0;	// 计时精度
-		stSel[3] = share.getInt("multp", 0);	//分段计时
-		isMulp = stSel[3] != 0;
-		stSel[4] = share.getInt("srate", 1);	// 采样频率
-		Stackmat.samplingRate = srate[stSel[4]];
-		stSel[5] = share.getInt("cxe", 0);	//三阶求解
-		stSel[6] = share.getInt("cube2l", 0);	// 二阶底层求解
-		stSel[7] = share.getInt("minxc", 1);	//五魔配色
-		stSel[8] = share.getInt("tfont", 3);	// 计时器字体
-		stSel[9] = share.getInt("screenori", 0);	// 屏幕方向
-		stSel[10] = share.getInt("vibra", 0);	// 震动反馈
-		stSel[11] = share.getInt("vibtime", 2);	// 震动时长
-		stSel[12] = share.getInt("sq1s", 0);	//SQ1复形计算
-		stSel[13] = share.getInt("timeform", 0);	//时间格式
-		stSel[14] = share.getInt("l1tp", 0);	//滚动平均1类型
-		stSel[15] = share.getInt("l2tp", 0);	//滚动平均2类型
-		l1len = share.getInt("l1len", 5);
-		l2len = share.getInt("l2len", 12);
-		bgcolor = share.getBoolean("bgcolor", true);	//使用背景颜色
-		opac = share.getInt("opac", 35);	//背景图不透明度
-		fulls = share.getBoolean("fulls", false);	// 全屏显示
-		usess = share.getBoolean("usess", false);	// ss计时器
-		Stackmat.inv = invs = share.getBoolean("invs", false);	// 反转信号
-		opnl = share.getBoolean("scron", false);	// 屏幕常亮
-		opnd = share.getBoolean("scrgry", true);	//允许暗屏
-		selSes = share.getBoolean("selses", false);	//自动选择分组
-		picPath = share.getString("picpath", "");	//背景图片路径
-		frzTime = share.getInt("tapt", 0);	//启动延时
-		intv = share.getInt("intv", 25);	//成绩列表行距
-		drop = share.getBoolean("drop", false);	//拍桌子停表
-		sensity = share.getInt("sensity", 25);	//灵敏度
-		outPath = share.getString("scrpath", defPath);
-		for(int i=0; i<15; i++) {
-			sesType[i] = (short) share.getInt("sestp" + i, -1);
-			sesnames[i] = share.getString("sesname" + i, "");
-		}
-		egtype = share.getInt("egtype", 7);
-		egoll = share.getInt("egoll", 254);
-		simss = share.getBoolean("simss", false);
-	}
-
 	@Override
-	protected void onPause() {
-		super.onPause();
-		if(opnd && screenOn) releaseWakeLock();
-	}
-	@Override
-	protected void onResume() {
-		super.onResume();
-		if(opnd && screenOn) acquireWakeLock();
-		List<Sensor> ss = sensor.getSensorList(Sensor.TYPE_ACCELEROMETER);
-		for(Sensor s : ss)
-			sensor.registerListener(this, s, SensorManager.SENSOR_DELAY_NORMAL);
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-		sensor.unregisterListener(this);
+	protected void onSaveInstanceState(Bundle outState) {
+		System.out.println("onSaveInstanceState");
+		super.onSaveInstanceState(outState);
 	}
 	
-	private class OnClickListener implements View.OnClickListener {
-		@Override
-		public void onClick(View v) {
-			switch (v.getId()) {
-			case R.id.stcheck1:	//WCA观察
-				stSwitch[0].setBackgroundResource(wca ? R.drawable.switch_off : R.drawable.switch_on);
-				wca = !wca; edit.putBoolean("wca", wca);
-				break;
-			case R.id.stcheck3:	//模拟ss计时
-				stSwitch[2].setBackgroundResource(simss ? R.drawable.switch_off : R.drawable.switch_on);
-				simss = !simss; edit.putBoolean("simss", simss);
-				break;
-			case R.id.stcheck4:	//使用ss计时
-				stSwitch[3].setBackgroundResource(usess ? R.drawable.switch_off : R.drawable.switch_on);
-				usess = !usess; edit.putBoolean("usess", usess);
-				if(usess) {
-					tvTimer.setText("OFF");
-					if(!stm.isStart) stm.start();
-				} else {
-					if(stm.isStart) stm.stop();
-					if(stSel[0]==0) tvTimer.setText(stSel[2]==0 ? "0.00" : "0.000");
-					else if(stSel[0]==1) tvTimer.setText("IMPORT");
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		menu.clear();
+		menu.add(Menu.NONE, 0, 0, getString(R.string.menu_inscr));
+		menu.add(Menu.NONE, 1, 1, getString(R.string.menu_outscr));
+		menu.add(Menu.NONE, 2, 2, getString(R.string.menu_share));
+		//menu.add(Menu.NONE, 3, 3, getString(R.string.menu_weibo));
+		menu.add(Menu.NONE, 4, 4, getString(R.string.menu_about));
+		menu.add(Menu.NONE, 5, 5, getString(R.string.menu_exit));
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+		case 0:	//导入打乱
+			LayoutInflater factory = LayoutInflater.from(context);
+			int layoutId = R.layout.import_scramble;
+			view = factory.inflate(layoutId, null);
+			final Spinner sp = (Spinner) view.findViewById(R.id.spnScrType);
+			String[] items = getResources().getStringArray(R.array.inscrStr);
+			ArrayAdapter<String> adap = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, items);
+			adap.setDropDownViewResource(R.layout.spinner_dropdown_item);
+			sp.setAdapter(adap);
+			final EditText et0 = (EditText) view.findViewById(R.id.edit_inscr);
+			sp.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+				public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+					insType = position;
 				}
+				public void onNothingSelected(AdapterView<?> arg0) {}
+			});
+			new CustomDialog.Builder(context).setView(view).setTitle(R.string.menu_inscr)
+			.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface di, int i) {
+					hideKeyboard(et0);
+					final String scrs=et0.getText().toString();
+					inScr = new ArrayList<String>();
+					inScrLen = 0;
+					setInScr(scrs);
+					if(inScr.size()>0) newScr(crntScrType);
+				}
+			}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface arg0, int arg1) {
+					hideKeyboard(et0);
+				}
+			}).show();
+			showKeyboard(et0);
+			break;
+		case 1:	//导出打乱
+			if(defPath == null) {
+				Toast.makeText(context, getString(R.string.sd_not_exist), Toast.LENGTH_SHORT).show();
 				break;
-			case R.id.stcheck5:	//信号反转
-				stSwitch[4].setBackgroundResource(invs ? R.drawable.switch_off : R.drawable.switch_on);
-				invs = Stackmat.inv = !invs; edit.putBoolean("invs", invs);
-				break;
-			case R.id.stcheck6:	//隐藏打乱
-				stSwitch[5].setBackgroundResource(hidscr ? R.drawable.switch_off : R.drawable.switch_on);
-				hidscr = !hidscr; edit.putBoolean("hidscr", hidscr);
-				break;
-			case R.id.stcheck7:	//确认时间
-				stSwitch[6].setBackgroundResource(conft ? R.drawable.switch_off : R.drawable.switch_on);
-				conft = !conft; edit.putBoolean("conft", conft);
-				break;
-			case R.id.stcheck8:	//成绩列表隐藏打乱
-				stSwitch[7].setBackgroundResource(hidls ? R.drawable.switch_on : R.drawable.switch_off);
-				hidls = !hidls; edit.putBoolean("hidls", hidls);
-				break;
-			case R.id.stcheck9:	//自动选择分组
-				stSwitch[8].setBackgroundResource(selSes ? R.drawable.switch_off : R.drawable.switch_on);
-				selSes = !selSes; edit.putBoolean("selses", selSes);
-				break;
-			case R.id.stcheck10:	//拍桌子停表
-				stSwitch[12].setBackgroundResource(drop ? R.drawable.switch_off : R.drawable.switch_on);
-				drop = !drop; edit.putBoolean("drop", drop);
-				break;
-			case R.id.stcheck11:	//全屏显示
-				stSwitch[9].setBackgroundResource(fulls ? R.drawable.switch_off : R.drawable.switch_on);
-				if(fulls) getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-				else getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-				fulls = !fulls; edit.putBoolean("fulls", fulls);
-				break;
-			case R.id.stcheck12:	//屏幕常亮
-				stSwitch[10].setBackgroundResource(opnl ? R.drawable.switch_off : R.drawable.switch_on);
-				if(opnl) {
-					if(timer.state != 1) releaseWakeLock();
-				} else acquireWakeLock();
-				opnl = !opnl; edit.putBoolean("scron", opnl);
-				break;
-			case R.id.stcheck13:	//允许变暗
-				stSwitch[11].setBackgroundResource(opnd ? R.drawable.switch_off : R.drawable.switch_on);
-				if(screenOn)releaseWakeLock();
-				opnd = !opnd;
-				if(screenOn)acquireWakeLock();
-				edit.putBoolean("scrgry", opnd);
-				break;
-			case R.id.stcheck14:	//新浪微博授权
-				if(isLogin) {
-					new CustomDialog.Builder(context).setTitle(R.string.con_rsauth)
+			}
+			final LayoutInflater factory1 = LayoutInflater.from(context);
+			layoutId = R.layout.export_scramble;
+			view = factory1.inflate(layoutId, null);
+			final EditText et1 = (EditText) view.findViewById(R.id.edit_scrnum);
+			final EditText et2 = (EditText) view.findViewById(R.id.edit_scrpath);
+			final ImageButton btn = (ImageButton) view.findViewById(R.id.btn_browse);
+			et1.setText("5");
+			et1.setSelection(1);
+			et2.setText(outPath);
+			final EditText et3 = (EditText) view.findViewById(R.id.edit_scrfile);
+			btn.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					selFilePath = et2.getText().toString();
+					int lid = R.layout.file_selector;
+					final View viewb = factory1.inflate(lid, null);
+					listView = (ListView) viewb.findViewById(R.id.list);
+					File f = new File(selFilePath);
+					selFilePath = f.exists()?selFilePath:Environment.getExternalStorageDirectory().getPath()+File.separator;
+					tvFile = (TextView) viewb.findViewById(R.id.text);
+					tvFile.setText(selFilePath);
+					getFileDir(selFilePath, false);
+					listView.setOnItemClickListener(itemListener);
+					new CustomDialog.Builder(context).setTitle(R.string.sel_path).setView(viewb)
 					.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialoginterface, int j) {
-							AccessTokenKeeper.clear(context);
-							isLogin = false;
-							Toast.makeText(context, getString(R.string.rsauth), Toast.LENGTH_SHORT).show();
-							stSwitch[1].setBackgroundResource(R.drawable.switch_off);
-							//wbAuth.setText(getString(R.string.login)); TODO
+							et2.setText(selFilePath+"/");
 						}
-					}).setNegativeButton(R.string.btn_cancel, null)
-					.create().show();
+					}).setNegativeButton(R.string.btn_cancel, null).show();
 				}
-				else {
-					isShare = false;
-					auth();
+			});
+			new CustomDialog.Builder(context).setView(view).setTitle(getString(R.string.menu_outscr)+"("+btScramble.getText()+")")
+			.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface di, int i) {
+					int numt = Integer.parseInt(et1.getText().toString());
+					if(numt>100)numt=100;
+					else if(numt<1)numt=5;
+					final int num = numt;
+					final String path=et2.getText().toString();
+					if(!path.equals(outPath)) {
+						outPath=path;
+						edit.putString("scrpath", path);
+						edit.commit();
+					}
+					final String fileName = et3.getText().toString();
+					File file = new File(path+fileName);
+					if(file.isDirectory()) Toast.makeText(context, getString(R.string.path_illegal), Toast.LENGTH_SHORT).show();
+					else if(file.exists()) {
+						new CustomDialog.Builder(context).setTitle(R.string.path_dupl)
+						.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialoginterface, int j) {
+								outScr(path, fileName, num);
+							}
+						}).setNegativeButton(R.string.btn_cancel, null).show();
+					} else {
+						outScr(path, fileName, num);
+					}
+					hideKeyboard(et1);
 				}
-				break;
-			}
-			edit.commit();
-		}
-	}
-	
-
-	private class OnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
-		@Override
-		public void onStartTrackingTouch(SeekBar seekBar) {
-			int prg = seekBar.getProgress();
-			if(seekBar.getId()==R.id.seekb1)stt[3].setText(getString(R.string.timer_size) + (prg+50));
-			else if(seekBar.getId()==R.id.seekb2)stt[4].setText(getString(R.string.scrsize) + (prg+12));
-			else if(seekBar.getId()==R.id.seekb3)stt[10].setText(getString(R.string.row_spacing) + (prg+20));
-			else if(seekBar.getId()==R.id.seekb5)stt[29].setText(getString(R.string.time_tap) + (prg/20D));
-			else if(seekBar.getId()==R.id.seekb6)stt[37].setText(getString(R.string.stt_ssvalue) + prg);
-			else if(seekBar.getId()==R.id.seekb7)stt[53].setText(getString(R.string.sensitivity) + (prg<15 ? getString(R.string.sen_low) :
-				prg<30 ? getString(R.string.sen_mid) :
-					prg < 45 ? getString(R.string.sen_high) : getString(R.string.sen_ultra)));
-		}
-		@Override
-		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-			int prg = seekBar.getProgress();
-			if(seekBar.getId()==R.id.seekb1)stt[3].setText(getString(R.string.timer_size)+ (prg+50));
-			else if(seekBar.getId()==R.id.seekb2)stt[4].setText(getString(R.string.scrsize)+ (prg+12));
-			else if(seekBar.getId()==R.id.seekb3)stt[10].setText(getString(R.string.row_spacing)+ (prg+20));
-			else if(seekBar.getId()==R.id.seekb5)stt[29].setText(getString(R.string.time_tap)+ (prg/20D));
-			else if(seekBar.getId()==R.id.seekb6)stt[37].setText(getString(R.string.stt_ssvalue) + prg);
-			else if(seekBar.getId()==R.id.seekb7)stt[53].setText(getString(R.string.sensitivity) + (prg<15 ? getString(R.string.sen_low) :
-				prg<30 ? getString(R.string.sen_mid) :
-					prg < 45 ? getString(R.string.sen_high) : getString(R.string.sen_ultra)));
-		}
-		@Override
-		public void onStopTrackingTouch(SeekBar seekBar) {
-			switch (seekBar.getId()) {
-			case R.id.seekb1:	//计时器字体
-				stt[3].setText(getString(R.string.timer_size)+ (seekBar.getProgress()+50));
-				edit.putInt("ttsize", seekBar.getProgress()+50);
-				tvTimer.setTextSize(seekBar.getProgress()+50);
-				break;
-			case R.id.seekb2:	//打乱字体
-				stt[4].setText(getString(R.string.scrsize)+ (seekBar.getProgress()+12));
-				edit.putInt("stsize", seekBar.getProgress()+12);
-				tvScr.setTextSize(seekBar.getProgress()+12);
-				break;
-			case R.id.seekb3:	//成绩列表行距
-				intv=seekBar.getProgress()+20;
-				stt[10].setText(getString(R.string.row_spacing)+ intv);
-				if(Session.resl!=0) {
+			}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					hideKeyboard(et1);
+				}
+			}).show();
+			showKeyboard(et1);
+			break;
+		case 2:	//分享
+			Intent intent=new Intent(Intent.ACTION_SEND);
+			intent.setType("text/plain");	//纯文本
+			intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
+			intent.putExtra(Intent.EXTRA_TEXT, getShareContext());
+			startActivity(Intent.createChooser(intent, getTitle()));
+			break;
+		case 4:	//关于
+			new CustomDialog.Builder(context).setIcon(R.drawable.ic_launcher).setTitle(R.string.abt_title).setMessage(R.string.abt_msg)
+			.setPositiveButton(R.string.btn_upgrade, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
 					new Thread() {
 						public void run() {
-							adapter.setHeight(intv);
-							handler.sendEmptyMessage(18);
+							handler.sendEmptyMessage(8);
+							String ver = Utils.getContent("https://raw.github.com/MeigenChou/DCTimer/master/release/version.txt");
+							if(ver.startsWith("error")) {
+								handler.sendEmptyMessage(9);
+							} else {
+								String[] vers = ver.split("\t");
+								int v = Integer.parseInt(vers[0]);
+								if(v > version) {
+									newVersion = vers[1];
+									StringBuilder sb = new StringBuilder(vers[2]);
+									if(vers.length > 3)
+										for(int i=3; i<vers.length; i++) sb.append("\n"+vers[i]);
+									updateCont = sb.toString();
+									handler.sendEmptyMessage(11);
+								}
+								else handler.sendEmptyMessage(10);
+							}
 						}
 					}.start();
 				}
-				edit.putInt("intv", seekBar.getProgress()+20);
-				break;
-			case R.id.seekb4:	//背景图不透明度
-				if(!bgcolor) setBgPic(bitmap, seekBar.getProgress());
-				opac = seekBar.getProgress();
-				edit.putInt("opac", opac);
-				break;
-			case R.id.seekb5:	//启动延时
-				frzTime=seekBar.getProgress();
-				stt[29].setText(getString(R.string.time_tap)+ (frzTime/20D));
-				edit.putInt("tapt", frzTime);
-				break;
-			case R.id.seekb6:	//ss参数
-				int ssvalue = seekBar.getProgress();
-				stt[37].setText(getString(R.string.stt_ssvalue) + ssvalue);
-				Stackmat.switchThreshold = ssvalue;
-				edit.putInt("ssvalue", ssvalue);
-				break;
-			case R.id.seekb7:	//灵敏度
-				sensity = seekBar.getProgress();
-				edit.putInt("sensity", sensity);
-				stt[53].setText(getString(R.string.sensitivity) + (sensity<15 ? getString(R.string.sen_low) :
-					sensity<30 ? getString(R.string.sen_mid) :
-						sensity < 45 ? getString(R.string.sen_high) : getString(R.string.sen_ultra)));
-				break;
-			}
+			})
+			.setNegativeButton(R.string.btn_close, null).show();
+			break;
+		case 5:	//退出
+			if(session != null)
+				session.closeDB();
+			edit.putInt("sel", scrIdx);
+			edit.putInt("sel2", scr2idx);
 			edit.commit();
+			android.os.Process.killProcess(android.os.Process.myPid());
+		}
+		return true;
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == 1) {	//设置背景图片
+			if (resultCode == RESULT_OK) {
+				Uri uri = data.getData();
+				ContentResolver cr = getContentResolver();
+				Cursor c = cr.query(uri, null, null, null, null);
+				c.moveToFirst();
+				picPath = c.getString(1);
+				System.out.println("文件路径 " + picPath);
+				bgcolor = false;
+				edit.putString("picpath", picPath);
+				edit.putBoolean("bgcolor", false);
+				edit.commit();
+				try {
+					bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
+					bitmap = getBgPic(bitmap);
+					setBgPic(bitmap, opac);
+					setBorders();
+				} catch (Exception e) {
+					Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+				} catch (OutOfMemoryError e) {
+					Toast.makeText(context, "Out of memory error: bitmap size exceeds VM budget", Toast.LENGTH_SHORT).show();
+				}
+				c.close();
+			}
 		}
 	}
-
-	private OnItemClickListener itemListener = new OnItemClickListener() {
-		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-			selFilePath = paths.get(arg2);
-			tvFile.setText(selFilePath);
-			getFileDir(selFilePath);
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+			if(timer.state == 1) {
+				timer.count();
+				viewsVisibility(true);
+				if(!wca) {isp2=0; idnf=true;}
+				//newScr(false);
+				confirmTime((int)timer.time);
+				timer.state = 0;
+				if(!opnl) releaseWakeLock();
+			} else if(timer.state == 2) {
+				timer.stopi();
+				tvTimer.setText(stSel[2]==0 ? "0.00" : "0.000");
+				viewsVisibility(true);
+				if(!opnl) releaseWakeLock();
+			} else if(event.getRepeatCount() == 0) {
+				if((System.currentTimeMillis() - exitTime) > 2000) {
+					Toast.makeText(context, getString(R.string.again_exit), Toast.LENGTH_SHORT).show();
+					exitTime = System.currentTimeMillis();
+				} else {
+					edit.putInt("sel", scrIdx);
+					edit.putInt("sel2", scr2idx);
+					edit.commit();
+		            finish();
+		        }
+			}
+			return false;
+		case KeyEvent.KEYCODE_Q:	setScramble(-1, 10);	break;	//SQ1
+		case KeyEvent.KEYCODE_W:	setScramble(-1, 3);	break;	//二阶
+		case KeyEvent.KEYCODE_E:	setScramble(-1, 0);	break;	//三阶
+		case KeyEvent.KEYCODE_R:	setScramble(2, 0);	break;	//四阶
+		case KeyEvent.KEYCODE_T:	setScramble(-1, 2);	break;	//五阶
+		case KeyEvent.KEYCODE_Y:	setScramble(-1, 13);	break;	//六阶
+		case KeyEvent.KEYCODE_U:	setScramble(-1, 14);	break;	//七阶
+		case KeyEvent.KEYCODE_M:	setScramble(-1, 8);	break;	//五魔
+		case KeyEvent.KEYCODE_P:	setScramble(-1, 9);	break;	//金字塔
+		case KeyEvent.KEYCODE_K:	setScramble(-1, 11);	break;	//魔表
+		case KeyEvent.KEYCODE_S:	setScramble(-1, 12);	break;	//斜转
+		case KeyEvent.KEYCODE_N:	newScr(crntScrType);	break;	//新打乱
+		case KeyEvent.KEYCODE_Z:	//删除最后成绩
+			if(Session.resl==0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
+			else new CustomDialog.Builder(context).setTitle(R.string.confirm_del_last)
+			.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					delete(Session.resl-1, isMulp ? stSel[3]+2 : 3);
+				}
+			}).setNegativeButton(R.string.btn_cancel, null).show();
+			break;
+		case KeyEvent.KEYCODE_A:	//删除所有成绩
+			if(Session.resl==0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
+			else new CustomDialog.Builder(context).setTitle(R.string.confirm_clear_session)
+			.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {deleteAll();}
+			}).setNegativeButton(R.string.btn_cancel, null).show();
+			break;
+		case KeyEvent.KEYCODE_D:	//最近一次成绩
+			if(Session.resl==0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
+			else new CustomDialog.Builder(context).setTitle(getString(R.string.show_time) + Statistics.distime(Session.resl-1, true))
+			.setItems(R.array.rstcon, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					switch (which) {
+					case 0: update(Session.resl-1, (byte) 0); break;
+					case 1: update(Session.resl-1, (byte) 1); break;
+					case 2: update(Session.resl-1, (byte) 2); break;
+					}
+				}
+			}).setNegativeButton(getString(R.string.btn_cancel), null).show();
 		}
+		return super.onKeyDown(keyCode, event);
 	};
-
-	private OnCheckedChangeListener listener = new OnCheckedChangeListener() {
+	
+	private OnCheckedChangeListener mOnTabChangeListener = new OnCheckedChangeListener() {
 		@Override
 		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-			switch (buttonView.getId()) {
-			//EG训练打乱
-			case R.id.checkcll:
-				if(isChecked) egtype |= 4;
-				else egtype &= 3;
-				edit.putInt("egtype", egtype);
-				break;
-			case R.id.checkeg1:
-				if(isChecked) egtype |= 2;
-				else egtype &= 5;
-				edit.putInt("egtype", egtype);
-				break;
-			case R.id.checkeg2:
-				if(isChecked) egtype |= 1;
-				else egtype &= 6;
-				edit.putInt("egtype", egtype);
-				break;
-			case R.id.checkegpi:
-				if(isChecked) {
-					egoll |= 128;
-					if(chkb[5].isChecked()) {chkb[5].setChecked(false); egoll &= 254;}
+			if(isChecked) {
+				int pos = 0;
+				switch (buttonView.getId()) {
+				case R.id.radio_1:
+					pos = 0;
+					break;
+				case R.id.radio_2:
+					pos = 1;
+					break;
+				case R.id.radio_3:
+					pos = 2;
+					break;
 				}
-				else egoll &= 127;
-				edit.putInt("egoll", egoll);
-				setEgOll();
-				break;
-			case R.id.checkegh:
-				if(isChecked) {
-					egoll |= 64;
-					if(chkb[5].isChecked()) {chkb[5].setChecked(false); egoll &= 254;}
+				tabHost.setCurrentTab(pos);
+				for(int i=0; i<3; i++) {
+					if(i == pos) {
+						rbTab[i].setTextColor(0xff3d9ee8);
+						Drawable dr = getResources().getDrawable(resId[i + 3]);
+						rbTab[i].setCompoundDrawablesWithIntrinsicBounds(null, dr, null, null);
+					} else {
+						rbTab[i].setTextColor(0xff747474);
+						Drawable dr = getResources().getDrawable(resId[i]);
+						rbTab[i].setCompoundDrawablesWithIntrinsicBounds(null, dr, null, null);
+					}
 				}
-				else egoll &= 191;
-				edit.putInt("egoll", egoll);
-				setEgOll();
-				break;
-			case R.id.checkegu:
-				if(isChecked) {
-					egoll |= 32;
-					if(chkb[5].isChecked()) {chkb[5].setChecked(false); egoll &= 254;}
-				}
-				else egoll &= 223;
-				edit.putInt("egoll", egoll);
-				setEgOll();
-				break;
-			case R.id.checkegt:
-				if(isChecked) {
-					egoll |= 16;
-					if(chkb[5].isChecked()) {chkb[5].setChecked(false); egoll &= 254;}
-				}
-				else egoll &= 239;
-				edit.putInt("egoll", egoll);
-				setEgOll();
-				break;
-			case R.id.checkegl:
-				if(isChecked) {
-					egoll |= 8;
-					if(chkb[5].isChecked()) {chkb[5].setChecked(false); egoll &= 254;}
-				}
-				else egoll &= 247;
-				edit.putInt("egoll", egoll);
-				setEgOll();
-				break;
-			case R.id.checkegs:
-				if(isChecked) {
-					egoll |= 4;
-					if(chkb[5].isChecked()) {chkb[5].setChecked(false); egoll &= 254;}
-				}
-				else egoll &= 251;
-				edit.putInt("egoll", egoll);
-				setEgOll();
-				break;
-			case R.id.checkega:
-				if(isChecked) {
-					egoll |= 2;
-					if(chkb[5].isChecked()) {chkb[5].setChecked(false); egoll &= 254;}
-				}
-				else egoll &= 253;
-				edit.putInt("egoll", egoll);
-				setEgOll();
-				break;
-			case R.id.checkegn:
-				if(isChecked) {
-					egoll |= 1;
-					for(int i=6; i<13; i++)
-						if(chkb[i].isChecked()) chkb[i].setChecked(false);
-				}
-				else egoll &= 254;
-				edit.putInt("egoll", egoll);
-				setEgOll();
-				break;
 			}
-			edit.commit();
 		}
 	};
-
-	private View.OnTouchListener comboListener = new View.OnTouchListener() {
+	
+	private OnTouchListener mOnTouchListener = new OnTouchListener() {
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
-			int selt;
+			v.performClick();
 			switch (v.getId()) {
-			case R.id.lay01: selt = 0; break;
-			case R.id.lay02: selt = 1; break;
-			case R.id.lay03: selt = 2; break;
-			case R.id.lay04: selt = 3; break;
-			case R.id.lay05: selt = 4; break;
-			case R.id.lay06: selt = 5; break;
-			case R.id.lay07: selt = 6; break;
-			case R.id.lay08: selt = 7; break;
-			case R.id.lay09: selt = 8; break;
-			case R.id.lay10: selt = 9; break;
-			case R.id.lay11: selt = 10; break;
-			case R.id.lay12: selt = 11; break;
-			case R.id.lay23: selt = 12; break;
-			case R.id.lay18: selt = 13; break;
-			case R.id.lay25: selt = 14; break;
-			case R.id.lay26: selt = 15; break;
-			default: selt = -1; break;
+			case R.id.tv_scr:
+				scrt = true;
+				setTouch(event);
+				return timer.state != 0;
+			case R.id.tv_timer:
+				scrt = false;
+				if(stSel[0] == 0) setTouch(event);
+				else if(stSel[0] == 1) inputTime(event.getAction());
+				return true;
 			}
-			final int sel = selt;
+			return false;
+		}
+	};
+	
+	private OnTouchListener comboListener = new OnTouchListener() {
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			final int sel;
+			switch (v.getId()) {
+			case R.id.lay01: sel = 0; break;
+			case R.id.lay02: sel = 1; break;
+			case R.id.lay03: sel = 2; break;
+			case R.id.lay04: sel = 3; break;
+			case R.id.lay26: sel = 4; break;
+			case R.id.lay06: sel = 5; break;
+			case R.id.lay07: sel = 6; break;
+			case R.id.lay08: sel = 7; break;
+			case R.id.lay09: sel = 8; break;
+			case R.id.lay10: sel = 9; break;
+			case R.id.lay11: sel = 10; break;
+			case R.id.lay12: sel = 11; break;
+			case R.id.lay23: sel = 12; break;
+			case R.id.lay18: sel = 13; break;
+			case R.id.lay25: sel = 14; break;
+			default: sel = -1; break;
+			}
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				llay[sel].setBackgroundColor(0x80ffffff);
+				llayout[sel].setBackgroundColor(0x80ffffff);
 				break;
 			case MotionEvent.ACTION_UP:
-				CustomDialog dialog = 
-				new CustomDialog.Builder(context).setSingleChoiceItems(staid[sel], stSel[sel], new DialogInterface.OnClickListener() {
+				v.performClick();
+				new CustomDialog.Builder(context).setSingleChoiceItems(staid[sel], stSel[sel], new OnClickListener() {
+					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						if(stSel[sel] != which) {
 							stSel[sel] = which;
 							switch (sel) {
 							case 0:	//计时方式
-								if (!usess) {
-									if (which == 0) tvTimer.setText(stSel[2]==0 ? "0.00" : "0.000");
-									else tvTimer.setText("IMPORT");
-								}
+								if (which == 0) tvTimer.setText(stSel[2]==0 ? "0.00" : "0.000");
+								else tvTimer.setText("IMPORT");
 								edit.putInt("tiway", which);
 								break;
 							case 1:	//计时器更新方式
 								edit.putInt("timerupd", which);
 								break;
 							case 2:	//计时精确度
-								if(which == 0) {edit.putBoolean("prec", false); if(stSel[0]==0) tvTimer.setText("0.00");}
-								else {edit.putBoolean("prec", true); if(stSel[0]==0) tvTimer.setText("0.000");}
+								edit.putBoolean("prec", which != 0);
+								if(stSel[0]==0) tvTimer.setText(which==0 ? "0.00" : "0.000");
 								if(Session.resl != 0) {
-									new Thread() {
-										public void run() {
-											adapter.refresh(listLen);
-											handler.sendEmptyMessage(18);
-										}
-									}.start();
-									seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
+									btSesMean.setText(getString(R.string.session_average) + Statistics.sesMean());
+									updateGrid();
 								}
 								break;
 							case 3:	//分段计时
 								if(which == 0) {
-									isMulp = false; Session.mulp = null;
+									isMulp = false;
+									Session.mulp = null;
 									listLen = (Session.resl!=0) ? Session.resl*3 : 0;
-								} else if(!isMulp) {
-									isMulp=true;
-									Session.mulp = new int[6][Session.rest.length];
-									if(Session.resl > 0)
-										session.getMultData();
+								} else {
 									listLen = Session.resl!=0 ? (which+2)*(Session.resl+1) : 0;
-								}
-								else {
-									listLen = Session.resl!=0 ? (which+2)*(Session.resl+1) : 0;
+									if(!isMulp) {
+										isMulp = true;
+										Session.mulp = new int[6][Session.result.length];
+										if(Session.resl > 0)
+											session.getMultData();
+									}
 								}
 								edit.putInt("multp", which);
 								setGridView();
 								setGvTitle();
 								break;
-							case 4:	//采样频率
-								if(stm.creatAudioRecord((int)srate[which]));
-								else Toast.makeText(context, getString(R.string.sr_not_support), Toast.LENGTH_SHORT).show();
-								edit.putInt("srate", which);
+							case 4:	//滚动平均2类型
+								edit.putInt("l2tp", which);
+								if(!isMulp) setGvTitle();
+								if(Session.resl>0 && !isMulp) {
+									setGvTitle();
+									updateGrid();
+								}
 								break;
 							case 5:	//三阶求解
 								edit.putInt("cxe", which);
-								if(scrIdx==1 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19)) {
-									if(which==0)tvScr.setText(crntScr);
+								if(scrIdx==-1 && (scr2idx==0 || scr2idx==5 || scr2idx==6 || scr2idx==7) ||
+										scrIdx==1 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19)) {
+									if(which == 0) tvScramble.setText(crntScr);
 									else new Thread() {
 										public void run() {
-											handler.sendEmptyMessage(6);
-											switch(stSel[5]) {
-											case 1: extsol="\n"+Cross.cross(crntScr, solSel[0], solSel[1]); break;
-											case 2: extsol="\n"+Cross.xcross(crntScr, solSel[1]); break;
-											case 3: extsol="\n"+EOline.eoLine(crntScr, solSel[1]); break;
-											case 4: extsol="\n"+PetrusxRoux.roux(crntScr, solSel[1]); break;
-											case 5: extsol="\n"+PetrusxRoux.petrus(crntScr, solSel[1]); break;
-											}
+											handler.sendEmptyMessage(4);
+											scrambler.extSol3(stSel[5], crntScr);
+											extsol = scrambler.sc;
 											handler.sendEmptyMessage(3);
 											scrState = NEXTSCRING;
-											nextScr = Mi.setScr((scrIdx<<5)|scr2idx, false);
+											nextScr = scrambler.getScramble((scrIdx<<5)|scr2idx, false);
 											scrState = SCRDONE;
 										}
 									}.start();
@@ -1407,15 +874,15 @@ public class DCTimer extends Activity implements SensorEventListener {
 								break;
 							case 6:	//二阶底面
 								edit.putInt("cube2l", which);
-								if(scrIdx==0) {
-									if(which==0)tvScr.setText(crntScr);
+								if(scrIdx == 0) {
+									if(which == 0) tvScramble.setText(crntScr);
 									else if(scr2idx < 3) new Thread() {
 										public void run() {
-											handler.sendEmptyMessage(6);
-											extsol = "\n"+Cube2bl.cube2layer(crntScr, stSel[6]);
+											handler.sendEmptyMessage(4);
+											extsol = "\n"+solver.Cube2bl.cube2layer(crntScr, stSel[6]);
 											handler.sendEmptyMessage(3);
 											scrState = NEXTSCRING;
-											nextScr = Mi.setScr((scrIdx<<5)|scr2idx, false);
+											nextScr = scrambler.getScramble((scrIdx<<5)|scr2idx, false);
 											scrState = SCRDONE;
 										}
 									}.start();
@@ -1444,27 +911,22 @@ public class DCTimer extends Activity implements SensorEventListener {
 									if(stSel[12] > 0) {
 										new Thread() {
 											public void run() {
-												handler.sendEmptyMessage(6);
-												extsol = " " + (stSel[12]==1 ? Sq1Shape.solveTrn(crntScr) : Sq1Shape.solveTws(crntScr));
+												handler.sendEmptyMessage(4);
+												extsol = " " + (stSel[12]==1 ? solver.Sq1Shape.solveTrn(crntScr) : solver.Sq1Shape.solveTws(crntScr));
 												handler.sendEmptyMessage(1);
 												scrState = NEXTSCRING;
-												nextScr = Mi.setScr((scrIdx<<5)|scr2idx, false);
+												nextScr = scrambler.getScramble((scrIdx<<5)|scr2idx, false);
 												scrState = SCRDONE;
 											}
 										}.start();
 									}
-									else tvScr.setText(crntScr);
+									else tvScramble.setText(crntScr);
 								}
 								break;
 							case 13:	//时间格式
 								edit.putInt("timeform", which);
 								if(Session.resl > 0) {
-									new Thread() {
-										public void run() {
-											adapter.refresh(listLen);
-											handler.sendEmptyMessage(18);
-										}
-									}.start();
+									updateGrid();
 								}
 								break;
 							case 14:	//滚动平均1类型
@@ -1472,289 +934,1035 @@ public class DCTimer extends Activity implements SensorEventListener {
 								if(!isMulp) setGvTitle();
 								if(Session.resl>0 && !isMulp) {
 									setGvTitle();
-									new Thread() {
-										public void run() {
-											adapter.refresh(listLen);
-											handler.sendEmptyMessage(18);
-										}
-									}.start();
-								}
-								break;
-							case 15:	//滚动平均2类型
-								edit.putInt("l2tp", which);
-								if(!isMulp) setGvTitle();
-								if(Session.resl>0 && !isMulp) {
-									setGvTitle();
-									new Thread() {
-										public void run() {
-											adapter.refresh(listLen);
-											handler.sendEmptyMessage(18);
-										}
-									}.start();
+									updateGrid();
 								}
 								break;
 							}
 							edit.commit();
 							std[sel].setText(itemStr[sel][which]);
 						}
+						dialog.dismiss();
 					}
-				}).setNegativeButton(R.string.btn_close, null).create();
-				showDialog(dialog);
+				}).setNegativeButton(R.string.btn_close, null).show();
 			case MotionEvent.ACTION_CANCEL:
-				llay[sel].setBackgroundColor(0);
+				llayout[sel].setBackgroundColor(0);
 				break;
 			}
 			return false;
 		}
 	};
-
-	private View.OnTouchListener touchListener = new View.OnTouchListener() {
+	
+	private OnTouchListener touchListener = new OnTouchListener() {
+		private ColorPickerView colorPickerView;
+		private ColorSchemeView colorSchemeView;
 		@Override
-		public boolean onTouch(View v, MotionEvent event) { //TODO
-			int sel;
+		public boolean onTouch(View v, MotionEvent event) {
+			final int sel;
+			v.performClick();
 			switch (v.getId()) {
-			case R.id.lay16: sel = 16; break;
-			case R.id.lay17: sel = 17; break;
-			case R.id.lay22: sel = 18; break;
-			case R.id.lay19: sel = 19; break;
-			case R.id.lay20: sel = 20; break;
-			case R.id.lay21: sel = 21; break;
-			case R.id.lay13: sel = 22; break;
-			case R.id.lay24: sel = 23; break;
-			case R.id.lay14: sel = 24; break;
-			case R.id.lay15: sel = 25; break;
-			case R.id.lay27: sel = 26; break;
-			case R.id.lay28: sel = 27; break;
-			default: sel = -1; break;
+			case R.id.lay16: sel = 15; break;
+			case R.id.lay17: sel = 16; break;
+			case R.id.lay22: sel = 17; break;
+			case R.id.lay19: sel = 18; break;
+			case R.id.lay20: sel = 19; break;
+			case R.id.lay21: sel = 20; break;
+			case R.id.lay13: sel = 21; break;
+			case R.id.lay24: sel = 22; break;
+			case R.id.lay14: sel = 23; break;
+			case R.id.lay15: sel = 24; break;
+			case R.id.lay27: sel = 25; break;
+			case R.id.lay28: sel = 26; break;
+			default: sel = -1;
 			}
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				llay[sel].setBackgroundColor(0x80ffffff);
+				llayout[sel].setBackgroundColor(0x80ffffff);
 				break;
 			case MotionEvent.ACTION_UP:
 				switch (sel) {
-				case 16:	//最慢单次颜色
-					cpDialog = new ColorPicker(context, cl[3], new ColorPicker.OnColorChangedListener() {
+				case 15:	//最慢单次颜色
+					colorPickerView = new ColorPickerView(context, dip300, colors[3]);
+					new CustomDialog.Builder(context).setTitle(R.string.select_color).setView(colorPickerView).setPositiveButton(R.string.btn_ok, new OnClickListener() {
 						@Override
-						public void colorChanged(int color) {
-							cl[3]=color;
-							new Thread() {
-								public void run() {
-									adapter.setWorstColor(cl[3]);
-									handler.sendEmptyMessage(18);
-								}
-							}.start();
+						public void onClick(DialogInterface dialog, int which) {
+							int color = colorPickerView.getColor();
+							colors[3]=color;
 							edit.putInt("cl3", color);
 							edit.commit();
+							new Thread() {
+								public void run() {
+									timesAdapter.setWorstColor(colors[3]);
+									handler.sendEmptyMessage(18);
+								}
+							}.start();
 						}
-					});
-					cpDialog.show();
+					}).setNegativeButton(R.string.btn_cancel, null).show();
 					break;
-				case 17:	//最快平均颜色
-					cpDialog = new ColorPicker(context, cl[4], new ColorPicker.OnColorChangedListener() {
+				case 16:	//最快平均颜色
+					colorPickerView = new ColorPickerView(context, dip300, colors[4]);
+					new CustomDialog.Builder(context).setTitle(R.string.select_color).setView(colorPickerView).setPositiveButton(R.string.btn_ok, new OnClickListener() {
 						@Override
-						public void colorChanged(int color) {
-							cl[4]=color;
-							if(!isMulp) 
-								new Thread() {
-									public void run() {
-										adapter.setBestAvgColor(cl[4]);
-										handler.sendEmptyMessage(18);
-									}
-								}.start();
+						public void onClick(DialogInterface dialog, int which) {
+							int color = colorPickerView.getColor();
+							colors[4]=color;
 							edit.putInt("cl4", color);
 							edit.commit();
+							new Thread() {
+								public void run() {
+									timesAdapter.setBestAvgColor(colors[4]);
+									handler.sendEmptyMessage(18);
+								}
+							}.start();
 						}
-					});
-					cpDialog.show();
+					}).setNegativeButton(R.string.btn_cancel, null).show();
 					break;
-				case 18:	//背景图片
+				case 17:	//背景图片
 					Intent intent = new Intent();
-					intent.setType("image/*");	//开启Pictures画面Type设定为image
-					intent.setAction(Intent.ACTION_GET_CONTENT);	//使用Intent.ACTION_GET_CONTENT这个Action
-					startActivityForResult(intent, 1);	//取得相片后返回本画面
+					intent.setType("image/*");
+					intent.setAction(Intent.ACTION_GET_CONTENT);
+					startActivityForResult(intent, 1);
 					break;
-				case 19:	//配色设置
-					int[] colors={share.getInt("csn1", Color.YELLOW), share.getInt("csn2", Color.BLUE), share.getInt("csn3", Color.RED),
+				case 18:	//配色设置
+					int[] cs = {share.getInt("csn1", Color.YELLOW), share.getInt("csn2", Color.BLUE), share.getInt("csn3", Color.RED),
 							share.getInt("csn4", Color.WHITE), share.getInt("csn5", 0xff009900), share.getInt("csn6", 0xffff8026)};
-					ColorScheme dialog = new ColorScheme(context, 1, colors, new ColorScheme.OnSchemeChangedListener() {
-						@Override
-						public void schemeChanged(int idx, int color) {
-							edit.putInt("csn"+idx, color);
-							edit.commit();
-						}
-					});
-					dialog.setTitle(getString(R.string.scheme_cube));
-					dialog.show();
+					colorSchemeView = new ColorSchemeView(context, dip300, cs, 1);
+					new CustomDialog.Builder(context).setTitle("NxNxN").setView(colorSchemeView)
+						.setNegativeButton(R.string.btn_close, null).show();
 					break;
-				case 20:	//金字塔配色
-					colors = new int[] {share.getInt("csp1", Color.RED), share.getInt("csp2", 0xff009900),
+				case 19:	//金字塔配色
+					cs = new int[] {share.getInt("csp1", Color.RED), share.getInt("csp2", 0xff009900),
 							share.getInt("csp3", Color.BLUE), share.getInt("csp4", Color.YELLOW)};
-					dialog = new ColorScheme(context, 2, colors, new ColorScheme.OnSchemeChangedListener() {
-						@Override
-						public void schemeChanged(int idx, int color) {
-							edit.putInt("csp"+idx, color);
-							edit.commit();
-						}
-					});
-					dialog.setTitle(getString(R.string.scheme_pyrm));
-					dialog.show();
+					colorSchemeView = new ColorSchemeView(context, dip300, cs, 2);
+					new CustomDialog.Builder(context).setTitle("Pyraminx").setView(colorSchemeView)
+						.setNegativeButton(R.string.btn_close, null).show();
 					break;
-				case 21:	//SQ配色
-					colors = new int[] {share.getInt("csq1", Color.YELLOW), share.getInt("csq2", Color.BLUE), share.getInt("csq3", Color.RED),
+				case 20:	//SQ配色
+					cs = new int[] {share.getInt("csq1", Color.YELLOW), share.getInt("csq2", Color.BLUE), share.getInt("csq3", Color.RED),
 							share.getInt("csq4", Color.WHITE), share.getInt("csq5", 0xff009900), share.getInt("csq6", 0xffff8026)};
-					dialog = new ColorScheme(context, 3, colors, new ColorScheme.OnSchemeChangedListener() {
-						@Override
-						public void schemeChanged(int idx, int color) {
-							edit.putInt("csq"+idx, color);
-							edit.commit();
-						}
-					});
-					dialog.setTitle(getString(R.string.scheme_sq));
-					dialog.show();
+					colorSchemeView = new ColorSchemeView(context, dip300, cs, 3);
+					new CustomDialog.Builder(context).setTitle("Square-1").setView(colorSchemeView)
+						.setNegativeButton(R.string.btn_close, null).show();
 					break;
-				case 22:	//背景颜色
-					cpDialog = new ColorPicker(context, cl[0], new ColorPicker.OnColorChangedListener() {
+				case 21:	//背景颜色
+					colorPickerView = new ColorPickerView(context, dip300, colors[0]);
+					new CustomDialog.Builder(context).setTitle(R.string.select_color).setView(colorPickerView).setPositiveButton(R.string.btn_ok, new OnClickListener() {
 						@Override
-						public void colorChanged(int color) {
-							tabHost.setBackgroundColor(color); cl[0]=color; bgcolor=true;
-							edit.putInt("cl0", color); edit.putBoolean("bgcolor", true);
+						public void onClick(DialogInterface dialog, int which) {
+							int color = colorPickerView.getColor();
+							tabHost.setBackgroundColor(color); colors[0]=color; bgcolor=true;
+							edit.putInt("cl0", color);
+							edit.putBoolean("bgcolor", true);
 							edit.commit();
+							setBorders();
 						}
-					});
-					cpDialog.show();
+					}).setNegativeButton(R.string.btn_cancel, null).show();
 					break;
-				case 23:	//Skewb配色
-					colors = new int[] {share.getInt("csw1", Color.YELLOW), share.getInt("csw2", Color.BLUE), share.getInt("csw3", Color.RED),
+				case 22:	//Skewb配色
+					cs = new int[] {share.getInt("csw1", Color.YELLOW), share.getInt("csw2", Color.BLUE), share.getInt("csw3", Color.RED),
 							share.getInt("csw4", Color.WHITE), share.getInt("csw5", 0xff009900), share.getInt("csw6", 0xffff8026)};
-					dialog = new ColorScheme(context, 4, colors, new ColorScheme.OnSchemeChangedListener() {
+					colorSchemeView = new ColorSchemeView(context, dip300, cs, 4);
+					new CustomDialog.Builder(context).setTitle("Skewb").setView(colorSchemeView)
+						.setNegativeButton(R.string.btn_close, null).show();
+					break;
+				case 23:	//文字颜色
+					colorPickerView = new ColorPickerView(context, dip300, colors[1]);
+					new CustomDialog.Builder(context).setTitle(R.string.select_color).setView(colorPickerView).setPositiveButton(R.string.btn_ok, new OnClickListener() {
 						@Override
-						public void schemeChanged(int idx, int color) {
-							edit.putInt("csw"+idx, color);
+						public void onClick(DialogInterface dialog, int which) {
+							int color = colorPickerView.getColor();
+							colors[1]=color;
+							edit.putInt("cl1", color);
 							edit.commit();
-						}
-					});
-					dialog.setTitle(getString(R.string.scheme_skewb));
-					dialog.show();
-					break;
-				case 24:	//文字颜色
-					cpDialog = new ColorPicker(context, cl[1], new ColorPicker.OnColorChangedListener() {
-						@Override
-						public void colorChanged(int color) {
-							cl[1]=color;
 							setTextsColor();
-							new Thread() {
-								public void run() {
-									adapter.setTextColor(cl[1]);
-									handler.sendEmptyMessage(18);
-								}
-							}.start();
 							setGvTitle();
-							edit.putInt("cl1", color);edit.commit();
-						}
-					});
-					cpDialog.show();
-					break;
-				case 25:	//最快单次颜色
-					cpDialog = new ColorPicker(context, cl[2], new ColorPicker.OnColorChangedListener() {
-						@Override
-						public void colorChanged(int color) {
-							cl[2] = color;
 							new Thread() {
 								public void run() {
-									adapter.setBestColor(cl[2]);
+									timesAdapter.setTextColor(colors[1]);
 									handler.sendEmptyMessage(18);
 								}
 							}.start();
+						}
+					}).setNegativeButton(R.string.btn_cancel, null).show();
+					break;
+				case 24:	//最快单次颜色
+					colorPickerView = new ColorPickerView(context, dip300, colors[2]);
+					new CustomDialog.Builder(context).setTitle(R.string.select_color).setView(colorPickerView).setPositiveButton(R.string.btn_ok, new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							int color = colorPickerView.getColor();
+							colors[2]=color;
 							edit.putInt("cl2", color);
 							edit.commit();
+							new Thread() {
+								public void run() {
+									timesAdapter.setBestColor(colors[2]);
+									handler.sendEmptyMessage(18);
+								}
+							}.start();
 						}
-					});
-					cpDialog.show();
+					}).setNegativeButton(R.string.btn_cancel, null).show();
 					break;
-				case 26:	//滚动平均1长度
+				case 25:	//滚动平均1长度
+				case 26:	//滚动平均2长度
 					LayoutInflater factory = LayoutInflater.from(context);
-					final View view = factory.inflate(R.layout.number_input, null);
-					final EditText editText = (EditText) view.findViewById(R.id.editText1);
-					editText.setText(""+l1len);
+					int layoutId = R.layout.number_input;
+					view = factory.inflate(layoutId, null);
+					final EditText editText = (EditText) view.findViewById(R.id.edit_text);
+					editText.setText(String.valueOf(sel==25 ? l1len : l2len));
 					editText.setSelection(editText.getText().length());
-					new CustomDialog.Builder(context).setTitle(R.string.enter_len).setContentView(view)
-					.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+					new CustomDialog.Builder(context).setTitle(R.string.enter_len).setView(view)
+					.setPositiveButton(R.string.btn_ok, new OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							int len = Integer.parseInt(editText.getText().toString());
 							if(len < 3 || len > 1000)
 								Toast.makeText(context, getString(R.string.illegal), Toast.LENGTH_LONG).show();
 							else {
-								l1len = len;
-								edit.putInt("l1len", len);
+								if(sel == 25) {
+									l1len = len;
+									edit.putInt("l1len", len);
+								} else {
+									l2len = len;
+									edit.putInt("l2len", len);
+								}
 								edit.commit();
-								stdn[0].setText("" + len);
+								stdn[sel - 25].setText("" + len);
 								if(Session.resl>0 && !isMulp) {
 									setGvTitle();
-									new Thread() {
-										public void run() {
-											adapter.refresh(listLen);
-											handler.sendEmptyMessage(18);
-										}
-									}.start();
+									updateGrid();
 								}
 							}
 							hideKeyboard(editText);
 						}
-					}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+					}).setNegativeButton(R.string.btn_cancel, new OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							hideKeyboard(editText);
 						}
-					}).create().show();
+					}).show();
 					showKeyboard(editText);
-					break;
-				case 27:	//滚动平均2长度
-					LayoutInflater fact = LayoutInflater.from(context);
-					final View vw = fact.inflate(R.layout.number_input, null);
-					final EditText edt = (EditText) vw.findViewById(R.id.editText1);
-					edt.setText(""+l2len);
-					edt.setSelection(edt.getText().length());
-					new CustomDialog.Builder(context).setTitle(R.string.enter_len).setContentView(vw)
-					.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							int len = Integer.parseInt(edt.getText().toString());
-							if(len < 3 || len > 1000)
-								Toast.makeText(context, getString(R.string.illegal), Toast.LENGTH_LONG).show();
-							else {
-								l2len = len;
-								edit.putInt("l2len", len);
-								edit.commit();
-								stdn[1].setText("" + len);
-								if(Session.resl>0 && !isMulp) {
-									setGvTitle();
-									new Thread() {
-										public void run() {
-											adapter.refresh(listLen);
-											handler.sendEmptyMessage(18);
-										}
-									}.start();
-								}
-							}
-							hideKeyboard(edt);
-						}
-					}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							hideKeyboard(edt);
-						}
-					}).create().show();
-					showKeyboard(edt);
 					break;
 				}
 			case MotionEvent.ACTION_CANCEL:
-				llay[sel].setBackgroundColor(0);
+				llayout[sel].setBackgroundColor(0);
 				break;
 			}
 			return false;
 		}
 	};
-
+	
+	private OnSeekBarChangeListener mOnSeekBarChangeListener = new OnSeekBarChangeListener() {
+		@Override
+		public void onStopTrackingTouch(SeekBar seekBar) {
+			switch (seekBar.getId()) {
+			case R.id.seekb1:	//计时器字体
+				tvSettings[3].setText(getString(R.string.timer_size) + (seekBar.getProgress()+50));
+				edit.putInt("ttsize", seekBar.getProgress()+50);
+				tvTimer.setTextSize(seekBar.getProgress()+50);
+				break;
+			case R.id.seekb2:	//打乱字体
+				tvSettings[4].setText(getString(R.string.scrsize)+ (seekBar.getProgress()+12));
+				edit.putInt("stsize", seekBar.getProgress()+12);
+				tvScramble.setTextSize(seekBar.getProgress()+12);
+				break;
+			case R.id.seekb3:	//成绩列表行距
+				intv=seekBar.getProgress()+20;
+				tvSettings[10].setText(getString(R.string.row_spacing)+ intv);
+				if(Session.resl!=0) {
+					new Thread() {
+						public void run() {
+							timesAdapter.setHeight(intv);
+							handler.sendEmptyMessage(18);
+						}
+					}.start();
+				}
+				edit.putInt("intv", seekBar.getProgress()+20);
+				break;
+			case R.id.seekb4:	//背景图不透明度
+				if(!bgcolor) setBgPic(bitmap, seekBar.getProgress());
+				opac = seekBar.getProgress();
+				edit.putInt("opac", opac);
+				setBorders();
+				break;
+			case R.id.seekb5:	//启动延时
+				frzTime=seekBar.getProgress();
+				tvSettings[29].setText(getString(R.string.time_tap)+ (frzTime/20D));
+				edit.putInt("tapt", frzTime);
+				break;
+			}
+			edit.commit();
+		}
+		
+		@Override
+		public void onStartTrackingTouch(SeekBar seekBar) {
+			setProgress(seekBar);
+		}
+		
+		@Override
+		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+			setProgress(seekBar);
+		}
+		
+		private void setProgress(SeekBar seekBar) {
+			int prg = seekBar.getProgress();
+			switch (seekBar.getId()) {
+			case R.id.seekb1:
+				tvSettings[3].setText(getString(R.string.timer_size)+ (prg+50));
+				break;
+			case R.id.seekb2:
+				tvSettings[4].setText(getString(R.string.scrsize)+ (prg+12));
+				break;
+			case R.id.seekb3:
+				tvSettings[10].setText(getString(R.string.row_spacing)+ (prg+20));
+				break;
+			case R.id.seekb5:
+				tvSettings[29].setText(getString(R.string.time_tap)+ (prg/20.0));
+				break;
+			}
+		}
+	};
+	
+	private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.stcheck1:	//WCA观察
+				wca = !wca;
+				setSwitchOn(ibSwitch[0], wca);
+				edit.putBoolean("wca", wca);
+				edit.commit();
+				break;
+			case R.id.stcheck3:	//模拟ss计时
+				simss = !simss;
+				setSwitchOn(ibSwitch[2], simss);
+				edit.putBoolean("simss", simss);
+				edit.commit();
+				break;
+			case R.id.stcheck6:	//显示打乱状态
+				showscr = !showscr;
+				setSwitchOn(ibSwitch[5], showscr);
+				edit.putBoolean("showscr", showscr);
+				if (showscr) {
+					scrambleView.setVisibility(View.VISIBLE);
+					showScrView(false);
+				}
+				else scrambleView.setVisibility(View.GONE);
+				edit.commit();
+				break;
+			case R.id.stcheck7:	//确认时间
+				conft = !conft;
+				setSwitchOn(ibSwitch[6], conft);
+				edit.putBoolean("conft", conft);
+				edit.commit();
+				break;
+			case R.id.stcheck8:	//成绩详情隐藏打乱
+				setSwitchOn(ibSwitch[7], hidls);
+				hidls = !hidls;
+				edit.putBoolean("hidls", hidls);
+				edit.commit();
+				break;
+			case R.id.stcheck9:	//自动选择打乱
+				selScr = !selScr;
+				setSwitchOn(ibSwitch[8], selScr);
+				edit.putBoolean("selses", selScr);
+				edit.commit();
+				break;
+			case R.id.stcheck11:	//全屏显示
+				fulls = !fulls;
+				setFullScreen(fulls);
+				setSwitchOn(ibSwitch[4], fulls);
+				edit.putBoolean("fulls", fulls);
+				edit.commit();
+				break;
+			case R.id.stcheck12:	//屏幕常亮
+				if(opnl) {
+					if(timer.state != 1) releaseWakeLock();
+				} else acquireWakeLock();
+				opnl = !opnl;
+				setSwitchOn(ibSwitch[3], opnl);
+				edit.putBoolean("scron", opnl);
+				edit.commit();
+				break;
+			case R.id.stcheck15:	//等宽打乱字体
+				monoscr = !monoscr;
+				setSwitchOn(ibSwitch[1], monoscr);
+				edit.putBoolean("monoscr", monoscr);
+				edit.commit();
+				setScrambleFont(monoscr ? 0 : 1);
+				break;
+			case R.id.bt_scr:	//选择打乱
+				selScr1 = scrIdx;
+				selScr2 = scr2idx;
+				int resId = R.layout.pop_window;
+				view = LayoutInflater.from(context).inflate(resId, null);
+				ListView lv1 = (ListView) view.findViewById(R.id.list1);
+				scr1Adapter = new TextAdapter(context, scrStr, selScr1+1, 1);
+				lv1.setAdapter(scr1Adapter);
+				lv1.setSelection(selScr1 + 1);
+				lv1.setOnItemClickListener(itemListener);
+				listView = (ListView) view.findViewById(R.id.list2);
+				scr2Adapter = new TextAdapter(context, getResources().getStringArray(get2ndScr(scrIdx)), selScr2, 2);
+				listView.setAdapter(scr2Adapter);
+				listView.setSelection(selScr2);
+				listView.setOnItemClickListener(itemListener);
+				popupWindow = new PopupWindow(view, dip300, dip300, true);
+				popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.choosearea_bg_mid));
+				popupWindow.setTouchable(true);
+				popupWindow.showAsDropDown(v, (btScramble.getWidth()-popupWindow.getWidth())/2, 0);
+				break;
+			case R.id.bt_session:	//选择分组
+				new CustomDialog.Builder(context).setSingleChoiceItems(sesItems, sesIdx, new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						if(sesIdx != which) {
+							sesIdx = (byte) which;
+							getSession(which);
+							btSesMean.setText(getString(R.string.session_average) + Statistics.sesMean());
+							setGridView();
+							edit.putInt("group", sesIdx);
+							edit.commit();
+							tvSesName.setText((sesnames[sesIdx].equals("") ? getString(R.string.session) + (sesIdx+1) : sesnames[sesIdx]));
+							if(selScr && sesType[which] != crntScrType) {
+								scrIdx = sesType[which] >> 5;
+								scr2idx = sesType[which] & 31;
+								set2ndsel();
+							}
+						}
+						dialog.dismiss();
+					}
+				}).setNegativeButton(R.string.btn_close, null).show();
+				break;
+			case R.id.bt_optn:	//分组选项
+				new CustomDialog.Builder(context).setItems(R.array.optStr, new OnClickListener() {
+					EditText et;
+					ImageView iv;
+					LayoutInflater factory;
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+						case 0:	//分组命名
+							factory = LayoutInflater.from(context);
+							int layoutId = R.layout.ses_name;
+							view = factory.inflate(layoutId, null);
+							et = (EditText) view.findViewById(R.id.edit_ses);
+							et.setText(sesnames[sesIdx]);
+							et.setSelection(sesnames[sesIdx].length());
+							new CustomDialog.Builder(context).setTitle(R.string.sesname).setView(view)
+							.setPositiveButton(R.string.btn_ok, new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									sesnames[sesIdx]=et.getText().toString();
+									edit.putString("sesname" + sesIdx, sesnames[sesIdx]);
+									edit.commit();
+									sesItems[sesIdx] = (sesIdx + 1) + ". " + sesnames[sesIdx];
+									tvSesName.setText((sesnames[sesIdx].equals("")) ? getString(R.string.session) + (sesIdx+1) : sesnames[sesIdx]);
+									hideKeyboard(et);
+								}
+							}).setNegativeButton(R.string.btn_cancel, new OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									hideKeyboard(et);
+								}
+							}).show();
+							showKeyboard(et);
+							break;
+						case 1:	//清空成绩
+							if(Session.resl == 0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
+							else {
+								new CustomDialog.Builder(context).setTitle(R.string.confirm_clear_session)
+								.setNegativeButton(R.string.btn_cancel, null)
+								.setPositiveButton(R.string.btn_ok, new OnClickListener() {
+									public void onClick(DialogInterface arg0, int arg1) {
+										deleteAll();
+									}
+								}).show();
+							}
+							break;
+						case 2:	//时间分布直方图
+							factory = LayoutInflater.from(context);
+							layoutId = R.layout.graph;
+							view = factory.inflate(layoutId, null);
+							iv = (ImageView) view.findViewById(R.id.image_view);
+							Bitmap bm = Bitmap.createBitmap(dip300, (int)(dip300*1.2), Config.ARGB_8888);
+							Canvas c = new Canvas(bm);
+							c.drawColor(0);
+							Paint p = new Paint();
+							p.setAntiAlias(true);
+							Graph.drawHist(dip300, p, c);
+							iv.setImageBitmap(bm);
+							new CustomDialog.Builder(context).setView(view)
+								.setNegativeButton(R.string.btn_close, null).show();
+							break;
+						case 3:	//折线图
+							factory = LayoutInflater.from(context);
+							layoutId = R.layout.graph;
+							view = factory.inflate(layoutId, null);
+							iv = (ImageView) view.findViewById(R.id.image_view);
+							bm = Bitmap.createBitmap(dip300, (int)(dip300*0.8), Config.ARGB_8888);
+							c = new Canvas(bm);
+							//c.drawColor(0);
+							p = new Paint();
+							p.setAntiAlias(true);
+							Graph.drawGraph(dip300, p, c);
+							iv.setImageBitmap(bm);
+							new CustomDialog.Builder(context).setView(view)
+								.setNegativeButton(R.string.btn_close, null).show();
+							break;
+						case 4:	//导出数据库
+							if(defPath == null) {
+								Toast.makeText(context, getString(R.string.sd_not_exist), Toast.LENGTH_SHORT).show();
+								break;
+							}
+							factory = LayoutInflater.from(context);
+							layoutId = R.layout.save_stat;
+							view = factory.inflate(layoutId, null);
+							et = (EditText) view.findViewById(R.id.edit_scrpath);
+							ImageButton btn = (ImageButton) view.findViewById(R.id.btn_browse);
+							et.setText(outPath);
+							final EditText et2 = (EditText) view.findViewById(R.id.edit_scrfile);
+							et2.requestFocus();
+							et2.setText("database.db");
+							et2.setSelection(et2.getText().length());
+							btn.setOnClickListener(new View.OnClickListener() {
+								public void onClick(View v) {
+									selFilePath = et.getText().toString();
+									int lid = R.layout.file_selector;
+									final View viewb = factory.inflate(lid, null);
+									listView = (ListView) viewb.findViewById(R.id.list);
+									File f = new File(selFilePath);
+									selFilePath = f.exists() ? selFilePath : Environment.getExternalStorageDirectory().getPath()+File.separator;
+									tvFile = (TextView) viewb.findViewById(R.id.text);
+									tvFile.setText(selFilePath);
+									getFileDir(selFilePath, false);
+									listView.setOnItemClickListener(itemListener);
+									new CustomDialog.Builder(context).setTitle(R.string.sel_path).setView(viewb)
+									.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialoginterface, int j) {
+											et.setText(selFilePath+"/");
+										}
+									}).setNegativeButton(R.string.btn_cancel, null).show();
+								}
+							});
+							new CustomDialog.Builder(context).setView(view).setTitle(R.string.out_db)
+							.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface di, int i) {
+									final String path = et.getText().toString();
+									if(!path.equals(outPath)) {
+										outPath = path;
+										edit.putString("scrpath", path);
+										edit.commit();
+									}
+									final String fileName = et2.getText().toString();
+									File file = new File(path+fileName);
+									if(file.isDirectory()) Toast.makeText(context, getString(R.string.path_illegal), Toast.LENGTH_SHORT).show();
+									else if(file.exists()) {
+										new CustomDialog.Builder(context).setTitle(R.string.path_dupl)
+										.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+											public void onClick(DialogInterface dialoginterface, int k) {
+												exportDB(path+fileName);
+											}
+										}).setNegativeButton(R.string.btn_cancel, null).show();
+									} else exportDB(path+fileName);
+									hideKeyboard(et);
+								}
+							}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface arg0, int arg1) {
+									hideKeyboard(et);
+								}
+							}).show();
+							break;
+						case 5:	//导入数据库
+							if(defPath == null) {
+								Toast.makeText(context, getString(R.string.sd_not_exist), Toast.LENGTH_SHORT).show();
+								break;
+							}
+							factory = LayoutInflater.from(context);
+							layoutId = R.layout.import_db;
+							view = factory.inflate(layoutId, null);
+							et = (EditText) view.findViewById(R.id.edit_scrpath);
+							btn = (ImageButton) view.findViewById(R.id.btn_browse);
+							et.setText(outPath+"database.db");
+							et.setSelection(et.getText().length());
+							btn.setOnClickListener(new View.OnClickListener() {
+								public void onClick(View v) {
+									selFilePath = et.getText().toString();
+									selFilePath = selFilePath.substring(0, selFilePath.lastIndexOf('/'));
+									int lid = R.layout.file_selector;
+									final View viewb = factory.inflate(lid, null);
+									listView = (ListView) viewb.findViewById(R.id.list);
+									File f = new File(selFilePath);
+									selFilePath = f.exists() ? selFilePath : Environment.getExternalStorageDirectory().getPath()+File.separator;
+									tvFile = (TextView) viewb.findViewById(R.id.text);
+									tvFile.setText(selFilePath);
+									getFileDir(selFilePath, true);
+									final CustomDialog fdialog = new CustomDialog.Builder(context).setTitle(R.string.sel_path).setView(viewb)
+											.setNegativeButton(R.string.btn_close, null).create();
+									listView.setOnItemClickListener(new OnItemClickListener() {
+										@Override
+										public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+											selFilePath = paths.get(arg2);
+											File f = new File(selFilePath);
+											if(f.isDirectory()) {
+												tvFile.setText(selFilePath);
+												getFileDir(selFilePath, true);
+											} else {
+												et.setText(selFilePath);
+												fdialog.dismiss();
+											}
+										}
+									});
+									fdialog.show();
+								}
+							});
+							new CustomDialog.Builder(context).setView(view).setTitle(R.string.in_db)
+							.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface di, int i) {
+									hideKeyboard(et);
+									final String path = et.getText().toString();
+									File file = new File(path);
+									if(file.isDirectory()) Toast.makeText(context, getString(R.string.path_illegal), Toast.LENGTH_SHORT).show();
+									else if(file.exists()) {
+										importDB(path);
+									} else Toast.makeText(context, getString(R.string.file_not_exist), Toast.LENGTH_SHORT).show();
+								}
+							}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface arg0, int arg1) {
+									hideKeyboard(et);
+								}
+							}).show();
+						}
+					}
+				}).setNegativeButton(R.string.btn_close, null).show();
+				break;
+			case R.id.solve1:
+				new CustomDialog.Builder(context).setSingleChoiceItems(R.array.faceStr, solSel[0], new OnClickListener(){
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						if(solSel[0] != which) {
+							solSel[0] = which;
+							btSolver3[0].setText(sol31[solSel[0]]);
+							edit.putInt("cface", solSel[0]);
+							edit.commit();
+							if(scrIdx==-1 && (scr2idx==0 || scr2idx==5 || scr2idx==6 || scr2idx==7) ||
+									scrIdx==1 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19))
+								new Thread() {
+									public void run() {
+										handler.sendEmptyMessage(4);
+										scrambler.extSol3(1, crntScr);
+										extsol = "\n" + scrambler.sc;
+										handler.sendEmptyMessage(3);
+										scrState = NEXTSCRING;
+										nextScr = scrambler.getScramble((scrIdx<<5)|scr2idx, false);
+										scrState = SCRDONE;
+									}
+								}.start();
+						}
+						dialog.dismiss();
+					}
+				}).setNegativeButton(R.string.btn_close, null).show();
+				break;
+			case R.id.solve2:
+				new CustomDialog.Builder(context).setSingleChoiceItems(R.array.sideStr, solSel[1], new OnClickListener(){
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						if(solSel[1] != which) {
+							solSel[1] = which;
+							btSolver3[1].setText(sol32[solSel[1]]);
+							edit.putInt("cside", solSel[1]);
+							edit.commit();
+							if(scrIdx==-1 && (scr2idx==0 || scr2idx==5 || scr2idx==6 || scr2idx==7) ||
+									scrIdx==1 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19))
+								new Thread() {
+									public void run() {
+										handler.sendEmptyMessage(4);
+										scrambler.extSol3(stSel[5], crntScr);
+										extsol = "\n" + scrambler.sc;
+										handler.sendEmptyMessage(3);
+										scrState = NEXTSCRING;
+										nextScr = scrambler.getScramble((scrIdx<<5)|scr2idx, false);
+										scrState = SCRDONE;
+									}
+								}.start();
+						}
+						dialog.dismiss();
+					}
+				}).setNegativeButton(R.string.btn_close, null).show();
+				break;
+			case R.id.bt_ses_mean:	//分组平均
+				for(int i=0; i<Session.resl; i++)
+					if(Session.penalty[i] != 2) {
+						showAlertDialog(3, 0);
+						break;
+					}
+				break;
+			case R.id.reset:	//恢复默认设置 TODO
+				new CustomDialog.Builder(context).setTitle(R.string.confirm_reset)
+				.setPositiveButton(R.string.btn_ok, new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+						if(fulls) setFullScreen(false);
+						wca=false; simss=false; monoscr = false;
+						showscr=true; conft=true; hidls=false; selScr=false; fulls=false;
+						bgcolor=true; opnl=false; isMulp=false;
+						solSel[0]=0; solSel[1]=1;
+						stSel[0]=0; stSel[1]=0; stSel[2]=1; stSel[3]=0; stSel[4]=0;
+						stSel[5]=0; stSel[6]=0; stSel[7]=1; stSel[8]=3; stSel[9]=0;
+						stSel[10]=0; stSel[11]=2; stSel[12]=0;
+						stsize = 18; ttsize = 60;
+						l1len = 5; l2len = 12;
+						intv = 25; frzTime = 0;
+						colors[0] = 0xff66ccff;	colors[1] = 0xff000000;	colors[2] = 0xffff00ff;
+						colors[3] = 0xffff0000;	colors[4] = 0xff009900;
+						tabHost.setBackgroundColor(colors[0]);
+						setViews();
+						setTextsColor();
+						updateGrid();
+						releaseWakeLock();
+						edit.remove("cl0");	edit.remove("cl1");	edit.remove("cl2");
+						edit.remove("cl3");	edit.remove("cl4");	edit.remove("wca");
+						edit.remove("cxe");
+						edit.remove("l1am");	edit.remove("l2am");	edit.remove("mnxc");
+						edit.remove("prec");	edit.remove("mulp");	edit.remove("invs");
+						edit.remove("tapt");	edit.remove("intv");	edit.remove("opac");
+						edit.remove("mclr");	edit.remove("prom");	edit.remove("sq1s");
+						edit.remove("l1tp");	edit.remove("l2tp");
+						edit.remove("hidls");	edit.remove("conft");	edit.remove("list1");
+						edit.remove("list2");	edit.remove("timmh");	edit.remove("tiway");
+						edit.remove("cface");	edit.remove("cside");	edit.remove("srate");
+						edit.remove("tfont");	edit.remove("vibra");	edit.remove("sqshp");
+						edit.remove("fulls");	edit.remove("usess");	edit.remove("scron");
+						edit.remove("multp");	edit.remove("minxc");	edit.remove("simss");
+						edit.remove("l1len");	edit.remove("l2len");
+						edit.remove("hidscr");	edit.remove("ttsize");	edit.remove("stsize");
+						edit.remove("cube2l");	edit.remove("scrgry");	edit.remove("selses");
+						edit.remove("ismulp");
+						edit.remove("vibtime");	edit.remove("bgcolor");	edit.remove("ssvalue");
+						edit.remove("sensity");	edit.remove("monoscr");	edit.remove("showscr");
+						edit.remove("timerupd");	edit.remove("timeform");
+						edit.remove("screenori");
+						edit.commit();
+					}
+				}).setNegativeButton(R.string.btn_cancel, null).show();
+			}
+		}
+	};
+	
+	//EG训练打乱
+	private CompoundButton.OnCheckedChangeListener mOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			switch (buttonView.getId()) {
+			case R.id.checkcll:
+				if(isChecked) egtype |= 4;
+				else egtype &= 3;
+				edit.putInt("egtype", egtype);
+				break;
+			case R.id.checkeg1:
+				if(isChecked) egtype |= 2;
+				else egtype &= 5;
+				edit.putInt("egtype", egtype);
+				break;
+			case R.id.checkeg2:
+				if(isChecked) egtype |= 1;
+				else egtype &= 6;
+				edit.putInt("egtype", egtype);
+				break;
+			case R.id.checkegpi:
+				if(isChecked) {
+					egoll |= 128;
+					if(checkBox[5].isChecked()) {checkBox[5].setChecked(false); egoll &= 254;}
+				}
+				else egoll &= 127;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			case R.id.checkegh:
+				if(isChecked) {
+					egoll |= 64;
+					if(checkBox[5].isChecked()) {checkBox[5].setChecked(false); egoll &= 254;}
+				}
+				else egoll &= 191;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			case R.id.checkegu:
+				if(isChecked) {
+					egoll |= 32;
+					if(checkBox[5].isChecked()) {checkBox[5].setChecked(false); egoll &= 254;}
+				}
+				else egoll &= 223;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			case R.id.checkegt:
+				if(isChecked) {
+					egoll |= 16;
+					if(checkBox[5].isChecked()) {checkBox[5].setChecked(false); egoll &= 254;}
+				}
+				else egoll &= 239;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			case R.id.checkegl:
+				if(isChecked) {
+					egoll |= 8;
+					if(checkBox[5].isChecked()) {checkBox[5].setChecked(false); egoll &= 254;}
+				}
+				else egoll &= 247;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			case R.id.checkegs:
+				if(isChecked) {
+					egoll |= 4;
+					if(checkBox[5].isChecked()) {checkBox[5].setChecked(false); egoll &= 254;}
+				}
+				else egoll &= 251;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			case R.id.checkega:
+				if(isChecked) {
+					egoll |= 2;
+					if(checkBox[5].isChecked()) {checkBox[5].setChecked(false); egoll &= 254;}
+				}
+				else egoll &= 253;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			case R.id.checkegn:
+				if(isChecked) {
+					egoll |= 1;
+					for(int i=6; i<13; i++)
+						if(checkBox[i].isChecked()) checkBox[i].setChecked(false);
+				}
+				else egoll &= 254;
+				edit.putInt("egoll", egoll);
+				setEgOll();
+				break;
+			}
+			edit.commit();
+		}
+	};
+	
+	private OnItemClickListener itemListener = new OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			ListView listView = (ListView) arg0;
+			switch (listView.getId()) {
+			case R.id.list:
+				selFilePath = paths.get(arg2);
+				tvFile.setText(selFilePath);
+				getFileDir(selFilePath, false);
+				break;
+			case R.id.list1:
+				if(selScr1 != arg2 - 1) {
+					selScr1 = arg2 - 1;
+					scr1Adapter.setSelectItem(selScr1 + 1);
+					scr1Adapter.notifyDataSetChanged();
+					scr2Adapter.setData(getResources().getStringArray(get2ndScr(arg2-1)));
+					if(selScr1 == scrIdx) scr2Adapter.setSelectItem(scr2idx);
+					else scr2Adapter.setSelectItem(-1);
+					scr2Adapter.notifyDataSetChanged();
+				}
+				break;
+			case R.id.list2:
+				if(selScr1 != scrIdx || selScr2 != arg2) {
+					scrIdx = selScr1;
+					scr2idx = selScr2 = arg2;
+					set2ndsel();
+				}
+				popupWindow.dismiss();
+				break;
+			}
+		}
+	};
+	
+	private OnLongClickListener mOnLongClickListener = new OnLongClickListener() {
+		EditText et;
+		@Override
+		public boolean onLongClick(View v) {
+			System.out.println("onLongClick tvScr");
+			if(timer.state == 0) {
+				isLongPress = true;
+				LayoutInflater factory = LayoutInflater.from(context);
+				int layoutId = R.layout.scr_layout;
+				view = factory.inflate(layoutId, null);
+				et = (EditText) view.findViewById(R.id.etslen);
+				TextView tvScr = (TextView) view.findViewById(R.id.cnt_scr);
+				tvScr.setMaxWidth((int) (dm.widthPixels * 0.95));
+				tvScr.setText(crntScr);
+				et.setText(""+Scrambler.scrLen);
+				if(Scrambler.scrLen==0) et.setEnabled(false);
+				else et.setSelection(et.getText().length());
+				new CustomDialog.Builder(context).setView(view)
+				.setPositiveButton(R.string.btn_ok, new OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						String text = et.getText().toString();
+						int len = text.equals("")?0:Integer.parseInt(text);
+						if(et.isEnabled() && len>0) {
+							if(len>180) len=180;
+							if(len != Scrambler.scrLen) {
+								Scrambler.scrLen = len;
+								if((scrIdx==-1 && scr2idx==17) || (scrIdx==1 && scr2idx==19) || (scrIdx==20 && scr2idx==4))
+									scrState = SCRNONE;
+								newScr(crntScrType);
+							}
+						}
+						hideKeyboard(et);
+					}
+				}).setNegativeButton(R.string.copy_scr, new OnClickListener() {
+					@SuppressWarnings("deprecation")
+					public void onClick(DialogInterface dialog, int which) {
+						if(VERSION.SDK_INT >= 11) {
+							android.content.ClipboardManager clip = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+							clip.setPrimaryClip(ClipData.newPlainText("text", crntScr));
+						}
+						else {
+							android.text.ClipboardManager clip = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+							clip.setText(crntScr);
+						}
+						Toast.makeText(context, getString(R.string.copy_to_clip), Toast.LENGTH_SHORT).show();
+						hideKeyboard(et);
+					}
+				}).show();
+			}
+			return true;
+		}
+	};
+	
+	//设置各种View、TextView颜色、边框等 TODO
+	private void setViews() {
+		//打乱显示
+		tvScramble.setTextSize(stsize);
+		setScrambleFont(monoscr ? 0 : 1);
+		//计时器
+		tvTimer.setTextSize(ttsize);
+		setTimerFont(stSel[8]);
+		if(stSel[0] == 0) {
+			if(stSel[2] == 0) tvTimer.setText("0.00");
+			else tvTimer.setText("0.000");
+		} else if(stSel[0] == 1) tvTimer.setText("IMPORT");
+		//设置选项
+		for(int i=0; i<std.length; i++)
+			std[i].setText(itemStr[i][stSel[i]]);
+		stdn[0].setText(""+l1len);
+		stdn[1].setText(""+l2len);
+		btSolver3[0].setText(sol31[solSel[0]]);
+		btSolver3[1].setText(sol32[solSel[1]]);
+		//屏幕方向
+		this.setRequestedOrientation(screenOri[stSel[9]]);
+		//拖动条
+		int[] ids = {ttsize - 50, stsize - 12, intv - 20, opac, frzTime};
+		for(int i=0; i<ids.length; i++) seekBar[i].setProgress(ids[i]);
+		//设置TextView
+		tvSettings[3].setText(getString(R.string.timer_size) + ttsize);
+		tvSettings[4].setText(getString(R.string.scrsize) + stsize);
+		tvSettings[10].setText(getString(R.string.row_spacing) + intv);
+		tvSettings[29].setText(getString(R.string.time_tap) + frzTime/20D);
+		//设置开关
+		setSwitchOn(ibSwitch[0], wca);
+		setSwitchOn(ibSwitch[1], monoscr);
+		setSwitchOn(ibSwitch[2], simss);
+		setSwitchOn(ibSwitch[3], opnl);
+		setSwitchOn(ibSwitch[4], fulls);
+		setSwitchOn(ibSwitch[5], showscr);
+		setSwitchOn(ibSwitch[6], conft);
+		setSwitchOn(ibSwitch[7], !hidls);
+		setSwitchOn(ibSwitch[8], selScr);
+		//分组平均
+		btSesMean.setText(getString(R.string.session_average) + Statistics.sesMean());
+	}
+	
+	private void setTextsColor() {
+		for(int i=0; i<tvSettings.length; i++) tvSettings[i].setTextColor(colors[1]);
+		for(int i=0; i<checkBox.length; i++) checkBox[i].setTextColor(colors[1]);
+		tvScramble.setTextColor(colors[1]);
+		tvTimer.setTextColor(colors[1]);
+		btScramble.setTextColor(colors[1]);
+		btSesMean.setTextColor(colors[1]);
+		for(int i=0; i<btSolver3.length; i++) 
+			btSolver3[i].setTextColor(colors[1]);
+		for(int i=0; i<std.length; i++)
+			std[i].setTextColor(0x80000000 | (colors[1] & 0xffffff));
+		for(int i=0; i<stdn.length; i++)
+			stdn[i].setTextColor(0x80000000 | (colors[1] & 0xffffff));
+	}
+	
+	private void setBorders() {
+		boolean tag;
+		if(bgcolor) tag = Utils.greyLevel(colors[0]) > 220;
+		else tag = opac < 25;
+		if(tag) {
+			btScramble.setBackgroundResource(R.drawable.button_grey_selector);
+			btSesMean.setBackgroundResource(R.drawable.button_grey_selector);
+			for(int i=0; i<lborder.length; i++) 
+				lborder[i].setBackgroundResource(R.drawable.button_grey);
+			for(int i=0; i<2; i++)
+				btSolver3[i].setBackgroundResource(R.drawable.spinner_grey_style);
+		} else {
+			btScramble.setBackgroundResource(R.drawable.button_white_selector);
+			btSesMean.setBackgroundResource(R.drawable.button_white_selector);
+			for(int i=0; i<lborder.length; i++) 
+				lborder[i].setBackgroundResource(R.drawable.button_white);
+			for(int i=0; i<2; i++)
+				btSolver3[i].setBackgroundResource(R.drawable.spinner_white_style);
+		}
+	}
+	
+	private void readConf() {	//读取配置 TODO
+		scrIdx = (byte) share.getInt("sel", 1);	//打乱种类
+		colors[0] = share.getInt("cl0", 0xff66ccff);	// 背景颜色
+		colors[1] = share.getInt("cl1", 0xff000000);	// 文字颜色
+		colors[2] = share.getInt("cl2", 0xffff00ff);	//最快单次颜色
+		colors[3] = share.getInt("cl3", 0xffff0000);	//最慢单次颜色
+		colors[4] = share.getInt("cl4", 0xff009900);	//最快平均颜色
+		wca = share.getBoolean("wca", false);	//WCA观察
+		showscr = share.getBoolean("showscr", true);	//显示打乱状态
+		monoscr = share.getBoolean("monoscr", false);	//等宽打乱字体
+		hidls = share.getBoolean("hidls", false);	//成绩列表隐藏打乱
+		conft = share.getBoolean("conft", true);	//提示确认成绩
+		solSel[0] = (byte) share.getInt("cface", 0);	// 十字求解底面
+		solSel[1] = (byte) share.getInt("cside", 1);	// 三阶求解颜色
+		if(solSel[1] == 6) solSel[1] = 1;
+		sesIdx = (byte) share.getInt("group", 0);	// 分组
+		scr2idx = (byte) share.getInt("sel2", 0);	// 二级打乱
+		ttsize = share.getInt("ttsize", 60);	//计时器字体
+		stsize = share.getInt("stsize", 18);	//打乱字体
+		stSel[0] = share.getInt("tiway", 0);	// 计时方式
+		stSel[1] = share.getInt("timerupd", 0);	// 计时器更新
+		stSel[2] = share.getBoolean("prec", true) ? 1 : 0;	// 计时精度
+		stSel[3] = share.getInt("multp", 0);	//分段计时
+		isMulp = stSel[3] != 0;
+		stSel[4] = share.getInt("l2tp", 0);	//滚动平均2类型
+		stSel[5] = share.getInt("cxe", 0);	//三阶求解
+		stSel[6] = share.getInt("cube2l", 0);	// 二阶底层求解
+		stSel[7] = share.getInt("minxc", 1);	//五魔配色
+		stSel[8] = share.getInt("tfont", 3);	// 计时器字体
+		stSel[9] = share.getInt("screenori", 0);	// 屏幕方向
+		stSel[10] = share.getInt("vibra", 0);	// 震动反馈
+		stSel[11] = share.getInt("vibtime", 2);	// 震动时长
+		stSel[12] = share.getInt("sq1s", 0);	//SQ1复形计算
+		stSel[13] = share.getInt("timeform", 0);	//时间格式
+		stSel[14] = share.getInt("l1tp", 0);	//滚动平均1类型
+		l1len = share.getInt("l1len", 5);
+		l2len = share.getInt("l2len", 12);
+		bgcolor = share.getBoolean("bgcolor", true);	//使用背景颜色
+		opac = share.getInt("opac", 35);	//背景图不透明度
+		fulls = share.getBoolean("fulls", false);	// 全屏显示
+		opnl = share.getBoolean("scron", false);	// 屏幕常亮
+		selScr = share.getBoolean("selses", false);	//自动选择分组
+		picPath = share.getString("picpath", "");	//背景图片路径
+		frzTime = share.getInt("tapt", 0);	//启动延时
+		intv = share.getInt("intv", 25);	//成绩列表行距
+		outPath = share.getString("scrpath", defPath);
+		for(int i=0; i<15; i++) {
+			sesType[i] = share.getInt("sestype" + i, 32);
+			sesnames[i] = share.getString("sesname" + i, "");
+		}
+		egtype = share.getInt("egtype", 7);
+		egoll = share.getInt("egoll", 254);
+		simss = share.getBoolean("simss", false);
+	}
+	
 	private void setEgOll() {
 		String ego = "PHUTLSAN";
 		StringBuilder sb = new StringBuilder();
@@ -1763,22 +1971,25 @@ public class DCTimer extends Activity implements SensorEventListener {
 				sb.append(ego.charAt(i));
 		egolls = sb.toString();
 	}
-
-	private void viewsVisibility(boolean v) {
+	
+	private void viewsVisibility(boolean v) {	//TODO
 		int vi = v ? 0 : 8;
-		tabHost.getTabWidget().setVisibility(vi);
-		btScr.setVisibility(vi);
-		bt2Scr.setVisibility(vi);
-		btScrv.setVisibility(vi);
-		if(hidscr)tvScr.setVisibility(vi);
+		btScramble.setVisibility(vi);
+		//btScrv.setVisibility(vi);
+		tvScramble.setVisibility(vi);
+		scrambleView.setVisibility(vi);
+		rGroup.setVisibility(vi);
+		if(!fulls) {
+			setFullScreen(!v);
+		}
 	}
-
+	
 	private void set2ndsel() {
+		System.out.println(scrIdx+", "+scr2idx);
 		String[] s = getResources().getStringArray(get2ndScr(scrIdx));
-		if(scr2idx >= s.length) scr2idx = 0;
-		bt2Scr.setText(s[scr2idx]);
-		btScr.setText(scrStr[scrIdx+1]);
-		newScr(true);
+		if(scr2idx >= s.length || scr2idx < 0) scr2idx = 0;
+		btScramble.setText(scrStr[scrIdx+1] + " - " + s[scr2idx]);
+		newScr(scrIdx << 5 | scr2idx);
 	}
 	
 	private int get2ndScr(int s) {
@@ -1807,47 +2018,43 @@ public class DCTimer extends Activity implements SensorEventListener {
 		default: return R.array.scrRly;
 		}
 	}
-
+	
 	private void setInScr(String scrs) {
 		String[] scr = scrs.split("\n");
 		for(int i=0; i<scr.length; i++) {
 			String cscr = scr[i].replaceFirst("^\\s*((\\(?\\d+\\))|(\\d+\\.))\\s*", "");
-			if(!cscr.equals(""))inScr.add(cscr);
+			if(!cscr.equals("")) inScr.add(cscr);
 		}
 	}
-
-	private void outScr(final String path, final String fileName, int num) {
-		scrsum = num;
+	
+	private void outScr(final String path, final String fileName, final int num) {
 		File fPath = new File(path);
 		if(fPath.exists() || fPath.mkdirs()) {
-			if (outBuilder == null) {
-				outBuilder = new CustomDialog.Builder(context, true).setTitle(R.string.menu_outscr)
-						.setNegativeButton(R.string.btn_back, null);
-			}
-			final CustomDialog outDlg = outBuilder.create();
-			showDialog(outDlg);
+			progressDialog.setTitle(getString(R.string.menu_outscr));
+			progressDialog.setMax(num);
+			progressDialog.show();
 			new Thread() {
 				public void run() {
 					try {
 						OutputStream out = new BufferedOutputStream(new FileOutputStream(path+fileName));
-						for(scrnum=0; scrnum<scrsum; scrnum++) {
-							handler.sendEmptyMessage(31);
-							String scr=(scrnum+1)+". "+Mi.setScr((scrIdx<<5)|scr2idx, false)+"\r\n";
-							byte [] bytes = scr.toString().getBytes();
+						for(int i=0; i<num; i++) {
+							handler.sendEmptyMessage(100 + i);
+							String s=(i+1)+". "+scrambler.getScramble((scrIdx<<5)|scr2idx, false)+"\r\n";
+							byte [] bytes = s.toString().getBytes();
 							out.write(bytes);
 						}
 						out.close();
 						handler.sendEmptyMessage(7);
 					} catch (IOException e) {
-						handler.sendEmptyMessage(4);
+						handler.sendEmptyMessage(5);
 					}
-					outDlg.dismiss();
+					progressDialog.dismiss();
 				}
 			}.start();
 		}
 		else Toast.makeText(context, getString(R.string.path_not_exist), Toast.LENGTH_SHORT).show();
 	}
-
+	
 	private void outStat(String path, String fileName, String stat) {
 		File fPath = new File(path);
 		if(fPath.exists() || fPath.mkdir() || fPath.mkdirs()) {
@@ -1863,215 +2070,14 @@ public class DCTimer extends Activity implements SensorEventListener {
 		}
 		else Toast.makeText(context, getString(R.string.path_not_exist), Toast.LENGTH_SHORT).show();
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		menu.clear();
-		menu.add(Menu.NONE, 0, 0, getString(R.string.menu_inscr));
-		menu.add(Menu.NONE, 1, 1, getString(R.string.menu_outscr));
-		menu.add(Menu.NONE, 2, 2, getString(R.string.menu_share));
-		menu.add(Menu.NONE, 3, 3, getString(R.string.menu_weibo));
-		menu.add(Menu.NONE, 4, 4, getString(R.string.menu_about));
-		menu.add(Menu.NONE, 5, 5, getString(R.string.menu_exit));
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		super.onOptionsItemSelected(item);
-		CustomDialog.Builder builder;
-		switch(item.getItemId()) {
-		case 0:
-			LayoutInflater factory = LayoutInflater.from(context);
-			final View view0 = factory.inflate(R.layout.inscr_layout, null);
-			final Spinner sp = (Spinner) view0.findViewById(R.id.spnScrType);
-			String[] items = getResources().getStringArray(R.array.inscrStr);
-			ArrayAdapter<String> adap = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, items);
-			adap.setDropDownViewResource(R.layout.spinner_dropdown_item);
-			sp.setAdapter(adap);
-			final EditText et0 = (EditText) view0.findViewById(R.id.edit_inscr);
-			sp.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
-				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-					insType = arg2;
-				}
-				public void onNothingSelected(AdapterView<?> arg0) {}
-			});
-			builder = new Builder(context);
-			builder.setContentView(view0).setTitle(R.string.menu_inscr)
-			.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface di, int i) {
-					hideKeyboard(et0);
-					final String scrs=et0.getText().toString();
-					inScr = new ArrayList<String>();
-					inScrLen = 0;
-					setInScr(scrs);
-					if(inScr.size()>0) newScr(false);
-				}
-			}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface arg0, int arg1) {
-					hideKeyboard(et0);
-				}
-			}).create().show();
-			showKeyboard(et0);
-			break;
-		case 1:
-			final LayoutInflater factory1 = LayoutInflater.from(context);
-			final View view1 = factory1.inflate(R.layout.outscr_layout, null);
-			final EditText et1 = (EditText) view1.findViewById(R.id.edit_scrnum);
-			final EditText et2 = (EditText) view1.findViewById(R.id.edit_scrpath);
-			final Button btn = (Button) view1.findViewById(R.id.btn_browse);
-			et1.setText("5");
-			et1.setSelection(1);
-			et2.setText(outPath);
-			final EditText et3 = (EditText) view1.findViewById(R.id.edit_scrfile);
-			btn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					selFilePath = et2.getText().toString();
-					final View viewb = factory1.inflate(R.layout.file_selector, null);
-					listView = (ListView) viewb.findViewById(R.id.list);
-					File f = new File(selFilePath);
-					selFilePath = f.exists()?selFilePath:Environment.getExternalStorageDirectory().getPath()+File.separator;
-					tvFile = (TextView) viewb.findViewById(R.id.text);
-					tvFile.setText(selFilePath);
-					getFileDir(selFilePath);
-					listView.setOnItemClickListener(itemListener);
-					CustomDialog cdialog =
-					new CustomDialog.Builder(context).setTitle(R.string.sel_path).setContentView(viewb)
-					.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialoginterface, int j) {
-							et2.setText(selFilePath+"/");
-						}
-					}).setNegativeButton(R.string.btn_cancel, null).create();
-					showDialog(cdialog);
-				}
-			});
-			CustomDialog dialog =
-			new CustomDialog.Builder(context)
-			.setContentView(view1).setTitle(getString(R.string.menu_outscr)+"("+getScrName()+")")
-			.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface di, int i) {
-					int numt = Integer.parseInt(et1.getText().toString());
-					if(numt>100)numt=100;
-					else if(numt<1)numt=5;
-					final int num = numt;
-					final String path=et2.getText().toString();
-					if(!path.equals(outPath)) {
-						outPath=path;
-						edit.putString("scrpath", path);
-						edit.commit();
-					}
-					final String fileName=et3.getText().toString();
-					File file = new File(path+fileName);
-					if(file.isDirectory())Toast.makeText(context, getString(R.string.path_illegal), Toast.LENGTH_SHORT).show();
-					else if(file.exists()) {
-						new CustomDialog.Builder(context).setTitle(R.string.path_dupl)
-						.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialoginterface, int j) {
-								outScr(path, fileName, num);
-							}
-						}).setNegativeButton(R.string.btn_cancel, null).create().show();
-					} else {
-						outScr(path, fileName, num);
-					}
-					hideKeyboard(et1);
-				}
-			}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					hideKeyboard(et1);
-				}
-			}).create();
-			showDialog(dialog);
-			showKeyboard(et1);
-			break;
-		case 2:
-			Intent intent=new Intent(Intent.ACTION_SEND);
-			intent.setType("text/plain");	//纯文本
-			intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
-			intent.putExtra(Intent.EXTRA_TEXT, getShareContext());
-			startActivity(Intent.createChooser(intent, getTitle()));
-			break;
-		case 3:
-			isShare = true;
-			if(!isLogin) {
-				auth();
-			} else {
-				WBShareActivity.text = getShareContext();
-				WBShareActivity.bitmap = takeScreenShot(DCTimer.this);
-				Intent it = new Intent(context, WBShareActivity.class);
-				startActivity(it);
-			}
-			break;
-		case 4:
-			//LayoutInflater factory2 = LayoutInflater.from(context);
-			//final View view = factory2.inflate(R.layout.dlg_about, null);
-			builder = new Builder(context);
-			builder.setTitle(R.string.abt_title).setMessage(R.string.abt_msg)
-			.setPositiveButton(R.string.btn_upgrade, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					new Thread() {
-						public void run() {
-							handler.sendEmptyMessage(8);
-							String ver = getContent("https://raw.github.com/MeigenChou/DCTimer/master/release/version.txt");
-							if(ver.startsWith("error")) {
-								handler.sendEmptyMessage(9);
-							} else {
-								String[] vers = ver.split("\t");
-								int v = Integer.parseInt(vers[0]);
-								if(v > verc) {
-									newver = vers[1];
-									StringBuilder sb = new StringBuilder(vers[2]);
-									if(vers.length > 3)
-										for(int i=3; i<vers.length; i++) sb.append("\n"+vers[i]);
-									newupd = sb.toString();
-									handler.sendEmptyMessage(11);
-								}
-								else handler.sendEmptyMessage(10);
-							}
-						}
-					}.start();
-				}
-			})
-			.setNegativeButton(R.string.btn_close, null).create().show();
-			break;
-		case 5:
-			session.closeDB();
-			edit.putInt("sel", scrIdx);
-			edit.putInt("sel2", scr2idx);
-			edit.commit();
-			android.os.Process.killProcess(android.os.Process.myPid());
-		}
-		return true;
-	}
-
-	private String getContent(String strUrl) {
-        try {
-            URL url = new URL(strUrl);
-            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream(), "GB2312"));
-            StringBuffer sb = new StringBuffer("");
-            String line = "";
-            while((line = br.readLine()) != null) {
-            	sb.append(line+"\t");
-            }
-            br.close();
-            //System.out.println(sb.toString());
-            return sb.toString();
-        } catch (Exception e) {
-            return "error open url:" + strUrl;
-        }
-    }
 	
 	private void download(final String fileName) {
-		bytesum = 0;
 		final File f = new File(defPath);
     	if(!f.exists()) f.mkdirs();
-    	if(dlBuilder == null) {
-    		dlBuilder = new CustomDialog.Builder(context, true).setTitle(R.string.downloading)
-    				.setNegativeButton(R.string.btn_back, null);
-    	}
-    	final CustomDialog dlProg = dlBuilder.create();
-    	showDialog(dlProg);
+    	progressDialog.setTitle(getString(R.string.downloading));
+    	progressDialog.setMax(100);
+    	progressDialog.setProgress(0);
+    	progressDialog.show();
         new Thread() {
         	public void run() {
         		try {
@@ -2079,37 +2085,36 @@ public class DCTimer extends Activity implements SensorEventListener {
                 	URLConnection conn = url.openConnection();
                 	conn.connect();
                 	InputStream is = conn.getInputStream();
-                	filesum = conn.getContentLength();
+                	int filesum = conn.getContentLength();
                 	if(filesum == 0) {
-                		dlProg.dismiss();
-                		handler.sendEmptyMessage(13);
+                		progressDialog.dismiss();
+                		handler.sendEmptyMessage(6);
                 		return;
                 	}
+                	progressDialog.setMax(filesum / 1024);
                 	FileOutputStream fs = new FileOutputStream(defPath+fileName);
                 	byte[] buffer = new byte[4096];
-                	int byteread;
+                	int byteread, bytesum = 0;
                 	while ((byteread = is.read(buffer)) != -1) {
                 		bytesum += byteread;
                 		fs.write(buffer, 0, byteread);
-                		handler.sendEmptyMessage(12);
+                		handler.sendEmptyMessage(bytesum / 1024 + 100);
                 	}
                 	fs.close();
+                	Intent intent = new Intent();
+                	intent.setAction(android.content.Intent.ACTION_VIEW);
+                	intent.setDataAndType(Uri.parse("file://"+defPath+fileName), "application/vnd.android.package-archive");
+                	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                	startActivity(intent);
         		} catch (Exception e) {
         			handler.sendEmptyMessage(9);
-        			dlProg.dismiss();
-            		return;
         		}
-        		dlProg.dismiss();
-        		Intent intent = new Intent();
-        		intent.setAction(android.content.Intent.ACTION_VIEW);
-        		intent.setDataAndType(Uri.parse("file://"+defPath+fileName), "application/vnd.android.package-archive");
-        		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        		startActivity(intent);
+        		progressDialog.dismiss();
         	}
         }.start();
 	}
-
-	private void getFileDir(String path) {
+	
+	private void getFileDir(String path, boolean listFiles) {
 		items = new ArrayList<String>();
 		paths = new ArrayList<String>();
 		File f = new File(path);
@@ -2119,7 +2124,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 			items.add("..");
 			paths.add(f.getParent());
 		}
-		if(fs != null)
+		if(fs != null) {
 			for(int i=0; i<fs.length; i++) {
 				File file = fs[i];
 				if(file.isDirectory()) {
@@ -2127,146 +2132,65 @@ public class DCTimer extends Activity implements SensorEventListener {
 					paths.add(file.getPath());
 				}
 			}
+			if(listFiles) {
+				for(int i=0; i<fs.length; i++) {
+					File file = fs[i];
+					if(!file.isDirectory()) {
+						items.add(file.getName());
+						paths.add(file.getPath());
+					}
+				}
+			}
+		}
 		ArrayAdapter<String> fileList = new ArrayAdapter<String>(this, R.layout.list_item, items);
 		listView.setAdapter(fileList);
 	}
-
+	
 	private void setGridView() {	//TODO
 		if(!isMulp) {
-			adapter = new TimesAdapter (context, listLen, new int[] {
-					cl[1],cl[2],cl[3],cl[4]}, intv);
+			timesAdapter = new TimesAdapter (context, listLen, new int[] {
+					colors[1], colors[2], colors[3], colors[4]}, intv);
 			gvTimes.setNumColumns(3);
 		} else {
-			adapter = new TimesAdapter(context,	listLen, new int[]{cl[1],
-					cl[2], cl[3]}, intv, stSel[3]+2);
+			timesAdapter = new TimesAdapter(context,	listLen, new int[]{colors[1],
+					colors[2], colors[3]}, intv, stSel[3]+2);
 			gvTimes.setNumColumns(stSel[3]+2);
 		}
 		gvTimes.setStackFromBottom(false);
-		gvTimes.setAdapter(adapter);
+		gvTimes.setAdapter(timesAdapter);
 	}
-
+	
 	private void setGvTitle() {
 		if(isMulp) {
 			String[] title = new String[stSel[3]+2];
 			title[0] = getString(R.string.time);
 			for(int i=1; i<stSel[3]+2; i++) title[i] = "P-"+i;
-			TitleAdapter ta = new TitleAdapter(context, title, cl[1]);
+			TitleAdapter ta = new TitleAdapter(context, title, colors[1]);
 			gvTitle.setNumColumns(stSel[3]+2);
 			gvTitle.setAdapter(ta);
 		}
 		else {
 			String[] title = {getString(R.string.time),
 					(stSel[14]==0 ? "avg of " : "mean of ") + l1len,
-					(stSel[15]==0 ? "avg of " : "mean of ") + l2len};
-			TitleAdapter ta = new TitleAdapter(context, title, cl[1]);
+					(stSel[4]==0 ? "avg of " : "mean of ") + l2len};
+			TitleAdapter ta = new TitleAdapter(context, title, colors[1]);
 			gvTitle.setNumColumns(3);
 			gvTitle.setAdapter(ta);
 		}
 	}
-
+	
 	private String getShareContext() {
-		String s1 = getString(R.string.share_c1).replace("$len", ""+Session.resl).replace("$scrtype", getScrName())
-				.replace("$best", Statistics.distime(Statistics.minIdx, false)).replace("$mean", Statistics.distime(Statistics.sesMean));
-		String s2 = (Session.resl>l1len) ? getString(R.string.share_c2).replace("$flen", ""+l1len).
-				replace("$favg", Statistics.distime(Statistics.bavg[0])):"";
-		String s3 = (Session.resl>l2len) ? getString(R.string.share_c2).replace("$flen", ""+l2len).
-				replace("$favg", Statistics.distime(Statistics.bavg[1])):"";
-		String s4 = getString(R.string.share_c3);
-		return s1 + s2 + s3 + s4;
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.format(getString(R.string.share_c1), Session.resl, btScramble.getText(),
+				Statistics.distime(Statistics.minIdx, false), Statistics.distime(Statistics.mean)));
+		if(Session.resl>l1len) sb.append(String.format(getString(R.string.share_c2), l1len,
+				Statistics.distime(Statistics.bestAvg[0])));
+		if(Session.resl>l2len) sb.append(String.format(getString(R.string.share_c2), l2len,
+				Statistics.distime(Statistics.bestAvg[1])));
+		sb.append(getString(R.string.share_c3));
+		return sb.toString();
 	}
-
-	private String getScrName() {
-		String[] mItems = getResources().getStringArray(R.array.cubeStr);
-		String[] s = getResources().getStringArray(get2ndScr(scrIdx));
-		return mItems[scrIdx+1] + "-" + s[scr2idx];
-	}
-
-	private void searchSesType() {
-		int type=0, idx=-1;
-		for(int i=0; i<15; i++) {
-			int s = sesType[i];
-			if(type==0 && s==-1) {
-				idx = i;
-				type = 1;
-			}
-			if(s == scrType) {
-				idx = i;
-				type = 2;
-				break;
-			}
-		}
-		if(type==2 || (sesType[sesIdx] != -1 && type == 1)) {
-			sesIdx = (byte) idx;
-			sesName.setText(getString(R.string.session) + sesItems[idx]);
-			getSession(idx);
-			seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
-			setGridView();
-			sesIdx = (byte) idx;
-			edit.putInt("group", idx);
-			edit.commit();
-		}
-	}
-
-	private void setScrType() {
-		switch(scrIdx) {
-		case -1:
-			switch (scr2idx) {
-			case 0: scrType = 1; break;
-			case 1: scrType = 2; break;
-			case 2: scrType = 3; break;
-			case 3: scrType = 0; break;
-			case 4: scrType = 37; break;
-			case 5: scrType = 38; break;
-			case 6: scrType = 39; break;
-			case 7: scrType = 40; break;
-			case 8: scrType = 6; break;
-			case 9: scrType = 7; break;
-			case 10: scrType = 8; break;
-			case 11: scrType = 9; break;
-			case 12: scrType = 10; break;
-			case 13: scrType = 4; break;
-			case 14: scrType = 5; break;
-			case 15: scrType = 41; break;
-			case 16: scrType = 42; break;
-			case 17: scrType = 43; break;
-			}
-			break;
-		case 0:	//2阶
-		case 1:	//3阶
-		case 2:	//4阶
-		case 3:	//5阶
-		case 4:	//6阶
-		case 5:	//7阶
-		case 6:	//五魔
-		case 7:	//金字塔
-		case 8:	//sq1
-		case 9:	//魔表
-		case 10:	//斜转
-			scrType = scrIdx; break;	//0~10
-		case 11:
-			if(scr2idx<3) scrType = 11;	//1x3x3
-			else if(scr2idx<5) scrType = 12;	//2x3x3
-			else if(scr2idx<12) scrType = scr2idx + 8;	//13~19
-			else scrType = scr2idx + 37;	//49~
-			break;
-		case 12:	//cmetrick
-		case 13:	//齿轮
-		case 14:	//siamese cube
-		case 15:	//15puzzle
-			scrType = scrIdx + 8; break;	//20~23
-		case 16:	//其他
-			scrType = scr2idx + 24; break;	//24~29
-		case 17:	//3阶子集
-			scrType = 1; break;
-		case 18:	//bandaged cube
-			scrType = scr2idx + 30; break;	//30~31
-		case 19:	//五魔子集
-			scrType = 6; break;
-		case 20:	//连拧
-			scrType = scr2idx + 32; break;	//32~36
-		}
-	}
-
+	
 	private void setTimerFont(int f) {
 		switch (f) {
 		case 0: tvTimer.setTypeface(Typeface.create("monospace", 0)); break;
@@ -2277,12 +2201,13 @@ public class DCTimer extends Activity implements SensorEventListener {
 		case 5: tvTimer.setTypeface(Typeface.createFromAsset(getAssets(), "lcd.ttf")); break;
 		}
 	}
-
-	private void auth() {
-		mSsoHandler = new SsoHandler(DCTimer.this, mWeiboAuth);
-        mSsoHandler.authorize(new AuthListener());
+	
+	private void setScrambleFont(int f) {
+		if (f == 0)
+			tvScramble.setTypeface(Typeface.create("monospace", 0));
+		else tvScramble.setTypeface(Typeface.create("sans-serif", 0));
 	}
-
+	
 	private void setTouch(MotionEvent e) {
 		if(!simss || scrt) {
 			switch (e.getAction()) {
@@ -2300,15 +2225,13 @@ public class DCTimer extends Activity implements SensorEventListener {
 				x2 = (int)e.getX(1)*2/tvTimer.getWidth();
 			} catch (Exception ex) { }
 			switch (e.getAction()) {
-			case MotionEvent.ACTION_POINTER_1_DOWN:
-			case MotionEvent.ACTION_POINTER_2_DOWN:
+			case MotionEvent.ACTION_POINTER_DOWN:
 				if(e.getPointerCount()>1 && (x1^x2)==1) {
 					touchDown();
 					touchDown = true;
 				}
 				break;
-			case MotionEvent.ACTION_POINTER_1_UP:
-			case MotionEvent.ACTION_POINTER_2_UP:
+			case MotionEvent.ACTION_POINTER_UP:
 			case MotionEvent.ACTION_UP:
 				if(touchDown) {
 					touchDown = false;
@@ -2318,13 +2241,13 @@ public class DCTimer extends Activity implements SensorEventListener {
 			}
 		}
 	}
-
+	
 	private void touchDown() {
 		if(timer.state == 1) {
 			if(mulpCount != 0) {
 				if(stSel[10]==1 || stSel[10]==3)
 					vibrator.vibrate(vibTime[stSel[11]]);
-				tvTimer.setTextColor(Color.GREEN);
+				tvTimer.setTextColor(0xff00ff00);
 				Session.multemp[stSel[3]+1-mulpCount] = System.currentTimeMillis();
 			}
 			else {
@@ -2337,11 +2260,11 @@ public class DCTimer extends Activity implements SensorEventListener {
 		} else if(timer.state != 3) {
 			if(!scrt || timer.state==2) {
 				if(frzTime == 0 || (wca && timer.state==0)) {
-					tvTimer.setTextColor(Color.GREEN);
+					tvTimer.setTextColor(0xff00ff00);
 					canStart = true;
 				} else {
-					if(timer.state==0) tvTimer.setTextColor(Color.RED);
-					else tvTimer.setTextColor(Color.YELLOW);
+					if(timer.state==0) tvTimer.setTextColor(0xffff0000);
+					else tvTimer.setTextColor(0xffffff00);
 					timer.freeze();
 				}
 			}
@@ -2351,7 +2274,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 	private void touchUp() {
 		if(timer.state == 0) {
 			if(isLongPress) isLongPress = false;
-			else if(scrt) newScr(false);
+			else if(scrt) newScr(crntScrType);
 			else {
 				if(frzTime ==0 || canStart) {
 					if(stSel[10]==1 || stSel[10]==3)
@@ -2363,18 +2286,17 @@ public class DCTimer extends Activity implements SensorEventListener {
 					}
 					else mulpCount = 0;
 					acquireWakeLock();
-					screenOn = true;
 					viewsVisibility(false);
 				} else {
 					timer.stopf();
-					tvTimer.setTextColor(cl[1]);
+					tvTimer.setTextColor(colors[1]);
 				}
 			}
-		} else if(timer.state == 1) {	//TODO
+		} else if(timer.state == 1) {
 			if(isLongPress) isLongPress = false;
 			if(mulpCount!=0) {
 				mulpCount--;
-				tvTimer.setTextColor(cl[1]);
+				tvTimer.setTextColor(colors[1]);
 			}
 		} else if(timer.state == 2) {
 			if(isLongPress) isLongPress = false;
@@ -2385,62 +2307,63 @@ public class DCTimer extends Activity implements SensorEventListener {
 					vibrator.vibrate(vibTime[stSel[11]]);
 				timer.count();
 				if(isMulp) Session.multemp[0] = timer.time0;
-				acquireWakeLock(); screenOn=true;
+				acquireWakeLock();
 				viewsVisibility(false);
 			} else {
 				timer.stopf();
-				tvTimer.setTextColor(Color.RED);
+				tvTimer.setTextColor(0xffff0000);
 			}
 		} else {
 			if(isLongPress) isLongPress = false;
 			if(!wca) {isp2=0; idnf=true;}
 			confirmTime((int)timer.time);
 			timer.state = 0;
-			if(!opnl) {releaseWakeLock(); screenOn=false;}
+			if(!opnl) releaseWakeLock();
 		}
 	}
-
+	
 	private void inputTime(int action) {
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
-			tvTimer.setTextColor(Color.GREEN);
+			tvTimer.setTextColor(0xff00ff00);
 			break;
 		case MotionEvent.ACTION_UP:
-			tvTimer.setTextColor(cl[1]);
+			tvTimer.setTextColor(colors[1]);
 			LayoutInflater factory = LayoutInflater.from(context);
-			final View view = factory.inflate(R.layout.editbox_layout, null);
-			final EditText editText = (EditText) view.findViewById(R.id.editText1);
-			new CustomDialog.Builder(context).setTitle(R.string.enter_time).setContentView(view)
-			.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+			int layoutId = R.layout.editbox_layout;
+			view = factory.inflate(layoutId, null);
+			final EditText editText = (EditText) view.findViewById(R.id.edit_text);
+			new CustomDialog.Builder(context).setTitle(R.string.enter_time).setView(view)
+			.setPositiveButton(R.string.btn_ok, new OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					String time = Mi.convStr(editText.getText().toString());
-					if(time.equals("Error") || Mi.convTime(time)==0)
+					String time = Utils.convertStr(editText.getText().toString());
+					if(time.equals("Error") || Utils.parseTime(time)==0)
 						Toast.makeText(context, getString(R.string.illegal), Toast.LENGTH_SHORT).show();
-					else save(Mi.convTime(time), (byte) 0);
+					else save(Utils.parseTime(time), (byte) 0);
 					//setGridView(false);
 					//seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
 					//newScr(false);
 					hideKeyboard(editText);
 				}
-			}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+			}).setNegativeButton(R.string.btn_cancel, new OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					hideKeyboard(editText);
 				}
-			}).create().show();
+			}).show();
 			showKeyboard(editText);
 			break;
 		}
 	}
-
+	
 	private void updateGrid() {
 		new Thread() {
 			public void run() {
 				try {
 					sleep(200);
-					adapter.refresh(listLen);
-					handler.sendEmptyMessage(18);
 				} catch (InterruptedException e) { }
+				timesAdapter.refresh(listLen);
+				handler.sendEmptyMessage(18);
 			}
 		}.start();
 	}
@@ -2448,22 +2371,23 @@ public class DCTimer extends Activity implements SensorEventListener {
 	private void save(int time, int p) {
 		session.insert(time, p, crntScr, isMulp);
 		listLen = isMulp ? (stSel[3]+2)*(Session.resl+1) : Session.resl*3;
-		seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
+		btSesMean.setText(getString(R.string.session_average) + Statistics.sesMean());
 		updateGrid();
-		if(selSes && sesType[sesIdx] != scrType) {
-			sesType[sesIdx] = (short) scrType;
-			edit.putInt("sestp"+sesIdx, scrType);
+		if(sesType[sesIdx] != crntScrType) {
+			sesType[sesIdx] = crntScrType;
+			edit.putInt("sestype"+sesIdx, crntScrType);
 			edit.commit();
 		}
-		newScr(false);
+		newScr(crntScrType);
 	}
 	
-	private void update(int idx, byte p) {
-		if(Session.resp[idx] != p) {
+	private boolean update(int idx, byte p) {
+		if(Session.penalty[idx] != p) {
 			session.update(idx, p);
-			seMean.setText(getString(R.string.session_average)+Statistics.sesMean());
-			updateGrid();
+			btSesMean.setText(getString(R.string.session_average)+Statistics.sesMean());
+			return true;
 		}
+		return false;
 	}
 	
 	private void delete(int idx, int col) {
@@ -2472,131 +2396,53 @@ public class DCTimer extends Activity implements SensorEventListener {
 			listLen = isMulp ? (Session.resl+1)*col : Session.resl*col;
 		} else {
 			listLen = 0;
-			sesType[sesIdx] = -1;
-			edit.remove("sestp"+sesIdx);
+			sesType[sesIdx] = 32;
+			edit.remove("sestype"+sesIdx);
 			edit.commit();
 		}
-		seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
+		btSesMean.setText(getString(R.string.session_average) + Statistics.sesMean());
 		updateGrid();
 	}
 	
 	private void deleteAll() {
 		session.clear();
 		listLen = 0;
-		seMean.setText(getString(R.string.session_average) + "0/0): N/A (N/A)");
+		btSesMean.setText(getString(R.string.session_average) + "0/0): N/A (N/A)");
 		Statistics.maxIdx = Statistics.minIdx = -1;
 		updateGrid();
-		if(sesType[sesIdx] != -1) {
-			sesType[sesIdx] = -1;
-			edit.remove("sestp"+sesIdx);
+		if(sesType[sesIdx] != 32) {
+			sesType[sesIdx] = 32;
+			edit.remove("sestype"+sesIdx);
 			edit.commit();
 		}
 	}
-
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if(keyCode == KeyEvent.KEYCODE_BACK) {
-			if(timer.state == 1) {
-				timer.count();
-				viewsVisibility(true);
-				if(!wca) {isp2=0; idnf=true;}
-				//newScr(false);
-				confirmTime((int)timer.time);
-				timer.state = 0;
-				if(!opnl) {releaseWakeLock(); screenOn=false;}
-			} else if(timer.state == 2) {
-				timer.stopi();
-				tvTimer.setText(stSel[2]==0 ? "0.00" : "0.000");
-				viewsVisibility(true);
-				if(!opnl) {releaseWakeLock(); screenOn=false;}
-			} else if(event.getRepeatCount() == 0) {
-				if((System.currentTimeMillis()-exitTime) > 2000) {
-					Toast.makeText(context, getString(R.string.again_exit), Toast.LENGTH_SHORT).show();
-					exitTime = System.currentTimeMillis();
-				} else {
-					edit.putInt("sel", scrIdx);
-					edit.putInt("sel2", scr2idx);
-					edit.commit();
-		            finish();
-		        }
-			}
-		}
-		else if(keyCode == KeyEvent.KEYCODE_Q) chScr(8, 2);
-		else if(keyCode == KeyEvent.KEYCODE_W) chScr(0, 0);
-		else if(keyCode == KeyEvent.KEYCODE_E) chScr(1, 1);
-		else if(keyCode == KeyEvent.KEYCODE_R) chScr(2, 0);
-		else if(keyCode == KeyEvent.KEYCODE_T) chScr(3, 0);
-		else if(keyCode == KeyEvent.KEYCODE_Y) chScr(4, 0);
-		else if(keyCode == KeyEvent.KEYCODE_U) chScr(5, 0);
-		else if(keyCode == KeyEvent.KEYCODE_M) chScr(6, 0);
-		else if(keyCode == KeyEvent.KEYCODE_P) chScr(7, 0);
-		else if(keyCode == KeyEvent.KEYCODE_K) chScr(9, 0);
-		else if(keyCode == KeyEvent.KEYCODE_N) newScr(false);
-		else if(keyCode == KeyEvent.KEYCODE_Z) {
-			if(Session.resl==0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
-			else new CustomDialog.Builder(context).setTitle(R.string.confirm_del_last)
-			.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					delete(Session.resl-1, isMulp ? stSel[3]+2 : 3);
-				}
-			}).setNegativeButton(R.string.btn_cancel, null).create().show();
-		}
-		else if(keyCode == KeyEvent.KEYCODE_A) {
-			if(Session.resl==0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
-			else new CustomDialog.Builder(context).setTitle(R.string.confirm_clear_session)
-			.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {deleteAll();}
-			}).setNegativeButton(R.string.btn_cancel, null).create().show();
-		}
-		else if(keyCode == KeyEvent.KEYCODE_D) {
-			if(Session.resl==0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
-			else {
-				CustomDialog cdialog = 
-						new CustomDialog.Builder(context).setTitle(getString(R.string.show_time) + Statistics.distime(Session.resl-1, true))
-						.setItems(R.array.rstcon, new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								switch (which) {
-								case 0: update(Session.resl-1, (byte) 0); break;
-								case 1: update(Session.resl-1, (byte) 1); break;
-								case 2: update(Session.resl-1, (byte) 2); break;
-								}
-							}
-						}).setNegativeButton(getString(R.string.btn_cancel), null).create();
-				showDialog(cdialog);
-			}
-		}
-		return false;
-	}
-
-	private void chScr(int s1, int s2) {
-		boolean c1 = false, c2 = false;
+	
+	private void setScramble(int s1, int s2) {
+		boolean changed = false;
 		if(scrIdx != s1) {
-			c1 = true;
-			btScr.setText(scrStr[s1+1]);
-			scrIdx = (byte) s1;
-			if(scrIdx != selold) selold = scrIdx;
+			changed = true;
+			scrIdx = s1;
 		}
 		if(scr2idx != s2) {
-			c2 = true;
-			scr2idx = (byte) s2;
+			changed = true;
+			scr2idx = s2;
 		}
-		if(c1 || c2) {
+		if(changed) {
 			set2ndsel();
-			setScrType();
-			if(selSes)searchSesType();
 			if(inScr != null && inScr.size() != 0) inScr = null;
 		}
 	}
-
+	
 	private void showAlertDialog(int i, int j) {
 		String t = null;
 		switch(i) {
 		case 1:
-			t = (stSel[14]==0 ? getString(R.string.sta_avg) : getString(R.string.sta_mean)).replace("len", ""+l1len);
-			slist=stSel[14]==0 ? ao(l1len, j):mo(l1len, j);
+			t = String.format(stSel[14]==0 ? getString(R.string.sta_avg) : getString(R.string.sta_mean), l1len);
+			slist = stSel[14]==0 ? ao(l1len, j) : mo(l1len, j);
 			break;
 		case 2:
-			t = (stSel[15]==0 ? getString(R.string.sta_avg) : getString(R.string.sta_mean)).replace("len", ""+l2len);
-			slist=stSel[15]==0 ? ao(l2len, j):mo(l2len, j);
+			t = String.format(stSel[4]==0 ? getString(R.string.sta_avg) : getString(R.string.sta_mean), l2len);
+			slist = stSel[4]==0 ? ao(l2len, j) : mo(l2len, j);
 			break;
 		case 3:
 			t = getString(R.string.sta_session_mean);
@@ -2605,45 +2451,58 @@ public class DCTimer extends Activity implements SensorEventListener {
 		}
 		new CustomDialog.Builder(context).setTitle(t).setMessage(slist)
 		.setPositiveButton(R.string.btn_copy, new DialogInterface.OnClickListener() {
+			@SuppressWarnings("deprecation")
 			public void onClick(DialogInterface dialoginterface, int i) {
-				ClipboardManager clip=(ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
-				clip.setText(slist);
+				if(VERSION.SDK_INT >= 11) {
+					android.content.ClipboardManager clip = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+					clip.setPrimaryClip(ClipData.newPlainText("text", slist));
+				}
+				else {
+					android.text.ClipboardManager clip = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+					clip.setText(slist);
+				}
 				Toast.makeText(context, getString(R.string.copy_to_clip), Toast.LENGTH_SHORT).show();
 			}
 		}).setNeutralButton(R.string.btn_save, new DialogInterface.OnClickListener() {
+			LayoutInflater factory;
+			EditText et1, et2;
+			ImageButton btn;
 			public void onClick(DialogInterface dialog, int which) {
-				final LayoutInflater factory = LayoutInflater.from(context);
-				final View view = factory.inflate(R.layout.save_stat, null);
-				final EditText et1 = (EditText) view.findViewById(R.id.edit_scrpath);
-				final Button btn = (Button) view.findViewById(R.id.btn_browse);
+				if(defPath == null) {
+					Toast.makeText(context, getString(R.string.sd_not_exist), Toast.LENGTH_SHORT).show();
+					return;
+				}
+				factory = LayoutInflater.from(context);
+				int layoutId = R.layout.save_stat;
+				view = factory.inflate(layoutId, null);
+				et1 = (EditText) view.findViewById(R.id.edit_scrpath);
+				btn = (ImageButton) view.findViewById(R.id.btn_browse);
 				et1.setText(outPath);
-				final EditText et2 = (EditText) view.findViewById(R.id.edit_scrfile);
+				et2 = (EditText) view.findViewById(R.id.edit_scrfile);
 				et2.requestFocus();
-				et2.setText(getString(R.string.def_sname).replace("$datetime", formatter.format(new Date())));
+				et2.setText(String.format(getString(R.string.def_sname), formatter.format(new Date())));
 				et2.setSelection(et2.getText().length());
 				btn.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View v) {
 						selFilePath = et1.getText().toString();
-						final View viewb = factory.inflate(R.layout.file_selector, null);
+						int lid = R.layout.file_selector;
+						final View viewb = factory.inflate(lid, null);
 						listView = (ListView) viewb.findViewById(R.id.list);
 						File f = new File(selFilePath);
 						selFilePath = f.exists() ? selFilePath : Environment.getExternalStorageDirectory().getPath()+File.separator;
 						tvFile = (TextView) viewb.findViewById(R.id.text);
 						tvFile.setText(selFilePath);
-						getFileDir(selFilePath);
+						getFileDir(selFilePath, false);
 						listView.setOnItemClickListener(itemListener);
-						CustomDialog cdialog =
-						new CustomDialog.Builder(context).setTitle(R.string.sel_path).setContentView(viewb)
+						new CustomDialog.Builder(context).setTitle(R.string.sel_path).setView(viewb)
 						.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialoginterface, int j) {
 								et1.setText(selFilePath+"/");
 							}
-						}).setNegativeButton(R.string.btn_cancel, null).create();
-						showDialog(cdialog);
+						}).setNegativeButton(R.string.btn_cancel, null).show();
 					}
 				});
-				CustomDialog cdialog =
-				new CustomDialog.Builder(context).setContentView(view).setTitle(R.string.stat_save)
+				new CustomDialog.Builder(context).setView(view).setTitle(R.string.stat_save)
 				.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface di, int i) {
 						final String path=et1.getText().toString();
@@ -2654,14 +2513,14 @@ public class DCTimer extends Activity implements SensorEventListener {
 						}
 						final String fileName=et2.getText().toString();
 						File file = new File(path+fileName);
-						if(file.isDirectory())Toast.makeText(context, getString(R.string.path_illegal), Toast.LENGTH_SHORT).show();
+						if(file.isDirectory()) Toast.makeText(context, getString(R.string.path_illegal), Toast.LENGTH_SHORT).show();
 						else if(file.exists()) {
-							new CustomDialog.Builder(context).setMessage(R.string.path_dupl)
+							new CustomDialog.Builder(context).setTitle(R.string.path_dupl)
 							.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialoginterface, int j) {
 									outStat(path, fileName, slist);
 								}
-							}).setNegativeButton(R.string.btn_cancel, null).create().show();
+							}).setNegativeButton(R.string.btn_cancel, null).show();
 						} else outStat(path, fileName, slist);
 						hideKeyboard(et1);
 					}
@@ -2669,144 +2528,174 @@ public class DCTimer extends Activity implements SensorEventListener {
 					public void onClick(DialogInterface arg0, int arg1) {
 						hideKeyboard(et1);
 					}
-				}).create();
-				showDialog(cdialog);
+				}).show();
 			}
-		}).setNegativeButton(R.string.btn_close, null).create().show();
+		}).setNegativeButton(R.string.btn_close, null).show();
 	}
-
-	protected void newScr(final boolean ch) {
+	
+	protected void newScr(final int scrType) {
+		final boolean ch = crntScrType != scrType;
+		System.out.println("ch "+ch);
+		crntScrType = scrType;
 		if(!ch && inScr!=null && inScrLen<inScr.size()) {
 			if(!isInScr) isInScr = true;
 			crntScr = inScr.get(inScrLen++);
 			switch (insType) {
 			case 0:
 				if(crntScr.matches("([FRU][2']?\\s*)+"))
-					Mi.viewType = 2;
+					scrambler.viewType = 2;
 				else if(crntScr.matches("([ULRBulrb]'?\\s*)+"))
-					Mi.viewType = Mi.TYPE_PYR;
+					scrambler.viewType = Scrambler.TYPE_PYR;
 				else if(crntScr.matches("([xFRUBLDMfrubld][2']?\\s*)+"))
-					Mi.viewType = 3;
+					scrambler.viewType = 3;
 				else if(crntScr.matches("(([FRUBLDfru]|[FRU]w)[2']?\\s*)+"))
-					Mi.viewType = 4;
+					scrambler.viewType = 4;
 				else if(crntScr.matches("(([FRUBLDfrubld]|([FRUBLD]w?))[2']?\\s*)+"))
-					Mi.viewType = 5;
+					scrambler.viewType = 5;
 				else if(crntScr.matches("(((2?[FRUBLD])|(3[FRU]w))[2']?\\s*)+"))
-					Mi.viewType = 6;
+					scrambler.viewType = 6;
 				else if(crntScr.matches("(((2|3)?[FRUBLD])[2']?\\s*)+"))
-					Mi.viewType = 7;
-				else Mi.viewType = 0;
+					scrambler.viewType = 7;
+				else scrambler.viewType = 0;
 				break;
 			case 1:
 				if(crntScr.matches("([FRUBLD][2']?\\s*)+"))
-					Mi.viewType = 2;
-				else Mi.viewType = 0;
+					scrambler.viewType = 2;
+				else scrambler.viewType = 0;
 				break;
 			case 2:
 				if(crntScr.matches("([xFRUBLDMfrubld][2']?\\s*)+"))
-					Mi.viewType = 3;
-				else Mi.viewType = 0;
+					scrambler.viewType = 3;
+				else scrambler.viewType = 0;
 				break;
 			case 3:
 				if(crntScr.matches("(([FRUBLDfru]|[FRU]w)[2']?\\s*)+"))
-					Mi.viewType = 4;
-				else Mi.viewType = 0;
+					scrambler.viewType = 4;
+				else scrambler.viewType = 0;
 				break;
 			case 4:
 				if(crntScr.matches("(([FRUBLDfrubld]|([FRUBLD]w?))[2']?\\s*)+"))
-					Mi.viewType = 5;
-				else Mi.viewType = 0;
+					scrambler.viewType = 5;
+				else scrambler.viewType = 0;
 				break;
 			case 5:
 				if(crntScr.matches("([ULRBulrb]'?\\s*)+"))
-					Mi.viewType = Mi.TYPE_PYR;
-				else Mi.viewType = 0;
+					scrambler.viewType = Scrambler.TYPE_PYR;
+				else scrambler.viewType = 0;
 			}
-			if(Mi.viewType==3 && stSel[5]!=0) {
+			if(scrambler.viewType==3 && stSel[5]!=0) {
 				new Thread() {
 					public void run() {
-						handler.sendEmptyMessage(6);
-						if(stSel[5]==1)extsol="\n"+Cross.cross(crntScr, DCTimer.solSel[0], DCTimer.solSel[1]);
-						else if(stSel[5]==2)extsol="\n"+Cross.xcross(crntScr, DCTimer.solSel[1]);
-						else if(stSel[5]==3)extsol="\n"+EOline.eoLine(crntScr, DCTimer.solSel[1]);
-						else if(stSel[5]==4)extsol="\n"+PetrusxRoux.roux(crntScr, DCTimer.solSel[1]);
-						else if(stSel[5]==5)extsol="\n"+PetrusxRoux.petrus(crntScr, DCTimer.solSel[1]);
+						handler.sendEmptyMessage(4);
+						scrambler.extSol3(stSel[5], crntScr);
+						extsol = scrambler.sc;
 						handler.sendEmptyMessage(3);
 					}
 				}.start();
 			}
-			else tvScr.setText(crntScr);
-		} else if((scrIdx==-1 && (scr2idx==0 || scr2idx==1 || (scr2idx>3 && scr2idx<8) || scr2idx==10 || scr2idx==15 || scr2idx==17)) ||
+			else {
+				tvScramble.setText(crntScr);
+				showScrView(false);
+			}
+		} else if((scrIdx==-1 && (scr2idx<2 || (scr2idx>3 && scr2idx<8) || scr2idx==10 || scr2idx==15 || scr2idx==17)) ||
 				(scrIdx==0 && scr2idx<3 && stSel[6]!=0) ||
-				(scrIdx==1 && (scr2idx!=0 || (stSel[5]!=0 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19)))) ||
-				(scrIdx==2 && scr2idx==5) ||
+				(scrIdx==1 && (scr2idx!=0 || (stSel[5]!=0 && (scr2idx<2 || scr2idx==5 || scr2idx==19)))) ||
+				//(scrIdx==2 && scr2idx==5) ||
 				(scrIdx==8 && (scr2idx>1 || (scr2idx<3 && stSel[12]>0))) ||
-				(scrIdx==11 && (scr2idx>3 && scr2idx<7)) ||
+				(scrIdx==11 && scr2idx>3 && scr2idx<7) ||
 				(scrIdx==17 && (scr2idx<3 || scr2idx==6)) ||
 				scrIdx==20) {	//TODO
 			if(isInScr) isInScr = false;
 			if(ch) scrState = SCRNONE;
+			System.out.println("scrState "+scrState);
 			if(scrState == SCRNONE || scrState == SCRDONE) {
 				new Thread() {
 					public void run() {
 						if(scrState == SCRDONE) {
 							crntScr = nextScr;
+							extsol = scrambler.sc;
 						} else {
 							scrState = SCRING;
 							if(scrIdx==-1 && (scr2idx==1 || scr2idx == 15)) {
 								threephase.Util.init(handler);
 							}
 							handler.sendEmptyMessage(2);
-							crntScr = Mi.setScr((scrIdx<<5)|scr2idx, ch);
-							extsol = Mi.sc;
+							crntScr = scrambler.getScramble((scrIdx<<5)|scr2idx, ch);
+							extsol = scrambler.sc;
 						}
-						showScramble();
-						scrState = NEXTSCRING;
-						getNextScr(ch);
+						if(scrType == crntScrType) {
+							showScramble();
+							scrState = NEXTSCRING;
+							getNextScr(ch);
+						}
 					}
 				}.start();
 			} else if(scrState == NEXTSCRING) {
 				if(!nextScrWaiting) {
 					nextScrWaiting = true;
-					tvScr.setText(getString(R.string.scrambling));
+					tvScramble.setText(getString(R.string.scrambling));
 				}
 			}
 		} else {
-			crntScr = Mi.setScr(scrIdx<<5|scr2idx, ch);
-			tvScr.setText(crntScr);
+			scrState = SCRING;
+			crntScr = scrambler.getScramble(scrIdx<<5|scr2idx, ch);
+			tvScramble.setText(crntScr);
+			showScrView(false);
+			scrState = SCRDONE;
 		}
 	}
 	
 	public void showScramble() {
 		if((scrIdx==0 && stSel[6]!=0) ||
-				(stSel[5]!=0 && scrIdx==1 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19)))
+				(stSel[5]!=0 && (scrIdx==-1 && (scr2idx==0 || scr2idx==5 || scr2idx==6 || scr2idx==7) ||
+						scrIdx==1 && (scr2idx==0 || scr2idx==1 || scr2idx==5 || scr2idx==19))))
 			handler.sendEmptyMessage(3);
 		else if(scrIdx==8 && scr2idx<3 && stSel[12]>0)
 			handler.sendEmptyMessage(1);
 		else handler.sendEmptyMessage(0);
+		showScrView(true);
 	}
 	
 	public void getNextScr(boolean ch) {
 		System.out.println("get next scramble...");
 		scrState = NEXTSCRING;
-		nextScr = Mi.setScr((scrIdx<<5)|scr2idx, ch);
+		nextScr = scrambler.getScramble((scrIdx<<5)|scr2idx, ch);
 		System.out.println("next scr: " + nextScr);
+		//System.out.println("next solve: " + Scramble.sc);
 		scrState = SCRDONE;
 		if(nextScrWaiting) {
 			crntScr = nextScr;
-			extsol = Mi.sc;
+			extsol = scrambler.sc;
 			showScramble();
 			nextScrWaiting = false;
 			getNextScr(ch);
 		}
 	}
-
+	
+	public void showScrView(boolean isThread) {
+		if (!showscr) return;
+		//if(bmScrView != null) bmScrView.recycle();
+		if(scrambler.viewType > 0) {
+			bmScrView = Bitmap.createBitmap(dip300, dip300*3/4, Config.ARGB_8888);
+			Canvas c = new Canvas(bmScrView);
+			c.drawColor(0);
+			Paint p = new Paint();
+			p.setAntiAlias(true);
+			scrambler.drawScr(scr2idx, dip300, p, c);
+			if(isThread) handler.sendEmptyMessage(15);
+			else {
+				scrambleView.setVisibility(View.VISIBLE);
+				scrambleView.setImageBitmap(bmScrView);
+			}
+		} else if(isThread) handler.sendEmptyMessage(13);
+		else scrambleView.setVisibility(View.GONE);
+	}
+	
 	public void confirmTime(final int time) {
 		if(idnf) {
 			if(conft) {
-				CustomDialog cdialog = 
 				new CustomDialog.Builder(context).setTitle(getString(R.string.show_time)+Statistics.distime(time + isp2))
-						.setItems(R.array.rstcon, new DialogInterface.OnClickListener() {
+						.setItems(R.array.rstcon, new OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						switch (which) {
 						case 0:save(time + isp2, 0);break;
@@ -2815,186 +2704,190 @@ public class DCTimer extends Activity implements SensorEventListener {
 						}
 					}
 				})
-				.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+				.setNegativeButton(R.string.btn_cancel, new OnClickListener() {
 					public void onClick(DialogInterface d,int which) {
-						newScr(false);
+						newScr(crntScrType);
 					}
-				}).create();
-				showDialog(cdialog);
+				}).show();
 			}
 			else save(time + isp2, 0);
 		}
 		else {
 			if(conft)
 				new CustomDialog.Builder(context).setTitle(R.string.time_dnf).setMessage(R.string.confirm_adddnf)
-				.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+				.setPositiveButton(R.string.btn_ok, new OnClickListener() {
 					public void onClick(DialogInterface dialoginterface, int j) {
 						save((int)timer.time, 2);
 					}
-				}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+				}).setNegativeButton(R.string.btn_cancel, new OnClickListener() {
 					public void onClick(DialogInterface d,int which) {
-						newScr(false);
+						newScr(crntScrType);
 					}
-				}).create().show();
+				}).show();
 			else save((int)timer.time, 2);
 		}
 	}
-
+	
 	public String sesMean() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(getString(R.string.stat_title) + new java.sql.Date(new Date().getTime()) + "\r\n");
 		sb.append(getString(R.string.stat_solve) + Statistics.solved + "/" + Session.resl + "\r\n");
-		sb.append(getString(R.string.ses_mean) + Statistics.distime(Statistics.sesMean) + " ");
-		sb.append("(σ = " + Statistics.standDev(Statistics.sesSD) + ")\r\n");
+		sb.append(getString(R.string.ses_mean) + Statistics.distime(Statistics.mean) + " ");
+		sb.append("(σ = " + Statistics.standardDeviation(Statistics.sd) + ")\r\n");
 		sb.append(getString(R.string.ses_avg) + Statistics.sesAvg() + "\r\n");
-		if(Session.resl >= l1len && Statistics.bidx[0] != -1) 
-			sb.append((stSel[14]==0 ? getString(R.string.stat_best_avg) : getString(R.string.stat_best_mean)).replace("len", ""+l1len)+Statistics.distime(Statistics.bavg[0])+"\r\n");
-		if(Session.resl >= l2len && Statistics.bidx[1] != -1) 
-			sb.append((stSel[15]==0 ? getString(R.string.stat_best_avg) : getString(R.string.stat_best_mean)).replace("len", ""+l2len)+Statistics.distime(Statistics.bavg[1])+"\r\n");
-		sb.append(getString(R.string.stat_best)+Statistics.distime(Statistics.minIdx, false)+"\r\n");
-		sb.append(getString(R.string.stat_worst)+Statistics.distime(Statistics.maxIdx, false)+"\r\n");
+		if(Session.resl >= l1len && Statistics.bestIdx[0] != -1) 
+			sb.append(String.format(stSel[14]==0 ? getString(R.string.stat_best_avg) : getString(R.string.stat_best_mean), l1len)
+					+ Statistics.distime(Statistics.bestAvg[0]) + "\r\n");
+		if(Session.resl >= l2len && Statistics.bestIdx[1] != -1) 
+			sb.append(String.format(stSel[4]==0 ? getString(R.string.stat_best_avg) : getString(R.string.stat_best_mean), l2len)
+					+ Statistics.distime(Statistics.bestAvg[1]) + "\r\n");
+		sb.append(getString(R.string.stat_best) + Statistics.distime(Statistics.minIdx, false) + "\r\n");
+		sb.append(getString(R.string.stat_worst) + Statistics.distime(Statistics.maxIdx, false) + "\r\n");
 		sb.append(getString(R.string.stat_list));
-		if(hidls)sb.append("\r\n");
+		if(hidls) sb.append("\r\n");
 		for(int i=0; i<Session.resl; i++) {
-			if(!hidls)sb.append("\r\n"+(i+1)+". ");
+			if(!hidls) sb.append("\r\n" + (i+1) + ". ");
 			sb.append(Statistics.distime(i, true));
 			String s = session.getString(i, 6);
-			if(s!=null && !s.equals("")) sb.append("["+s+"]");
+			if(s!=null && !s.equals("")) sb.append("[" + s + "]");
 			if(hidls && i<Session.resl-1) sb.append(", ");
-			if(!hidls)sb.append("  "+scrst[i]);
+			if(!hidls) sb.append("  " + session.getString(i, 4));
 		}
 		return sb.toString();
 	}
-
+	
 	public String ao(int n, int i) {
-		int cavg=0, csdv=-1, ind=1;
+		int cavg = 0, csdv = -1, ind = 1;
 		int trim = (int) Math.ceil(n/20.0);
 		int max, min;
-		ArrayList<Integer> dnfIdx=new ArrayList<Integer>();
+		ArrayList<Integer> dnfIdx = new ArrayList<Integer>();
 		ArrayList<Integer> midx = new ArrayList<Integer>();
-		for(int j=i-n+1;j<=i;j++)
-			if(Session.resp[j]==2)
+		for(int j=i-n+1; j<=i; j++)
+			if(Session.penalty[j] == 2)
 				dnfIdx.add(j);
 		int dnf = dnfIdx.size();
-		int[] data=new int[n-dnf];
-		int[] idx=new int[n-dnf];
-		int len=0;
-		for(int j=i-n+1;j<=i;j++)
-			if(Session.resp[j]!=2) {
-				data[len]=Session.rest[j]+Session.resp[j]*2000;
-				idx[len++]=j;
+		long[] data = new long[n - dnf];
+		//int[] idx=new int[n - dnf];
+		int len = 0;
+		for(int j=i-n+1; j<=i; j++)
+			if(Session.penalty[j] != 2) {
+				data[len++] = (long)Session.getTime(j) << 32 | j;
 			}
-		quickSort(data, idx, 0, n-dnf-1);
+		Arrays.sort(data);
+		//quickSort(data, idx, 0, n-dnf-1);
 		if(n-dnf >= trim) {
-			for(int j=0; j<trim; j++) midx.add(idx[j]);
+			for(int j=0; j<trim; j++) midx.add((int)data[j]);
 		} else {
-			for(int j=0; j<data.length; j++) midx.add(idx[j]);
+			for(int j=0; j<data.length; j++) midx.add((int)data[j]);
 			for(int j=0; j<trim-n+dnf; j++) midx.add(dnfIdx.get(j));
 		}
-		boolean m = dnf>trim;
+		boolean m = dnf > trim;
 		min = midx.get(0);
 		if(m) {
 			for(int j=dnf-trim; j<dnf; j++) midx.add(dnfIdx.get(j));
 		} else {
-			for(int j=n-trim; j<n-dnf; j++) midx.add(idx[j]);
+			for(int j=n-trim; j<n-dnf; j++) midx.add((int)data[j]);
 			for(int j=0; j<dnf; j++) midx.add(dnfIdx.get(j));
-			double sum=0, sum2=0;
-			for(int j=trim;j<n-trim;j++) {
-				if(stSel[2]==1)sum+=data[j];
-				else sum+=(data[j]+5)/10;
-				if(stSel[2]==1)sum2+=Math.pow(data[j], 2);
-				else sum2+=Math.pow((data[j]+5)/10, 2);
+			long sum = 0;
+			double sum2 = 0;
+			for(int j=trim; j<n-trim; j++) {
+				data[j] >>= 32;
+				if(stSel[2] == 0) data[j] /= 10;
+				sum += data[j];
+				sum2 += (double)data[j] * data[j];
 			}
-			cavg=(int) (sum/(n-trim*2)+0.5);
-			csdv=(int) Math.sqrt(sum2/(n-trim*2)-sum*sum/Math.pow(n-trim*2, 2));
-			if(stSel[2]==0)cavg*=10;
+			int num = n-trim*2;
+			cavg = (int) (sum/num+0.5);
+			csdv = (int) (Math.sqrt((sum2-sum*sum/num)/num)+0.5);
+			if(stSel[2] == 0) cavg *= 10;
 		}
-		max = midx.get(midx.size()-1);
-		StringBuffer sb=new StringBuffer();
-		sb.append(getString(R.string.stat_title)+new java.sql.Date(new Date().getTime())+"\r\n");
-		sb.append(getString(R.string.stat_avg)+(m?"DNF":Statistics.distime(cavg))+" ");
-		sb.append("(σ = "+Statistics.standDev(csdv)+")\r\n");
-		sb.append(getString(R.string.stat_best)+Statistics.distime(min,false)+"\r\n");
-		sb.append(getString(R.string.stat_worst)+Statistics.distime(max,false)+"\r\n");
+		max = midx.get(midx.size() - 1);
+		StringBuffer sb = new StringBuffer();
+		sb.append(getString(R.string.stat_title) + new java.sql.Date(new Date().getTime()) + "\r\n");
+		sb.append(getString(R.string.stat_avg) + (m?"DNF":Statistics.distime(cavg)) + " ");
+		sb.append("(σ = " + Statistics.standardDeviation(csdv) + ")\r\n");
+		sb.append(getString(R.string.stat_best) + Statistics.distime(min,false) + "\r\n");
+		sb.append(getString(R.string.stat_worst) + Statistics.distime(max,false) + "\r\n");
 		sb.append(getString(R.string.stat_list));
-		if(hidls)sb.append("\r\n");
-		for(int j=i-n+1;j<=i;j++) {
+		if(hidls) sb.append("\r\n");
+		for(int j=i-n+1; j<=i; j++) {
 			String s = session.getString(j, 6);
-			if(!hidls)sb.append("\r\n"+(ind++)+". ");
-			if(midx.indexOf(j)>-1)sb.append("(");
+			if(!hidls) sb.append("\r\n" + (ind++) + ". ");
+			if(midx.indexOf(j) > -1) sb.append("(");
 			sb.append(Statistics.distime(j, false));
-			if(s!=null && !s.equals(""))sb.append("["+s+"]");
-			if(midx.indexOf(j)>-1)sb.append(")");
-			if(hidls && j<i)sb.append(", ");
-			if(!hidls)sb.append("  "+scrst[j]);
+			if(s!=null && !s.equals("")) sb.append("[" + s + "]");
+			if(midx.indexOf(j) > -1) sb.append(")");
+			if(hidls && j<i) sb.append(", ");
+			if(!hidls) sb.append("  " + session.getString(j, 4));
 		}
 		return sb.toString();
 	}
-
-	private void quickSort(int[] a, int[] idx, int lo, int hi) {
-		if(lo >= hi) return;
-		int pivot = a[lo], i = lo, j = hi;
-		int temp = idx[lo];
-		while(i < j) {
-			while(i<j && a[j]>=pivot) j--;
-			a[i] = a[j];
-			idx[i] = idx[j];
-			while(i<j && a[i]<=pivot) i++;
-			a[j] = a[i];
-			idx[j] = idx[i];
-		}
-		a[i] = pivot;
-		idx[i] = temp;
-		quickSort(a, idx, lo, i-1);
-		quickSort(a, idx, i+1, hi);
-	}
-
+	
+//	private void quickSort(int[] a, int[] idx, int lo, int hi) {
+//		if(lo >= hi) return;
+//		int pivot = a[lo], i = lo, j = hi;
+//		int temp = idx[lo];
+//		while(i < j) {
+//			while(i<j && a[j]>=pivot) j--;
+//			a[i] = a[j];
+//			idx[i] = idx[j];
+//			while(i<j && a[i]<=pivot) i++;
+//			a[j] = a[i];
+//			idx[j] = idx[i];
+//		}
+//		a[i] = pivot;
+//		idx[i] = temp;
+//		quickSort(a, idx, lo, i-1);
+//		quickSort(a, idx, i+1, hi);
+//	}
+	
 	public String mo(int n, int i) {
-		StringBuffer sb=new StringBuffer();
-		int max, min, dnf=0;
-		int cavg=0, csdv=-1, ind=1;
-		double sum=0, sum2=0;
-		max=min=i-n+1;
-		boolean m=false;
+		int max, min, dnf = 0;
+		int cavg = 0, csdv = -1, ind = 1;
+		long sum = 0;
+		double sum2 = 0;
+		max = min = i-n+1;
+		boolean m = false;
 		for(int j=i-n+1; j<=i; j++) {
-			if(Session.resp[j]!=2 && !m) {min=j; m=true;}
-			if(Session.resp[j]==2) {max=j; dnf++;}
+			if(Session.penalty[j] != 2 && !m) { min = j; m = true; }
+			if(Session.penalty[j] == 2) { max = j; dnf++; }
 		}
 		m = dnf > 0;
 		if(!m) {
-			for (int j=i-n+1;j<=i;j++) {
-				if(Session.rest[j]+Session.resp[j]*2000>Session.rest[max]+Session.resp[max]*2000)max=j;
-				if(Session.rest[j]+Session.resp[j]*2000<=Session.rest[min]+Session.resp[min]*2000)min=j;
-				if(stSel[2]==1)sum+=(double)(Session.rest[j]+Session.resp[j]*2000);
-				else sum+=(Session.rest[j]+Session.resp[j]*2000+5)/10;
-				if(stSel[2]==1)sum2+=Math.pow(Session.rest[j]+Session.resp[j]*2000, 2);
-				else sum2+=Math.pow((Session.rest[j]+Session.resp[j]*2000+5)/10, 2);
+			for (int j=i-n+1; j<=i; j++) {
+				int time = Session.getTime(j);
+				if(time > Session.getTime(max)) max = j;
+				if(time <= Session.getTime(min)) min = j;
+				if(stSel[2] == 0) time /= 10;
+				sum += time;
+				sum2 += (long)time * time;
 			}
-			cavg=(int) (sum/n+0.5);
-			csdv=(int) (Math.sqrt(sum2/n-sum*sum/n/n)+(stSel[2]==1?0:0.5));
+			cavg = (int) (sum/n+0.5);
+			csdv = (int) (Math.sqrt((sum2-sum*sum/n)/n)+0.5);
 		}
-		if(stSel[2]==0)cavg*=10;
-		sb.append(getString(R.string.stat_title)+new java.sql.Date(new Date().getTime())+"\r\n");
-		sb.append(getString(R.string.stat_mean)+(m?"DNF":Statistics.distime(cavg))+" ");
-		sb.append("(σ = "+Statistics.standDev(csdv)+")\r\n");
-		sb.append(getString(R.string.stat_best)+Statistics.distime(min,false)+"\r\n");
-		sb.append(getString(R.string.stat_worst)+Statistics.distime(max,false)+"\r\n");
+		if(stSel[2] == 0) cavg *= 10;
+		StringBuffer sb = new StringBuffer();
+		sb.append(getString(R.string.stat_title) + new java.sql.Date(new Date().getTime()) + "\r\n");
+		sb.append(getString(R.string.stat_mean) + (m ? "DNF" : Statistics.distime(cavg)) + " ");
+		sb.append("(σ = " + Statistics.standardDeviation(csdv) + ")\r\n");
+		sb.append(getString(R.string.stat_best) + Statistics.distime(min, false) + "\r\n");
+		sb.append(getString(R.string.stat_worst) + Statistics.distime(max, false) + "\r\n");
 		sb.append(getString(R.string.stat_list));
-		if(hidls)sb.append("\r\n");
-		for(int j=i-n+1;j<=i;j++) {
-			if(!hidls)sb.append("\r\n"+(ind++)+". ");
+		if(hidls) sb.append("\r\n");
+		for(int j=i-n+1; j<=i; j++) {
+			if(!hidls) sb.append("\r\n" + (ind++) + ". ");
 			sb.append(Statistics.distime(j, false));
 			String s = session.getString(j, 6);
-			if(s!=null && !s.equals(""))sb.append("["+s+"]");
-			if(hidls && j<i)sb.append(", ");
-			if(!hidls)sb.append("  "+scrst[j]);
+			if(s!=null && !s.equals("")) sb.append("[" + s + "]");
+			if(hidls && j<i) sb.append(", ");
+			if(!hidls) sb.append("  " + session.getString(j, 4));
 		}
 		return sb.toString();
 	}
-
+	
 	private Bitmap getBgPic(Bitmap bitmap) {
 		int width = dm.widthPixels;
-		int height=dm.heightPixels;
+		int height = dm.heightPixels;
 		float scaleWidth=(float)bitmap.getWidth()/width;
 		float scaleHeight=(float)bitmap.getHeight()/height;
 		float scale = Math.min(scaleWidth, scaleHeight);
@@ -3004,7 +2897,7 @@ public class DCTimer extends Activity implements SensorEventListener {
 				(int)((bitmap.getHeight()-height*scale)/2), (int)(width*scale), (int)(height*scale), matrix, true);
 	}
 
-	private void setBgPic(Bitmap scaleBitmap, int opa) {
+	private void setBgPic(Bitmap scaleBitmap, int opac) {
 		int width = dm.widthPixels;
 		int height = dm.heightPixels;
 		Bitmap newBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
@@ -3013,30 +2906,21 @@ public class DCTimer extends Activity implements SensorEventListener {
 		Paint paint = new Paint();
 		canvas.drawBitmap(scaleBitmap, 0, 0, paint);
 		paint.setColor(Color.WHITE);
-		paint.setAlpha(255-255*opa/100);
+		paint.setAlpha(255*(100-opac)/100);
 		canvas.drawRect(0, 0, width, height, paint);
 		//return newBitmap;
-		Drawable drawable =new BitmapDrawable(newBitmap);
-		tabHost.setBackgroundDrawable(drawable);
+		Drawable drawable =new BitmapDrawable(getResources(), newBitmap);
+		tabHost.setBackground(drawable);
 	}
-
+	
 	private void acquireWakeLock() {
-		if(!opnd) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		else if (wakeLock ==null) {
-			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-			wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, this.getClass().getCanonicalName());
-			wakeLock.acquire();
-		}
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 	}
-
+	
 	private void releaseWakeLock() {
-		if(!opnd) getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		if (wakeLock != null&& wakeLock.isHeld()) {
-			wakeLock.release();
-			wakeLock = null;
-		}
+		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 	}
-
+	
 	private void getSession(int i) {
 		session.getSession(i, isMulp);
 		if(Session.resl != 0) {
@@ -3045,9 +2929,10 @@ public class DCTimer extends Activity implements SensorEventListener {
 			listLen = 0;
 		}
 	}
-
+	
 	private void singTime(final int p, final int col) {
 		session.move(p/col);
+		final String scr = session.getString(4);
 		String time = session.getString(5);
 		String n = session.getString(6);
 		if(n==null) n="";
@@ -3055,16 +2940,17 @@ public class DCTimer extends Activity implements SensorEventListener {
 		if(time!=null) time="\n("+time+")";
 		else time = "";
 		LayoutInflater factory = LayoutInflater.from(context);
-		final View view = factory.inflate(R.layout.singtime, null);
+		int layoutId = R.layout.singtime;
+		view = factory.inflate(layoutId, null);
 		final EditText editText=(EditText) view.findViewById(R.id.etnote);
 		final TextView tvTime=(TextView) view.findViewById(R.id.st_time);
 		final TextView tvScr=(TextView) view.findViewById(R.id.st_scr);
 		tvTime.setText(getString(R.string.show_time)+Statistics.distime(p/col,true)+time);
-		tvScr.setText(scrst[p/col]);
-		if(Session.resp[p/col]==2) {
+		tvScr.setText(scr);
+		if(Session.penalty[p/col]==2) {
 			RadioButton rb = (RadioButton) view.findViewById(R.id.st_pe3);
 			rb.setChecked(true);
-		} else if(Session.resp[p/col]==1) {
+		} else if(Session.penalty[p/col]==1) {
 			RadioButton rb = (RadioButton) view.findViewById(R.id.st_pe2);
 			rb.setChecked(true);
 		} else {
@@ -3075,35 +2961,36 @@ public class DCTimer extends Activity implements SensorEventListener {
 			editText.setText(comment);
 			editText.setSelection(comment.length());
 		}
-		CustomDialog cdialog =
-		new CustomDialog.Builder(context).setContentView(view)
+		new CustomDialog.Builder(context).setView(view)
 		.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
+				boolean tag = false;
 				RadioGroup rg = (RadioGroup) view.findViewById(R.id.st_penalty);
 				int rgid = rg.getCheckedRadioButtonId();
 				switch(rgid) {
-				case R.id.st_pe1: update(p/col, (byte)0); break;
-				case R.id.st_pe2: update(p/col, (byte)1); break;
-				case R.id.st_pe3: update(p/col, (byte)2); break;
+				case R.id.st_pe1: tag = update(p/col, (byte)0); break;
+				case R.id.st_pe2: tag = update(p/col, (byte)1); break;
+				case R.id.st_pe3: tag = update(p/col, (byte)2); break;
 				}
 				String text = editText.getText().toString();
 				if(!text.equals(comment)) {
 					session.update(text);
-					new Thread() {
-						public void run() {
-							try {
-								adapter.refresh(listLen);
-								handler.sendEmptyMessage(18);
-							} catch (Exception e) { }
-						}
-					}.start();
+					tag = true;
 				}
 				hideKeyboard(editText);
+				if(tag) updateGrid();
 			}
 		}).setNeutralButton(R.string.copy_scr, new DialogInterface.OnClickListener() {
+			@SuppressWarnings("deprecation")
 			public void onClick(DialogInterface dialog, int which) {
-				ClipboardManager clip = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-				clip.setText(scrst[p/col]);
+				if(VERSION.SDK_INT > 11) {
+					android.content.ClipboardManager clip = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+					clip.setPrimaryClip(ClipData.newPlainText("text", scr));
+				}
+				else {
+					android.text.ClipboardManager clip = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+					clip.setText(scr);
+				}
 				Toast.makeText(context, getString(R.string.copy_to_clip), Toast.LENGTH_SHORT).show();
 				hideKeyboard(editText);
 			}
@@ -3112,46 +2999,14 @@ public class DCTimer extends Activity implements SensorEventListener {
 				delete(p/col, col);
 				hideKeyboard(editText);
 			}
-		}).create();
-		showDialog(cdialog);
-	}
-
-	private Bitmap takeScreenShot(Activity activity) {
-		//View是你需要截图的View
-		View view = activity.getWindow().getDecorView();
-		view.setDrawingCacheEnabled(true);
-		view.buildDrawingCache();
-		Bitmap b1 = view.getDrawingCache();
-		//获取状态栏高度
-		Rect frame = new Rect();
-		activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-		int statusBarHeight = frame.top;
-		//获取屏幕长和高
-		int width = activity.getWindowManager().getDefaultDisplay().getWidth();
-		int height = activity.getWindowManager().getDefaultDisplay().getHeight();
-		//去掉标题栏
-		//Bitmap bm = Bitmap.createBitmap(b1, 0, 25, 320, 455);
-		Bitmap bm = Bitmap.createBitmap(b1, 0, statusBarHeight, width, height - statusBarHeight);
-		view.destroyDrawingCache();
-		return bm;
-	}
-
-	void savePic(Bitmap b, String strFileName) {
-		try {
-			FileOutputStream fos = new FileOutputStream(strFileName);
-			if (null != fos) {
-				b.compress(Bitmap.CompressFormat.PNG, 90, fos);
-				fos.flush();
-				fos.close();
-			}
-		} catch (IOException e) {}
+		}).show();
 	}
 	
 	private void showKeyboard(final EditText et) {
 		new Thread() {
 			public void run() {
 				try {
-					sleep(300);
+					sleep(200);
 				} catch (Exception e) { }
 				InputMethodManager inm = (InputMethodManager)et.getContext().getSystemService(Context.INPUT_METHOD_SERVICE); 
 				inm.showSoftInput(et, 0);
@@ -3164,113 +3019,115 @@ public class DCTimer extends Activity implements SensorEventListener {
 		inm.hideSoftInputFromWindow(et.getWindowToken(), 0);
 	}
 	
-	private void showDialog(CustomDialog dialog) {
-		Window dw = dialog.getWindow();
-		WindowManager.LayoutParams p = dw.getAttributes();
-		p.width = dip300;
-		//p.height = dip450;
-		dw.setAttributes(p);
-		dialog.show();
+	private void setSwitchOn(ImageButton bt, boolean isOn) {
+		if(isOn) bt.setImageResource(R.drawable.switch_on);
+		else bt.setImageResource(R.drawable.switch_off);
 	}
-
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == 1) {	//设置背景图片
-			if (resultCode == RESULT_OK) {
+	
+	private void setFullScreen(boolean fs) {
+		if (fs)
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+	}
+	
+	private void exportDB(final String path) {
+		File f = new File(defPath);
+		if(!f.exists()) f.mkdirs();
+		progressDialog.setTitle(getString(R.string.out_db));
+		progressDialog.setMax(15);
+		progressDialog.show();
+		new Thread() {
+			public void run() {
 				try {
-					Uri uri = data.getData();
-					Cursor c = getContentResolver().query(uri, null, null, null, null);
-					c.moveToFirst();
-					picPath = c.getString(1);
-					ContentResolver cr = this.getContentResolver();
-					bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
-					bitmap = getBgPic(bitmap);
-					setBgPic(bitmap, opac);
-					bgcolor = false;
-					edit.putString("picpath", picPath);
-					edit.putBoolean("bgcolor", false); edit.commit();
-					c.close();
+					BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "UTF-8"));
+					for(int i=0; i<15; i++) {
+						handler.sendEmptyMessage(100 + i);
+						Cursor cur = session.getCursor(i);
+						int count = cur.getCount();
+						if(count == 0) continue;
+						writer.write(i+1+"\r\n");
+						cur.moveToFirst();
+						for(int j=0; j<count; j++) {
+							writer.write(cur.getInt(1)+"\t"+cur.getInt(2)+"\t"+cur.getInt(3)+"\t");
+							writer.write(cur.getString(4).replace("\n", "\\n")+"\t"+cur.getString(5)+"\t");
+							if(cur.getString(6) != null)
+								writer.write(cur.getString(6).replace("\t", "\\t")+"\t");
+							else writer.write("\t");
+							writer.write(cur.getInt(7)+"\t"+cur.getInt(8)+"\t"+cur.getInt(9)+"\t"
+									+cur.getInt(10)+"\t"+cur.getInt(11)+"\t"+cur.getInt(12)+"\r\n");
+							cur.moveToNext();
+						}
+						cur.close();
+					}
+					writer.close();
+					handler.sendEmptyMessage(7);
 				} catch (Exception e) {
-				} catch (OutOfMemoryError e) {Toast.makeText(context, "Out of memory error: bitmap size exceeds VM budget", Toast.LENGTH_SHORT).show();}
+					e.printStackTrace();
+					handler.sendEmptyMessage(5);
+				}
+				progressDialog.dismiss();
 			}
-		} else {
-			super.onActivityResult(requestCode, resultCode, data);
-	        // SSO 授权回调
-	        // 重要：发起 SSO 登陆的 Activity 必须重写 onActivityResult
-	        if (mSsoHandler != null) {
-	            mSsoHandler.authorizeCallBack(requestCode, resultCode, data);
-	        }
-		}
+		}.start();
 	}
-
-	@Override
-	public void onAccuracyChanged(Sensor arg0, int arg1) {
+	
+	private void importDB(final String path) {
+		progressDialog.setTitle(getString(R.string.in_db));
+		progressDialog.setMax(15);
+		progressDialog.show();
+		new Thread() {
+			public void run() {
+				int dbCount = 0;
+				try {
+					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF-8"));
+					String line = "";
+					int count = 1;
+					DBHelper dbh = new DBHelper(context);
+					SQLiteDatabase db = dbh.getWritableDatabase();
+					db.beginTransaction();
+					SQLiteStatement stmt = null;// = db.compileStatement("insert into commodity(commodity_icon, commodity_photo, category_id, commodity_name, commodity_price) values(?, ?, ?, ?, ?)");
+					while (((line = reader.readLine()) != null)) {
+						if(!line.contains("\t")) {
+							crntProgress = Integer.parseInt(line);
+							Cursor cur = db.query(DBHelper.TBL_NAME[crntProgress-1], null, null, null, null, null, null);
+							if(cur.getCount() > 0) {
+								cur.moveToLast();
+								count = cur.getInt(0) + 1;
+							} else count = 1;
+							cur.close();
+							stmt = db.compileStatement("insert into "+DBHelper.TBL_NAME[crntProgress-1]+" values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+							handler.sendEmptyMessage(100+crntProgress);
+						} else {
+							String[] ts = line.split("\t");
+							stmt.bindLong(1, count++);
+							stmt.bindLong(2, Integer.parseInt(ts[0]));
+							stmt.bindLong(3, Integer.parseInt(ts[1]));
+							stmt.bindLong(4, Integer.parseInt(ts[2]));
+							stmt.bindString(5, ts[3].replace("\\n", "\n"));
+							if(ts[4].equals("null")) stmt.bindString(6, "");
+							else stmt.bindString(6, ts[4]);
+							if(ts[5].equals("null")) stmt.bindString(7, "");
+							else stmt.bindString(7, ts[5].replace("\\t", "\t"));
+							for(int i=0; i<6; i++)
+								stmt.bindLong(i+8, Integer.parseInt(ts[i+6]));
+							stmt.execute();
+							stmt.clearBindings();
+							dbCount++;
+						}
+					}
+					db.setTransactionSuccessful();
+					db.endTransaction();
+					reader.close();
+					progressDialog.dismiss();
+					handler.sendEmptyMessage(17);
+					if(dbCount > 0) {
+						getSession(sesIdx);
+						handler.sendEmptyMessage(14);
+					}
+				} catch (Exception e) {
+					progressDialog.dismiss();
+					handler.sendEmptyMessage(16);
+				}
+			}
+		}.start();
 	}
-
-	@Override
-	public void onSensorChanged(SensorEvent e) {
-		float z = e.values[SensorManager.DATA_Z];
-		lowZ = 0.8f * lowZ + 0.2f * z;
-		float highZ = z - lowZ;
-		//testView.setText(String.format("%.1f", highZ));
-		if(drop && timer.time > 200 && (highZ-0.1)*20 > (50-sensity) && timer.state == 1) {
-			timer.count();
-			viewsVisibility(true);
-			if(!wca) {isp2=0; idnf=true;}
-			confirmTime((int) timer.time);
-			timer.state = 0;
-			if(!opnl) {releaseWakeLock(); screenOn = false;}
-		}
-	}
-
-	/*
-     * 微博认证授权回调类。
-     * 1. SSO 授权时，需要在 {@link #onActivityResult} 中调用 {@link SsoHandler#authorizeCallBack} 后，
-     *    该回调才会被执行。
-     * 2. 非 SSO 授权时，当授权结束后，该回调就会被执行。
-     * 当授权成功后，请保存该 access_token、expires_in、uid 等信息到 SharedPreferences 中。
-     */
-    class AuthListener implements WeiboAuthListener {
-        @Override
-        public void onComplete(Bundle values) {
-            // 从 Bundle 中解析 Token
-            mAccessToken = Oauth2AccessToken.parseAccessToken(values);
-            if (mAccessToken.isSessionValid()) {
-                // 显示 Token
-            	String date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(
-                        new java.util.Date(mAccessToken.getExpiresTime()));
-                String format = "Token：%1$s \n有效期：%2$s";
-                Toast.makeText(context, String.format(format, mAccessToken.getToken(), date), Toast.LENGTH_LONG).show();
-                
-                // 保存 Token 到 SharedPreferences
-                AccessTokenKeeper.writeAccessToken(context, mAccessToken);
-                Toast.makeText(context, getString(R.string.auth_success), Toast.LENGTH_SHORT).show();
-                isLogin = true;
-                stSwitch[1].setBackgroundResource(R.drawable.switch_on);
-                if(isShare) {
-                	WBShareActivity.text = getShareContext();
-    				WBShareActivity.bitmap = takeScreenShot(DCTimer.this);
-    				Intent it = new Intent(context, WBShareActivity.class);
-    				startActivity(it);
-                }
-            } else {
-                // 当您注册的应用程序签名不正确时，就会收到 Code，请确保签名正确
-                String code = values.getString("code");
-                String message = getString(R.string.auth_failed);
-                if (!TextUtils.isEmpty(code)) {
-                    message += "\nObtained the code: " + code;
-                }
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-            }
-        }
-
-        @Override
-        public void onCancel() {
-            Toast.makeText(context, getString(R.string.auth_cancel), Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onWeiboException(WeiboException e) {
-            Toast.makeText(context, "Auth exception: "+e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
 }

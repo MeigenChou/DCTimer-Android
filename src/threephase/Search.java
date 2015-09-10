@@ -33,7 +33,7 @@ public class Search {
 	Edge3 e12 = new Edge3();
 	Edge3[] tempe = new Edge3[20];
 
-	min2phase.Search3 search333 = new min2phase.Search3();
+	min2phase.Search search333 = new min2phase.Search();
 
 	int valid1 = 0;
 	public String solution = "";

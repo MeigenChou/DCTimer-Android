@@ -5,25 +5,26 @@
     android:orientation="vertical" >
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="5dip"
+        android:paddingRight="5dip"
         android:paddingTop="5dip"
         android:text="@string/crnt_scr"
         android:textSize="20sp"
         android:textColor="#000" />
 
     <ScrollView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical" >
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingLeft="5dip"
-        	android:paddingRight="3dip" >
+        	android:paddingRight="5dip" >
 
             <TextView
                 android:id="@+id/cnt_scr"
@@ -36,7 +37,8 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:orientation="horizontal"
+                android:gravity="center_vertical" >
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -49,11 +51,12 @@
                     android:id="@+id/etslen"
                     android:layout_width="0dip"
                     android:layout_height="42dip"
-                    android:layout_margin="2dip"
+                    android:layout_marginLeft="2dip"
                     android:layout_weight="1"
                     android:background="@drawable/edittext_select"
                     android:digits="1234567890"
-                    android:inputType="phone"
+                    android:inputType="number"
+                    android:textColor="#000"
                     android:paddingLeft="3dip"
                     android:paddingRight="3dip" />
             </LinearLayout>

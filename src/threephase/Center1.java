@@ -31,9 +31,9 @@ class Center1 {
 					int idx = c.get();
 					raw2sym[idx] = (count << 6 | syminv[j]) << 1 | 1;
 					c.rot(0);
-					if (j%2==1) c.rot(1);
-					if (j%8==7) c.rot(2);
-					if (j%16==15) c.rot(3);
+					if ((j&1)==1) c.rot(1);
+					if ((j&7)==7) c.rot(2);
+					if ((j&15)==15) c.rot(3);
 				}
 				sym2raw[count++] = i;
 			}
@@ -66,9 +66,7 @@ class Center1 {
 	}
 	
 	Center1(byte[] ct) {
-		for (int i=0; i<24; i++) {
-			this.ct[i] = ct[i];
-		}
+		System.arraycopy(ct, 0, this.ct, 0, 24);
 	}
 	
 	Center1(CenterCube c, int urf) {
@@ -160,9 +158,9 @@ class Center1 {
 			if (cord != -1)
 				return cord * 64 + j;
 			rot(0);
-			if (j%2==1) rot(1);
-			if (j%8==7) rot(2);
-			if (j%16==15) rot(3);
+			if ((j&1) == 1) rot(1);
+			if ((j&7) == 7) rot(2);
+			if ((j&15) == 15) rot(3);
 		}
 		System.out.print('e');
 		return -1;
@@ -174,9 +172,7 @@ class Center1 {
 	}
 
 	public void set(Center1 c) {
-		for (int i=0; i<24; i++) {
-			this.ct[i] = c.ct[i];
-		}
+		System.arraycopy(c.ct, 0, this.ct, 0, 24);
 	}
 	
 	void rot(int r) {
@@ -239,9 +235,9 @@ class Center1 {
 	void rotate(int r) {
 		for (int j=0; j<r; j++) {
 			rot(0);
-			if (j%2==1) rot(1);
-			if (j%8==7) rot(2);
-			if (j%16==15) rot(3);
+			if ((j&1)==1) rot(1);
+			if ((j&7)==7) rot(2);
+			if ((j&15)==15) rot(3);
 		}
 	}
 	
@@ -259,9 +255,9 @@ class Center1 {
 				return j;
 			}
 			c.rot(0);
-			if (j%2==1) c.rot(1);
-			if (j%8==7) c.rot(2);
-			if (j%16==15) c.rot(3);
+			if ((j&1)==1) c.rot(1);
+			if ((j&7)==7) c.rot(2);
+			if ((j&15)==15) c.rot(3);
 		}
 		return -1;
 	}
@@ -294,19 +290,19 @@ class Center1 {
 						}
 					}
 					d.rot(0);
-					if (k%2==1) d.rot(1);
-					if (k%8==7) d.rot(2);				
-					if (k%16==15) d.rot(3);
+					if ((k&1)==1) d.rot(1);
+					if ((k&7)==7) d.rot(2);				
+					if ((k&15)==15) d.rot(3);
 				}
 				c.rot(0);
-				if (j%2==1) c.rot(1);
-				if (j%8==7) c.rot(2);
-				if (j%16==15) c.rot(3);
+				if ((j&1)==1) c.rot(1);
+				if ((j&7)==7) c.rot(2);
+				if ((j&15)==15) c.rot(3);
 			}
 			c.rot(0);
-			if (i%2==1) c.rot(1);
-			if (i%8==7) c.rot(2);
-			if (i%16==15) c.rot(3);
+			if ((i&1)==1) c.rot(1);
+			if ((i&7)==7) c.rot(2);
+			if ((i&15)==15) c.rot(3);
 		}
 		
 		for (int i=0; i<48; i++) {
@@ -331,9 +327,9 @@ class Center1 {
 		for (int i=0; i<48; i++) {
 			finish[syminv[i]] = c.get();
 			c.rot(0);
-			if (i%2==1) c.rot(1);
-			if (i%8==7) c.rot(2);
-			if (i%16==15) c.rot(3);
+			if ((i&1)==1) c.rot(1);
+			if ((i&7)==7) c.rot(2);
+			if ((i&15)==15) c.rot(3);
 		}
 	}
 	

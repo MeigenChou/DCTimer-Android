@@ -2,7 +2,7 @@ package sq12phase;
 
 import java.util.*;
 
-import solvers.Im;
+import solver.Mapping;
 
 public class FullCube {
 
@@ -30,8 +30,8 @@ public class FullCube {
 		shape = Shape.ShapeIdx[shape];
 		FullCube f = new FullCube();
 		int[] pc = new int[8], pe = new int[8];
-		Im.set8Perm(pc, r.nextInt(40320));
-		Im.set8Perm(pe, r.nextInt(40320));
+		Mapping.set8Perm(pc, r.nextInt(40320));
+		Mapping.set8Perm(pe, r.nextInt(40320));
 		int cc = 0, ec = 0;
 		for (int i=0; i<24; i++) {
 			if(((shape >> i) & 1) == 0) {	//edge
@@ -176,7 +176,7 @@ public class FullCube {
 			prm[a] = (byte) (pieceAt(a*3+1)>>1);
 		}
 		//convert to number
-		sq.cornperm = Im.get8Perm(prm);
+		sq.cornperm = Mapping.get8Perm(prm);
 
 		int a, b;
 		//Strip top layer edges
@@ -190,7 +190,7 @@ public class FullCube {
 //		if(pieceAt(12)==pieceAt(13)){ a=14; sq.botEdgeFirst=false; }
 //		else{ a=12; sq.botEdgeFirst=true;  }
 		for( ; b<8; a+=3, b++) prm[b]=(byte)(pieceAt(a)>>1);
-		sq.edgeperm=Im.get8Perm(prm);
+		sq.edgeperm=Mapping.get8Perm(prm);
 
 		sq.ml = ml;
 	}

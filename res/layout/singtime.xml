@@ -8,13 +8,16 @@
         android:id="@+id/st_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingStart="5dip"
         android:paddingLeft="5dip"
+        android:paddingEnd="2dip"
+        android:paddingRight="2dip"
         android:paddingTop="5dip"
         android:textColor="#000"
         android:textSize="20sp" />
 
     <ScrollView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical" >
 
@@ -22,7 +25,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="5dip" >
+            android:paddingStart="5dip"
+            android:paddingLeft="5dip"
+            android:paddingEnd="2dip"
+            android:paddingRight="2dip" >
 
             <TextView
                 android:id="@+id/st_scr"
@@ -86,6 +92,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/edittext_select"
                     android:inputType="text"
+                    android:textColor="#000"
                     android:paddingLeft="3dip"
                     android:paddingRight="3dip" />
             </LinearLayout>

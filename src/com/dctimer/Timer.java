@@ -1,9 +1,8 @@
 package com.dctimer;
 
 import java.util.TimerTask;
-
-import com.dctimer.db.Statistics;
-
+import com.dctimer.util.Statistics;
+import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
 
@@ -15,12 +14,12 @@ public class Timer {
 	protected java.util.Timer myTimer;
 	protected TimerTask timerTask = null;
 	FreezeThread threadf = null;
-	DCTimer ct;
+	DCTimer dct;
 	TimeHandler timeh;
 	private int sec = 0;
 	
-	public Timer(DCTimer parent) {
-		this.ct = parent;
+	public Timer(DCTimer dct) {
+		this.dct = dct;
 		timeh = new TimeHandler();
 		myTimer = new java.util.Timer();
 	}
@@ -39,7 +38,7 @@ public class Timer {
 		if(state == 2) {
 			timerTask.cancel();
 			timerTask = null;
-			ct.tvTimer.setTextColor(ct.cl[1]);
+			dct.tvTimer.setTextColor(Configs.colors[1]);
 		}
 		state = 0;
 	}
@@ -47,9 +46,9 @@ public class Timer {
 	public void count() {
 		if(state==0 || state==2) {
 			time = 0;
-			if(state==0 && ct.wca) {
+			if(state==0 && Configs.wca) {
 				state = 2;
-				ct.tvTimer.setTextColor(0xffff0000);
+				dct.tvTimer.setTextColor(0xffff0000);
 				timerTask = new InspectTask();
 				time0 = System.currentTimeMillis();
 				myTimer.schedule(timerTask, 0, 100);
@@ -59,7 +58,7 @@ public class Timer {
 					timerTask.cancel();
 				}
 				state = 1;
-				ct.tvTimer.setTextColor(ct.cl[1]);
+				dct.tvTimer.setTextColor(Configs.colors[1]);
 				timerTask = new ClockTask();
 				time0 = System.currentTimeMillis();
 				myTimer.schedule(timerTask, 0, 17);
@@ -110,9 +109,9 @@ public class Timer {
 	private class FreezeThread extends Thread {
 		public void run() {
 			try {
-				ct.canStart = false;
-				sleep(ct.frzTime*50);
-				ct.canStart = true;
+				dct.canStart = false;
+				sleep(Configs.frzTime*50);
+				dct.canStart = true;
 				timeh.sendEmptyMessage(1);
 				return;
 			} catch (InterruptedException e) {
@@ -126,10 +125,10 @@ public class Timer {
 		if(m) i = -i;
 		i /= 1000;
 		int sec = i, min = 0, hour = 0;
-		if(DCTimer.stSel[13] < 2) {
+		if(Configs.stSel[13] < 2) {
 			min = sec / 60;
 			sec = sec % 60;
-			if(DCTimer.stSel[13] < 1) {
+			if(Configs.stSel[13] < 1) {
 				hour = sec / 60;
 				sec = sec % 60;
 			}
@@ -152,24 +151,25 @@ public class Timer {
 		return time.toString();
 	}
 	
-	private class TimeHandler extends Handler {
+	@SuppressLint("HandlerLeak")
+	class TimeHandler extends Handler {
 		public void handleMessage (Message msg) {
-			if(msg.what==1) ct.tvTimer.setTextColor(0xff00ff00);
-			else if(msg.what==2) ct.tvTimer.setText(Statistics.distime((int)time));
+			if(msg.what==1) dct.tvTimer.setTextColor(0xff00ff00);
+			else if(msg.what==2) dct.tvTimer.setText(Statistics.distime((int)time));
 			else if(state==1) {
-				if(DCTimer.stSel[1]==0) ct.tvTimer.setText(Statistics.distime((int)time));
-				else if(DCTimer.stSel[1]==1)ct.tvTimer.setText(contime((int)time));
-				else ct.tvTimer.setText(ct.getResources().getString(R.string.solve));
+				if(Configs.stSel[1]==0) dct.tvTimer.setText(Statistics.distime((int)time));
+				else if(Configs.stSel[1]==1)dct.tvTimer.setText(contime((int)time));
+				else dct.tvTimer.setText(dct.getResources().getString(R.string.solve));
 			}
 			else if(insp==1) {
-				if(DCTimer.stSel[1]<3)ct.tvTimer.setText(""+sec);
-				else ct.tvTimer.setText(ct.getResources().getString(R.string.inspect));
+				if(Configs.stSel[1]<3)dct.tvTimer.setText(""+sec);
+				else dct.tvTimer.setText(dct.getResources().getString(R.string.inspect));
 			}
 			else if(insp==2) {
-				if(DCTimer.stSel[1]<3)ct.tvTimer.setText("+2");
+				if(Configs.stSel[1]<3)dct.tvTimer.setText("+2");
 			}
 			else if(insp==3) {
-				if(DCTimer.stSel[1]<3)ct.tvTimer.setText("DNF");
+				if(Configs.stSel[1]<3)dct.tvTimer.setText("DNF");
 			}
 		}
 	}

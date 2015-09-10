@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 	private static final String DB_NAME = "spdcube.db";
-	private static final String[] TBL_NAME = {"resulttb","result2","result3","result4","result5","result6",
+	public static final String[] TBL_NAME = {"resulttb","result2","result3","result4","result5","result6",
 		"result7","result8","result9","result10","result11","result12","result13","result14","result15"};
 	private SQLiteDatabase db;
 	
@@ -56,6 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		cv.put("note", note);
 		db.update(TBL_NAME[i], cv, "id=?",new String[] {String.valueOf(id)});
 	}
+	
 	public void close() {
 		if (db != null) db.close();
 	}

@@ -1,6 +1,6 @@
 package sq12phase;
 
-import solvers.Im;
+import solver.Mapping;
 
 class Square {
 	int edgeperm;		//number encoding the edge permutation 0-40319
@@ -36,21 +36,21 @@ class Square {
 
 		for(int i=0;i<40320;i++){
 			//twist
-			Im.set8Perm(pos, i);
+			Mapping.set8Perm(pos, i);
 
 			temp=pos[2];pos[2]=pos[4];pos[4]=temp;
 			temp=pos[3];pos[3]=pos[5];pos[5]=temp;
-			sqTwistMove[i]=(char) Im.get8Perm(pos);
+			sqTwistMove[i]=(char) Mapping.get8Perm(pos);
 
 			//top layer turn
-			Im.set8Perm(pos, i);
+			Mapping.set8Perm(pos, i);
 			temp=pos[0]; pos[0]=pos[1]; pos[1]=pos[2]; pos[2]=pos[3]; pos[3]=temp;
-			sqTopMove[i]=(char) Im.get8Perm(pos);
+			sqTopMove[i]=(char) Mapping.get8Perm(pos);
 
 			//bottom layer turn
-			Im.set8Perm(pos, i);
+			Mapping.set8Perm(pos, i);
 			temp=pos[4]; pos[4]=pos[5]; pos[5]=pos[6]; pos[6]=pos[7]; pos[7]=temp;
-			sqBottomMove[i]=(char) Im.get8Perm(pos);
+			sqBottomMove[i]=(char) Mapping.get8Perm(pos);
 		}	
 
 		for (int i=0; i<40320*2; i++) {

@@ -5,14 +5,14 @@
     android:orientation="vertical" >
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/edit_text"
         android:layout_width="fill_parent"
-        android:layout_height="42dip"
-        android:layout_margin="2dip"
+        android:layout_height="40dip"
+        android:layout_margin="5dip"
         android:background="@drawable/edittext_select"
         android:inputType="number"
-        android:minWidth="300dip"
         android:paddingLeft="3dip"
-        android:paddingRight="3dip" />
+        android:paddingRight="3dip"
+        android:textColor="#000" />
 
 </LinearLayout>

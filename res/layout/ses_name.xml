@@ -7,12 +7,13 @@
     <EditText
         android:id="@+id/edit_ses"
         android:layout_width="fill_parent"
-        android:layout_height="42dip"
-        android:layout_margin="2dip"
-        android:paddingLeft="3dip"
-        android:paddingRight="3dip"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dip"
         android:background="@drawable/edittext_select"
         android:inputType="textMultiLine"
-        android:minWidth="300dip" />
+        android:minHeight="40dip"
+        android:paddingLeft="3dip"
+        android:paddingRight="3dip"
+        android:textColor="#000" />
 
 </LinearLayout>

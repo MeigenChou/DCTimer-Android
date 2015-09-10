@@ -50,9 +50,7 @@ class EdgeCube {
 	}
 	
 	void copy(EdgeCube c) {
-		for (int i=0; i<24; i++) {
-			this.ep[i] = c.ep[i];
-		}
+		System.arraycopy(c.ep, 0, this.ep, 0, 24);
 	}
 	
 	void print() {

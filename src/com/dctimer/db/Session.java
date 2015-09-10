@@ -2,8 +2,9 @@ package com.dctimer.db;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
-import com.dctimer.DCTimer;
+import com.dctimer.Configs;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,23 +14,28 @@ public class Session {
 	private Cursor cursor;
 	private DBHelper dbh;
 	public int dbLastId;
-	public static int[] rest;
+	public static int[] result;
 	public static int resl;
-	public static byte[] resp;
+	public static byte[] penalty;
 	public static int[][] mulp = null;
 	public static long[] multemp = new long[7];
-	private static boolean mark = false;
-	private static int crntSes = 0;
+	private boolean mark = false;
+	private int crntSes = 0;
 	
-	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 	
 	public Session(Context c) {
 		dbh = new DBHelper(c);
 	}
 	
 	public void closeDB() {
-		cursor.close();
+		if(cursor != null)
+			cursor.close();
 		dbh.close();
+	}
+	
+	public Cursor getCursor(int sesIdx) {
+		return dbh.query(sesIdx);
 	}
 	
 	public void getSession(int i, boolean isMulp) {
@@ -37,29 +43,25 @@ public class Session {
 		cursor = dbh.query(i);
 		resl = cursor.getCount();
 		if(resl == 0) {
-			rest = new int[24];
-			resp = new byte[24];
-			DCTimer.scrst = new String[24];
+			result = new int[24];
+			penalty = new byte[24];
 			if(isMulp) mulp = new int[6][24];
 			dbLastId = 0;
 		} else {
-			if(resl < 1000) {
-				rest = new int[resl*2];
-				resp = new byte[resl*2];
-				DCTimer.scrst = new String[resl*2];
+			if(resl < 500) {
+				result = new int[resl*2];
+				penalty = new byte[resl*2];
 				if(isMulp) mulp = new int[6][resl*2];
 			} else {
-				rest = new int[resl*3/2];
-				resp = new byte[resl*3/2];
-				DCTimer.scrst = new String[resl*3/2];
+				result = new int[resl*3/2];
+				penalty = new byte[resl*3/2];
 				if(isMulp) mulp = new int[6][resl*3/2];
 			}
 			cursor.moveToFirst();
 			for(int k=0; k<resl; k++) {
-				rest[k] = cursor.getInt(1);
-				resp[k] = (byte) cursor.getInt(2);
-				if(cursor.getInt(3) == 0) resp[k]=2;
-				DCTimer.scrst[k] = cursor.getString(4);
+				result[k] = cursor.getInt(1);
+				penalty[k] = (byte) cursor.getInt(2);
+				if(cursor.getInt(3) == 0) penalty[k]=2;
 				if(isMulp)
 					for(int j=0; j<6; j++)
 						mulp[j][k] = cursor.getInt(7+j);
@@ -82,6 +84,10 @@ public class Session {
 		return cursor.getInt(i);
 	}
 	
+	public String getString(int i) {
+		return cursor.getString(i);
+	}
+	
 	public String getString(int pos, int i) {
 		if(mark) {
 			cursor = dbh.query(crntSes);
@@ -91,24 +97,23 @@ public class Session {
 		return cursor.getString(i);
 	}
 	
-	public String getString(int i) {
-		return cursor.getString(i);
+	public static int getTime(int i) {
+		return result[i] + penalty[i] * 2000;
 	}
 	
 	public void insert(int time, int p, String scr, boolean isMulp) {
-		if(resl >= rest.length) {
+		if(resl >= result.length) {
 			expand(isMulp);
 		}
-		DCTimer.scrst[resl] = scr;
-		resp[resl] = (byte) p;
-		rest[resl++]=time;
+		penalty[resl] = (byte) p;
+		result[resl++]=time;
 		if(isMulp) {
 			boolean temp = true;
-			for(int i=0; i<DCTimer.stSel[3]+1; i++) {
+			for(int i=0; i<Configs.stSel[3]+1; i++) {
 				if(temp)
 					mulp[i][resl-1] = (int)(multemp[i+1]-multemp[i]);
 				else mulp[i][resl-1] = 0;
-				if(mulp[i][resl-1]<0 || mulp[i][resl-1]>rest[resl-1]) {
+				if(mulp[i][resl-1]<0 || mulp[i][resl-1]>result[resl-1]) {
 					mulp[i][resl-1]=0; temp=false;
 				}
 			}
@@ -130,28 +135,23 @@ public class Session {
 	}
 	
 	public void expand(boolean isMulp) {
-		String[] scr2;
 		byte[] rep2;
 		int[] res2;
 		if(resl < 1000) {
-			scr2 = new String[DCTimer.scrst.length*2];
-			rep2 = new byte[resp.length*2];
-			res2 = new int[rest.length*2];
+			rep2 = new byte[penalty.length*2];
+			res2 = new int[result.length*2];
 		} else {
-			scr2 = new String[DCTimer.scrst.length*3/2];
-			rep2 = new byte[resp.length*3/2];
-			res2 = new int[rest.length*3/2];
+			rep2 = new byte[penalty.length*3/2];
+			res2 = new int[result.length*3/2];
 		}
 		for(int i=0; i<resl; i++) {
-			scr2[i] = DCTimer.scrst[i];
-			rep2[i] = resp[i];
-			res2[i] = rest[i];
+			rep2[i] = penalty[i];
+			res2[i] = result[i];
 		}
-		DCTimer.scrst = scr2;
-		resp = rep2;
-		Session.rest = res2;
+		penalty = rep2;
+		Session.result = res2;
 		if(isMulp) {
-			int[][] mulp2 = new int[6][rest.length];
+			int[][] mulp2 = new int[6][result.length];
 			for(int i=0; i<resl; i++)
 				for(int j=0; j<6; j++)
 					mulp2[j][i] = mulp[j][i];
@@ -160,7 +160,7 @@ public class Session {
 	}
 	
 	public void update(int idx, byte p) {
-		resp[idx] = p;
+		penalty[idx] = p;
 		byte d = 1;
 		if(p==2) p=d=0;
 		cursor.moveToPosition(idx);
@@ -179,9 +179,9 @@ public class Session {
 		int delId;
 		if(idx != resl-1) {
 			for(int i=idx; i<resl-1; i++) {
-				rest[i]=rest[i+1]; resp[i]=resp[i+1]; DCTimer.scrst[i]=DCTimer.scrst[i+1];
+				result[i]=result[i+1]; penalty[i]=penalty[i+1];
 				if(isMulp)
-					for(int j=0; j<DCTimer.stSel[3]+1; j++)
+					for(int j=0; j<Configs.stSel[3]+1; j++)
 						mulp[j][i] = mulp[j][i+1];
 			}
 			cursor.moveToPosition(idx);

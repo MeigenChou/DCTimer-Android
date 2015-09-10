@@ -11,7 +11,7 @@ class Edge3 {
 	static final int N_EPRUN = N_SYM * N_RAW;
 	static final int MAX_DEPTH = 10;
 	static final int[] prunValues = {1, 4, 16, 55, 324, 1922, 12275, 77640, 485359, 2778197, 11742425, 27492416, 31002941, 31006080};
-	static int[] eprun = new int[N_EPRUN / 16];	//小内存设备将出现OOM错误
+	static int[] eprun = new int[N_EPRUN / 16];
 
 	static int[] sym2raw = new int[N_SYM];
 	static char[] symstate = new char[N_SYM];
@@ -36,13 +36,9 @@ class Edge3 {
 				e.set(0);
 				e.move(m);
 				e.rotate(r);
-				for (int i=0; i<12; i++) {
-					mvrot[m<<3|r][i] = e.edge[i];
-				}
+				System.arraycopy(e.edge, 0, mvrot[m<<3|r], 0, 12);
 				e.std();
-				for (int i=0; i<12; i++) {
-					mvroto[m<<3|r][i] = e.temp[i];
-				}
+				System.arraycopy(e.temp, 0, mvroto[m<<3|r], 0, 12);
 			}
 		}
 	}
@@ -62,7 +58,7 @@ class Edge3 {
 					occ[idx>>3] |= (1<<(idx&7));
 					raw2sym[idx] = count << 3 | syminv[j];
 					e.rot(0);
-					if (j%2==1) {
+					if ((j&1)==1) {
 						e.rot(1);
 						e.rot(2);
 					}
@@ -261,10 +257,8 @@ class Edge3 {
 	}
 
 	void set(Edge3 e) {
-		for (int i=0; i<12; i++) {
-			edge[i] = e.edge[i];
-			edgeo[i] = e.edgeo[i];
-		}
+		System.arraycopy(e.edge, 0, this.edge, 0, 12);
+		System.arraycopy(e.edgeo, 0, this.edgeo, 0, 12);
 		isStd = e.isStd;
 	}
 

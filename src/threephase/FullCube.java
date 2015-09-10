@@ -121,9 +121,8 @@ public class FullCube implements Comparable<FullCube> {
 		
 		this.sym = c.sym;
 		
-		for (int i=0; i<60; i++) {
-			this.moveBuffer[i] = c.moveBuffer[i];
-		}
+		System.arraycopy(c.moveBuffer, 0, this.moveBuffer, 0, 60);
+		
 		this.moveLength = c.moveLength;
 		this.edgeAvail = c.edgeAvail;
 		this.centerAvail = c.centerAvail;

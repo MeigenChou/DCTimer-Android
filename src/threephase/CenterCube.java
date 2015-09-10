@@ -9,7 +9,7 @@ class CenterCube {
 
 	CenterCube() {
 		for (int i=0; i<24; i++) {
-			ct[i] = (byte) (i / 4);
+			ct[i] = (byte) (i >> 2);
 		}
 	}
 
@@ -37,9 +37,7 @@ class CenterCube {
 	}
 	
 	void copy(CenterCube c) {
-		for (int i=0; i<24; i++) {
-			this.ct[i] = c.ct[i];
-		}
+		System.arraycopy(c.ct, 0, this.ct, 0, 24);
 	}
 	
 	void print() {

@@ -144,7 +144,7 @@
         <item>11x11x11</item>
     </array>
     <array name="scrCmt">
-        <item>　</item>
+        <item>Normal</item>
         <item>Mini</item>
     </array>
     <array name="scrSmc">
@@ -209,11 +209,6 @@
         <item>显示Petrus S1求解</item>
     </array>
     
-    <array name="clrStr">
-        <item>国标配色</item>
-        <item>日标配色</item>
-    </array>
-    
     <array name="mncStr">
         <item>默认</item>
         <item>mf8</item>
@@ -242,7 +237,6 @@
         <item>R(红)</item>
         <item>F(绿)</item>
         <item>B(蓝)</item>
-        <item>全部显示</item>
     </array>
     <array name="c2lStr">
         <item>不显示</item>
@@ -252,7 +246,6 @@
         <item>R(红)</item>
         <item>F(绿)</item>
         <item>B(蓝)</item>
-        <item>全部显示</item>
     </array>
     
     <string-array name="samprate">
@@ -326,6 +319,8 @@
         <item>清空成绩</item>
         <item>时间分布</item>
         <item>折线图</item>
+        <item>导出数据库</item>
+        <item>导入数据库</item>
     </array>
     
     <array name="sq1sStr">

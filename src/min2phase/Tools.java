@@ -3,7 +3,7 @@ package min2phase;
 import java.util.Random;
 import java.io.*;
 
-import solvers.Cross;
+import solver.Cross;
 
 /**
  * Some useful functions.
@@ -176,7 +176,7 @@ public class Tools {
 	 * @return A random cube in the string representation. Each cube of the cube space has almost (depends on randomSource) the same probability.
 	 *
 	 * @see cs.min2phase.Tools#setRandomSource(java.util.Random)
-	 * @see Search3.min2phase.Search#solution(java.lang.String facelets, int maxDepth, long timeOut, long timeMin, int verbose)
+	 * @see Search.min2phase.Search#solution(java.lang.String facelets, int maxDepth, long timeOut, long timeMin, int verbose)
 	 */
 	public static String randomCube() {
 		return randomState(STATE_RANDOM, STATE_RANDOM, STATE_RANDOM, STATE_RANDOM);
@@ -407,7 +407,7 @@ public class Tools {
     /**
 	 * Check whether the cube definition string s represents a solvable cube.
 	 * 
-	 * @param facelets is the cube definition string , see {@link Search3.min2phase.Search#solution(java.lang.String facelets, int maxDepth, long timeOut, long timeMin, int verbose)}
+	 * @param facelets is the cube definition string , see {@link Search.min2phase.Search#solution(java.lang.String facelets, int maxDepth, long timeOut, long timeMin, int verbose)}
 	 * @return 0: Cube is solvable<br>
 	 *         -1: There is not exactly one facelet of each colour<br>
 	 *         -2: Not all 12 edges exist exactly once<br>
@@ -417,6 +417,6 @@ public class Tools {
 	 *         -6: Parity error: Two corners or two edges have to be exchanged
 	 */
 	public static int verify(String facelets) {
-		return new Search3().verify(facelets);
+		return new Search().verify(facelets);
 	}
 }

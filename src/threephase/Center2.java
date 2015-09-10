@@ -9,7 +9,7 @@ import android.os.Handler;
 
 class Center2 {
 
-	int[] rl = new int[8];
+	byte[] rl = new byte[8];
 	int[] ct = new int[16];
 	int parity = 0;
 	
@@ -36,8 +36,8 @@ class Center2 {
 			for (int j=0; j<16; j++) {
 				rlrot[i][j] = (char) c.getrl();
 				c.rot(0);
-				if (j%2==1) c.rot(1);
-				if (j%8==7) c.rot(2);
+				if ((j&1)==1) c.rot(1);
+				if ((j&7)==7) c.rot(2);
 			}
 		}
 	}
@@ -49,8 +49,8 @@ class Center2 {
 			for (int j=0; j<16; j++) {
 				ctrot[i][j] = (char) c.getct();
 				c.rot(0);
-				if (j%2==1) c.rot(1);
-				if (j%8==7) c.rot(2);
+				if ((j&1)==1) c.rot(1);
+				if ((j&7)==7) c.rot(2);
 			}
 		}
 		handler.sendEmptyMessage(24);
@@ -96,20 +96,16 @@ class Center2 {
 	Center2(CenterCube c) {
 		this();
 		for (int i=0; i<16; i++) {
-			ct[i] = c.ct[i] / 2;
+			ct[i] = c.ct[i] >> 1;
 		}
-		for (int i=0; i<8; i++) {
-			rl[i] = c.ct[i+16];
-		}
+		System.arraycopy(c.ct, 16, rl, 0, 8);
 	}
 	
 	void set(CenterCube c, int edgeParity) {
 		for (int i=0; i<16; i++) {
-			ct[i] = c.ct[i] / 2;
+			ct[i] = c.ct[i] >> 1;
 		}
-		for (int i=0; i<8; i++) {
-			rl[i] = c.ct[i+16];
-		}
+		System.arraycopy(c.ct, 16, rl, 0, 8);
 		parity = edgeParity;
 	}
 

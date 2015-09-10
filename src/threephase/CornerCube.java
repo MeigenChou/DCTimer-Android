@@ -35,10 +35,8 @@ class CornerCube {
 	}
 
 	void copy(CornerCube c) {
-		for (int i = 0; i < 8; i++) {
-			this.cp[i] = c.cp[i];
-			this.co[i] = c.co[i];
-		}
+		System.arraycopy(c.cp, 0, this.cp, 0, 8);
+		System.arraycopy(c.co, 0, this.co, 0, 8);
 	}
 	
 	int getParity() {

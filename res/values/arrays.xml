@@ -30,18 +30,18 @@
         <item>Relays</item>
     </array>
     <array name="scrwca">
-        <item>Rubik\'s cube</item>
+        <item>"Rubik's cube"</item>
         <item>4x4 cube</item>
         <item>5x5 cube</item>
         <item>2x2 cube</item>
         <item>3x3 blindfolded</item>
         <item>3x3 one-handed</item>
-        <item>3x3 feweset moves</item>
+        <item>3x3 fewest moves</item>
         <item>3x3 with feet</item>
         <item>Megaminx</item>
         <item>Pyraminx</item>
         <item>Square-1</item>
-        <item>Rubik\'s clock</item>
+        <item>"Rubik's clock"</item>
         <item>Skewb</item>
         <item>6x6 cube</item>
         <item>7x7 cube</item>
@@ -111,8 +111,8 @@
         <item>random moves</item>
     </array>
     <array name="scrSq1">
-        <item>ftm</item>
-        <item>ttm</item>
+        <item>face turn metric</item>
+        <item>twist metric</item>
         <item>random state</item>
         <item>cube shape</item>
     </array>
@@ -144,7 +144,7 @@
         <item>11x11x11</item>
     </array>
     <array name="scrCmt">
-        <item>　</item>
+        <item>Normal</item>
         <item>Mini</item>
     </array>
     <array name="scrSmc">
@@ -244,7 +244,6 @@
         <item>R(red)</item>
         <item>F(green)</item>
         <item>B(blue)</item>
-        <item>Display all</item>
     </array>
     <array name="c2lStr">
         <item>None</item>
@@ -254,7 +253,6 @@
         <item>R(red)</item>
         <item>F(green)</item>
         <item>B(blue)</item>
-        <item>Display all</item>
     </array>
     
     <string-array name="samprate">
@@ -328,6 +326,8 @@
         <item>Clear session</item>
         <item>Histogram</item>
         <item>Graph</item>
+        <item>Export database</item>
+        <item>Import database</item>
     </array>
     
     <array name="sq1sStr">

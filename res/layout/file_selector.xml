@@ -10,9 +10,15 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
         android:layout_marginBottom="5dip"
         android:textColor="#000"
         android:textSize="15sp" />
+    
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="#aaa" />
 
     <ListView
         android:id="@+id/list"

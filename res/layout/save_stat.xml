@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingLeft="5dip"
-        android:paddingRight="5dip" >
+        android:paddingRight="5dip"
+        android:gravity="center_vertical" >
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,14 +27,16 @@
             android:layout_weight="1"
             android:background="@drawable/edittext_select"
             android:inputType="text"
+            android:textColor="#000"
             android:paddingLeft="3dip"
             android:paddingRight="3dip" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_browse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/folder" />
+            android:layout_width="49dip"
+            android:layout_height="40dip"
+            android:background="@drawable/folder"
+            android:contentDescription="@string/app_name" />
     </LinearLayout>
 
     <LinearLayout
@@ -41,7 +44,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingLeft="5dip"
-        android:paddingRight="3dip" >
+        android:paddingRight="5dip"
+        android:gravity="center_vertical" >
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,12 +58,11 @@
             android:id="@+id/edit_scrfile"
             android:layout_width="0dip"
             android:layout_height="42dip"
-            android:layout_margin="2dip"
             android:layout_weight="1"
             android:background="@drawable/edittext_select"
             android:inputType="text"
-            android:paddingLeft="3dip"
-            android:paddingRight="3dip" />
+            android:textColor="#000"
+            android:paddingLeft="3dip" />
     </LinearLayout>
 
 </LinearLayout>
