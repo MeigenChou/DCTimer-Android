@@ -107,6 +107,7 @@ public class ColorSchemeView extends View {
 				canvas.drawRect((float)(mWidth*0.84), (float)(mWidth*0.27), (float)(mWidth*0.91), (float)(mWidth*0.48), mPaint);
 				canvas.drawRect((float)(mWidth*0.27), (float)(mWidth*0.59), (float)(mWidth*0.48), (float)(mWidth*0.66), mPaint);
 				canvas.drawRect((float)(mWidth*0.34), (float)(mWidth*0.52), (float)(mWidth*0.41), (float)(mWidth*0.73), mPaint);
+				mPaint.setStyle(Style.FILL);
 				canvas.drawText("U", (float)(mWidth*0.375), (float)(mWidth*0.15), mPaint);
 				canvas.drawText("F", (float)(mWidth*0.375), (float)(mWidth*0.40), mPaint);
 			}
@@ -133,6 +134,7 @@ public class ColorSchemeView extends View {
 				canvas.drawLine((float)(mWidth*0.403), (float)(mWidth*0.52), (float)(mWidth*0.347), (float)(mWidth*0.73), mPaint);
 				canvas.drawLine((float)(mWidth*0.27), (float)(mWidth*0.597), (float)(mWidth*0.48), (float)(mWidth*0.653), mPaint);
 				canvas.drawLine((float)(mWidth*0.27), (float)(mWidth*0.653), (float)(mWidth*0.48), (float)(mWidth*0.597), mPaint);
+				mPaint.setStyle(Style.FILL);
 				canvas.drawText("U", (float)(mWidth*0.42), (float)(mWidth*0.20), mPaint);
 				canvas.drawText("F", (float)(mWidth*0.375), (float)(mWidth*0.40), mPaint);
 			}
@@ -179,6 +181,7 @@ public class ColorSchemeView extends View {
 				path.lineTo((float)(mWidth*0.27), (float)(mWidth*0.625));
 				path.close();
 				canvas.drawPath(path, mPaint);
+				mPaint.setStyle(Style.FILL);
 				canvas.drawText("U", (float)(mWidth*0.375), (float)(mWidth*0.15), mPaint);
 				canvas.drawText("FL", (float)(mWidth*0.375), (float)(mWidth*0.40), mPaint);
 			}

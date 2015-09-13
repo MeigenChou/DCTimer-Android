@@ -28,7 +28,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.*;
 import android.graphics.Bitmap.Config;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.*;
@@ -61,7 +60,6 @@ public class DCTimer extends Activity {
 	private Button btReset;	//设置复位
 	private SeekBar[] seekBar = new SeekBar[5];	//拖动条
 	private TextView[] tvSettings = new TextView[50];	//设置
-	//private int sttlen = tvSettings.length;
 	private ImageButton[] ibSwitch = new ImageButton[9];	//开关
 	private TextView[] std = new TextView[15];
 	private TextView[] stdn = new TextView[2];
@@ -69,10 +67,11 @@ public class DCTimer extends Activity {
 	private LinearLayout[] lborder = new LinearLayout[7];
 	private CheckBox[] checkBox = new CheckBox[11];	//EG打乱设置
 	private PopupWindow popupWindow;	//打乱弹出窗口
-	private TextView tvFile;
+	private TextView tvPathName;
 	private View view;
 	private ListView listView;
 	private ProgressDialog progressDialog;
+	private EditText editText;
 	private Bitmap bitmap;
 	private Bitmap bmScrView;
 	public SharedPreferences share;
@@ -93,7 +92,9 @@ public class DCTimer extends Activity {
 	final static int NEXTSCRING = 2;
 	final static int SCRDONE = 3;
 	
-	public boolean isInScr, nextScrWaiting, scrt;
+	public boolean isInScr = false;
+	private boolean nextScrWaiting = false;
+	private boolean scrTouch = false;
 	private boolean isLongPress;
 	protected boolean canStart;
 	private boolean idnf = true;
@@ -141,13 +142,23 @@ public class DCTimer extends Activity {
 			case 3: tvScramble.setText(crntScr + extsol);	break;
 			case 4: tvScramble.setText(crntScr + "\n\n" + getString(R.string.solving));	break;
 			case 5: Toast.makeText(context, getString(R.string.save_failed), Toast.LENGTH_SHORT).show();	break;
-			//case 5: tvTimer.setText("IMPORT");	break;
 			case 6: Toast.makeText(context, getString(R.string.file_error), Toast.LENGTH_LONG).show();
 			case 7: Toast.makeText(context, getString(R.string.save_success), Toast.LENGTH_SHORT).show();	break;
 			case 8: Toast.makeText(context, getString(R.string.conning), Toast.LENGTH_SHORT).show();	break;
 			case 9: Toast.makeText(context, getString(R.string.net_error), Toast.LENGTH_LONG).show();	break;
 			case 10: Toast.makeText(context, getString(R.string.lastest), Toast.LENGTH_LONG).show();	break;
-			case 11:
+			case 11: Toast.makeText(context, getString(R.string.import_failed), Toast.LENGTH_SHORT).show(); break;
+			case 12: Toast.makeText(context, getString(R.string.import_success), Toast.LENGTH_SHORT).show(); break;
+			case 13:
+				btSesMean.setText(getString(R.string.session_average) + Statistics.sesMean());
+				setGridView();
+				break;
+			case 14: scrambleView.setVisibility(View.GONE); break;
+			case 15:
+				scrambleView.setVisibility(View.VISIBLE);
+				scrambleView.setImageBitmap(bmScrView);
+				break;
+			case 16:
 				if(defPath == null)
 					Toast.makeText(context, getString(R.string.sd_not_exist), Toast.LENGTH_SHORT).show();
 				else
@@ -158,22 +169,12 @@ public class DCTimer extends Activity {
 						}
 					}).setNegativeButton(R.string.btn_cancel, null).show();
 				break;
-			case 13:
-				scrambleView.setVisibility(View.GONE);
-				break;
-			case 14: btSesMean.setText(getString(R.string.session_average) + Statistics.sesMean());
-				setGridView();	break;
-			case 15:
-				scrambleView.setVisibility(View.VISIBLE);
-				scrambleView.setImageBitmap(bmScrView);
-				break;
-			case 16: Toast.makeText(context, getString(R.string.import_failed), Toast.LENGTH_SHORT).show(); break;
-			case 17: Toast.makeText(context, getString(R.string.import_success), Toast.LENGTH_SHORT).show(); break;
-			case 18: 
+			case 17: 
 				timesAdapter.notifyDataSetChanged();
 				gvTimes.setAdapter(timesAdapter);
 				gvTimes.setSelection(gvTimes.getCount()-1);
 				break;
+			case 18: tvScramble.setText(getString(R.string.initing) + " (2%) ..."); break;
 			case 19: tvScramble.setText(getString(R.string.initing) + " (" + (13 + threephase.Util.prog / 2597) + "%) ..."); break;
 			case 20: tvScramble.setText(getString(R.string.initing) + " (0%) ..."); break;
 			case 21: tvScramble.setText(getString(R.string.initing) + " (19%) ..."); break;
@@ -185,9 +186,6 @@ public class DCTimer extends Activity {
 			case 27: tvScramble.setText(getString(R.string.initing) + " (" + (95 + threephase.Util.prog / 252) + "%) ..."); break;
 			case 28: tvScramble.setText(getString(R.string.initing) + " (" + (33 + threephase.Util.prog / 28923) + "%) ..."); break;
 			case 29: tvScramble.setText(getString(R.string.initing) + " (" + threephase.Util.prog / 1198 + "%) ..."); break;
-			case 30: tvScramble.setText(getString(R.string.initing) + " (2%) ..."); break;
-//			case 31: tvProg.setText(sesNum+" / 15 ("+dbCount+")");
-//				prgBar.setProgress((sesNum-1) * 15 / 100);
 			default:
 				progressDialog.setProgress(msw - 100);	break;
 			}
@@ -214,7 +212,7 @@ public class DCTimer extends Activity {
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 			defPath = Environment.getExternalStorageDirectory().getPath()+"/DCTimer/";
-			System.out.println("SD卡 "+defPath);
+			//System.out.println("SD卡 "+defPath);
 		}
 		readConf();
 		scrStr = getResources().getStringArray(R.array.cubeStr);
@@ -253,12 +251,14 @@ public class DCTimer extends Activity {
 		tabHost.setCurrentTab(0);
 		if(bgcolor) tabHost.setBackgroundColor(colors[0]);
 		else try {
-			FileInputStream fis = new FileInputStream(picPath);
-			bitmap = BitmapFactory.decodeStream(fis);
-			bitmap = getBgPic(bitmap);
-			setBgPic(bitmap, opac);
-			fis.close();
+			Bitmap bm = Utils.getBitmap(picPath);
+			bitmap = Utils.getBackgroundBitmap(bm);
+			tabHost.setBackground(Utils.getBackgroundDrawable(context, bitmap, opac));
+			bm.recycle();
 		} catch (Exception e) {
+			tabHost.setBackgroundColor(colors[0]);
+			Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+		} catch (OutOfMemoryError e) {
 			tabHost.setBackgroundColor(colors[0]);
 			Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
 		}
@@ -290,21 +290,22 @@ public class DCTimer extends Activity {
 		for (int j = 0; j < 15; j++)
 			sesItems[j] = (j + 1) + ". " + sesnames[j];
 		tvSesName = (TextView) findViewById(R.id.sesname);
-		tvSesName.setText(sesnames[sesIdx].equals("") ? getString(R.string.session) + (sesIdx+1) : sesnames[sesIdx]);
+		tvSesName.setText(sesnames[sesIdx].equals("") ? getString(R.string.session)+(sesIdx+1) : sesnames[sesIdx]);
 		//成绩列表
 		gvTimes = (GridView) findViewById(R.id.myGridView);
 		gvTimes.setOnItemClickListener(new GridView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
 				if(isMulp) {
-					if(pos/(stSel[3]+2)<Session.resl && pos%(stSel[3]+2)==0) singTime(pos, stSel[3]+2);
+					if(pos/(stSel[3]+2)<Session.resl && pos%(stSel[3]+2)==0)
+						showTime(pos, stSel[3] + 2);
 				}
-				else if(pos%3 == 0)
-					singTime(pos, 3);
+				else if(pos % 3 == 0)
+					showTime(pos, 3);
 				else if(pos%3==1 && pos/3>l1len-2)
-					showAlertDialog(1, pos/3);
+					showAlertDialog(1, pos / 3);
 				else if(pos%3==2 && pos/3>l2len-2)
-					showAlertDialog(2, pos/3);
+					showAlertDialog(2, pos / 3);
 			}
 		});
 		gvTitle = (GridView) findViewById(R.id.gv_title);
@@ -400,47 +401,17 @@ public class DCTimer extends Activity {
 		//System.out.println("旋转屏幕");
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		if(!bgcolor) try {
-			FileInputStream fis = new FileInputStream(picPath);
-			bitmap = BitmapFactory.decodeStream(fis);
-			bitmap = getBgPic(bitmap);
-			setBgPic(bitmap, opac);
-			fis.close();
+			Bitmap bm = Utils.getBitmap(picPath);
+			bitmap = Utils.getBackgroundBitmap(bm);
+			tabHost.setBackground(Utils.getBackgroundDrawable(context, bitmap, opac));
+			bm.recycle();
 		} catch (Exception e) {
 			Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+		} catch (OutOfMemoryError e) {
+			Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
 		}
-		new Thread() {
-			public void run() {
-				try {
-					sleep(200);
-					handler.sendEmptyMessage(18);
-				} catch (Exception e) { }
-			}
-		}.start();
+		updateGridView(0);
 	}
-	
-//	@Override
-//	protected void onStart() {
-//		System.out.println("onStart");
-//		super.onStart();
-//	}
-	
-//	@Override
-//	protected void onPause() {
-//		System.out.println("onPause");
-//		super.onPause();
-//	}
-	
-//	@Override
-//	protected void onResume() {
-//		System.out.println("onResume");
-//		super.onResume();
-//	}
-	
-//	@Override
-//	protected void onStop() {
-//		System.out.println("onStop");
-//		super.onStop();
-//	}
 	
 	@Override
 	protected void onDestroy() {
@@ -448,12 +419,6 @@ public class DCTimer extends Activity {
 		if(session != null)
 			session.closeDB();
 		super.onDestroy();
-	}
-	
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		System.out.println("onSaveInstanceState");
-		super.onSaveInstanceState(outState);
 	}
 	
 	@Override
@@ -471,10 +436,11 @@ public class DCTimer extends Activity {
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		final LayoutInflater factory;
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
 		case 0:	//导入打乱
-			LayoutInflater factory = LayoutInflater.from(context);
+			factory = LayoutInflater.from(context);
 			int layoutId = R.layout.import_scramble;
 			view = factory.inflate(layoutId, null);
 			final Spinner sp = (Spinner) view.findViewById(R.id.spnScrType);
@@ -482,7 +448,7 @@ public class DCTimer extends Activity {
 			ArrayAdapter<String> adap = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, items);
 			adap.setDropDownViewResource(R.layout.spinner_dropdown_item);
 			sp.setAdapter(adap);
-			final EditText et0 = (EditText) view.findViewById(R.id.edit_inscr);
+			editText = (EditText) view.findViewById(R.id.edit_inscr);
 			sp.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
 				public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 					insType = position;
@@ -492,28 +458,28 @@ public class DCTimer extends Activity {
 			new CustomDialog.Builder(context).setView(view).setTitle(R.string.menu_inscr)
 			.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface di, int i) {
-					hideKeyboard(et0);
-					final String scrs=et0.getText().toString();
+					hideKeyboard(editText);
+					final String scrs = editText.getText().toString();
 					inScr = new ArrayList<String>();
 					inScrLen = 0;
 					setInScr(scrs);
-					if(inScr.size()>0) newScr(crntScrType);
+					if(inScr.size()>0) newScramble(crntScrType);
 				}
 			}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface arg0, int arg1) {
-					hideKeyboard(et0);
+					hideKeyboard(editText);
 				}
 			}).show();
-			showKeyboard(et0);
+			showKeyboard(editText);
 			break;
 		case 1:	//导出打乱
 			if(defPath == null) {
 				Toast.makeText(context, getString(R.string.sd_not_exist), Toast.LENGTH_SHORT).show();
 				break;
 			}
-			final LayoutInflater factory1 = LayoutInflater.from(context);
+			factory = LayoutInflater.from(context);
 			layoutId = R.layout.export_scramble;
-			view = factory1.inflate(layoutId, null);
+			view = factory.inflate(layoutId, null);
 			final EditText et1 = (EditText) view.findViewById(R.id.edit_scrnum);
 			final EditText et2 = (EditText) view.findViewById(R.id.edit_scrpath);
 			final ImageButton btn = (ImageButton) view.findViewById(R.id.btn_browse);
@@ -526,18 +492,18 @@ public class DCTimer extends Activity {
 				public void onClick(View v) {
 					selFilePath = et2.getText().toString();
 					int lid = R.layout.file_selector;
-					final View viewb = factory1.inflate(lid, null);
+					final View viewb = factory.inflate(lid, null);
 					listView = (ListView) viewb.findViewById(R.id.list);
 					File f = new File(selFilePath);
-					selFilePath = f.exists()?selFilePath:Environment.getExternalStorageDirectory().getPath()+File.separator;
-					tvFile = (TextView) viewb.findViewById(R.id.text);
-					tvFile.setText(selFilePath);
-					getFileDir(selFilePath, false);
+					selFilePath = f.exists() ? selFilePath : defPath + File.separator;
+					tvPathName = (TextView) viewb.findViewById(R.id.text);
+					tvPathName.setText(selFilePath);
+					getFileDirs(selFilePath, false);
 					listView.setOnItemClickListener(itemListener);
 					new CustomDialog.Builder(context).setTitle(R.string.sel_path).setView(viewb)
 					.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialoginterface, int j) {
-							et2.setText(selFilePath+"/");
+							et2.setText(selFilePath + "/");
 						}
 					}).setNegativeButton(R.string.btn_cancel, null).show();
 				}
@@ -546,12 +512,12 @@ public class DCTimer extends Activity {
 			.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface di, int i) {
 					int numt = Integer.parseInt(et1.getText().toString());
-					if(numt>100)numt=100;
-					else if(numt<1)numt=5;
+					if(numt > 100) numt = 100;
+					else if(numt < 1) numt = 5;
 					final int num = numt;
-					final String path=et2.getText().toString();
+					final String path = et2.getText().toString();
 					if(!path.equals(outPath)) {
-						outPath=path;
+						outPath = path;
 						edit.putString("scrpath", path);
 						edit.commit();
 					}
@@ -581,7 +547,7 @@ public class DCTimer extends Activity {
 			Intent intent=new Intent(Intent.ACTION_SEND);
 			intent.setType("text/plain");	//纯文本
 			intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
-			intent.putExtra(Intent.EXTRA_TEXT, getShareContext());
+			intent.putExtra(Intent.EXTRA_TEXT, getShareContent());
 			startActivity(Intent.createChooser(intent, getTitle()));
 			break;
 		case 4:	//关于
@@ -603,7 +569,7 @@ public class DCTimer extends Activity {
 									if(vers.length > 3)
 										for(int i=3; i<vers.length; i++) sb.append("\n"+vers[i]);
 									updateCont = sb.toString();
-									handler.sendEmptyMessage(11);
+									handler.sendEmptyMessage(16);
 								}
 								else handler.sendEmptyMessage(10);
 							}
@@ -630,26 +596,32 @@ public class DCTimer extends Activity {
 		if (requestCode == 1) {	//设置背景图片
 			if (resultCode == RESULT_OK) {
 				Uri uri = data.getData();
-				ContentResolver cr = getContentResolver();
-				Cursor c = cr.query(uri, null, null, null, null);
-				c.moveToFirst();
-				picPath = c.getString(1);
-				System.out.println("文件路径 " + picPath);
+				//System.out.println(uri);
+				if("file".equalsIgnoreCase(uri.getScheme())) {
+					picPath = uri.getPath();
+				} else {
+					ContentResolver cr = getContentResolver();
+					Cursor c = cr.query(uri, null, null, null, null);
+					c.moveToFirst();
+					picPath = c.getString(1);
+					c.close();
+				}
+				//System.out.println("文件路径 " + picPath);
 				bgcolor = false;
 				edit.putString("picpath", picPath);
 				edit.putBoolean("bgcolor", false);
 				edit.commit();
 				try {
-					bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
-					bitmap = getBgPic(bitmap);
-					setBgPic(bitmap, opac);
-					setBorders();
+					Bitmap bm = Utils.getBitmap(picPath);
+					bitmap = Utils.getBackgroundBitmap(bm);
+					tabHost.setBackground(Utils.getBackgroundDrawable(context, bitmap, opac));
+					bm.recycle();
 				} catch (Exception e) {
 					Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
 				} catch (OutOfMemoryError e) {
 					Toast.makeText(context, "Out of memory error: bitmap size exceeds VM budget", Toast.LENGTH_SHORT).show();
 				}
-				c.close();
+				setBorders();
 			}
 		}
 	}
@@ -662,7 +634,6 @@ public class DCTimer extends Activity {
 				timer.count();
 				viewsVisibility(true);
 				if(!wca) {isp2=0; idnf=true;}
-				//newScr(false);
 				confirmTime((int)timer.time);
 				timer.state = 0;
 				if(!opnl) releaseWakeLock();
@@ -694,7 +665,7 @@ public class DCTimer extends Activity {
 		case KeyEvent.KEYCODE_P:	setScramble(-1, 9);	break;	//金字塔
 		case KeyEvent.KEYCODE_K:	setScramble(-1, 11);	break;	//魔表
 		case KeyEvent.KEYCODE_S:	setScramble(-1, 12);	break;	//斜转
-		case KeyEvent.KEYCODE_N:	newScr(crntScrType);	break;	//新打乱
+		case KeyEvent.KEYCODE_N:	newScramble(crntScrType);	break;	//新打乱
 		case KeyEvent.KEYCODE_Z:	//删除最后成绩
 			if(Session.resl==0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
 			else new CustomDialog.Builder(context).setTitle(R.string.confirm_del_last)
@@ -765,11 +736,11 @@ public class DCTimer extends Activity {
 			v.performClick();
 			switch (v.getId()) {
 			case R.id.tv_scr:
-				scrt = true;
+				scrTouch = true;
 				setTouch(event);
 				return timer.state != 0;
 			case R.id.tv_timer:
-				scrt = false;
+				scrTouch = false;
 				if(stSel[0] == 0) setTouch(event);
 				else if(stSel[0] == 1) inputTime(event.getAction());
 				return true;
@@ -825,14 +796,14 @@ public class DCTimer extends Activity {
 								if(stSel[0]==0) tvTimer.setText(which==0 ? "0.00" : "0.000");
 								if(Session.resl != 0) {
 									btSesMean.setText(getString(R.string.session_average) + Statistics.sesMean());
-									updateGrid();
+									updateGridView(1);
 								}
 								break;
 							case 3:	//分段计时
 								if(which == 0) {
 									isMulp = false;
 									Session.mulp = null;
-									listLen = (Session.resl!=0) ? Session.resl*3 : 0;
+									listLen = Session.resl * 3;
 								} else {
 									listLen = Session.resl!=0 ? (which+2)*(Session.resl+1) : 0;
 									if(!isMulp) {
@@ -851,7 +822,7 @@ public class DCTimer extends Activity {
 								if(!isMulp) setGvTitle();
 								if(Session.resl>0 && !isMulp) {
 									setGvTitle();
-									updateGrid();
+									updateGridView(1);
 								}
 								break;
 							case 5:	//三阶求解
@@ -926,7 +897,7 @@ public class DCTimer extends Activity {
 							case 13:	//时间格式
 								edit.putInt("timeform", which);
 								if(Session.resl > 0) {
-									updateGrid();
+									updateGridView(1);
 								}
 								break;
 							case 14:	//滚动平均1类型
@@ -934,7 +905,7 @@ public class DCTimer extends Activity {
 								if(!isMulp) setGvTitle();
 								if(Session.resl>0 && !isMulp) {
 									setGvTitle();
-									updateGrid();
+									updateGridView(1);
 								}
 								break;
 							}
@@ -989,12 +960,7 @@ public class DCTimer extends Activity {
 							colors[3]=color;
 							edit.putInt("cl3", color);
 							edit.commit();
-							new Thread() {
-								public void run() {
-									timesAdapter.setWorstColor(colors[3]);
-									handler.sendEmptyMessage(18);
-								}
-							}.start();
+							updateGridView(0);
 						}
 					}).setNegativeButton(R.string.btn_cancel, null).show();
 					break;
@@ -1007,40 +973,35 @@ public class DCTimer extends Activity {
 							colors[4]=color;
 							edit.putInt("cl4", color);
 							edit.commit();
-							new Thread() {
-								public void run() {
-									timesAdapter.setBestAvgColor(colors[4]);
-									handler.sendEmptyMessage(18);
-								}
-							}.start();
+							updateGridView(0);
 						}
 					}).setNegativeButton(R.string.btn_cancel, null).show();
 					break;
 				case 17:	//背景图片
-					Intent intent = new Intent();
+					Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 					intent.setType("image/*");
-					intent.setAction(Intent.ACTION_GET_CONTENT);
+					//intent.setAction(Intent.ACTION_GET_CONTENT);
 					startActivityForResult(intent, 1);
 					break;
-				case 18:	//配色设置
+				case 18:	//n阶配色设置
 					int[] cs = {share.getInt("csn1", Color.YELLOW), share.getInt("csn2", Color.BLUE), share.getInt("csn3", Color.RED),
 							share.getInt("csn4", Color.WHITE), share.getInt("csn5", 0xff009900), share.getInt("csn6", 0xffff8026)};
 					colorSchemeView = new ColorSchemeView(context, dip300, cs, 1);
-					new CustomDialog.Builder(context).setTitle("NxNxN").setView(colorSchemeView)
+					new CustomDialog.Builder(context).setTitle(getString(R.string.scheme_cube)).setView(colorSchemeView)
 						.setNegativeButton(R.string.btn_close, null).show();
 					break;
 				case 19:	//金字塔配色
 					cs = new int[] {share.getInt("csp1", Color.RED), share.getInt("csp2", 0xff009900),
 							share.getInt("csp3", Color.BLUE), share.getInt("csp4", Color.YELLOW)};
 					colorSchemeView = new ColorSchemeView(context, dip300, cs, 2);
-					new CustomDialog.Builder(context).setTitle("Pyraminx").setView(colorSchemeView)
+					new CustomDialog.Builder(context).setTitle(getString(R.string.scheme_pyrm)).setView(colorSchemeView)
 						.setNegativeButton(R.string.btn_close, null).show();
 					break;
 				case 20:	//SQ配色
 					cs = new int[] {share.getInt("csq1", Color.YELLOW), share.getInt("csq2", Color.BLUE), share.getInt("csq3", Color.RED),
 							share.getInt("csq4", Color.WHITE), share.getInt("csq5", 0xff009900), share.getInt("csq6", 0xffff8026)};
 					colorSchemeView = new ColorSchemeView(context, dip300, cs, 3);
-					new CustomDialog.Builder(context).setTitle("Square-1").setView(colorSchemeView)
+					new CustomDialog.Builder(context).setTitle(getString(R.string.scheme_sq)).setView(colorSchemeView)
 						.setNegativeButton(R.string.btn_close, null).show();
 					break;
 				case 21:	//背景颜色
@@ -1061,7 +1022,7 @@ public class DCTimer extends Activity {
 					cs = new int[] {share.getInt("csw1", Color.YELLOW), share.getInt("csw2", Color.BLUE), share.getInt("csw3", Color.RED),
 							share.getInt("csw4", Color.WHITE), share.getInt("csw5", 0xff009900), share.getInt("csw6", 0xffff8026)};
 					colorSchemeView = new ColorSchemeView(context, dip300, cs, 4);
-					new CustomDialog.Builder(context).setTitle("Skewb").setView(colorSchemeView)
+					new CustomDialog.Builder(context).setTitle(getString(R.string.scheme_skewb)).setView(colorSchemeView)
 						.setNegativeButton(R.string.btn_close, null).show();
 					break;
 				case 23:	//文字颜色
@@ -1070,17 +1031,12 @@ public class DCTimer extends Activity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							int color = colorPickerView.getColor();
-							colors[1]=color;
+							colors[1] = color;
 							edit.putInt("cl1", color);
 							edit.commit();
 							setTextsColor();
 							setGvTitle();
-							new Thread() {
-								public void run() {
-									timesAdapter.setTextColor(colors[1]);
-									handler.sendEmptyMessage(18);
-								}
-							}.start();
+							updateGridView(0);
 						}
 					}).setNegativeButton(R.string.btn_cancel, null).show();
 					break;
@@ -1090,15 +1046,10 @@ public class DCTimer extends Activity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							int color = colorPickerView.getColor();
-							colors[2]=color;
+							colors[2] = color;
 							edit.putInt("cl2", color);
 							edit.commit();
-							new Thread() {
-								public void run() {
-									timesAdapter.setBestColor(colors[2]);
-									handler.sendEmptyMessage(18);
-								}
-							}.start();
+							updateGridView(0);
 						}
 					}).setNegativeButton(R.string.btn_cancel, null).show();
 					break;
@@ -1107,7 +1058,7 @@ public class DCTimer extends Activity {
 					LayoutInflater factory = LayoutInflater.from(context);
 					int layoutId = R.layout.number_input;
 					view = factory.inflate(layoutId, null);
-					final EditText editText = (EditText) view.findViewById(R.id.edit_text);
+					editText = (EditText) view.findViewById(R.id.edit_text);
 					editText.setText(String.valueOf(sel==25 ? l1len : l2len));
 					editText.setSelection(editText.getText().length());
 					new CustomDialog.Builder(context).setTitle(R.string.enter_len).setView(view)
@@ -1129,7 +1080,7 @@ public class DCTimer extends Activity {
 								stdn[sel - 25].setText("" + len);
 								if(Session.resl>0 && !isMulp) {
 									setGvTitle();
-									updateGrid();
+									updateGridView(1);
 								}
 							}
 							hideKeyboard(editText);
@@ -1156,36 +1107,31 @@ public class DCTimer extends Activity {
 			switch (seekBar.getId()) {
 			case R.id.seekb1:	//计时器字体
 				tvSettings[3].setText(getString(R.string.timer_size) + (seekBar.getProgress()+50));
-				edit.putInt("ttsize", seekBar.getProgress()+50);
-				tvTimer.setTextSize(seekBar.getProgress()+50);
+				edit.putInt("ttsize", seekBar.getProgress() + 50);
+				tvTimer.setTextSize(seekBar.getProgress() + 50);
 				break;
 			case R.id.seekb2:	//打乱字体
-				tvSettings[4].setText(getString(R.string.scrsize)+ (seekBar.getProgress()+12));
-				edit.putInt("stsize", seekBar.getProgress()+12);
-				tvScramble.setTextSize(seekBar.getProgress()+12);
+				tvSettings[4].setText(getString(R.string.scrsize) + (seekBar.getProgress()+12));
+				edit.putInt("stsize", seekBar.getProgress() + 12);
+				tvScramble.setTextSize(seekBar.getProgress() + 12);
 				break;
 			case R.id.seekb3:	//成绩列表行距
-				intv=seekBar.getProgress()+20;
-				tvSettings[10].setText(getString(R.string.row_spacing)+ intv);
-				if(Session.resl!=0) {
-					new Thread() {
-						public void run() {
-							timesAdapter.setHeight(intv);
-							handler.sendEmptyMessage(18);
-						}
-					}.start();
-				}
-				edit.putInt("intv", seekBar.getProgress()+20);
+				intv = seekBar.getProgress() + 20;
+				tvSettings[10].setText(getString(R.string.row_spacing) + intv);
+				if(Session.resl != 0)
+					updateGridView(2);
+				edit.putInt("intv", seekBar.getProgress() + 20);
 				break;
 			case R.id.seekb4:	//背景图不透明度
-				if(!bgcolor) setBgPic(bitmap, seekBar.getProgress());
 				opac = seekBar.getProgress();
+				if(!bgcolor)
+					tabHost.setBackground(Utils.getBackgroundDrawable(context, bitmap, opac));
 				edit.putInt("opac", opac);
 				setBorders();
 				break;
 			case R.id.seekb5:	//启动延时
 				frzTime=seekBar.getProgress();
-				tvSettings[29].setText(getString(R.string.time_tap)+ (frzTime/20D));
+				tvSettings[29].setText(getString(R.string.time_tap) + (frzTime/20D));
 				edit.putInt("tapt", frzTime);
 				break;
 			}
@@ -1206,16 +1152,16 @@ public class DCTimer extends Activity {
 			int prg = seekBar.getProgress();
 			switch (seekBar.getId()) {
 			case R.id.seekb1:
-				tvSettings[3].setText(getString(R.string.timer_size)+ (prg+50));
+				tvSettings[3].setText(getString(R.string.timer_size) + (prg+50));
 				break;
 			case R.id.seekb2:
-				tvSettings[4].setText(getString(R.string.scrsize)+ (prg+12));
+				tvSettings[4].setText(getString(R.string.scrsize) + (prg+12));
 				break;
 			case R.id.seekb3:
-				tvSettings[10].setText(getString(R.string.row_spacing)+ (prg+20));
+				tvSettings[10].setText(getString(R.string.row_spacing) + (prg+20));
 				break;
 			case R.id.seekb5:
-				tvSettings[29].setText(getString(R.string.time_tap)+ (prg/20.0));
+				tvSettings[29].setText(getString(R.string.time_tap) + (prg/20.0));
 				break;
 			}
 		}
@@ -1294,11 +1240,11 @@ public class DCTimer extends Activity {
 				selScr2 = scr2idx;
 				int resId = R.layout.pop_window;
 				view = LayoutInflater.from(context).inflate(resId, null);
-				ListView lv1 = (ListView) view.findViewById(R.id.list1);
+				listView = (ListView) view.findViewById(R.id.list1);
 				scr1Adapter = new TextAdapter(context, scrStr, selScr1+1, 1);
-				lv1.setAdapter(scr1Adapter);
-				lv1.setSelection(selScr1 + 1);
-				lv1.setOnItemClickListener(itemListener);
+				listView.setAdapter(scr1Adapter);
+				listView.setSelection(selScr1 + 1);
+				listView.setOnItemClickListener(itemListener);
 				listView = (ListView) view.findViewById(R.id.list2);
 				scr2Adapter = new TextAdapter(context, getResources().getStringArray(get2ndScr(scrIdx)), selScr2, 2);
 				listView.setAdapter(scr2Adapter);
@@ -1333,7 +1279,6 @@ public class DCTimer extends Activity {
 				break;
 			case R.id.bt_optn:	//分组选项
 				new CustomDialog.Builder(context).setItems(R.array.optStr, new OnClickListener() {
-					EditText et;
 					ImageView iv;
 					LayoutInflater factory;
 					@Override
@@ -1343,26 +1288,26 @@ public class DCTimer extends Activity {
 							factory = LayoutInflater.from(context);
 							int layoutId = R.layout.ses_name;
 							view = factory.inflate(layoutId, null);
-							et = (EditText) view.findViewById(R.id.edit_ses);
-							et.setText(sesnames[sesIdx]);
-							et.setSelection(sesnames[sesIdx].length());
+							editText = (EditText) view.findViewById(R.id.edit_ses);
+							editText.setText(sesnames[sesIdx]);
+							editText.setSelection(sesnames[sesIdx].length());
 							new CustomDialog.Builder(context).setTitle(R.string.sesname).setView(view)
 							.setPositiveButton(R.string.btn_ok, new OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
-									sesnames[sesIdx]=et.getText().toString();
+									sesnames[sesIdx] = editText.getText().toString();
 									edit.putString("sesname" + sesIdx, sesnames[sesIdx]);
 									edit.commit();
 									sesItems[sesIdx] = (sesIdx + 1) + ". " + sesnames[sesIdx];
 									tvSesName.setText((sesnames[sesIdx].equals("")) ? getString(R.string.session) + (sesIdx+1) : sesnames[sesIdx]);
-									hideKeyboard(et);
+									hideKeyboard(editText);
 								}
 							}).setNegativeButton(R.string.btn_cancel, new OnClickListener() {
 								public void onClick(DialogInterface dialog, int which) {
-									hideKeyboard(et);
+									hideKeyboard(editText);
 								}
 							}).show();
-							showKeyboard(et);
+							showKeyboard(editText);
 							break;
 						case 1:	//清空成绩
 							if(Session.resl == 0) Toast.makeText(context, getString(R.string.no_times), Toast.LENGTH_SHORT).show();
@@ -1396,7 +1341,7 @@ public class DCTimer extends Activity {
 							layoutId = R.layout.graph;
 							view = factory.inflate(layoutId, null);
 							iv = (ImageView) view.findViewById(R.id.image_view);
-							bm = Bitmap.createBitmap(dip300, (int)(dip300*0.8), Config.ARGB_8888);
+							bm = Bitmap.createBitmap(dip300, (int)(dip300*0.9), Config.ARGB_8888);
 							c = new Canvas(bm);
 							//c.drawColor(0);
 							p = new Paint();
@@ -1414,29 +1359,29 @@ public class DCTimer extends Activity {
 							factory = LayoutInflater.from(context);
 							layoutId = R.layout.save_stat;
 							view = factory.inflate(layoutId, null);
-							et = (EditText) view.findViewById(R.id.edit_scrpath);
+							editText = (EditText) view.findViewById(R.id.edit_scrpath);
 							ImageButton btn = (ImageButton) view.findViewById(R.id.btn_browse);
-							et.setText(outPath);
+							editText.setText(outPath);
 							final EditText et2 = (EditText) view.findViewById(R.id.edit_scrfile);
 							et2.requestFocus();
 							et2.setText("database.db");
 							et2.setSelection(et2.getText().length());
 							btn.setOnClickListener(new View.OnClickListener() {
 								public void onClick(View v) {
-									selFilePath = et.getText().toString();
+									selFilePath = editText.getText().toString();
 									int lid = R.layout.file_selector;
 									final View viewb = factory.inflate(lid, null);
 									listView = (ListView) viewb.findViewById(R.id.list);
 									File f = new File(selFilePath);
-									selFilePath = f.exists() ? selFilePath : Environment.getExternalStorageDirectory().getPath()+File.separator;
-									tvFile = (TextView) viewb.findViewById(R.id.text);
-									tvFile.setText(selFilePath);
-									getFileDir(selFilePath, false);
+									selFilePath = f.exists() ? selFilePath : defPath + File.separator;
+									tvPathName = (TextView) viewb.findViewById(R.id.text);
+									tvPathName.setText(selFilePath);
+									getFileDirs(selFilePath, false);
 									listView.setOnItemClickListener(itemListener);
 									new CustomDialog.Builder(context).setTitle(R.string.sel_path).setView(viewb)
 									.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialoginterface, int j) {
-											et.setText(selFilePath+"/");
+											editText.setText(selFilePath+"/");
 										}
 									}).setNegativeButton(R.string.btn_cancel, null).show();
 								}
@@ -1444,7 +1389,7 @@ public class DCTimer extends Activity {
 							new CustomDialog.Builder(context).setView(view).setTitle(R.string.out_db)
 							.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface di, int i) {
-									final String path = et.getText().toString();
+									final String path = editText.getText().toString();
 									if(!path.equals(outPath)) {
 										outPath = path;
 										edit.putString("scrpath", path);
@@ -1461,11 +1406,11 @@ public class DCTimer extends Activity {
 											}
 										}).setNegativeButton(R.string.btn_cancel, null).show();
 									} else exportDB(path+fileName);
-									hideKeyboard(et);
+									hideKeyboard(editText);
 								}
 							}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface arg0, int arg1) {
-									hideKeyboard(et);
+									hideKeyboard(editText);
 								}
 							}).show();
 							break;
@@ -1477,22 +1422,22 @@ public class DCTimer extends Activity {
 							factory = LayoutInflater.from(context);
 							layoutId = R.layout.import_db;
 							view = factory.inflate(layoutId, null);
-							et = (EditText) view.findViewById(R.id.edit_scrpath);
+							editText = (EditText) view.findViewById(R.id.edit_scrpath);
 							btn = (ImageButton) view.findViewById(R.id.btn_browse);
-							et.setText(outPath+"database.db");
-							et.setSelection(et.getText().length());
+							editText.setText(outPath+"database.db");
+							editText.setSelection(editText.getText().length());
 							btn.setOnClickListener(new View.OnClickListener() {
 								public void onClick(View v) {
-									selFilePath = et.getText().toString();
+									selFilePath = editText.getText().toString();
 									selFilePath = selFilePath.substring(0, selFilePath.lastIndexOf('/'));
 									int lid = R.layout.file_selector;
 									final View viewb = factory.inflate(lid, null);
 									listView = (ListView) viewb.findViewById(R.id.list);
 									File f = new File(selFilePath);
 									selFilePath = f.exists() ? selFilePath : Environment.getExternalStorageDirectory().getPath()+File.separator;
-									tvFile = (TextView) viewb.findViewById(R.id.text);
-									tvFile.setText(selFilePath);
-									getFileDir(selFilePath, true);
+									tvPathName = (TextView) viewb.findViewById(R.id.text);
+									tvPathName.setText(selFilePath);
+									getFileDirs(selFilePath, true);
 									final CustomDialog fdialog = new CustomDialog.Builder(context).setTitle(R.string.sel_path).setView(viewb)
 											.setNegativeButton(R.string.btn_close, null).create();
 									listView.setOnItemClickListener(new OnItemClickListener() {
@@ -1501,10 +1446,10 @@ public class DCTimer extends Activity {
 											selFilePath = paths.get(arg2);
 											File f = new File(selFilePath);
 											if(f.isDirectory()) {
-												tvFile.setText(selFilePath);
-												getFileDir(selFilePath, true);
+												tvPathName.setText(selFilePath);
+												getFileDirs(selFilePath, true);
 											} else {
-												et.setText(selFilePath);
+												editText.setText(selFilePath);
 												fdialog.dismiss();
 											}
 										}
@@ -1515,8 +1460,8 @@ public class DCTimer extends Activity {
 							new CustomDialog.Builder(context).setView(view).setTitle(R.string.in_db)
 							.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface di, int i) {
-									hideKeyboard(et);
-									final String path = et.getText().toString();
+									hideKeyboard(editText);
+									final String path = editText.getText().toString();
 									File file = new File(path);
 									if(file.isDirectory()) Toast.makeText(context, getString(R.string.path_illegal), Toast.LENGTH_SHORT).show();
 									else if(file.exists()) {
@@ -1525,7 +1470,7 @@ public class DCTimer extends Activity {
 								}
 							}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface arg0, int arg1) {
-									hideKeyboard(et);
+									hideKeyboard(editText);
 								}
 							}).show();
 						}
@@ -1614,7 +1559,7 @@ public class DCTimer extends Activity {
 						tabHost.setBackgroundColor(colors[0]);
 						setViews();
 						setTextsColor();
-						updateGrid();
+						updateGridView(1);
 						releaseWakeLock();
 						edit.remove("cl0");	edit.remove("cl1");	edit.remove("cl2");
 						edit.remove("cl3");	edit.remove("cl4");	edit.remove("wca");
@@ -1750,8 +1695,8 @@ public class DCTimer extends Activity {
 			switch (listView.getId()) {
 			case R.id.list:
 				selFilePath = paths.get(arg2);
-				tvFile.setText(selFilePath);
-				getFileDir(selFilePath, false);
+				tvPathName.setText(selFilePath);
+				getFileDirs(selFilePath, false);
 				break;
 			case R.id.list1:
 				if(selScr1 != arg2 - 1) {
@@ -1777,37 +1722,34 @@ public class DCTimer extends Activity {
 	};
 	
 	private OnLongClickListener mOnLongClickListener = new OnLongClickListener() {
-		EditText et;
 		@Override
 		public boolean onLongClick(View v) {
-			System.out.println("onLongClick tvScr");
 			if(timer.state == 0) {
 				isLongPress = true;
 				LayoutInflater factory = LayoutInflater.from(context);
 				int layoutId = R.layout.scr_layout;
 				view = factory.inflate(layoutId, null);
-				et = (EditText) view.findViewById(R.id.etslen);
+				editText = (EditText) view.findViewById(R.id.etslen);
 				TextView tvScr = (TextView) view.findViewById(R.id.cnt_scr);
-				tvScr.setMaxWidth((int) (dm.widthPixels * 0.95));
 				tvScr.setText(crntScr);
-				et.setText(""+Scrambler.scrLen);
-				if(Scrambler.scrLen==0) et.setEnabled(false);
-				else et.setSelection(et.getText().length());
+				editText.setText(""+Scrambler.scrLen);
+				if(Scrambler.scrLen == 0) editText.setEnabled(false);
+				else editText.setSelection(editText.getText().length());
 				new CustomDialog.Builder(context).setView(view)
 				.setPositiveButton(R.string.btn_ok, new OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						String text = et.getText().toString();
-						int len = text.equals("")?0:Integer.parseInt(text);
-						if(et.isEnabled() && len>0) {
-							if(len>180) len=180;
+						String text = editText.getText().toString();
+						int len = text.equals("") ? 0:Integer.parseInt(text);
+						if(editText.isEnabled() && len>0) {
+							if(len>180) len = 180;
 							if(len != Scrambler.scrLen) {
 								Scrambler.scrLen = len;
 								if((scrIdx==-1 && scr2idx==17) || (scrIdx==1 && scr2idx==19) || (scrIdx==20 && scr2idx==4))
 									scrState = SCRNONE;
-								newScr(crntScrType);
+								newScramble(crntScrType);
 							}
 						}
-						hideKeyboard(et);
+						hideKeyboard(editText);
 					}
 				}).setNegativeButton(R.string.copy_scr, new OnClickListener() {
 					@SuppressWarnings("deprecation")
@@ -1821,7 +1763,7 @@ public class DCTimer extends Activity {
 							clip.setText(crntScr);
 						}
 						Toast.makeText(context, getString(R.string.copy_to_clip), Toast.LENGTH_SHORT).show();
-						hideKeyboard(et);
+						hideKeyboard(editText);
 					}
 				}).show();
 			}
@@ -1975,9 +1917,9 @@ public class DCTimer extends Activity {
 	private void viewsVisibility(boolean v) {	//TODO
 		int vi = v ? 0 : 8;
 		btScramble.setVisibility(vi);
-		//btScrv.setVisibility(vi);
 		tvScramble.setVisibility(vi);
-		scrambleView.setVisibility(vi);
+		if(!v)
+			scrambleView.setVisibility(vi);
 		rGroup.setVisibility(vi);
 		if(!fulls) {
 			setFullScreen(!v);
@@ -1985,11 +1927,10 @@ public class DCTimer extends Activity {
 	}
 	
 	private void set2ndsel() {
-		System.out.println(scrIdx+", "+scr2idx);
 		String[] s = getResources().getStringArray(get2ndScr(scrIdx));
 		if(scr2idx >= s.length || scr2idx < 0) scr2idx = 0;
 		btScramble.setText(scrStr[scrIdx+1] + " - " + s[scr2idx]);
-		newScr(scrIdx << 5 | scr2idx);
+		newScramble(scrIdx << 5 | scr2idx);
 	}
 	
 	private int get2ndScr(int s) {
@@ -2114,7 +2055,7 @@ public class DCTimer extends Activity {
         }.start();
 	}
 	
-	private void getFileDir(String path, boolean listFiles) {
+	private void getFileDirs(String path, boolean listFiles) {
 		items = new ArrayList<String>();
 		paths = new ArrayList<String>();
 		File f = new File(path);
@@ -2148,15 +2089,12 @@ public class DCTimer extends Activity {
 	
 	private void setGridView() {	//TODO
 		if(!isMulp) {
-			timesAdapter = new TimesAdapter (context, listLen, new int[] {
-					colors[1], colors[2], colors[3], colors[4]}, intv);
+			timesAdapter = new TimesAdapter (context, listLen, intv);
 			gvTimes.setNumColumns(3);
 		} else {
-			timesAdapter = new TimesAdapter(context,	listLen, new int[]{colors[1],
-					colors[2], colors[3]}, intv, stSel[3]+2);
-			gvTimes.setNumColumns(stSel[3]+2);
+			timesAdapter = new TimesAdapter(context, listLen, intv, stSel[3]+2);
+			gvTimes.setNumColumns(stSel[3] + 2);
 		}
-		gvTimes.setStackFromBottom(false);
 		gvTimes.setAdapter(timesAdapter);
 	}
 	
@@ -2179,7 +2117,7 @@ public class DCTimer extends Activity {
 		}
 	}
 	
-	private String getShareContext() {
+	private String getShareContent() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.format(getString(R.string.share_c1), Session.resl, btScramble.getText(),
 				Statistics.distime(Statistics.minIdx, false), Statistics.distime(Statistics.mean)));
@@ -2209,7 +2147,7 @@ public class DCTimer extends Activity {
 	}
 	
 	private void setTouch(MotionEvent e) {
-		if(!simss || scrt) {
+		if(!simss || scrTouch) {
 			switch (e.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 				touchDown();
@@ -2219,20 +2157,27 @@ public class DCTimer extends Activity {
 				break;
 			}
 		} else {
-			int x1=0, x2=0;
-			try {
-				x1 = (int)e.getX(0)*2/tvTimer.getWidth();
-				x2 = (int)e.getX(1)*2/tvTimer.getWidth();
-			} catch (Exception ex) { }
+			int count = e.getPointerCount();
+			System.out.println(count+", "+e.getAction());
 			switch (e.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+			case MotionEvent.ACTION_MOVE:
 			case MotionEvent.ACTION_POINTER_DOWN:
-				if(e.getPointerCount()>1 && (x1^x2)==1) {
-					touchDown();
-					touchDown = true;
+			case 261:
+				if(count > 1) {
+					int x1 = (int)e.getX(0)*2/tvTimer.getWidth();
+					int x2 = (int)e.getX(1)*2/tvTimer.getWidth();
+					if((x1 ^ x2) == 1) {
+						if(!touchDown) {
+							touchDown();
+							touchDown = true;
+						}
+					}
 				}
 				break;
-			case MotionEvent.ACTION_POINTER_UP:
 			case MotionEvent.ACTION_UP:
+			case MotionEvent.ACTION_POINTER_UP:
+			case 262:
 				if(touchDown) {
 					touchDown = false;
 					touchUp();
@@ -2258,7 +2203,7 @@ public class DCTimer extends Activity {
 				viewsVisibility(true);
 			}
 		} else if(timer.state != 3) {
-			if(!scrt || timer.state==2) {
+			if(!scrTouch || timer.state==2) {
 				if(frzTime == 0 || (wca && timer.state==0)) {
 					tvTimer.setTextColor(0xff00ff00);
 					canStart = true;
@@ -2274,7 +2219,7 @@ public class DCTimer extends Activity {
 	private void touchUp() {
 		if(timer.state == 0) {
 			if(isLongPress) isLongPress = false;
-			else if(scrt) newScr(crntScrType);
+			else if(scrTouch) newScramble(crntScrType);
 			else {
 				if(frzTime ==0 || canStart) {
 					if(stSel[10]==1 || stSel[10]==3)
@@ -2332,7 +2277,7 @@ public class DCTimer extends Activity {
 			LayoutInflater factory = LayoutInflater.from(context);
 			int layoutId = R.layout.editbox_layout;
 			view = factory.inflate(layoutId, null);
-			final EditText editText = (EditText) view.findViewById(R.id.edit_text);
+			editText = (EditText) view.findViewById(R.id.edit_text);
 			new CustomDialog.Builder(context).setTitle(R.string.enter_time).setView(view)
 			.setPositiveButton(R.string.btn_ok, new OnClickListener() {
 				@Override
@@ -2341,9 +2286,6 @@ public class DCTimer extends Activity {
 					if(time.equals("Error") || Utils.parseTime(time)==0)
 						Toast.makeText(context, getString(R.string.illegal), Toast.LENGTH_SHORT).show();
 					else save(Utils.parseTime(time), (byte) 0);
-					//setGridView(false);
-					//seMean.setText(getString(R.string.session_average) + Statistics.sesMean());
-					//newScr(false);
 					hideKeyboard(editText);
 				}
 			}).setNegativeButton(R.string.btn_cancel, new OnClickListener() {
@@ -2356,14 +2298,21 @@ public class DCTimer extends Activity {
 		}
 	}
 	
-	private void updateGrid() {
+	private void updateGridView(final int type) {
 		new Thread() {
 			public void run() {
 				try {
 					sleep(200);
-				} catch (InterruptedException e) { }
-				timesAdapter.refresh(listLen);
-				handler.sendEmptyMessage(18);
+				} catch (Exception e) { }
+				switch (type) {
+				case 1:
+					timesAdapter.setData(listLen);
+					break;
+				case 2:
+					timesAdapter.setHeight(intv);
+					break;
+				}
+				handler.sendEmptyMessage(17);
 			}
 		}.start();
 	}
@@ -2372,13 +2321,13 @@ public class DCTimer extends Activity {
 		session.insert(time, p, crntScr, isMulp);
 		listLen = isMulp ? (stSel[3]+2)*(Session.resl+1) : Session.resl*3;
 		btSesMean.setText(getString(R.string.session_average) + Statistics.sesMean());
-		updateGrid();
+		updateGridView(1);
 		if(sesType[sesIdx] != crntScrType) {
 			sesType[sesIdx] = crntScrType;
 			edit.putInt("sestype"+sesIdx, crntScrType);
 			edit.commit();
 		}
-		newScr(crntScrType);
+		newScramble(crntScrType);
 	}
 	
 	private boolean update(int idx, byte p) {
@@ -2401,7 +2350,7 @@ public class DCTimer extends Activity {
 			edit.commit();
 		}
 		btSesMean.setText(getString(R.string.session_average) + Statistics.sesMean());
-		updateGrid();
+		updateGridView(1);
 	}
 	
 	private void deleteAll() {
@@ -2409,7 +2358,7 @@ public class DCTimer extends Activity {
 		listLen = 0;
 		btSesMean.setText(getString(R.string.session_average) + "0/0): N/A (N/A)");
 		Statistics.maxIdx = Statistics.minIdx = -1;
-		updateGrid();
+		updateGridView(1);
 		if(sesType[sesIdx] != 32) {
 			sesType[sesIdx] = 32;
 			edit.remove("sestype"+sesIdx);
@@ -2438,11 +2387,11 @@ public class DCTimer extends Activity {
 		switch(i) {
 		case 1:
 			t = String.format(stSel[14]==0 ? getString(R.string.sta_avg) : getString(R.string.sta_mean), l1len);
-			slist = stSel[14]==0 ? ao(l1len, j) : mo(l1len, j);
+			slist = stSel[14]==0 ? averageOf(l1len, j) : meanOf(l1len, j);
 			break;
 		case 2:
 			t = String.format(stSel[4]==0 ? getString(R.string.sta_avg) : getString(R.string.sta_mean), l2len);
-			slist = stSel[4]==0 ? ao(l2len, j) : mo(l2len, j);
+			slist = stSel[4]==0 ? averageOf(l2len, j) : meanOf(l2len, j);
 			break;
 		case 3:
 			t = getString(R.string.sta_session_mean);
@@ -2490,9 +2439,9 @@ public class DCTimer extends Activity {
 						listView = (ListView) viewb.findViewById(R.id.list);
 						File f = new File(selFilePath);
 						selFilePath = f.exists() ? selFilePath : Environment.getExternalStorageDirectory().getPath()+File.separator;
-						tvFile = (TextView) viewb.findViewById(R.id.text);
-						tvFile.setText(selFilePath);
-						getFileDir(selFilePath, false);
+						tvPathName = (TextView) viewb.findViewById(R.id.text);
+						tvPathName.setText(selFilePath);
+						getFileDirs(selFilePath, false);
 						listView.setOnItemClickListener(itemListener);
 						new CustomDialog.Builder(context).setTitle(R.string.sel_path).setView(viewb)
 						.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
@@ -2507,7 +2456,7 @@ public class DCTimer extends Activity {
 					public void onClick(DialogInterface di, int i) {
 						final String path=et1.getText().toString();
 						if(!path.equals(outPath)) {
-							outPath=path;
+							outPath = path;
 							edit.putString("scrpath", path);
 							edit.commit();
 						}
@@ -2533,55 +2482,42 @@ public class DCTimer extends Activity {
 		}).setNegativeButton(R.string.btn_close, null).show();
 	}
 	
-	protected void newScr(final int scrType) {
+	private int getViewType(String scr) {
+		if(scr.matches("([FRU][2']?\\s*)+")) return 2;
+		if(scr.matches("([ULRB]'?\\s*)+")) return Scrambler.TYPE_SKW;
+		if(scr.matches("([ULRBulrb]'?\\s*)+")) return Scrambler.TYPE_PYR;
+		if(scr.matches("([xFRUBLDMfrubld][2']?\\s*)+")) return 3;
+		if(scr.matches("(([FRUBLDfru]|[FRU]w)[2']?\\s*)+")) return 4;
+		if(scr.matches("(([FRUBLDfrubld]|([FRUBLD]w?))[2']?\\s*)+")) return 5;
+		if(scr.matches("(((2?[FRUBLD])|(3[FRU]w))[2']?\\s*)+")) return 6;
+		if(scr.matches("(((2|3)?[FRUBLD])[2']?\\s*)+")) return 7;
+		return 0;
+	}
+	
+	private void newScramble(final int scrType) {
 		final boolean ch = crntScrType != scrType;
-		System.out.println("ch "+ch);
 		crntScrType = scrType;
 		if(!ch && inScr!=null && inScrLen<inScr.size()) {
 			if(!isInScr) isInScr = true;
 			crntScr = inScr.get(inScrLen++);
+			scrambler.viewType = getViewType(crntScr);
 			switch (insType) {
-			case 0:
-				if(crntScr.matches("([FRU][2']?\\s*)+"))
-					scrambler.viewType = 2;
-				else if(crntScr.matches("([ULRBulrb]'?\\s*)+"))
-					scrambler.viewType = Scrambler.TYPE_PYR;
-				else if(crntScr.matches("([xFRUBLDMfrubld][2']?\\s*)+"))
-					scrambler.viewType = 3;
-				else if(crntScr.matches("(([FRUBLDfru]|[FRU]w)[2']?\\s*)+"))
-					scrambler.viewType = 4;
-				else if(crntScr.matches("(([FRUBLDfrubld]|([FRUBLD]w?))[2']?\\s*)+"))
-					scrambler.viewType = 5;
-				else if(crntScr.matches("(((2?[FRUBLD])|(3[FRU]w))[2']?\\s*)+"))
-					scrambler.viewType = 6;
-				else if(crntScr.matches("(((2|3)?[FRUBLD])[2']?\\s*)+"))
-					scrambler.viewType = 7;
-				else scrambler.viewType = 0;
-				break;
 			case 1:
-				if(crntScr.matches("([FRUBLD][2']?\\s*)+"))
-					scrambler.viewType = 2;
-				else scrambler.viewType = 0;
+				if(scrambler.viewType != 2) scrambler.viewType = 0;
 				break;
 			case 2:
-				if(crntScr.matches("([xFRUBLDMfrubld][2']?\\s*)+"))
-					scrambler.viewType = 3;
-				else scrambler.viewType = 0;
+				if(scrambler.viewType != 3) scrambler.viewType = 0;
 				break;
 			case 3:
-				if(crntScr.matches("(([FRUBLDfru]|[FRU]w)[2']?\\s*)+"))
-					scrambler.viewType = 4;
-				else scrambler.viewType = 0;
+				if(scrambler.viewType != 4) scrambler.viewType = 0;
 				break;
 			case 4:
-				if(crntScr.matches("(([FRUBLDfrubld]|([FRUBLD]w?))[2']?\\s*)+"))
-					scrambler.viewType = 5;
-				else scrambler.viewType = 0;
+				if(scrambler.viewType != 5) scrambler.viewType = 0;
 				break;
 			case 5:
-				if(crntScr.matches("([ULRBulrb]'?\\s*)+"))
-					scrambler.viewType = Scrambler.TYPE_PYR;
-				else scrambler.viewType = 0;
+				if(scrambler.viewType != Scrambler.TYPE_PYR) scrambler.viewType = 0;
+			case 6:
+				if(scrambler.viewType != Scrambler.TYPE_SKW) scrambler.viewType = 0;
 			}
 			if(scrambler.viewType==3 && stSel[5]!=0) {
 				new Thread() {
@@ -2600,14 +2536,12 @@ public class DCTimer extends Activity {
 		} else if((scrIdx==-1 && (scr2idx<2 || (scr2idx>3 && scr2idx<8) || scr2idx==10 || scr2idx==15 || scr2idx==17)) ||
 				(scrIdx==0 && scr2idx<3 && stSel[6]!=0) ||
 				(scrIdx==1 && (scr2idx!=0 || (stSel[5]!=0 && (scr2idx<2 || scr2idx==5 || scr2idx==19)))) ||
-				//(scrIdx==2 && scr2idx==5) ||
 				(scrIdx==8 && (scr2idx>1 || (scr2idx<3 && stSel[12]>0))) ||
 				(scrIdx==11 && scr2idx>3 && scr2idx<7) ||
 				(scrIdx==17 && (scr2idx<3 || scr2idx==6)) ||
 				scrIdx==20) {	//TODO
 			if(isInScr) isInScr = false;
 			if(ch) scrState = SCRNONE;
-			System.out.println("scrState "+scrState);
 			if(scrState == SCRNONE || scrState == SCRDONE) {
 				new Thread() {
 					public void run() {
@@ -2626,7 +2560,7 @@ public class DCTimer extends Activity {
 						if(scrType == crntScrType) {
 							showScramble();
 							scrState = NEXTSCRING;
-							getNextScr(ch);
+							getNextScramble(ch);
 						}
 					}
 				}.start();
@@ -2656,7 +2590,7 @@ public class DCTimer extends Activity {
 		showScrView(true);
 	}
 	
-	public void getNextScr(boolean ch) {
+	public void getNextScramble(boolean ch) {
 		System.out.println("get next scramble...");
 		scrState = NEXTSCRING;
 		nextScr = scrambler.getScramble((scrIdx<<5)|scr2idx, ch);
@@ -2668,7 +2602,7 @@ public class DCTimer extends Activity {
 			extsol = scrambler.sc;
 			showScramble();
 			nextScrWaiting = false;
-			getNextScr(ch);
+			getNextScramble(ch);
 		}
 	}
 	
@@ -2687,7 +2621,7 @@ public class DCTimer extends Activity {
 				scrambleView.setVisibility(View.VISIBLE);
 				scrambleView.setImageBitmap(bmScrView);
 			}
-		} else if(isThread) handler.sendEmptyMessage(13);
+		} else if(isThread) handler.sendEmptyMessage(14);
 		else scrambleView.setVisibility(View.GONE);
 	}
 	
@@ -2706,7 +2640,7 @@ public class DCTimer extends Activity {
 				})
 				.setNegativeButton(R.string.btn_cancel, new OnClickListener() {
 					public void onClick(DialogInterface d,int which) {
-						newScr(crntScrType);
+						newScramble(crntScrType);
 					}
 				}).show();
 			}
@@ -2721,7 +2655,7 @@ public class DCTimer extends Activity {
 					}
 				}).setNegativeButton(R.string.btn_cancel, new OnClickListener() {
 					public void onClick(DialogInterface d,int which) {
-						newScr(crntScrType);
+						newScramble(crntScrType);
 					}
 				}).show();
 			else save((int)timer.time, 2);
@@ -2756,7 +2690,7 @@ public class DCTimer extends Activity {
 		return sb.toString();
 	}
 	
-	public String ao(int n, int i) {
+	public String averageOf(int n, int i) {
 		int cavg = 0, csdv = -1, ind = 1;
 		int trim = (int) Math.ceil(n/20.0);
 		int max, min;
@@ -2767,14 +2701,12 @@ public class DCTimer extends Activity {
 				dnfIdx.add(j);
 		int dnf = dnfIdx.size();
 		long[] data = new long[n - dnf];
-		//int[] idx=new int[n - dnf];
 		int len = 0;
 		for(int j=i-n+1; j<=i; j++)
 			if(Session.penalty[j] != 2) {
 				data[len++] = (long)Session.getTime(j) << 32 | j;
 			}
 		Arrays.sort(data);
-		//quickSort(data, idx, 0, n-dnf-1);
 		if(n-dnf >= trim) {
 			for(int j=0; j<trim; j++) midx.add((int)data[j]);
 		} else {
@@ -2823,25 +2755,7 @@ public class DCTimer extends Activity {
 		return sb.toString();
 	}
 	
-//	private void quickSort(int[] a, int[] idx, int lo, int hi) {
-//		if(lo >= hi) return;
-//		int pivot = a[lo], i = lo, j = hi;
-//		int temp = idx[lo];
-//		while(i < j) {
-//			while(i<j && a[j]>=pivot) j--;
-//			a[i] = a[j];
-//			idx[i] = idx[j];
-//			while(i<j && a[i]<=pivot) i++;
-//			a[j] = a[i];
-//			idx[j] = idx[i];
-//		}
-//		a[i] = pivot;
-//		idx[i] = temp;
-//		quickSort(a, idx, lo, i-1);
-//		quickSort(a, idx, i+1, hi);
-//	}
-	
-	public String mo(int n, int i) {
+	public String meanOf(int n, int i) {
 		int max, min, dnf = 0;
 		int cavg = 0, csdv = -1, ind = 1;
 		long sum = 0;
@@ -2885,34 +2799,6 @@ public class DCTimer extends Activity {
 		return sb.toString();
 	}
 	
-	private Bitmap getBgPic(Bitmap bitmap) {
-		int width = dm.widthPixels;
-		int height = dm.heightPixels;
-		float scaleWidth=(float)bitmap.getWidth()/width;
-		float scaleHeight=(float)bitmap.getHeight()/height;
-		float scale = Math.min(scaleWidth, scaleHeight);
-		Matrix matrix = new Matrix();
-		matrix.postScale(1/scale, 1/scale);
-		return Bitmap.createBitmap(bitmap, (int)((bitmap.getWidth()-width*scale)/2),
-				(int)((bitmap.getHeight()-height*scale)/2), (int)(width*scale), (int)(height*scale), matrix, true);
-	}
-
-	private void setBgPic(Bitmap scaleBitmap, int opac) {
-		int width = dm.widthPixels;
-		int height = dm.heightPixels;
-		Bitmap newBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-		Canvas canvas = new Canvas(newBitmap);
-		canvas.drawColor(0);
-		Paint paint = new Paint();
-		canvas.drawBitmap(scaleBitmap, 0, 0, paint);
-		paint.setColor(Color.WHITE);
-		paint.setAlpha(255*(100-opac)/100);
-		canvas.drawRect(0, 0, width, height, paint);
-		//return newBitmap;
-		Drawable drawable =new BitmapDrawable(getResources(), newBitmap);
-		tabHost.setBackground(drawable);
-	}
-	
 	private void acquireWakeLock() {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 	}
@@ -2930,7 +2816,7 @@ public class DCTimer extends Activity {
 		}
 	}
 	
-	private void singTime(final int p, final int col) {
+	private void showTime(final int p, final int col) {
 		session.move(p/col);
 		final String scr = session.getString(4);
 		String time = session.getString(5);
@@ -2942,8 +2828,8 @@ public class DCTimer extends Activity {
 		LayoutInflater factory = LayoutInflater.from(context);
 		int layoutId = R.layout.singtime;
 		view = factory.inflate(layoutId, null);
-		final EditText editText=(EditText) view.findViewById(R.id.etnote);
-		final TextView tvTime=(TextView) view.findViewById(R.id.st_time);
+		editText = (EditText) view.findViewById(R.id.etnote);
+		TextView tvTime=(TextView) view.findViewById(R.id.st_time);
 		final TextView tvScr=(TextView) view.findViewById(R.id.st_scr);
 		tvTime.setText(getString(R.string.show_time)+Statistics.distime(p/col,true)+time);
 		tvScr.setText(scr);
@@ -2978,7 +2864,7 @@ public class DCTimer extends Activity {
 					tag = true;
 				}
 				hideKeyboard(editText);
-				if(tag) updateGrid();
+				if(tag) updateGridView(1);
 			}
 		}).setNeutralButton(R.string.copy_scr, new DialogInterface.OnClickListener() {
 			@SuppressWarnings("deprecation")
@@ -3008,7 +2894,7 @@ public class DCTimer extends Activity {
 				try {
 					sleep(200);
 				} catch (Exception e) { }
-				InputMethodManager inm = (InputMethodManager)et.getContext().getSystemService(Context.INPUT_METHOD_SERVICE); 
+				InputMethodManager inm = (InputMethodManager) et.getContext().getSystemService(Context.INPUT_METHOD_SERVICE); 
 				inm.showSoftInput(et, 0);
 			}
 		}.start();
@@ -3118,14 +3004,14 @@ public class DCTimer extends Activity {
 					db.endTransaction();
 					reader.close();
 					progressDialog.dismiss();
-					handler.sendEmptyMessage(17);
+					handler.sendEmptyMessage(12);
 					if(dbCount > 0) {
 						getSession(sesIdx);
-						handler.sendEmptyMessage(14);
+						handler.sendEmptyMessage(13);
 					}
 				} catch (Exception e) {
 					progressDialog.dismiss();
-					handler.sendEmptyMessage(16);
+					handler.sendEmptyMessage(11);
 				}
 			}
 		}.start();

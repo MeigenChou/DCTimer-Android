@@ -9,50 +9,48 @@ package com.dctimer;
 
 public final class R {
     public static final class array {
-        public static final int avgStr=0x7f04002b;
-        public static final int c2lStr=0x7f04001f;
-        public static final int clrStr=0x7f040019;
-        public static final int crsStr=0x7f040018;
-        public static final int cubeStr=0x7f040001;
-        public static final int faceStr=0x7f04001d;
-        public static final int fontStr=0x7f040021;
-        public static final int inscrStr=0x7f040023;
-        public static final int mncStr=0x7f04001a;
-        public static final int mulpStr=0x7f040022;
-        public static final int optStr=0x7f040028;
-        public static final int preStr=0x7f04001b;
-        public static final int rstcon=0x7f040017;
-        public static final int samprate=0x7f040020;
-        public static final int scr15p=0x7f04000c;
-        public static final int scr222=0x7f040003;
-        public static final int scr333=0x7f040004;
-        public static final int scr3sst=0x7f040011;
-        public static final int scr444=0x7f040005;
-        public static final int scr555=0x7f040006;
-        public static final int scr666=0x7f040007;
-        public static final int scrBdg=0x7f040012;
-        public static final int scrClk=0x7f04000b;
-        public static final int scrCmt=0x7f04000e;
-        public static final int scrGear=0x7f040014;
-        public static final int scrMinx=0x7f040008;
-        public static final int scrMsst=0x7f040013;
-        public static final int scrMxN=0x7f04000d;
-        public static final int scrOth=0x7f040010;
-        public static final int scrPrym=0x7f040009;
-        public static final int scrRly=0x7f040016;
-        public static final int scrSkw=0x7f040015;
-        public static final int scrSmc=0x7f04000f;
-        public static final int scrSq1=0x7f04000a;
-        public static final int scrwca=0x7f040002;
-        public static final int sideStr=0x7f04001e;
-        public static final int soriStr=0x7f040026;
-        public static final int sq1sStr=0x7f040029;
-        public static final int tabInd=0x7f040000;
-        public static final int timeForm=0x7f04002a;
-        public static final int tiwStr=0x7f04001c;
-        public static final int tupdStr=0x7f040027;
-        public static final int vibTimeStr=0x7f040025;
-        public static final int vibraStr=0x7f040024;
+        public static final int avgStr=0x7f040029;
+        public static final int c2lStr=0x7f04001d;
+        public static final int crsStr=0x7f040017;
+        public static final int cubeStr=0x7f040000;
+        public static final int faceStr=0x7f04001b;
+        public static final int fontStr=0x7f04001f;
+        public static final int inscrStr=0x7f040021;
+        public static final int mncStr=0x7f040018;
+        public static final int mulpStr=0x7f040020;
+        public static final int optStr=0x7f040026;
+        public static final int preStr=0x7f040019;
+        public static final int rstcon=0x7f040016;
+        public static final int samprate=0x7f04001e;
+        public static final int scr15p=0x7f04000b;
+        public static final int scr222=0x7f040002;
+        public static final int scr333=0x7f040003;
+        public static final int scr3sst=0x7f040010;
+        public static final int scr444=0x7f040004;
+        public static final int scr555=0x7f040005;
+        public static final int scr666=0x7f040006;
+        public static final int scrBdg=0x7f040011;
+        public static final int scrClk=0x7f04000a;
+        public static final int scrCmt=0x7f04000d;
+        public static final int scrGear=0x7f040013;
+        public static final int scrMinx=0x7f040007;
+        public static final int scrMsst=0x7f040012;
+        public static final int scrMxN=0x7f04000c;
+        public static final int scrOth=0x7f04000f;
+        public static final int scrPrym=0x7f040008;
+        public static final int scrRly=0x7f040015;
+        public static final int scrSkw=0x7f040014;
+        public static final int scrSmc=0x7f04000e;
+        public static final int scrSq1=0x7f040009;
+        public static final int scrwca=0x7f040001;
+        public static final int sideStr=0x7f04001c;
+        public static final int soriStr=0x7f040024;
+        public static final int sq1sStr=0x7f040027;
+        public static final int timeForm=0x7f040028;
+        public static final int tiwStr=0x7f04001a;
+        public static final int tupdStr=0x7f040025;
+        public static final int vibTimeStr=0x7f040023;
+        public static final int vibraStr=0x7f040022;
     }
     public static final class attr {
     }
@@ -313,13 +311,8 @@ public final class R {
         public static final int tab=0x7f030011;
     }
     public static final class string {
-        public static final int abt_1=0x7f0600c5;
-        public static final int abt_2=0x7f0600c6;
-        public static final int abt_3=0x7f0600c7;
-        public static final int abt_4=0x7f0600c8;
-        public static final int abt_5=0x7f0600c9;
-        public static final int abt_6=0x7f0600ca;
         /**  About 
+ 关于 
  关于 
          */
         public static final int abt_main=0x7f0600bd;
@@ -333,6 +326,7 @@ public final class R {
         public static final int accuracy=0x7f06001b;
         /**  Message 
  提示 
+ 提示 
          */
         public static final int again_exit=0x7f06006e;
         /**  Interface 
@@ -341,6 +335,7 @@ public final class R {
         public static final int auth_cancel=0x7f0600a3;
         public static final int auth_failed=0x7f0600a2;
         /**  Sina Weibo 
+ 新浪微博 
  新浪微博 
          */
         public static final int auth_success=0x7f0600a1;
@@ -356,6 +351,7 @@ public final class R {
         public static final int btn_download=0x7f060094;
         /**  Options 
  选项 
+ 选项 
          */
         public static final int btn_ok=0x7f06008e;
         public static final int btn_save=0x7f060092;
@@ -370,6 +366,7 @@ public final class R {
         public static final int copy_scr=0x7f060096;
         public static final int copy_to_clip=0x7f06006f;
         /**  Others 
+ 杂项 
  杂项 
          */
         public static final int crnt_scr=0x7f0600a7;
@@ -400,6 +397,7 @@ public final class R {
         public static final int menu_about=0x7f06006c;
         public static final int menu_exit=0x7f06006d;
         /**  Menu 
+ 菜单 
  菜单 
          */
         public static final int menu_inscr=0x7f060068;
@@ -478,6 +476,7 @@ public final class R {
         public static final int session_average=0x7f060011;
         /**  Settings 
  设置 
+ 设置 
          */
         public static final int settings=0x7f060015;
         public static final int shape=0x7f060014;
@@ -495,6 +494,7 @@ public final class R {
         public static final int sq1shape=0x7f06003a;
         public static final int sr_not_support=0x7f060072;
         /**  Stats 
+ 统计 
  统计 
          */
         public static final int sta_avg=0x7f060080;
@@ -534,6 +534,7 @@ public final class R {
         public static final int tab_result=0x7f060002;
         public static final int tab_settings=0x7f060003;
         /**  界面 
+ 界面 
          */
         public static final int tab_timer=0x7f060001;
         public static final int text_color=0x7f06004b;

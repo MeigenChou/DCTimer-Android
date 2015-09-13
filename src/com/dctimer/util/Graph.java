@@ -128,13 +128,13 @@ public class Graph {
 		p.setTextAlign(Align.RIGHT);
 		FontMetrics fm = p.getFontMetrics();
 		float fontHeight = fm.bottom - fm.top;
-		float wBar = (float) ((width * 0.8 - wBase / 4.5) / blk);
+		float wBar = (float) ((width * 0.9 - wBase / 4.5) / blk);
 		p.setColor(0xff808080);
 		for (int i = 0; i < blk+1; i++) {
 			float y = (float) (i * wBar + wBase/9.);
 			c.drawLine(wBase, y, width, y, p);
 		}
-		c.drawLine(wBase, (float)(wBase/9.), wBase, (float)(width*0.8-wBase/9.), p);
+		c.drawLine(wBase, (float)(wBase/9.), wBase, (float)(width*0.9-wBase/9.), p);
 		p.setColor(0xffff0000);
 		float y = (float) ((double)(up - mean) / divi * wBar + wBase/9.);
 		c.drawLine(wBase, y, width, y, p);

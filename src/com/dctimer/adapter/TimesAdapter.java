@@ -16,24 +16,22 @@ public class TimesAdapter extends BaseAdapter {
 	private Context context;
 	private ArrayList<String> times;
 	private TextView tv;
-	private int[] cl;
 	private int h, col;
 	private boolean isMulp;
 
-	public TimesAdapter(Context context, int len, int[] cl, int h) {
+	public TimesAdapter(Context context, int len, int h) {
 		this.context = context;
-		this.cl = cl;
 		this.h = fontHeight(h);
 		col = 3;
 		isMulp = false;
-		refresh(len);
+		setData(len);
 	}
 	
 	private int fontHeight(int h) {
 		return (int) (DCTimer.fontScale * h + 0.5);
 	}
 	
-	public void refresh(int len) {
+	public void setData(int len) {
 		times = new ArrayList<String>(len);
 		if(isMulp) {
 			for (int i = 0; i < len / col - 1; i++) {
@@ -50,21 +48,18 @@ public class TimesAdapter extends BaseAdapter {
 		} else {
 			for (int i = 0; i < len/col; i++) {
 				times.add(Statistics.distime(i, false));
-				times.add(Statistics.average(
-						Configs.stSel[14], Configs.l1len, i, 0));
-				times.add(Statistics.average(
-						Configs.stSel[4], Configs.l2len, i, 1));
+				times.add(Statistics.average(Configs.stSel[14], Configs.l1len, i, 0));
+				times.add(Statistics.average(Configs.stSel[4], Configs.l2len, i, 1));
 			}
 		}
 	}
 
-	public TimesAdapter(Context context, int len, int[] para, int h, int col) {
+	public TimesAdapter(Context context, int len, int h, int col) {
 		this.context = context;
-		this.cl = para;
 		this.h = fontHeight(h);
 		this.col = col;
 		isMulp = true;
-		refresh(len);
+		setData(len);
 	}
 	
 	@Override
@@ -91,22 +86,6 @@ public class TimesAdapter extends BaseAdapter {
 		this.col = col;
 	}
 	
-	public void setTextColor(int color) {
-		cl[0] = color;
-	}
-	
-	public void setBestColor(int color) {
-		cl[1] = color;
-	}
-	
-	public void setWorstColor(int color) {
-		cl[2] = color;
-	}
-	
-	public void setBestAvgColor(int color) {
-		cl[3] = color;
-	}
-	
 	@Override
 	public View getView(int po, View convertView, ViewGroup parent) {
 		if (convertView == null) {
@@ -116,20 +95,20 @@ public class TimesAdapter extends BaseAdapter {
 			tv.setGravity(Gravity.CENTER);
 		} else tv = (TextView) convertView;
 		if (po / col == Statistics.minIdx && po % col == 0)
-			tv.setTextColor(cl[1]);
+			tv.setTextColor(Configs.colors[2]);
 		else if (po / col == Statistics.maxIdx && po % col == 0)
-			tv.setTextColor(cl[2]);
+			tv.setTextColor(Configs.colors[3]);
 		else if (!isMulp) {
 			if (po / col == Statistics.bestIdx[0] && po % col == 1)
-				tv.setTextColor(cl[3]);
+				tv.setTextColor(Configs.colors[4]);
 			else if (po / col == Statistics.bestIdx[1] && po % col == 2)
-				tv.setTextColor(cl[3]);
+				tv.setTextColor(Configs.colors[4]);
 			else
-				tv.setTextColor(cl[0]);
+				tv.setTextColor(Configs.colors[1]);
 		} else if (po / col >= Session.resl)
-			tv.setTextColor((cl[0] & 0xffffff) | (153 << 24));
+			tv.setTextColor((Configs.colors[1] & 0xffffff) | (153 << 24));
 		else
-			tv.setTextColor(cl[0]);
+			tv.setTextColor(Configs.colors[1]);
 		tv.setText(times.get(po));
 		return tv;
 	}

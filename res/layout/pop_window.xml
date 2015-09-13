@@ -12,7 +12,8 @@
         android:layout_weight="4"
         android:background="#f4f4f4"
         android:scrollbars="none"
-        android:divider="@null" />
+        android:divider="@null"
+        android:cacheColorHint="#f4f4f4" />
 
     <ListView
         android:id="@+id/list2"

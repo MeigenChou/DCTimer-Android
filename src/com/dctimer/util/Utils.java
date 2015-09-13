@@ -4,10 +4,20 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+import com.dctimer.DCTimer;
+
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Bitmap.Config;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 public class Utils {
 	public static int greyLevel(int color) {
@@ -76,7 +86,6 @@ public class Utils {
             	sb.append(line + "\t");
             }
             br.close();
-            //System.out.println(sb.toString());
             return sb.toString();
         } catch (Exception e) {
             return "error open url:" + strUrl;
@@ -134,5 +143,47 @@ public class Utils {
 		else if(tc < 2/3D)
 			return p + (q - p) * 6 * (2/3D - tc);
 		else return p;
+	}
+	
+	public static Bitmap getBitmap(String path) {
+		BitmapFactory.Options opts = new BitmapFactory.Options();
+		opts.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(path, opts);
+		int width = DCTimer.dm.widthPixels;
+		int height = DCTimer.dm.heightPixels;
+		int scaleWidth = opts.outWidth / width;
+		int scaleHeight = opts.outHeight / height;
+		int scale = Math.min(scaleWidth, scaleHeight);
+		opts.inJustDecodeBounds = false;
+		if(scale > 1) {
+			opts.inSampleSize = scale;
+		} else opts.inSampleSize = 1;
+		return BitmapFactory.decodeFile(path, opts);
+	}
+	
+	public static Bitmap getBackgroundBitmap(Bitmap bitmap) {
+		int width = DCTimer.dm.widthPixels;
+		int height = DCTimer.dm.heightPixels;
+		float scaleWidth = (float) bitmap.getWidth() / width;
+		float scaleHeight = (float) bitmap.getHeight() / height;
+		float scale = Math.min(scaleWidth, scaleHeight);
+		Matrix matrix = new Matrix();
+		matrix.postScale(1/scale, 1/scale);
+		return Bitmap.createBitmap(bitmap, (int)((bitmap.getWidth()-width*scale)/2),
+				(int)((bitmap.getHeight()-height*scale)/2), (int)(width*scale), (int)(height*scale), matrix, true);
+	}
+	
+	public static Drawable getBackgroundDrawable(Context context, Bitmap scaleBitmap, int opac) {
+		int width = DCTimer.dm.widthPixels;
+		int height = DCTimer.dm.heightPixels;
+		Bitmap newBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+		Canvas canvas = new Canvas(newBitmap);
+		canvas.drawColor(0);
+		Paint paint = new Paint();
+		canvas.drawBitmap(scaleBitmap, 0, 0, paint);
+		paint.setColor(Color.WHITE);
+		paint.setAlpha(255*(100-opac)/100);
+		canvas.drawRect(0, 0, width, height, paint);
+		return new BitmapDrawable(context.getResources(), newBitmap);
 	}
 }

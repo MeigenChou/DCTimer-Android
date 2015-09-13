@@ -70,7 +70,7 @@ class Edge3 {
 	}
 	
 	public static void createPrun(Handler handler) {
-		long t = System.currentTimeMillis();
+		//long t = System.currentTimeMillis();
 		Edge3 e = new Edge3();
 		Edge3 f = new Edge3();
 		Edge3 g = new Edge3();
@@ -149,9 +149,8 @@ class Edge3 {
 				}
 			}
 			depth++;
-			System.out.println(depth+" "+prog);
+			//System.out.println(depth+" "+prog);
 		}
-		System.out.println("init edge3: "+ (System.currentTimeMillis() - t));
 	}
 	
 	static void setPruning(int[] table, int index, int value) {

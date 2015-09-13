@@ -24,7 +24,7 @@ class Center1 {
 		int count = 0;
 		for (int i=0; i<735471; i++) {
 			if(i == 113149) 
-				handler.sendEmptyMessage(30);
+				handler.sendEmptyMessage(18);
 			if ((raw2sym[i] & 1) == 0) {
 				c.set(i);
 				for (int j=0; j<48; j++) {

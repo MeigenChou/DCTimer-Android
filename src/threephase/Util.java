@@ -38,7 +38,6 @@ public class Util {
 	public static void init(Handler handler) {
 		if(ini) return;
 		handler.sendEmptyMessage(20);
-		long time = System.currentTimeMillis();
 		try {
 			InputStream in = new BufferedInputStream(new FileInputStream("sdcard/center.dat"));
 			Center1.initSym();
@@ -90,8 +89,6 @@ public class Util {
 				out.close();
 			} catch (Exception e2) { }
 		}
-		time = System.currentTimeMillis() - time;
-		System.out.println("init4: "+time);
 		ini = true;
 	}
 	

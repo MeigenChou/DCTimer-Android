@@ -506,7 +506,7 @@ public class Cube222 {
 		sol = new StringBuffer();
 		for(int l=0; ; l++) {
 			if(search(p, o, l, -1)) {
-				System.out.println("len "+l);
+				//System.out.println("len "+l);
 				if(l < 4) return scramble(minLen);
 				sol = new StringBuffer();
 				search(p, o, 11, -1);

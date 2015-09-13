@@ -184,7 +184,7 @@ public class Search {
 //		}
 		int len333 = sol.split(" ").length;
 		if (sol.startsWith("Error")) {
-			System.out.println(sol);
+			//System.out.println(sol);
 			solution = sol;
 			return;
 			//throw new RuntimeException();

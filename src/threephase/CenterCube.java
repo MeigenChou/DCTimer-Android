@@ -40,14 +40,6 @@ class CenterCube {
 		System.arraycopy(c.ct, 0, this.ct, 0, 24);
 	}
 	
-	void print() {
-		for (int i=0; i<24; i++) {
-			System.out.print(ct[i]);
-			System.out.print('\t');
-		}
-		System.out.println();
-	}
-	
 	static int[] center333Map = {0, 4, 2, 1, 5, 3};
 	
 	void fill333Facelet(char[] facelet) {

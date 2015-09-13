@@ -52,14 +52,6 @@ class EdgeCube {
 	void copy(EdgeCube c) {
 		System.arraycopy(c.ep, 0, this.ep, 0, 24);
 	}
-	
-	void print() {
-		for (int i=0; i<24; i++) {
-			System.out.print(ep[i]);
-			System.out.print('\t');
-		}
-		System.out.println();
-	}
 
 	void fill333Facelet(char[] facelet) {
 		for (int i=0; i<24; i++) {

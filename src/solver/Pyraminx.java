@@ -66,7 +66,7 @@ public class Pyraminx {
 		sol = new StringBuffer();
 		for(int l=0; ; l++) {
 			if(search(q, t, l, -1)) {
-				System.out.println("len "+l);
+				//System.out.println("len "+l);
 				if (l < minLen) return scramble(minLen);
 				sol = new StringBuffer();
 				search(q, t, 11, -1);

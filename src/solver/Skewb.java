@@ -170,7 +170,7 @@ public class Skewb {
 		sol = new StringBuffer();
 		for(int d=0; ; d++) 
 			if(search(ct, cp, co, d, -1)) {
-				System.out.println("len: "+d);
+				//System.out.println("len: "+d);
 				if(d < minLen) return scramble(minLen);
 				sol = new StringBuffer();
 				search(ct, cp, co, 11, -1);
