@@ -1,11 +1,19 @@
-# DCTimer
-- °²×¿ÏµÍ³Ä§·½¼ÆÊ±Æ÷
+# English
+Main features:
+- Supports all WCA's official scrambles, including random-state scramble for 2x2-4x4, Pyraminx, Square-1, Rubik's Clock and Skewb. Scramble view is available for all WCA scrambles.
+- Supports unofficial and training scrambles, such as 3x3 LL training, edges training for big cubes, etc.
+- Timer accuracy is 1 millisecond, and it can be showed to 0.01s.
+- WCA inspection.
+- Multiple session: shows best/worst time, average/mean of any times, best average/mean and session mean/average.
+- Solve 3x3 cross/Xcross/EOLine, Square-1 shape, etc.
+- Change background or text color.
 
-# Ö÷Òª¹¦ÄÜ
-- ¼ÆÊ±£º2Î»»ò3Î»Ğ¡Êı¾«¶È£¬¼ÆÊ±·¶Î§0~596Ğ¡Ê±£»Ö§³ÖWCA¹Û²ì£»¿ÉÍ¨¹ı´¥ÆÁ¡¢ÊÖ¶¯ÊäÈë»òÁ¬½ÓStackmatÈıÖÖ·½Ê½¼ÆÊ±
-- ´òÂÒ£ºËùÓĞWCA¹Ù·½µÄ´òÂÒ£¬°üÀ¨2½×¡¢3½×¡¢½ğ×ÖËş¡¢SQ1Ëæ»ú×´Ì¬´òÂÒ£»Ìá¹©¹Ù·½´òÂÒµÄ´òÂÒ×´Ì¬²é¿´£»ÆäËû·Ç¹Ù·½´òÂÒºÍÑµÁ·´òÂÒ£¬±ÈÈçÈı½×LLÑµÁ·¡¢¸ß½×¶ÔÀâÑµÁ·µÈ
-- Í³¼Æ£ºÏÔÊ¾·Ö×éÆ½¾ù¼°È¥Î²Æ½¾ù£¬Ìá¹©3/5/12/50/100´Î¹ö¶¯Æ½¾ù²é¿´£»¿É²é¿´·Ö×éµÄÊ±¼ä·Ö²¼Ö±·½Í¼¡¢ÕÛÏßÍ¼µÈ
-- ÆäËû£ºÈı½×cross/xcross¼ÆËã¡¢SQ1¸´ĞÎ¼ÆËãµÈ£»¿ÉÉèÖÃ±³¾°ÑÕÉ«»òÍ¼Æ¬£¬¸÷ÖÖÎÄ×ÖÑÕÉ«µÈ
+# ä¸­æ–‡
+ä¸»è¦åŠŸèƒ½ï¼š
+- è®¡æ—¶ï¼š2ä½æˆ–3ä½å°æ•°ç²¾åº¦ï¼Œè®¡æ—¶èŒƒå›´0~596å°æ—¶ï¼›æ”¯æŒWCAè§‚å¯Ÿï¼›å¯é€šè¿‡è§¦å±ã€æ‰‹åŠ¨è¾“å…¥ç­‰æ–¹å¼è®°å½•æˆç»©
+- æ‰“ä¹±ï¼šæ‰€æœ‰WCAå®˜æ–¹çš„æ‰“ä¹±ï¼ŒåŒ…æ‹¬2~4é˜¶ã€é‡‘å­—å¡”ã€SQ1ã€é­”è¡¨ã€æ–œè½¬éšæœºçŠ¶æ€æ‰“ä¹±ï¼›æä¾›å®˜æ–¹æ‰“ä¹±çš„æ‰“ä¹±çŠ¶æ€æŸ¥çœ‹ï¼›å…¶ä»–éå®˜æ–¹æ‰“ä¹±å’Œè®­ç»ƒæ‰“ä¹±ï¼Œæ¯”å¦‚ä¸‰é˜¶LLè®­ç»ƒã€é«˜é˜¶å¯¹æ£±è®­ç»ƒç­‰
+- ç»Ÿè®¡ï¼šæ˜¾ç¤ºåˆ†ç»„å¹³å‡åŠå»å°¾å¹³å‡ï¼Œæä¾›ä»»æ„æ¬¡æ•°æ»šåŠ¨å¹³å‡æŸ¥çœ‹ï¼›å¯æŸ¥çœ‹åˆ†ç»„çš„æ—¶é—´åˆ†å¸ƒç›´æ–¹å›¾ã€æŠ˜çº¿å›¾ç­‰
+- å…¶ä»–ï¼šä¸‰é˜¶cross/xcrossè®¡ç®—ã€SQ1å¤å½¢è®¡ç®—ç­‰ï¼›å¯è®¾ç½®èƒŒæ™¯é¢œè‰²æˆ–å›¾ç‰‡ï¼Œå„ç§æ–‡å­—é¢œè‰²ç­‰
 
 # License GPLv3
 
