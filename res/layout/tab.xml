@@ -5,6 +5,8 @@
     android:layout_height="match_parent" >
 
     <LinearLayout
+        android:fitsSystemWindows="true"
+        android:clipToPadding="true"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical" >
@@ -27,8 +29,9 @@
                     android:layout_height="40dip"
                     android:layout_margin="5dip"
                     android:singleLine="true"
-                    android:textSize="15sp"
-                    android:background="@drawable/button_white_selector" />
+                    android:background="#00ffffff"
+                    android:textColor="@drawable/button_text_style"
+                    android:textSize="15sp" />
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
@@ -37,11 +40,8 @@
 
                     <ImageView
                         android:id="@+id/iv_scr"
-                        android:layout_width="220dip"
-                        android:layout_height="165dip"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:contentDescription="@string/app_name" />
 
                     <TextView
@@ -68,11 +68,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:orientation="vertical" >
-                
+
                 <RelativeLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="44dip"
-                    android:background="#ccffffff" >
+                    android:layout_height="44dip" >
 
                     <Button
                         android:id="@+id/bt_session"
@@ -80,8 +79,12 @@
                         android:layout_height="fill_parent"
                         android:background="#00ffffff"
                         android:padding="10dip"
+                        android:shadowColor="#80ffffff"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="1"
                         android:text="@string/session"
-                        android:textColor="#3d9ee8"
+                        android:textColor="@drawable/button_text_style"
                         android:textSize="16sp" />
 
                     <TextView
@@ -103,41 +106,56 @@
                         android:layout_alignParentRight="true"
                         android:background="#00ffffff"
                         android:padding="10dip"
+                        android:shadowColor="#80ffffff"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="1"
                         android:text="@string/option"
-                        android:textColor="#3d9ee8"
+                        android:textColor="@drawable/button_text_style"
                         android:textSize="16sp" />
                 </RelativeLayout>
 
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1px"
-                    android:background="#ccc9cbcc" />
+                    android:background="#ddb2b2b2" />
 
-                <GridView
-                    android:id="@+id/gv_title"
+                <LinearLayout
+                    android:id="@+id/layout_title"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:stretchMode="columnWidth" />
+                    android:layout_height="30dip"
+                    android:background="#ddffffff"
+                    android:orientation="horizontal" >
+                </LinearLayout>
 
-                <GridView
-                    android:id="@+id/myGridView"
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1px"
+                    android:background="#ddb2b2b2" />
+
+                <ListView
+                    android:id="@+id/lv_times"
                     android:layout_width="fill_parent"
                     android:layout_height="0dip"
                     android:layout_weight="1"
-                    android:fastScrollEnabled="true"
-                    android:focusable="true"
-                    android:numColumns="3"
-                    android:stretchMode="columnWidth"
-                    android:transcriptMode="alwaysScroll" />
+                    android:background="#ddffffff"
+                    android:cacheColorHint="#eeffffff"
+                    android:divider="#ddb2b2b2"
+                    android:dividerHeight="1px"
+                    android:fastScrollEnabled="true" >
+                </ListView>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1px"
+                    android:background="#ddb2b2b2" />
 
                 <Button
                     android:id="@+id/bt_ses_mean"
                     android:layout_width="fill_parent"
                     android:layout_height="40dip"
-                    android:layout_marginBottom="5dip"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="5dip"
-                    android:background="@drawable/button_white_selector"
+                    android:background="#ddffffff"
+                    android:textColor="@drawable/button_text_style"
                     android:textSize="15sp" />
             </LinearLayout>
 
@@ -148,11 +166,9 @@
                 android:orientation="vertical" >
 
                 <TextView
-                    android:fitsSystemWindows="true"  
-					android:clipToPadding="true"
+                    android:id="@+id/tv_setting"
                     android:layout_width="fill_parent"
                     android:layout_height="44dip"
-                    android:background="#ccffffff"
                     android:gravity="center"
                     android:text="@string/settings"
                     android:textColor="#000"
@@ -161,12 +177,13 @@
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1px"
-                    android:background="#ccc9cbcc" />
+                    android:background="#ddb2b2b2" />
 
                 <ScrollView
                     android:layout_width="fill_parent"
                     android:layout_height="0dip"
                     android:layout_weight="1"
+                    android:background="#ddffffff"
                     android:scrollbars="vertical" >
 
                     <include
@@ -183,6 +200,7 @@
             android:visibility="gone" />
 
         <View
+            android:id="@+id/tab_line"
             android:layout_width="fill_parent"
             android:layout_height="1px"
             android:background="#ccc9cbcc" />
@@ -199,15 +217,24 @@
             <RadioButton
                 android:id="@+id/radio_1"
                 style="@style/main_tab_bottom"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/tab_timer" />
 
             <RadioButton
                 android:id="@+id/radio_2"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 style="@style/main_tab_bottom"
                 android:text="@string/tab_result" />
 
             <RadioButton
                 android:id="@+id/radio_3"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 style="@style/main_tab_bottom"
                 android:text="@string/tab_settings" />
         </RadioGroup>

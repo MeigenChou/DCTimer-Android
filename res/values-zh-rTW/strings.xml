@@ -32,16 +32,10 @@
 	<string name="time_tap">啓動延時(秒)：</string>
 	<string name="mul_phase">分段計時</string>
 	<string name="simulss">使用兩手模擬Stackmat計時</string>
-	<string name="drop_to_stop">拍桌子停表</string>
-    <string name="sensitivity">靈敏度</string>
     <string name="stt_stackmat">Stackmat計時設定</string>
-	<string name="stt_usess">使用Stackmat計時</string>
-	<string name="stt_samprate">取樣頻率(Hz)</string>
-	<string name="stt_invert">信号反轉</string>
 	<string name="stt_ssvalue">Stackmat参數：</string>
 	<string name="stt_scramble">轉亂</string>
 	<string name="scrsize">轉亂字號大小：</string>
-	<string name="hidescr">計時中隱藏轉亂</string>
 	<string name="showscr">顯示轉亂後的狀態</string>
 	<string name="monoscr">使用等寬轉亂字型</string>
 	<string name="egtrain">EG訓練轉亂</string>
@@ -79,7 +73,6 @@
 	<string name="row_spacing">成績列表行距：</string>
 	<string name="stt_hardw">硬體</string>
 	<string name="screenon">非計時下熒幕常亮</string>
-	<string name="screengrey">允許熒幕變暗</string>
 	<string name="stt_vibra">觸感反饋</string>
 	<string name="stt_vib_time">觸感持續時間</string>
 	<string name="stt_screen_ori">熒幕方向</string>

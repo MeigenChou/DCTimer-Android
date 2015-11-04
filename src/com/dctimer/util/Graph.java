@@ -38,12 +38,12 @@ public class Graph {
 		int[] bins = new int[14];
 		int start;
 		int end;
-		if(Session.resl==0 || Statistics.minIdx==-1 || Statistics.maxIdx==-1) {
+		if(Session.length==0 || Statistics.minIdx==-1 || Statistics.maxIdx==-1) {
 			start = 13000;
 			end = 27000;
 		} else {
-			int max = Session.result[Statistics.maxIdx]+Session.penalty[Statistics.maxIdx]*2000;
-			int min = Session.result[Statistics.minIdx]+Session.penalty[Statistics.minIdx]*2000;
+			int max = Session.getTime(Statistics.maxIdx);
+			int min = Session.getTime(Statistics.minIdx);
 			int divi = getDivision((max - min) / 14);
 			int mean = (min + max) >>> 1;
 			mean = ((mean + divi / 2) / divi) * divi;
@@ -52,9 +52,9 @@ public class Graph {
 		}
 		for (int i = 0; i < bins.length; i++)
 			bins[i] = 0;
-		for (int i = 0; i < Session.resl; i++) {
+		for (int i = 0; i < Session.length; i++) {
 			if(Session.penalty[i]!=2) {
-				int time=Session.result[i]+Session.penalty[i]*2000;
+				int time = Session.getTime(i);
 				if(time >= start && time < end) {
 					int bin = (int) (bins.length * (time - start) / (end - start));
 					bins[bin]++;
@@ -101,15 +101,15 @@ public class Graph {
 	public static void drawGraph(int width, Paint p, Canvas c) {
 		int up, down, mean;
 		int blk, divi;
-		if(Session.resl==0 || Statistics.minIdx==-1 || Statistics.minIdx==Statistics.maxIdx) {
+		if(Session.length==0 || Statistics.minIdx==-1 || Statistics.minIdx==Statistics.maxIdx) {
 			up = 20000;
 			down = 12000;
 			mean = 16000;
 			blk = 8;
 			divi = 1000;
 		} else {
-			int max = Session.result[Statistics.maxIdx]+Session.penalty[Statistics.maxIdx]*2000;
-			int min = Session.result[Statistics.minIdx]+Session.penalty[Statistics.minIdx]*2000;
+			int max = Session.getTime(Statistics.maxIdx);
+			int min = Session.getTime(Statistics.minIdx);
 			divi = getDivision((max-min)/8);
 			mean = (min + max) >>> 1;
 			mean = ((mean + divi / 2) / divi) * divi;
@@ -145,14 +145,14 @@ public class Graph {
 			c.drawText(distime(value), wBase-4, y, p);
 		}
 		int count = 0;
-		for(int i=0; i<Session.resl; i++) 
+		for(int i=0; i<Session.length; i++) 
 			if(Session.penalty[i] != 2) count++;
 		float rsp = (float) ((double)(width - 8 - wBase) / (count-1));
 		count = 0;
 		float lastx = -1, lasty = -1;
-		for(int i=0; i<Session.resl; i++) {
+		for(int i=0; i<Session.length; i++) {
 			if(Session.penalty[i] != 2) {
-				int time = Session.result[i] + Session.penalty[i] * 2000;
+				int time = Session.getTime(i);
 				float x = (float) (wBase + 4.0 + (count++) * rsp);
 				y = (float) ((double)(up - time) / divi * wBar + wBase/9.);
 				//c.drawRect(x-2, y-2, x+2, y-2, p);

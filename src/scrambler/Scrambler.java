@@ -1,12 +1,10 @@
 package scrambler;
 
-import static min2phase.Util.rotateStr;
-
 import java.util.Random;
 
 import solver.*;
-import sq12phase.FullCube;
-import min2phase.Tools;
+import cs.sq12phase.FullCube;
+import cs.min2phase.Tools;
 import android.graphics.*;
 import android.graphics.Paint.Align;
 
@@ -32,6 +30,7 @@ public class Scrambler {
 	public static final int TYPE_HLCT = 26;
 	public static final int TYPE_UFO = 27;
 	
+	public String crntScr;	// 当前打乱
 	private static short[][] defScrLen = {
 		{0, 15, 15, 0, 0, 0, 0, 0, 0, 0},
 		{25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0},
@@ -56,19 +55,19 @@ public class Scrambler {
 		{0, 0, 0, 0, 5},
 		{0, 0, 60, 0, 0, 0, 0, 0, 70, 0, 0, 0, 0, 80, 100, 0, 60, 5},
 	};
-	public static String[] rot5Str = {"", "3Fw", "3Fw'", "3Fw 3Uw", "3Fw 3Uw2", "3Fw 3Uw'", "3Fw' 3Uw", "3Fw' 3Uw2", "3Fw' 3Uw'", "3Rw", "3Rw2", "3Rw'",
+	public static String[] rotateStr = {"", "3Fw", "3Fw'", "3Fw 3Uw", "3Fw 3Uw2", "3Fw 3Uw'", "3Fw' 3Uw", "3Fw' 3Uw2", "3Fw' 3Uw'", "3Rw", "3Rw2", "3Rw'",
 		"3Rw 3Uw", "3Rw 3Uw2", "3Rw 3Uw'", "3Rw2 3Uw", "3Rw2 3Uw2", "3Rw2 3Uw'", "3Rw' 3Uw", "3Rw' 3Uw2", "3Rw' 3Uw'", "3Uw", "3Uw2", "3Uw'"};
+	public static int[] rotateIdx = {-1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0};
 	private static String[] cubesuff = {"", "2", "'"};
 	
 	private DCTimer dct;
 	public String sc;
 	public int viewType;
 	public static int scrLen = 0;
-	private Cube cuben = new Cube();
 	private Cube222 cube2 = new Cube222();
-	private min2phase.Search cube3 = new min2phase.Search();
-	private threephase.Search cube4 = new threephase.Search();
-	private sq12phase.Search cubesq = new sq12phase.Search();
+	private cs.min2phase.Search cube3 = new cs.min2phase.Search();
+	private cs.threephase.Search cube4 = new cs.threephase.Search();
+	private cs.sq12phase.Search cubesq = new cs.sq12phase.Search();
 	private Pyraminx pyram = new Pyraminx();
 	private Skewb skewb = new Skewb();
 	private static Random r = new Random();
@@ -90,19 +89,21 @@ public class Scrambler {
 		case -27:	//三单
 		case -26:	//最少步
 		case -25:	//脚拧
-			scr = cube333(); viewType = scr.startsWith("Error") ? 0 : 3;
+			scr = cube333();
+			viewType = scr.startsWith("Error") ? 0 : 3;
 			extSol3(Configs.stSel[5], scr);
 			break;
 		case -31:	//四速
-			scr = cube4.randomState(false); viewType = 4; break;
+			scr = cube4.randomState(false);
+			viewType = scr.startsWith("Error") ? 0 : 4;
+			break;
 		case -30:	//五速
 			scr = cube(5); viewType = 5; break;
 		case -29:	//二阶
 			scr = cube2.scramble(4); viewType = 2; break;
 		case -28:	//三盲
-			int rotate = r.nextInt(24);
-			String cube = Tools.randomState(null, null, null, null, rotate);
-			scr = cube3.solution(cube, rotate, 2) + rotateStr[rotate];
+			String cube = Tools.randomCube();
+			scr = cube3.solution(cube, true, r);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case -24:	//五魔
 			scr = Megaminx.scramblestring(); viewType = TYPE_MINX; break;
@@ -123,13 +124,25 @@ public class Scrambler {
 		case -17:	//四盲
 			scr = cube4.randomState(true); viewType = 4; break;
 		case -16:	//五盲
-			scr = cube(5) + " " + rot5Str[r.nextInt(24)]; viewType = 5; break;
+			scr = cube(5);
+			String[] moves = scr.split(" ");
+			String lm = moves[moves.length-1];
+			int idx;
+			if(lm.startsWith("Bw")) idx = 2;
+			else if(lm.startsWith("Lw")) idx = 1;
+			else if(lm.startsWith("Dw")) idx = 0;
+			else idx = 4;
+			int rot;
+			do {
+				rot = r.nextInt(24);
+			} while(idx == rotateIdx[rot]);
+			scr += " " + rotateStr[rot];
+			viewType = 5; break;
 		case -15:	//多盲
 			sb = new StringBuffer();
 			for(int j=1; j<=scrLen; j++) {
-				int rot = r.nextInt(24);
-				String face = Tools.randomState(null, null, null, null, rot);
-				sb.append(j + ") " + cube3.solution(face, rot, 50, 2) + rotateStr[rot]);
+				String face = Tools.randomCube();
+				sb.append(j + ") " + cube3.solution(face, true, r));
 				if(j < scrLen) sb.append("\n");
 			}
 			scr = sb.toString(); viewType = 0; break;
@@ -180,97 +193,96 @@ public class Scrambler {
 			extSol3(Configs.stSel[5], scr);
 			break;
 		case 34:
-			scr = cube3.solution(Tools.randomCrossSolved(), 2);
+			scr = cube3.solution(Tools.randomCrossSolved(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 35:
-			scr = cube3.solution(Tools.randomLastLayer(), 2);
+			scr = cube3.solution(Tools.randomLastLayer(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 36:
-			scr = cube3.solution(Tools.randomPLL(), 2);
+			scr = cube3.solution(Tools.randomPLL(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 37:
-			scr = cube3.solution(Tools.randomCornerSolved(), 2);
+			scr = cube3.solution(Tools.randomCornerSolved(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3;
 			extSol3(Configs.stSel[5], scr);
 			break;
 		case 38:
-			scr = cube3.solution(Tools.randomEdgeSolved(), 2);
+			scr = cube3.solution(Tools.randomEdgeSolved(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 39:
-			scr = cube3.solution(Tools.randomLastSlot(), 2);
+			scr = cube3.solution(Tools.randomLastSlot(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 40:
-			scr = cube3.solution(Tools.randomZBLastLayer(), 2);
+			scr = cube3.solution(Tools.randomZBLastLayer(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 41:
-			scr = cube3.solution(Tools.randomEdgeOfLastLayer(), 2);
+			scr = cube3.solution(Tools.randomEdgeOfLastLayer(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 42:
-			scr = cube3.solution(Tools.randomCornerOfLastLayer(), 2);
+			scr = cube3.solution(Tools.randomCornerOfLastLayer(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 43:
 			switch (r.nextInt(4)) {
 			case 0:
-				scr = cube3.solution(Tools.randomState(new byte[]{0,1,2,3,4,5,6,7}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 2);
+				scr = cube3.solution(Tools.randomState(new byte[]{0,1,2,3,4,5,6,7}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 21, 10000, 100, 2);
 				break;
 			case 1:
-				scr = cube3.solution(Tools.randomState(new byte[]{3,2,6,7,0,1,5,4}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 2) + "x'";
+				scr = cube3.solution(Tools.randomState(new byte[]{3,2,6,7,0,1,5,4}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 21, 10000, 100, 2) + "x'";
 				break;
 			case 2:
-				scr = cube3.solution(Tools.randomState(new byte[]{7,6,5,4,3,2,1,0}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 2) + "x2";
+				scr = cube3.solution(Tools.randomState(new byte[]{7,6,5,4,3,2,1,0}, new byte[]{0,0,0,0,0,0,0,0}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 21, 10000, 100, 2) + "x2";
 				break;
 			default:
-				scr = cube3.solution(Tools.randomState(new byte[]{4,5,1,0,7,6,2,3}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 2) + "x";
+				scr = cube3.solution(Tools.randomState(new byte[]{4,5,1,0,7,6,2,3}, new byte[]{2,1,2,1,1,2,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 21, 10000, 100, 2) + "x";
 				break;
 			}
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 44:
 			switch (r.nextInt(4)) {
 			case 0:
-				scr = cube3.solution(Tools.randomState(new byte[]{-1,-1,-1,-1,4,5,6,7}, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 2);
+				scr = cube3.solution(Tools.randomState(new byte[]{-1,-1,-1,-1,4,5,6,7}, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new byte[]{-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}), 21, 10000, 100, 2);
 				break;
 			case 1:
-				scr = cube3.solution(Tools.randomState(new byte[]{3,2,-1,-1,0,1,-1,-1}, new byte[]{2,1,-1,-1,1,2,-1,-1}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 2) + "x'";
+				scr = cube3.solution(Tools.randomState(new byte[]{3,2,-1,-1,0,1,-1,-1}, new byte[]{2,1,-1,-1,1,2,-1,-1}, new byte[]{11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new byte[]{0,-1,0,-1,0,-1,0,-1,0,0,-1,-1}), 21, 10000, 100, 2) + "x'";
 				break;
 			case 2:
-				scr = cube3.solution(Tools.randomState(new byte[]{7,6,5,4,-1,-1,-1,-1}, new byte[]{0,0,0,0,-1,-1,-1,-1}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 2) + "x2";
+				scr = cube3.solution(Tools.randomState(new byte[]{7,6,5,4,-1,-1,-1,-1}, new byte[]{0,0,0,0,-1,-1,-1,-1}, new byte[]{4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new byte[]{0,-1,0,-1,-1,-1,-1,-1,0,0,0,0}), 21, 10000, 100, 2) + "x2";
 				break;
 			default:
-				scr = cube3.solution(Tools.randomState(new byte[]{-1,-1,1,0,-1,-1,2,3}, new byte[]{-1,-1,2,1,-1,-1,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 2) + "x";
+				scr = cube3.solution(Tools.randomState(new byte[]{-1,-1,1,0,-1,-1,2,3}, new byte[]{-1,-1,2,1,-1,-1,1,2}, new byte[]{8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new byte[]{0,-1,0,-1,0,-1,0,-1,-1,-1,0,0}), 21, 10000, 100, 2) + "x";
 				break;
 			}
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 45:
-			scr = cube3.solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED), 2);
+			scr = cube3.solution(Tools.randomEdgePerm(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 46:
-			scr = cube3.solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_RANDOM), 2);
+			scr = cube3.solution(Tools.randomEdgeOri(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 47:
-			scr = cube3.solution(Tools.randomState(Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_SOLVED, Tools.STATE_SOLVED), 2);
+			scr = cube3.solution(Tools.randomCornerPerm(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 48:
-			scr = cube3.solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_SOLVED), 2);
+			scr = cube3.solution(Tools.randomCornerOri(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 49:
-			scr = cube3.solution(Tools.randomState(Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED), 2);
+			scr = cube3.solution(Tools.randomPermutation(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 50:
-			scr = cube3.solution(Tools.randomState(Tools.STATE_SOLVED, Tools.STATE_RANDOM, Tools.STATE_SOLVED, Tools.STATE_RANDOM), 2);
+			scr = cube3.solution(Tools.randomOrientation(), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 51:
-			scr = cube3.solution(Tools.randomEasyCross(scrLen), 2);
+			scr = cube3.solution(Tools.randomEasyCross(scrLen), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; 
 			extSol3(Configs.stSel[5], scr);
 			break;
 		case 52:
-			scr = cube3.solution(Tools.randomState(Tools.STATE_SOLVED, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,5,6,7,8,9,10,11}, Tools.STATE_SOLVED), 2);
+			scr = cube3.solution(Tools.randomState(Tools.STATE_SOLVED, new byte[]{-1,-1,-1,-1,0,0,0,0}, new byte[]{-1,-1,-1,-1,4,5,6,7,8,9,10,11}, Tools.STATE_SOLVED), 21, 10000, 100, 2);
 			viewType = scr.startsWith("Error") ? 0 : 3; break;
 		case 64: //4阶
 			scr = cube(4); viewType = 4; break;
 		case 65:
-			scr = megascramble(new String[][]{{"U","D","u"}, {"R","L","r"}, {"F","B","f"}}, cubesuff);
-			viewType = 4; break;
+			scr = cube444(); viewType = 4; break;
 		case 66:
 			scr = yj4x4(); viewType = 4; break;
 		case 67:
@@ -284,18 +296,16 @@ public class Scrambler {
 		case 96: //5阶
 			scr = cube(5); viewType = 5; break;
 		case 97:
-			scr = megascramble(new String[][]{{"U","D","u","d"}, {"R","L","r","l"}, {"F","B","f","b"}}, cubesuff);
-			viewType = 5; break;
+			scr = cube555(); viewType = 5; break;
 		case 98:
-			scr = edgescramble("Rw R Bw B", new String[]{"B' Bw' R' Rw'", "B' Bw' R' U2 Rw U2 Rw U2 Rw U2 Rw"}, new String[]{"Uw", "Dw"});
+			scr = edgescramble("Rw R Bw B", new String[] {"B' Bw' R' Rw'", "B' Bw' R' U2 Rw U2 Rw U2 Rw U2 Rw"}, new String[] {"Uw", "Dw"});
 			viewType = 5; break;
 		case 128: //6阶
 			scr = cube(6); viewType = 6; break;
 		case 129:
-			scr = megascramble(new String[][]{{"U","D","u","d","3u"}, {"R","L","r","l","3r"}, {"F","B","f","b","3f"}}, cubesuff);
-			viewType = 6; break;
+			scr = cube666(); viewType = 6; break;
 		case 130:
-			scr = megascramble(new String[][]{{"U","D","U\u00B2","D\u00B2","U\u00B3"}, {"R","L","R\u00B2","L\u00B2","R\u00B3"}, {"F","B","F\u00B2","B\u00B2","F\u00B3"}}, cubesuff);
+			scr = megascramble(new String[][] {{"U","D","U\u00B2","D\u00B2","U\u00B3"}, {"R","L","R\u00B2","L\u00B2","R\u00B3"}, {"F","B","F\u00B2","B\u00B2","F\u00B3"}}, cubesuff);
 			viewType = 6; break;
 		case 131:
 			scr = edgescramble("3r r 3b b", new String[]{"3b' b' 3r' r'", "3b' b' 3r' U2 r U2 r U2 r U2 r", "3b' b' r' U2 3r U2 3r U2 3r U2 3r", "3b' b' r2 U2 3R U2 3R U2 3R U2 3R "},
@@ -304,8 +314,7 @@ public class Scrambler {
 		case 160: //7阶
 			scr = cube(7); viewType = 7; break;
 		case 161:
-			scr = megascramble(new String[][]{{"U","D","u","d","3u","3d"}, {"R","L","r","l","3r","3l"}, {"F","B","f","b","3f","3b"}}, cubesuff);
-			viewType = 7; break;
+			scr = cube777(); viewType = 7; break;
 		case 162:
 			scr = megascramble(new String[][]{{"U","D","U\u00B2","D\u00B2","U\u00B3","D\u00B3"}, {"R","L","R\u00B2","L\u00B2","R\u00B3","L\u00B3"}, {"F","B","F\u00B2","B\u00B2","F\u00B3","B\u00B3"}}, cubesuff);
 			viewType = 7; break;
@@ -380,14 +389,14 @@ public class Scrambler {
 			viewType = 0; break;
 		case 360:	//335
 			scr = megascramble(new String[][][]{{{"U","U'","U2"}, {"D", "D'", "D2"}}, {{"R2"}, {"L2"}}, {{"F2"}, {"B2"}}}, null)
-					+ "/ " + cuben.scramblestring(3, 25);
+					+ "/ " + Cube.scramblestring(3, 25);
 			viewType = 0; break;
 		case 361:	//336
 			scr = megascramble(new String[][][]{{{"U", "U'", "U2"}, {"u", "u'", "u2"}, {"3u", "3u'", "3u2"}}, {{"R2","L2","M2"}}, {{"F2","B2","S2"}}}, null);
 			viewType = 0; break;
 		case 362:	//337
 			scr = megascramble(new String[][][]{{{"U", "U'", "U2"}, {"u", "u'", "u2"}, {"D", "D'", "D2"}, {"d", "d'", "d2"}}, {{"R2"}, {"L2"}}, {{"F2"}, {"B2"}}}, null)
-					+ "/ " + cuben.scramblestring(3, 25);
+					+ "/ " + Cube.scramblestring(3, 25);
 			viewType = 0; break;
 		case 363:
 			scr = cube(8); viewType = 8; break;
@@ -483,18 +492,18 @@ public class Scrambler {
 		case 609:
 			scr = megascramble(new String[][][]{{{"R U R'","R U2 R'","R U' R'","R U2' R'"}}, {{"F' U F","F' U2 F","F' U' F","F' U2' F"}}, {{"U","U2","U'","U2'"}}}, null); viewType = 0; break;
 		case 640:	//连拧
-			scr = "2) " + cube2.randomState() + "\n3) " + cube333() + "\n4) " + cube4();
+			scr = "2) " + cube2.randomState() + "\n3) " + cube333() + "\n4) " + cube444();
 			viewType = 0; break;
 		case 641:
-			scr = "2) " + cube2.randomState() + "\n3) " + cube333() + "\n4) " + cube4() + "\n5) " + cube5();
+			scr = "2) " + cube2.randomState() + "\n3) " + cube333() + "\n4) " + cube444() + "\n5) " + cube555();
 			viewType = 0; break;
 		case 642:
-			scr = "2) " + cube2.randomState() + "\n3) " + cube333() + "\n4) " + cube4()
-				+"\n5) " + cube5() + "\n6) " + cube6();
+			scr = "2) " + cube2.randomState() + "\n3) " + cube333() + "\n4) " + cube444()
+				+"\n5) " + cube555() + "\n6) " + cube666();
 			viewType = 0; break;
 		case 643:
-			scr = "2) " + cube2.randomState() + "\n3) " + cube333() + "\n4) " + cube4()
-				+"\n5) " + cube5() + "\n6) " + cube6() + "\n7) " + cube7(cubesuff);
+			scr = "2) " + cube2.randomState() + "\n3) " + cube333() + "\n4) " + cube444()
+				+"\n5) " + cube555() + "\n6) " + cube666() + "\n7) " + cube777();
 			viewType = 0; break;
 		case 644:
 			sb = new StringBuffer();
@@ -510,27 +519,27 @@ public class Scrambler {
 	}
 	
 	private String cube(int n) {
-		return cuben.scramblestring(n, scrLen);
+		return Cube.scramblestring(n, scrLen);
 	}
 	
 	private String cube333() {
-		return cube3.solution(Tools.randomCube(), 2);
+		return cube3.solution(Tools.randomCube(), 21, 10000, 100, 2);
 	}
 	
-	private String cube4() {
-		return megascramble(new String[][]{{"U","D","u"}, {"R","L","r"}, {"F","B","f"}}, cubesuff, 40);
+	private String cube444() {
+		return megascramble(new String[][]{{"U", "D", "u"}, {"R", "L", "r"}, {"F", "B", "f"}}, cubesuff, 40);
 	}
 	
-	private String cube5() {
-		return megascramble(new String[][]{{"U","D","u","d"}, {"R","L","r","l"}, {"F","B","f","b"}}, cubesuff, 60);
+	private String cube555() {
+		return megascramble(new String[][]{{"U", "D", "u", "d"}, {"R", "L", "r", "l"}, {"F", "B", "f", "b"}}, cubesuff, 60);
 	}
 	
-	private String cube6() {
-		return megascramble(new String[][]{{"U","D","u","d","3u"}, {"R","L","r","l","3r"}, {"F","B","f","b","3f"}}, cubesuff, 80);
+	private String cube666() {
+		return megascramble(new String[][]{{"U", "D", "u", "d", "3u"}, {"R", "L", "r", "l", "3r"}, {"F", "B", "f", "b", "3f"}}, cubesuff, 80);
 	}
 	
-	private String cube7(String[] suf) {
-		return megascramble(new String[][]{{"U","D","u","d","3u","3d"}, {"R","L","r","l","3r","3l"}, {"F","B","f","b","3f","3b"}}, suf, 100);
+	private String cube777() {
+		return megascramble(new String[][]{{"U","D","u","d","3u","3d"}, {"R","L","r","l","3r","3l"}, {"F","B","f","b","3f","3b"}}, cubesuff, 100);
 	}
 	
 	private String rndEl(String[] x) {
@@ -984,8 +993,8 @@ public class Scrambler {
 				dct.share.getInt("csn4", Color.WHITE), dct.share.getInt("csn5", 0xff009900), dct.share.getInt("csn6", 0xffff8026)};
 		//2阶
 		if(viewType==2) {
-			cuben.parse(2);
-			byte[] imst = imagestr(DCTimer.crntScr, 2);
+			Cube.parse(2);
+			byte[] imst = imagestr(crntScr, 2);
 			int a=width/10, i, j, d=0, stx=(width-8*a-19)/2, sty=(width*3/4-6*a-14)/2;
 			for(i=0; i<2; i++)
 				for(j=0; j<2; j++) {
@@ -1025,8 +1034,8 @@ public class Scrambler {
 			float edgeFrac = (float) ((1+Math.sqrt(5))/4);
 			float centerFrac = 0.5F;
 			if(Configs.stSel[7]==0)
-				colors = new int[] {Color.WHITE, 0xff000088, 0xff008800, 0xff00ffff, 0xff882222, 0xff88aaff,
-					Color.RED, Color.BLUE, 0xffff00ff, Color.GREEN, 0xffff8800, Color.YELLOW};
+				colors = new int[] {Color.WHITE, 0xff880088, 0xff008800, 0xff88ddff, 0xff882222, Color.BLUE,
+					Color.RED, 0xffff8800, Color.GREEN, 0xffff44ff, 0xff000088, Color.YELLOW};
 			else colors = new int[] {Color.WHITE, Color.RED, 0xff008800, 0xff880088, Color.YELLOW, Color.BLUE,
 					0xffffff88, 0xff88ddff, 0xffff8800, Color.GREEN, 0xffff44ff, Color.GRAY};
 			float scale = (float) (width / 350.);
@@ -1086,7 +1095,7 @@ public class Scrambler {
 			c.drawText("F", (float)(width*0.262), (float)(width*0.535), p);
 		}
 		else if(viewType == TYPE_PYR) {
-			byte[] imst = pyram.imageString(DCTimer.crntScr);
+			byte[] imst = pyram.imageString(crntScr);
 			int b = (width * 3 / 4 - 15) / 6;
 			int a = (int) (b * 2 / Math.sqrt(3));
 			int d = (int) ((width - a * 6 - 21) / 2);
@@ -1145,7 +1154,7 @@ public class Scrambler {
 			String[] col = {"51","1","12","2","24","4","45","5","5","54","4","42","2","21","1","15"};
 			colors = new int[]{dct.share.getInt("csq1", Color.YELLOW), dct.share.getInt("csq6", 0xffff8026), dct.share.getInt("csq2", Color.BLUE),
 					dct.share.getInt("csq4", Color.WHITE), dct.share.getInt("csq3", Color.RED), dct.share.getInt("csq5", 0xff009900)};
-			byte[] img = SQ1.imagestr(DCTimer.crntScr.split(" "));
+			byte[] img = SQ1.imagestr(crntScr.split(" "));
 			boolean mis = SQ1.mi;
 			byte[] temp = new byte[12];
 			for(int i=0; i<12; i++) temp[i] = img[i];
@@ -1329,7 +1338,7 @@ public class Scrambler {
 		}
 		//1x3x3
 		else if(viewType == TYPE_FLP) {
-			byte[] imst = Floppy.image(DCTimer.crntScr);
+			byte[] imst = Floppy.image(crntScr);
 			int a = (width-19)/8, i, j, d = 0;
 			int stx = (width-8*a-19)/2, sty = (width*3/4-5*a-14)/2;
 			p.setStyle(Paint.Style.FILL);
@@ -1369,7 +1378,7 @@ public class Scrambler {
 		}
 		//2x3x3
 		else if(viewType == TYPE_DMN) {
-			byte[] imst=Domino.image(DCTimer.crntScr);
+			byte[] imst=Domino.image(crntScr);
 			int a = (width-19)/12, i, j, d = 0;
 			int stx = (width-12*a-19)/2, sty = (width*3/4-8*a+2-14)/2;
 			p.setStyle(Paint.Style.FILL);
@@ -1409,7 +1418,7 @@ public class Scrambler {
 		}
 		//2x2x3
 		else if(viewType == TYPE_TOW) {
-			byte[] imst=Tower.image(DCTimer.crntScr);
+			byte[] imst=Tower.image(crntScr);
 			int a=(width*3/4-14)/7, i, j, d = 0;
 			int stx = (width-8*a-19)/2, sty = (width*3/4-7*a-14)/2;
 			p.setStyle(Paint.Style.FILL);
@@ -1449,7 +1458,7 @@ public class Scrambler {
 				}
 		}
 		else if(viewType == TYPE_SKW) {
-			byte[] imst = skewb.image(DCTimer.crntScr);
+			byte[] imst = skewb.image(crntScr);
 			colors = new int[] {dct.share.getInt("csw4", Color.WHITE), dct.share.getInt("csw6", 0xffff8026), dct.share.getInt("csw5", 0xff009900),
 					dct.share.getInt("csw3", Color.RED), dct.share.getInt("csw2", Color.BLUE), dct.share.getInt("csw1", Color.YELLOW)};
 			int b = width / 4, a = (int) (b / 2 * Math.sqrt(3));
@@ -1481,19 +1490,19 @@ public class Scrambler {
 		else {
 			int a = (width-19)/(viewType*4), i, j, d = 0, b = viewType;
 			byte[] imst;
-			if(dct.isInScr) {
-				cuben.parse(viewType);
-				imst = imagestr(DCTimer.crntScr, viewType);
+			if(Configs.isInScr) {
+				Cube.parse(viewType);
+				imst = imagestr(crntScr, viewType);
 			}
 			else if(viewType == 3) {
-				cuben.parse(3);
-				imst = imagestr(DCTimer.crntScr, viewType);
+				Cube.parse(3);
+				imst = imagestr(crntScr, viewType);
 			}
-			else if(viewType > 7) imst = cuben.imagestring();
-			else if(sel2 == 0) imst = cuben.imagestring();
+			else if(viewType > 7) imst = Cube.imagestring();
+			else if(sel2 == 0) imst = Cube.imagestring();
 			else {
-				cuben.parse(viewType);
-				imst = imagestr(DCTimer.crntScr, viewType);
+				Cube.parse(viewType);
+				imst = imagestr(crntScr, viewType);
 			}
 			int stx = (width-4*a*b-19)/2, sty = (width*3/4-3*a*b-14)/2;
 			p.setStyle(Paint.Style.FILL);
@@ -1611,12 +1620,12 @@ public class Scrambler {
 				}
 			}
 			if(count > 0) {
-				cuben.seq = new int[count];
+				Cube.seq = new int[count];
 				for(int i=0; i<count; i++)
-					cuben.seq[i] = seq[i];
+					Cube.seq[i] = seq[i];
 			}
 		}
-		return cuben.imagestring();
+		return Cube.imagestring();
 	}
 	
 	private void drawSideBackground(Paint p, Canvas c, int width, int cx, int cy, int clock_radius,

@@ -24,6 +24,7 @@
         <item>五魔子集</item>
         <item>连拧</item>
     </array>
+    
     <array name="scrwca">
         <item>三阶速拧</item>
         <item>四阶速拧</item>
@@ -44,6 +45,7 @@
         <item>五阶盲拧</item>
         <item>三阶多盲</item>
     </array>
+    
     <array name="scr222">
         <item>随机状态</item>
         <item>3-gen</item>
@@ -56,11 +58,12 @@
         <item>TCLL+训练</item>
         <item>TCLL-训练</item>
     </array>
+    
     <array name="scr333">
         <item>传统</item>
         <item>随机状态</item>
         <item>F2L训练</item>
-        <item>顶层/OLL训练</item>
+        <item>顶层训练</item>
         <item>PLL训练</item>
         <item>棱块训练</item>
         <item>角块训练</item>
@@ -79,6 +82,7 @@
         <item>简单十字</item>
         <item>2GLL训练</item>
     </array>
+    
     <array name="scr444">
         <item>传统</item>
         <item>SiGN</item>
@@ -87,40 +91,42 @@
         <item>R,r,U,u</item>
     </array>
     <array name="scr555">
-        <item>WCA</item>
+        <item>prefix</item>
         <item>SiGN</item>
         <item>对棱训练</item>
     </array>
+    
     <array name="scr666">
         <item>prefix</item>
         <item>SiGN</item>
         <item>suffix</item>
         <item>对棱训练</item>
     </array>
+    
     <array name="scrMinx">
-        <item>WCA</item>
+        <item>Pochmann</item>
         <item>传统</item>
     </array>
+    
     <array name="scrPrym">
         <item>随机状态</item>
         <item>随机步骤</item>
     </array>
+    
     <array name="scrSq1">
         <item>face turn metric</item>
         <item>twist metric</item>
         <item>随机状态</item>
         <item>立方体形状</item>
     </array>
+    
     <array name="scrClk">
         <item>WCA</item>
         <item>Jaap顺序</item>
         <item>concise</item>
         <item>高效顺序</item>
     </array>
-    <array name="scr15p">
-        <item>piece moves</item>
-        <item>blank moves</item>
-    </array>
+    
     <array name="scrMxN">
         <item>1x3x3</item>
         <item>Super 1x3x3</item>
@@ -138,15 +144,7 @@
         <item>10x10x10</item>
         <item>11x11x11</item>
     </array>
-    <array name="scrCmt">
-        <item>Normal</item>
-        <item>Mini</item>
-    </array>
-    <array name="scrSmc">
-        <item>1x1x3 block</item>
-        <item>1x2x3 block</item>
-        <item>2x2x2 block</item>
-    </array>
+    
     <array name="scrOth">
         <item>插销魔方</item>
         <item>直升机</item>
@@ -155,32 +153,17 @@
         <item>UFO</item>
         <item>FTO</item>
     </array>
-    <array name="scr3sst">
-        <item>2-gen R,U</item>
-        <item>2-gen L,U</item>
-        <item>Roux-gen M,U</item>
-        <item>3-gen F,R,U</item>
-        <item>3-gen R,U,L</item>
-        <item>3-gen R,r,U</item>
-        <item>half turns only</item>
-        <item>LSLL</item>
-    </array>
-    <array name="scrBdg">
-        <item>Bicube</item>
-        <item>SQ1 /,(1,0)</item>
-    </array>
-    <array name="scrMsst">
-        <item>2-gen R,U</item>
-        <item>LSLL</item>
-    </array>
+    
     <array name="scrGear">
         <item>随机状态</item>
         <item>3-gen</item>
     </array>
+    
     <array name="scrSkw">
         <item>随机状态</item>
         <item>R U L B</item>
     </array>
+    
     <array name="scrRly">
         <item>2到4阶</item>
         <item>2到5阶</item>
@@ -217,6 +200,7 @@
 	<array name="tiwStr">
         <item>计时器</item>
         <item>手动输入</item>
+        <item>Stackmat</item>
     </array>
     
     <array name="faceStr">
@@ -235,6 +219,7 @@
         <item>R(红)</item>
         <item>F(绿)</item>
         <item>B(蓝)</item>
+        <item>全部显示</item>
     </array>
     
     <array name="c2lStr">
@@ -246,15 +231,6 @@
         <item>F(绿)</item>
         <item>B(蓝)</item>
     </array>
-    
-    <string-array name="samprate">
-        <item>48000</item>
-        <item>44100</item>
-        <item>22050</item>
-        <item>16000</item>
-        <item>11025</item>
-    	<item>8000</item>
-    </string-array>
     
     <array name="fontStr">
         <item>monospace</item>

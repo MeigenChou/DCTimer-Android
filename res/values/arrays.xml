@@ -24,6 +24,7 @@
         <item>Megaminx subsets</item>
         <item>Relays</item>
     </array>
+    
     <array name="scrwca">
         <item>"Rubik's cube"</item>
         <item>4x4 cube</item>
@@ -44,6 +45,7 @@
         <item>5x5 blindfolded</item>
         <item>3x3 multi blind</item>
     </array>
+    
     <array name="scr222">
         <item>random state</item>
         <item>3-gen</item>
@@ -56,6 +58,7 @@
         <item>TCLL+ training</item>
         <item>TCLL- training</item>
     </array>
+    
     <array name="scr333">
         <item>old style</item>
         <item>random state</item>
@@ -79,6 +82,7 @@
         <item>easy cross</item>
         <item>2GLL</item>
     </array>
+    
     <array name="scr444">
         <item>old style</item>
         <item>SiGN</item>
@@ -86,41 +90,49 @@
         <item>edges</item>
         <item>R,r,U,u</item>
     </array>
+    
     <array name="scr555">
-        <item>WCA</item>
+        <item>prefix</item>
         <item>SiGN</item>
         <item>edges</item>
     </array>
+    
     <array name="scr666">
-        <item>WCA</item>
+        <item>prefix</item>
         <item>SiGN</item>
         <item>suffix</item>
         <item>edges</item>
     </array>
+    
     <array name="scrMinx">
-        <item>WCA</item>
+        <item>Pochmann</item>
         <item>old style</item>
     </array>
+    
     <array name="scrPrym">
         <item>random state</item>
         <item>random moves</item>
     </array>
+    
     <array name="scrSq1">
         <item>face turn metric</item>
         <item>twist metric</item>
         <item>random state</item>
         <item>cube shape</item>
     </array>
+    
     <array name="scrClk">
         <item>WCA</item>
         <item>Jaap order</item>
         <item>concise</item>
         <item>efficient pin order</item>
     </array>
+    
     <array name="scr15p">
         <item>piece moves</item>
         <item>blank moves</item>
     </array>
+    
     <array name="scrMxN">
         <item>1x3x3</item>
         <item>Super 1x3x3</item>
@@ -138,15 +150,18 @@
         <item>10x10x10</item>
         <item>11x11x11</item>
     </array>
+    
     <array name="scrCmt">
         <item>Normal</item>
         <item>Mini</item>
     </array>
+    
     <array name="scrSmc">
         <item>1x1x3 block</item>
         <item>1x2x3 block</item>
         <item>2x2x2 block</item>
     </array>
+    
     <array name="scrOth">
         <item>Latch Cube</item>
         <item>Helicopter</item>
@@ -155,6 +170,7 @@
         <item>UFO</item>
         <item>FTO</item>
     </array>
+    
     <array name="scr3sst">
         <item>2-gen R,U</item>
         <item>2-gen L,U</item>
@@ -165,22 +181,27 @@
         <item>half turns only</item>
         <item>LSLL</item>
     </array>
+    
     <array name="scrBdg">
         <item>Bicube</item>
         <item>SQ1 /,(1,0)</item>
     </array>
+    
     <array name="scrMsst">
         <item>2-gen R,U</item>
         <item>LSLL</item>
     </array>
+    
     <array name="scrGear">
         <item>random state</item>
         <item>3-gen</item>
     </array>
+    
     <array name="scrSkw">
         <item>random state</item>
         <item>U L R B</item>
     </array>
+    
     <array name="scrRly">
         <item>234 relay</item>
         <item>2345 relay</item>
@@ -215,8 +236,9 @@
     </array>
     
 	<array name="tiwStr">
-        <item>timer</item>
-        <item>typing</item>
+        <item>Timer</item>
+        <item>Typing</item>
+        <item>Stackmat</item>
     </array>
     
     <array name="faceStr">
@@ -227,6 +249,7 @@
         <item>F(front)</item>
         <item>B(back)</item>
     </array>
+    
     <array name="sideStr">
         <item>D(yellow)</item>
         <item>U(white)</item>
@@ -234,7 +257,9 @@
         <item>R(red)</item>
         <item>F(green)</item>
         <item>B(blue)</item>
+        <item>Display all</item>
     </array>
+    
     <array name="c2lStr">
         <item>None</item>
         <item>D(yellow)</item>
@@ -279,6 +304,7 @@
         <item>4x4</item>
         <item>5x5</item>
         <item>Pyraminx</item>
+        <item>Skewb</item>
     </array>
     
     <array name="vibraStr">

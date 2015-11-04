@@ -8,22 +8,23 @@
         <item>5階</item>
         <item>6階</item>
         <item>7階</item>
-        <item>五魔術方塊</item>
+        <item>Megaminx</item>
         <item>金字塔</item>
-        <item>SQ1</item>
-        <item>魔表</item>
+        <item>Square-1</item>
+        <item>魔錶</item>
         <item>Skewb</item>
         <item>LxMxN</item>
         <item>Cmetrick</item>
-        <item>齒輪魔術方塊</item>
+        <item>齒輪方塊</item>
         <item>Siamese Cube</item>
         <item>15 puzzle</item>
         <item>其他</item>
         <item>3階子集</item>
-        <item>捆綁魔術方塊</item>
-        <item>五魔子集</item>
+        <item>捆綁方塊</item>
+        <item>Megaminx子集</item>
         <item>連擰</item>
     </array>
+    
     <array name="scrwca">
         <item>三階速解</item>
         <item>四階速解</item>
@@ -33,10 +34,10 @@
         <item>三階單手</item>
         <item>三階最少步</item>
         <item>三階腳解</item>
-        <item>五魔術方塊</item>
+        <item>Megaminx</item>
         <item>金字塔</item>
         <item>Square-1</item>
-        <item>魔表</item>
+        <item>魔錶</item>
         <item>斜轉方塊</item>
         <item>六階速解</item>
         <item>七階速解</item>
@@ -44,6 +45,7 @@
         <item>五階盲解</item>
         <item>三階多盲</item>
     </array>
+    
     <array name="scr222">
         <item>隨機狀態</item>
         <item>3-gen</item>
@@ -56,11 +58,12 @@
         <item>TCLL+訓練</item>
         <item>TCLL-訓練</item>
     </array>
+    
     <array name="scr333">
         <item>傳統</item>
         <item>隨機狀態</item>
         <item>F2L訓練</item>
-        <item>頂層/OLL訓練</item>
+        <item>頂層訓練</item>
         <item>PLL訓練</item>
         <item>稜塊訓練</item>
         <item>角塊訓練</item>
@@ -79,6 +82,7 @@
         <item>簡單十字</item>
         <item>2GLL訓練</item>
     </array>
+    
     <array name="scr444">
         <item>傳統</item>
         <item>SiGN</item>
@@ -86,41 +90,44 @@
         <item>對棱訓練</item>
         <item>R,r,U,u</item>
     </array>
+    
     <array name="scr555">
-        <item>WCA</item>
+        <item>prefix</item>
         <item>SiGN</item>
         <item>對棱訓練</item>
     </array>
+    
     <array name="scr666">
-        <item>WCA</item>
+        <item>prefix</item>
         <item>SiGN</item>
         <item>suffix</item>
         <item>對棱訓練</item>
     </array>
+    
     <array name="scrMinx">
-        <item>WCA</item>
+        <item>Pochmann</item>
         <item>傳統</item>
     </array>
+    
     <array name="scrPrym">
         <item>隨機狀態</item>
-        <item>隨機步驟</item>
+        <item>隨機轉動</item>
     </array>
+    
     <array name="scrSq1">
         <item>face turn metric</item>
         <item>twist metric</item>
         <item>隨機狀態</item>
         <item>立方體形狀</item>
     </array>
+    
     <array name="scrClk">
         <item>WCA</item>
         <item>Jaap順序</item>
         <item>concise</item>
         <item>高效順序</item>
     </array>
-    <array name="scr15p">
-        <item>piece moves</item>
-        <item>blank moves</item>
-    </array>
+    
     <array name="scrMxN">
         <item>1x3x3</item>
         <item>Super 1x3x3</item>
@@ -138,49 +145,31 @@
         <item>10x10x10</item>
         <item>11x11x11</item>
     </array>
-    <array name="scrCmt">
-        <item>Normal</item>
-        <item>Mini</item>
-    </array>
-    <array name="scrSmc">
-        <item>1x1x3 block</item>
-        <item>1x2x3 block</item>
-        <item>2x2x2 block</item>
-    </array>
+    
     <array name="scrOth">
-        <item>插銷魔術方塊</item>
+        <item>插銷方塊</item>
         <item>直昇機</item>
         <item>Square-2</item>
         <item>Super SQ1</item>
         <item>UFO</item>
         <item>FTO</item>
     </array>
-    <array name="scr3sst">
-        <item>2-gen R,U</item>
-        <item>2-gen L,U</item>
-        <item>Roux-gen M,U</item>
-        <item>3-gen F,R,U</item>
-        <item>3-gen R,U,L</item>
-        <item>3-gen R,r,U</item>
-        <item>half turns only</item>
-        <item>LSLL</item>
-    </array>
+    
     <array name="scrBdg">
         <item>Bicube</item>
         <item>SQ1 /,(1,0)</item>
     </array>
-    <array name="scrMsst">
-        <item>2-gen R,U</item>
-        <item>LSLL</item>
-    </array>
+    
     <array name="scrGear">
         <item>隨機狀態</item>
         <item>3-gen</item>
     </array>
+    
     <array name="scrSkw">
         <item>隨機狀態</item>
         <item>R U L B</item>
     </array>
+    
     <array name="scrRly">
         <item>2到4階</item>
         <item>2到5階</item>
@@ -217,6 +206,7 @@
 	<array name="tiwStr">
         <item>計時器</item>
         <item>手動輸入</item>
+        <item>Stackmat</item>
     </array>
     
     <array name="faceStr">
@@ -235,6 +225,7 @@
         <item>R(紅)</item>
         <item>F(緑)</item>
         <item>B(藍)</item>
+        <item>全部顯示</item>
     </array>
     
     <array name="c2lStr">
@@ -246,15 +237,6 @@
         <item>F(緑)</item>
         <item>B(藍)</item>
     </array>
-    
-    <string-array name="samprate">
-        <item>48000</item>
-        <item>44100</item>
-        <item>22050</item>
-        <item>16000</item>
-        <item>11025</item>
-    	<item>8000</item>
-    </string-array>
     
     <array name="fontStr">
         <item>monospace</item>
@@ -281,6 +263,7 @@
         <item>四階</item>
         <item>五階</item>
         <item>金字塔</item>
+        <item>斜轉</item>
     </array>
     
     <array name="vibraStr">
@@ -306,7 +289,7 @@
     </array>
     
     <array name="soriStr">
-        <item>默認</item>
+        <item>預設</item>
         <item>橫屏</item>
         <item>反向橫屏</item>
         <item>竪屏</item>
@@ -318,8 +301,8 @@
         <item>清除本組</item>
         <item>時間分佈</item>
         <item>折綫圖</item>
-        <item>導出數據庫</item>
-        <item>導入數據庫</item>
+        <item>匯出數據庫</item>
+        <item>匯入數據庫</item>
     </array>
     
     <array name="sq1sStr">

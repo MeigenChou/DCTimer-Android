@@ -1,16 +1,13 @@
 package com.dctimer.ui;
 
-import com.dctimer.DCTimer;
+import com.dctimer.Configs;
 import com.dctimer.R;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.view.*;
 import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -26,8 +23,9 @@ public class CustomDialog extends Dialog {
 	public void show() {
 		Window dw = getWindow();
 		WindowManager.LayoutParams p = dw.getAttributes();
-		p.width = DCTimer.dip300;
+		p.width = Configs.dip300;
 		dw.setAttributes(p);
+		setCanceledOnTouchOutside(false);
 		super.show();
 	}
 	
@@ -263,14 +261,5 @@ public class CustomDialog extends Dialog {
 		public void show() {
 			create().show();
 		}
-		
-//		public void show(int width) {
-//			CustomDialog dialog = create();
-//			Window dw = dialog.getWindow();
-//			WindowManager.LayoutParams p = dw.getAttributes();
-//			p.width = width;
-//			dw.setAttributes(p);
-//			dialog.show();
-//		}
 	}
 }

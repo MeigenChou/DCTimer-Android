@@ -105,7 +105,7 @@ public class EOline {
 		return eci * 2 + epi;
 	}
 	
-	private static String[] faceStr = {"D(LR)", "D(FB)", "U(LR)", "U(FB)",
+	private static String[] sideStr = {"D(LR)", "D(FB)", "U(LR)", "U(FB)",
 		"L(UD)", "L(FB)", "R(UD)", "R(FB)", "F(LR)", "F(UD)", "B(LR)", "B(UD)"};
 	private static String[] moveIdx = {"UDLRFB", "UDFBRL", "DURLFB", "DUFBLR",
 		"RLUDFB", "RLFBDU", "LRDUFB", "LRFBUD", "BFLRUD", "BFUDRL", "FBLRDU", "FBDURL"};
@@ -151,14 +151,16 @@ public class EOline {
 		}
 		sb = new StringBuffer();
 		for (int d = 0; !search(eo, ep, d, face); d++);
-		return "\n"+faceStr[face]+": "+rotIdx[face]+sb.toString();
+		return "\n" + sideStr[face] + ": " + rotIdx[face] + sb.toString();
 	}
 	
 	public static String eoLine(String scr, int face){
 		init();
-		if(face<6) return solve(scr, face*2)+solve(scr, face*2+1);
-		StringBuffer s=new StringBuffer();
-		for(int i=0; i<12; i++)s.append(solve(scr, i));
-		return s.toString();
+		if(face == 6) {
+			StringBuffer s = new StringBuffer();
+			for(int i=0; i<12; i++) s.append(solve(scr, i));
+			return s.toString();
+		}
+		return solve(scr, face<<1) + solve(scr, face<<1|1);
 	}
 }

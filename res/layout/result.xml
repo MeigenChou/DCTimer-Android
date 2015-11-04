@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="44dip" >
+
+        <Button
+            android:id="@+id/bt_session"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:background="#00ffffff"
+            android:padding="10dip"
+            android:shadowColor="#80ffffff"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:text="@string/session"
+            android:textColor="@drawable/button_text_style"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/sesname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxEms="10"
+            android:singleLine="true"
+            android:textColor="#000"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/bt_optn"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:background="#00ffffff"
+            android:padding="10dip"
+            android:shadowColor="#80ffffff"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:text="@string/option"
+            android:textColor="@drawable/button_text_style"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddb2b2b2" />
+
+    <LinearLayout
+        android:id="@+id/layout_title"
+        android:layout_width="fill_parent"
+        android:layout_height="30dip"
+        android:background="#ddffffff"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddb2b2b2" />
+
+    <ListView
+        android:id="@+id/lv_times"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:background="#ddffffff"
+        android:cacheColorHint="#ddffffff"
+        android:divider="#ddb2b2b2"
+        android:dividerHeight="1px"
+        android:fastScrollEnabled="true" >
+    </ListView>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddb2b2b2" />
+
+    <Button
+        android:id="@+id/bt_ses_mean"
+        android:layout_width="fill_parent"
+        android:layout_height="35dip"
+        android:background="#ddffffff"
+        android:textColor="@drawable/button_text_style"
+        android:textSize="15sp" />
+
+</LinearLayout>

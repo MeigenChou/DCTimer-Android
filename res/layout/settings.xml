@@ -5,358 +5,551 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/stt00"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dip"
-        android:layout_marginStart="10dip"
-        android:layout_marginTop="5dip"
+        android:layout_width="fill_parent"
+        android:layout_height="56dip"
+        android:background="#0f37373a"
+        android:gravity="bottom"
+        android:paddingBottom="5dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
         android:text="@string/stt_timer"
+        android:textColor="#000"
         android:textSize="15sp" />
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
+
     <LinearLayout
-        android:id="@+id/sl01"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dip"
         android:orientation="vertical" >
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/stt41"
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
-                android:text="@string/wcainsp"
-                android:textSize="17sp" />
+            android:layout_height="44dip" >
 
             <ImageButton
                 android:id="@+id/stcheck1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="3dip"
-                android:layout_marginRight="3dip"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:background="#00ffffff"
                 android:contentDescription="@string/app_name" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/lay18"
-            android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/stt42"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
+                android:text="@string/wcainsp"
+                android:textColor="#000"
+                android:textSize="17sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/lay18"
+            android:layout_width="fill_parent"
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/time_format"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
 
-        <LinearLayout
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/lay01"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt22"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/input_time"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std01"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
 
-        <LinearLayout
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/lay02"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt36"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/timer_upd"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std02"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
 
-        <LinearLayout
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/lay03"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="7dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt21"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/accuracy"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std03"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
 
-        <TextView
-            android:id="@+id/stt31"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dip"
-            android:layout_marginStart="5dip"
-            android:textSize="17sp" />
-
-        <SeekBar
-            android:id="@+id/seekb5"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:maxHeight="3dip"
-            android:minHeight="3dip"
-            android:paddingLeft="7dip"
-            android:paddingRight="7dip"
-            android:progressDrawable="@drawable/seek_style"
-            android:thumb="@drawable/seek_thumb"
-            android:thumbOffset="11dip" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/lay04"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip" >
 
-            <TextView
-                android:id="@+id/stt40"
+            <LinearLayout
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
                 android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/time_tap"
+                    android:textColor="#000"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/stt31"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#80000000"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/seekb5"
+                android:layout_width="160dip"
+                android:layout_height="wrap_content"
+                android:max="20"
+                android:maxHeight="3dip"
+                android:minHeight="3dip"
+                android:paddingLeft="4dip"
+                android:paddingRight="4dip"
+                android:progressDrawable="@drawable/seek_style"
+                android:thumb="@drawable/seek_thumb"
+                android:thumbOffset="10dip" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="15dip"
+            android:background="#ddc8c7cc" />
+
+        <RelativeLayout
+            android:id="@+id/lay04"
+            android:layout_width="fill_parent"
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/mul_phase"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std04"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
+            android:layout_height="44dip"
             android:gravity="center"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip" >
 
             <TextView
-                android:id="@+id/stt43"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
                 android:layout_weight="1"
                 android:text="@string/simulss"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <ImageButton
                 android:id="@+id/stcheck3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="3dip"
-                android:layout_marginRight="3dip"
                 android:background="#00ffffff"
                 android:contentDescription="@string/app_name" />
         </LinearLayout>
     </LinearLayout>
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
+
     <TextView
-        android:id="@+id/stt02"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dip"
-        android:layout_marginStart="10dip"
-        android:text="@string/stt_scramble"
+        android:layout_width="fill_parent"
+        android:layout_height="56dip"
+        android:background="#0f37373a"
+        android:gravity="bottom"
+        android:paddingBottom="5dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
+        android:text="@string/stt_stackmat"
+        android:textColor="#000"
         android:textSize="15sp" />
 
-    <LinearLayout
-        android:id="@+id/sl02"
+    <View
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dip"
-        android:orientation="vertical" >
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
 
-        <TextView
-            android:id="@+id/stt09"
-            android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="44dip"
+        android:orientation="horizontal"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
+        android:gravity="center_vertical" >
+
+        <LinearLayout
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dip"
-            android:layout_marginStart="5dip"
-            android:layout_marginTop="5dip"
-            android:textSize="17sp" />
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stt_ssvalue"
+                android:textColor="#000"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/stt05"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#80000000"
+                android:textSize="15sp" />
+        </LinearLayout>
 
         <SeekBar
-            android:id="@+id/seekb2"
-            android:layout_width="fill_parent"
+            android:id="@+id/seekb6"
+            android:layout_width="160dip"
             android:layout_height="wrap_content"
             android:maxHeight="3dip"
             android:minHeight="3dip"
-            android:paddingLeft="7dip"
-            android:paddingRight="7dip"
+            android:paddingLeft="4dip"
+            android:paddingRight="4dip"
             android:progressDrawable="@drawable/seek_style"
             android:thumb="@drawable/seek_thumb"
-            android:thumbOffset="11dip" />
+            android:thumbOffset="10dip" />
+    </LinearLayout>
+    
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="56dip"
+        android:background="#0f37373a"
+        android:gravity="bottom"
+        android:paddingBottom="5dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
+        android:text="@string/stt_scramble"
+        android:textColor="#000"
+        android:textSize="15sp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip" >
 
-            <TextView
-                android:id="@+id/stt46"
+            <LinearLayout
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
                 android:layout_weight="1"
-                android:text="@string/showscr"
-                android:textSize="17sp" />
+                android:orientation="vertical" >
 
-            <ImageButton
-                android:id="@+id/stcheck6"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/scrsize"
+                    android:textColor="#000"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/stt09"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#80000000"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/seekb2"
+                android:layout_width="160dip"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="3dip"
-                android:layout_marginRight="3dip"
-                android:background="#00ffffff"
-                android:contentDescription="@string/app_name" />
+                android:max="25"
+                android:maxHeight="3dip"
+                android:minHeight="3dip"
+                android:paddingLeft="4dip"
+                android:paddingRight="4dip"
+                android:progressDrawable="@drawable/seek_style"
+                android:thumb="@drawable/seek_thumb"
+                android:thumbOffset="10dip" />
         </LinearLayout>
 
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="15dip"
+            android:background="#ddc8c7cc" />
+
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="7dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
+            android:layout_height="44dip"
             android:gravity="center"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip" >
 
             <TextView
-                android:id="@+id/stt59"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
                 android:layout_weight="1"
                 android:text="@string/monoscr"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <ImageButton
                 android:id="@+id/stcheck15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="3dip"
-                android:layout_marginRight="3dip"
                 android:background="#00ffffff"
                 android:contentDescription="@string/app_name" />
         </LinearLayout>
 
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="15dip"
+            android:background="#ddc8c7cc" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="44dip"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip" >
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/showscr"
+                android:textColor="#000"
+                android:textSize="17sp" />
+
+            <ImageButton
+                android:id="@+id/stcheck6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00ffffff"
+                android:contentDescription="@string/app_name" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="15dip"
+            android:background="#ddc8c7cc" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="44dip"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip" >
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/scrview_size"
+                android:textColor="#000"
+                android:textSize="17sp" />
+
+            <SeekBar
+                android:id="@+id/seekb7"
+                android:layout_width="160dip"
+                android:layout_height="wrap_content"
+                android:max="16"
+                android:maxHeight="3dip"
+                android:minHeight="3dip"
+                android:paddingLeft="4dip"
+                android:paddingRight="4dip"
+                android:progressDrawable="@drawable/seek_style"
+                android:thumb="@drawable/seek_thumb"
+                android:thumbOffset="10dip" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="15dip"
+            android:background="#ddc8c7cc" />
+
         <TextView
-            android:id="@+id/stt38"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dip"
-            android:layout_marginStart="5dip"
+            android:layout_marginLeft="15dip"
             android:text="@string/egtrain"
+            android:textColor="#000"
             android:textSize="17sp" />
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:paddingLeft="15dip" >
 
             <CheckBox
                 android:id="@+id/checkcll"
@@ -387,7 +580,8 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:paddingLeft="15dip" >
 
             <CheckBox
                 android:id="@+id/checkegpi"
@@ -436,7 +630,8 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:paddingLeft="15dip" >
 
             <CheckBox
                 android:id="@+id/checkegs"
@@ -465,287 +660,323 @@
         </LinearLayout>
     </LinearLayout>
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
+
     <TextView
-        android:id="@+id/stt03"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dip"
-        android:layout_marginStart="10dip"
+        android:layout_width="fill_parent"
+        android:layout_height="56dip"
+        android:background="#0f37373a"
+        android:gravity="bottom"
+        android:paddingBottom="5dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
         android:text="@string/stt_stats"
+        android:textColor="#000"
         android:textSize="15sp" />
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
+
     <LinearLayout
-        android:id="@+id/sl03"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dip"
         android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
+            android:layout_height="44dip"
             android:gravity="center"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip" >
 
             <TextView
-                android:id="@+id/stt47"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
                 android:layout_weight="1"
                 android:text="@string/confirm_time"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <ImageButton
                 android:id="@+id/stcheck7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="3dip"
-                android:layout_marginRight="3dip"
                 android:background="#00ffffff"
                 android:contentDescription="@string/app_name" />
         </LinearLayout>
 
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="15dip"
+            android:background="#ddc8c7cc" />
+
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
+            android:layout_height="44dip"
             android:gravity="center"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip" >
 
             <TextView
-                android:id="@+id/stt48"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
                 android:layout_weight="1"
                 android:text="@string/printscr"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <ImageButton
                 android:id="@+id/stcheck8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="3dip"
-                android:layout_marginRight="3dip"
                 android:background="#00ffffff"
                 android:contentDescription="@string/app_name" />
         </LinearLayout>
 
-        <LinearLayout
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="15dip"
+            android:background="#ddc8c7cc" />
+
+        <RelativeLayout
             android:id="@+id/lay25"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt05"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/ra0"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
-                android:textSize="17sp"
-                android:contentDescription="@string/app_name" />
-        </LinearLayout>
+                android:textColor="#80000000"
+                android:textSize="17sp" />
 
-        <LinearLayout
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/lay27"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt57"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/ralen"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std17"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
 
-        <LinearLayout
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/lay26"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt18"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dip"
-                android:layout_marginStart="5dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/ra1"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
 
-        <LinearLayout
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/lay28"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt58"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/ralen"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
+            android:layout_height="44dip"
             android:gravity="center"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip" >
 
             <TextView
-                android:id="@+id/stt49"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
                 android:layout_weight="1"
                 android:text="@string/sel_scramble"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <ImageButton
                 android:id="@+id/stcheck9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="3dip"
-                android:layout_marginRight="3dip"
                 android:background="#00ffffff"
                 android:contentDescription="@string/app_name" />
         </LinearLayout>
     </LinearLayout>
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
+
     <TextView
-        android:id="@+id/stt19"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dip"
-        android:layout_marginStart="10dip"
+        android:layout_width="fill_parent"
+        android:layout_height="56dip"
+        android:background="#0f37373a"
+        android:gravity="bottom"
+        android:paddingBottom="5dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
         android:text="@string/stt_tools"
+        android:textColor="#000"
         android:textSize="15sp" />
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
+
     <LinearLayout
-        android:id="@+id/sl04"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dip"
         android:orientation="vertical" >
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/lay06"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:layout_marginTop="2dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt07"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/optcross"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std06"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="5dip" >
+            android:paddingBottom="5dip"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip"
+            android:paddingTop="2dip" >
 
             <Button
                 android:id="@+id/solve1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dip"
-                android:layout_marginRight="4dip"
                 android:layout_weight="1"
-                android:background="@drawable/spinner_white_style"
+                android:background="@drawable/spinner_grey_style"
                 android:gravity="center_vertical"
                 android:minHeight="40dip"
                 android:padding="5dip"
@@ -755,635 +986,783 @@
                 android:id="@+id/solve2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
                 android:layout_weight="1"
-                android:background="@drawable/spinner_white_style"
+                android:background="@drawable/spinner_grey_style"
                 android:gravity="center_vertical"
                 android:minHeight="40dip"
                 android:padding="5dip"
                 android:textSize="15sp" />
         </LinearLayout>
 
-        <LinearLayout
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="15dip"
+            android:background="#ddc8c7cc" />
+
+        <RelativeLayout
             android:id="@+id/lay23"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt50"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/sq1shape"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
 
-        <LinearLayout
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/lay07"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="2dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt26"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/cube2_layer"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std07"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
+
     <TextView
-        android:id="@+id/stt10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dip"
-        android:layout_marginStart="10dip"
+        android:layout_width="fill_parent"
+        android:layout_height="56dip"
+        android:background="#0f37373a"
+        android:gravity="bottom"
+        android:paddingBottom="5dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
         android:text="@string/stt_scheme"
+        android:textColor="#000"
         android:textSize="15sp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
 
     <LinearLayout
         android:id="@+id/sl05"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dip"
         android:orientation="vertical" >
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/lay19"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:layout_marginTop="2dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt27"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
                 android:text="@string/stt_csn"
+                android:textColor="#000"
                 android:textSize="17sp" />
-        </LinearLayout>
 
-        <LinearLayout
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/lay20"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt28"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
                 android:text="@string/stt_csp"
+                android:textColor="#000"
                 android:textSize="17sp" />
-        </LinearLayout>
 
-        <LinearLayout
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/lay21"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt29"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
                 android:text="@string/stt_csq"
+                android:textColor="#000"
                 android:textSize="17sp" />
-        </LinearLayout>
 
-        <LinearLayout
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/lay08"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt11"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/mmxcolor"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std08"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
 
-        <LinearLayout
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/lay24"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="2dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt56"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
                 android:text="@string/stt_csw"
+                android:textColor="#000"
                 android:textSize="17sp" />
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
+
     <TextView
-        android:id="@+id/stt01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dip"
-        android:layout_marginStart="10dip"
+        android:layout_width="fill_parent"
+        android:layout_height="56dip"
+        android:background="#0f37373a"
+        android:gravity="bottom"
+        android:paddingBottom="5dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
         android:text="@string/stt_interface"
+        android:textColor="#000"
         android:textSize="15sp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
 
     <LinearLayout
         android:id="@+id/sl06"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dip"
         android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
+            android:layout_height="44dip"
             android:gravity="center"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip" >
 
             <TextView
-                android:id="@+id/stt51"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
                 android:layout_weight="1"
                 android:text="@string/full_screen"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <ImageButton
                 android:id="@+id/stcheck11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="3dip"
-                android:layout_marginRight="3dip"
                 android:background="#00ffffff"
                 android:contentDescription="@string/app_name" />
         </LinearLayout>
 
-        <LinearLayout
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="15dip"
+            android:background="#ddc8c7cc" />
+
+        <RelativeLayout
             android:id="@+id/lay09"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="7dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt30"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/timer_font"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std09"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
 
-        <TextView
-            android:id="@+id/stt08"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dip"
-            android:layout_marginStart="5dip"
-            android:textSize="17sp" />
-
-        <SeekBar
-            android:id="@+id/seekb1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:maxHeight="3dip"
-            android:minHeight="3dip"
-            android:paddingLeft="7dip"
-            android:paddingRight="7dip"
-            android:progressDrawable="@drawable/seek_style"
-            android:thumb="@drawable/seek_thumb"
-            android:thumbOffset="11dip" />
-
-        <LinearLayout
-            android:id="@+id/lay13"
-            android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/stt12"
+            <View
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:drawableEnd="@drawable/arrow"
-                android:drawableRight="@drawable/arrow"
-                android:text="@string/bgcolor"
-                android:textSize="17sp" />
-        </LinearLayout>
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/lay22"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="7dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
+            android:layout_height="44dip"
             android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip" >
 
-            <TextView
-                android:id="@+id/stt23"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:drawableEnd="@drawable/arrow"
-                android:drawableRight="@drawable/arrow"
-                android:text="@string/bgpicture"
-                android:textSize="17sp" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/stt04"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dip"
-            android:layout_marginStart="5dip"
-            android:text="@string/bgopacity"
-            android:textSize="17sp" />
-
-        <SeekBar
-            android:id="@+id/seekb4"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:maxHeight="3dip"
-            android:minHeight="3dip"
-            android:paddingLeft="7dip"
-            android:paddingRight="7dip"
-            android:progressDrawable="@drawable/seek_style"
-            android:thumb="@drawable/seek_thumb"
-            android:thumbOffset="11dip" />
-
-        <LinearLayout
-            android:id="@+id/lay14"
-            android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:layout_marginTop="5dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/stt13"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:drawableEnd="@drawable/arrow"
-                android:drawableRight="@drawable/arrow"
-                android:text="@string/text_color"
-                android:textSize="17sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/lay15"
-            android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/stt14"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:drawableEnd="@drawable/arrow"
-                android:drawableRight="@drawable/arrow"
-                android:text="@string/best_time"
-                android:textSize="17sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/lay16"
-            android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/stt15"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:drawableEnd="@drawable/arrow"
-                android:drawableRight="@drawable/arrow"
-                android:text="@string/worst_time"
-                android:textSize="17sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/lay17"
-            android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="7dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/stt16"
+            <LinearLayout
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
                 android:layout_weight="1"
-                android:drawableEnd="@drawable/arrow"
-                android:drawableRight="@drawable/arrow"
-                android:text="@string/best_rolling_avg"
-                android:textSize="17sp" />
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/timer_size"
+                    android:textColor="#000"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/stt08"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#80000000"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/seekb1"
+                android:layout_width="160dip"
+                android:layout_height="wrap_content"
+                android:max="95"
+                android:maxHeight="3dip"
+                android:minHeight="3dip"
+                android:paddingLeft="4dip"
+                android:paddingRight="4dip"
+                android:progressDrawable="@drawable/seek_style"
+                android:thumb="@drawable/seek_thumb"
+                android:thumbOffset="10dip" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/stt17"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dip"
-            android:layout_marginStart="5dip"
-            android:textSize="17sp" />
-
-        <SeekBar
-            android:id="@+id/seekb3"
+        <View
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:maxHeight="3dip"
-            android:minHeight="3dip"
-            android:paddingLeft="7dip"
-            android:paddingRight="7dip"
-            android:progressDrawable="@drawable/seek_style"
-            android:thumb="@drawable/seek_thumb"
-            android:thumbOffset="11dip" />
+            android:layout_height="1px"
+            android:layout_marginLeft="15dip"
+            android:background="#ddc8c7cc" />
+
+        <RelativeLayout
+            android:id="@+id/lay13"
+            android:layout_width="fill_parent"
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="15dip"
+                android:drawableRight="@drawable/arrow"
+                android:text="@string/bgcolor"
+                android:textColor="#000"
+                android:textSize="17sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/lay22"
+            android:layout_width="fill_parent"
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="15dip"
+                android:drawableRight="@drawable/arrow"
+                android:text="@string/bgpicture"
+                android:textColor="#000"
+                android:textSize="17sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="44dip"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip" >
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/bgopacity"
+                android:textColor="#000"
+                android:textSize="17sp" />
+
+            <SeekBar
+                android:id="@+id/seekb4"
+                android:layout_width="160dip"
+                android:layout_height="wrap_content"
+                android:maxHeight="3dip"
+                android:minHeight="3dip"
+                android:paddingLeft="4dip"
+                android:paddingRight="4dip"
+                android:progressDrawable="@drawable/seek_style"
+                android:thumb="@drawable/seek_thumb"
+                android:thumbOffset="10dip" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="15dip"
+            android:background="#ddc8c7cc" />
+
+        <RelativeLayout
+            android:id="@+id/lay14"
+            android:layout_width="fill_parent"
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="15dip"
+                android:drawableRight="@drawable/arrow"
+                android:text="@string/text_color"
+                android:textColor="#000"
+                android:textSize="17sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/lay15"
+            android:layout_width="fill_parent"
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="15dip"
+                android:drawableRight="@drawable/arrow"
+                android:text="@string/best_time"
+                android:textColor="#000"
+                android:textSize="17sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/lay16"
+            android:layout_width="fill_parent"
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="15dip"
+                android:drawableRight="@drawable/arrow"
+                android:text="@string/worst_time"
+                android:textColor="#000"
+                android:textSize="17sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/lay17"
+            android:layout_width="fill_parent"
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="15dip"
+                android:drawableRight="@drawable/arrow"
+                android:text="@string/best_rolling_avg"
+                android:textColor="#000"
+                android:textSize="17sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="44dip"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip" >
+
+            <LinearLayout
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/row_spacing"
+                    android:textColor="#000"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/stt17"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#80000000"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/seekb3"
+                android:layout_width="160dip"
+                android:layout_height="wrap_content"
+                android:max="41"
+                android:maxHeight="3dip"
+                android:minHeight="3dip"
+                android:paddingLeft="4dip"
+                android:paddingRight="4dip"
+                android:progressDrawable="@drawable/seek_style"
+                android:thumb="@drawable/seek_thumb"
+                android:thumbOffset="10dip" />
+        </LinearLayout>
     </LinearLayout>
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
+
     <TextView
-        android:id="@+id/stt33"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dip"
-        android:layout_marginStart="10dip"
+        android:layout_width="fill_parent"
+        android:layout_height="56dip"
+        android:background="#0f37373a"
+        android:gravity="bottom"
+        android:paddingBottom="5dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
         android:text="@string/stt_hardw"
+        android:textColor="#000"
         android:textSize="15sp" />
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
+
     <LinearLayout
-        android:id="@+id/sl07"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dip"
         android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
+            android:layout_height="44dip"
             android:gravity="center"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip" >
 
             <TextView
-                android:id="@+id/stt52"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
                 android:layout_weight="1"
                 android:text="@string/screenon"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <ImageButton
                 android:id="@+id/stcheck12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="3dip"
-                android:layout_marginRight="3dip"
                 android:background="#00ffffff"
                 android:contentDescription="@string/app_name" />
         </LinearLayout>
 
-        <LinearLayout
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="15dip"
+            android:background="#ddc8c7cc" />
+
+        <RelativeLayout
             android:id="@+id/lay10"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt37"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/stt_screen_ori"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
 
-        <LinearLayout
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/lay11"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt34"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/stt_vibra"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std11"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
                 android:gravity="end"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
 
-        <LinearLayout
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dip"
+                android:background="#ddc8c7cc" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/lay12"
             android:layout_width="fill_parent"
-            android:layout_height="42dip"
-            android:layout_marginBottom="1dip"
-            android:layout_marginLeft="1dip"
-            android:layout_marginRight="1dip"
-            android:gravity="center"
-            android:longClickable="true"
-            android:orientation="horizontal" >
+            android:layout_height="44dip"
+            android:background="@drawable/item_selector" >
 
             <TextView
-                android:id="@+id/stt35"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dip"
-                android:layout_marginStart="4dip"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
                 android:text="@string/stt_vib_time"
+                android:textColor="#000"
                 android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/std12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
                 android:drawableRight="@drawable/arrow"
+                android:textColor="#80000000"
                 android:textSize="17sp" />
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/reset"
+    <View
         android:layout_width="fill_parent"
-        android:layout_height="40dip"
-        android:layout_marginBottom="5dip"
-        android:layout_marginLeft="5dip"
-        android:layout_marginRight="5dip"
-        android:background="@drawable/button_reset_selector"
-        android:text="@string/reset_all"
-        android:textColor="#ffffff"
-        android:textSize="16sp" />
+        android:layout_height="1px"
+        android:background="#ddc8c7cc" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="56dip"
+        android:background="#0f37373a" >
+
+        <Button
+            android:id="@+id/reset"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="5dip"
+            android:background="#00ffffff"
+            android:text="@string/reset_all"
+            android:textColor="@drawable/button_reset_style"
+            android:textSize="17sp" />
+    </RelativeLayout>
 
 </LinearLayout>

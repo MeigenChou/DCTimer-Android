@@ -2,20 +2,20 @@ package scrambler;
 
 public class Cube {
 	//Default settings
-	private int size;
-	private int seqLen;
-	private int seql;
-	private boolean mult = true;
+	private static int size;
+	private static int seqLen;
+	private static int seql;
+	private static boolean mult = true;
 	// list of available colours
 	private static byte[] colors = {0, 5, 1, 3, 2, 4}; //stores colours used
-	public int[] seq;  // move sequences
-	private char[] posit;  // facelet array
+	public static int[] seq;  // move sequences
+	private static char[] posit;  // facelet array
 	private static int[] flat2posit;  //lookup table for drawing cube
 	private static byte[] colorPerm = {0, 1, 2, 3, 4, 5};
 	//private static StringBuffer sb;
-	private byte[] img;
+	private static byte[] img;
 	
-	public void appendmoves(int[] sq, int[] axsl, int tl, int la){
+	public static void appendmoves(int[] sq, int[] axsl, int tl, int la){
 		for(int sl=0; sl<tl; sl++){  // for each move type
 			if(axsl[sl]!=0){       // if it occurs
 				int q=axsl[sl]-1;
@@ -33,11 +33,11 @@ public class Cube {
 		}
 	}
 	
-	public void parse(int size) {
-		this.size = size;
+	public static void parse(int s) {
+		size = s;
 	}
 	
-	private void scramble() {
+	private static void scramble() {
 		int i;
 		//tl=number of allowed moves (twistable layers) on axis -- middle layer ignored
 		int tl = size;
@@ -96,7 +96,7 @@ public class Cube {
 		appendmoves(seq, axsl, tl, la);
 	}
 	
-	public String scramblestring(int siz, int sel) {
+	public static String scramblestring(int siz, int sel) {
 		seqLen = sel;
 		parse(siz);
 		scramble();
@@ -121,7 +121,7 @@ public class Cube {
 		return sb.toString();
 	}
 	
-	public byte[] imagestring() {
+	public static byte[] imagestring() {
 		img = new byte[size*size*6];
 		posit = new char[size*size*6];
 		char i,j,l=0;
@@ -168,7 +168,7 @@ public class Cube {
 		return img;
 	}
 	
-	private void doslice(int f, int d, int q){
+	private static void doslice(int f, int d, int q){
 		//do move of face f, layer d, q quarter turns
 		int f1=0,f2=0,f3=0,f4=0;
 		int s2=size*size;
