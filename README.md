@@ -1,3 +1,6 @@
+DCTimer is available on [Google Play](https://play.google.com/store/apps/details?id=com.dctimer)
+因版权问题源代码不再提供。该仓库仅提供更新功能
+
 # English
 Main features:
 - Supports all WCA's official scrambles, including random-state scramble for 2x2-4x4, Pyraminx, Square-1, Rubik's Clock and Skewb. Scramble view is available for all WCA scrambles.
