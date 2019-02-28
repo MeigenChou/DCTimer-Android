@@ -1,4 +1,4 @@
-DCTimer is available on [Google Play](https://play.google.com/store/apps/details?id=com.dctimer)
+DCTimer is available on [Google Play](https://play.google.com/store/apps/details?id=com.dctimer) 
 因版权问题源代码不再提供。该仓库仅提供更新功能
 
 # English
