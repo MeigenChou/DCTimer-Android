@@ -1,5 +1,3 @@
-31
-1.1.3
-Able to search the result or comment
-Added decimal mark option
+32
+1.1.4
 Bug fixed
