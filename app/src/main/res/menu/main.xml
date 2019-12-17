@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_scramble"
+        android:orderInCategory="100"
+        android:title="@string/action_scramble"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_import_scramble"
+        android:orderInCategory="101"
+        android:title="@string/action_import_scramble"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_export_scramble"
+        android:orderInCategory="102"
+        android:title="@string/action_export_scramble"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_last"
+        android:orderInCategory="103"
+        android:title="@string/action_last"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_rename"
+        android:orderInCategory="105"
+        android:title="@string/action_session_name"
+        android:visible="false"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort"
+        android:orderInCategory="106"
+        android:title="@string/action_sort"
+        android:visible="false"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_histogram"
+        android:orderInCategory="107"
+        android:title="@string/action_histogram"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_graph"
+        android:orderInCategory="108"
+        android:title="@string/action_graph"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_share"
+        android:orderInCategory="119"
+        android:title="@string/action_share"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_exit"
+        android:orderInCategory="120"
+        android:title="@string/action_exit"
+        app:showAsAction="never" />
+</menu>

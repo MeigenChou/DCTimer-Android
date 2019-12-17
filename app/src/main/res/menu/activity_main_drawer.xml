@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/menu_lab">
+        <menu>
+            <item
+                android:id="@+id/nav_import_export"
+                android:title="@string/action_import_export"
+                android:icon="@drawable/ic_import_export" />
+
+            <item
+                android:id="@+id/nav_smartcube"
+                android:title="@string/action_smartcube"
+                android:icon="@drawable/ic_bluetooth"
+                android:visible="false" />
+
+            <item
+                android:id="@+id/nav_test"
+                android:title="测试"
+                android:visible="false" />
+
+            <item
+                android:id="@+id/nav_algorithm"
+                android:title="@string/action_algorithm"
+                android:visible="false" />
+        </menu>
+    </item>
+
+    <item android:title="@string/menu_more">
+        <menu>
+            <!-- <item
+                android:id="@+id/nav_mail"
+                android:title="@string/menu_feedback"
+                android:icon="@drawable/ic_email" /> -->
+            <item
+                android:id="@+id/nav_about"
+                android:title="@string/menu_about"
+                android:icon="@drawable/ic_about" />
+        </menu>
+    </item>
+
+</menu>

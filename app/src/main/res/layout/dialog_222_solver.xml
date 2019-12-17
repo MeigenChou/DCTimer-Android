@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp" >
+
+        <CheckBox
+            android:id="@+id/chk_d"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/side_d"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="15dp"
+            android:textSize="18sp"/>
+
+        <CheckBox
+            android:id="@+id/chk_u"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="15dp"
+            android:text="@string/side_u"
+            android:textSize="18sp"/>
+
+        <CheckBox
+            android:id="@+id/chk_l"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="15dp"
+            android:text="@string/side_l"
+            android:textSize="18sp"/>
+
+        <CheckBox
+            android:id="@+id/chk_r"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="15dp"
+            android:text="@string/side_r"
+            android:textSize="18sp"/>
+
+        <CheckBox
+            android:id="@+id/chk_f"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="15dp"
+            android:text="@string/side_f"
+            android:textSize="18sp"/>
+
+        <CheckBox
+            android:id="@+id/chk_b"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="15dp"
+            android:text="@string/side_b"
+            android:textSize="18sp"/>
+    </LinearLayout>
+</ScrollView>

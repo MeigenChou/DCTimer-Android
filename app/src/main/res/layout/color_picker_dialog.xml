@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.dingmouren.colorpicker.ColorPlateView
+                android:id="@+id/color_plate"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_margin="8dp"/>
+
+            <ImageView
+                android:id="@+id/plate_cursor"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:scaleType="matrix"
+                android:src="@drawable/img_plate_cursor"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/img_hue"
+                android:layout_width="25dp"
+                android:layout_height="240dp"
+                android:layout_margin="8dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/hue_list"
+                />
+
+            <ImageView
+                android:id="@+id/hue_cursor"
+                android:layout_width="27dp"
+                android:layout_height="5dp"
+                android:scaleType="matrix"
+                android:src="@drawable/hue_cursor"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/img_alpha_bottom"
+                android:layout_width="@dimen/hue_alpha_width"
+                android:layout_height="@dimen/hsv_height"
+                android:scaleType="fitXY"
+                android:src="@drawable/alpha_bottom_drawable"
+                />
+
+            <View
+                android:id="@+id/view_overlay"
+                android:layout_width="@dimen/hue_alpha_width"
+                android:layout_height="@dimen/hsv_height"
+                />
+
+            <ImageView
+                android:id="@+id/alpha_Cursor"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:scaleType="matrix"
+                android:src="@drawable/cursor"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:textColor="#333"
+        android:textSize="14sp"/>
+
+    <LinearLayout
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+
+        <Button
+            android:id="@+id/btn_red"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/red_color"
+            style="?android:attr/borderlessButtonStyle" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btn_purple"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/purple_color"
+            style="?android:attr/borderlessButtonStyle" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btn_blue"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/blue_color"
+            style="?android:attr/borderlessButtonStyle" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btn_green"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/green_color"
+            style="?android:attr/borderlessButtonStyle" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btn_yellow"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/yellow_color"
+            style="?android:attr/borderlessButtonStyle" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btn_orange"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/orange_color"
+            style="?android:attr/borderlessButtonStyle" />
+    </LinearLayout>
+
+</LinearLayout>

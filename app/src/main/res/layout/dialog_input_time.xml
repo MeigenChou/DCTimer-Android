@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/edit_text"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:layout_margin="5dip"
+        android:gravity="center"
+        android:digits="1234567890.:"
+        android:imeOptions="actionDone|flagNoExtractUi"
+        android:inputType="none"
+        android:maxLength="12"
+        android:paddingLeft="3dip"
+        android:paddingRight="3dip"
+        android:textColor="#000" />
+
+    <RadioGroup
+        android:id="@+id/rg_format"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checkedButton="@+id/rb_format4"
+        android:orientation="horizontal"
+        android:gravity="center" >
+
+        <RadioButton
+            android:id="@+id/rb_format1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="xx"
+            android:textColor="#333"
+            android:visibility="gone"/>
+
+        <RadioButton
+            android:id="@+id/rb_format2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:text="xx.xx(x)"
+            android:textColor="#333"
+            android:visibility="gone"/>
+
+        <RadioButton
+            android:id="@+id/rb_format3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:text="x:xx.xx(x)"
+            android:textColor="#333"
+            android:visibility="gone"/>
+
+        <RadioButton
+            android:id="@+id/rb_format4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="x:xx:xx.xx"
+            android:textColor="#333" />
+
+        <RadioButton
+            android:id="@+id/rb_format5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:text="x:xx:xx.xxx"
+            android:textColor="#333" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/rg_penalty"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:checkedButton="@+id/rb_no_penalty"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/rb_no_penalty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_penalty"
+            android:textColor="#333" />
+
+        <RadioButton
+            android:id="@+id/rb_plus2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:text="@string/penalty_plus2"
+            android:textColor="#333" />
+
+        <RadioButton
+            android:id="@+id/rb_dnf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:text="@string/penalty_dnf"
+            android:textColor="#333" />
+    </RadioGroup>
+</LinearLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_header"
+    android:background="#44AAFF"
+    android:layout_width="match_parent"
+    android:layout_height="96dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark" >
+
+    <TextView
+        android:id="@+id/tv_header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/side_nav_bar"
+        android:text="@string/app_name"
+        android:textSize="20sp"
+        android:gravity="bottom"
+        android:paddingLeft="16dp"
+        android:paddingBottom="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+</RelativeLayout>

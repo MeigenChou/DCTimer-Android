@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="18dp"
+    android:paddingRight="18dp"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#333"
+            android:textSize="15sp"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btn_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="20dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="@string/btn_refresh"
+            android:background="@color/transparent"
+            android:textColor="@drawable/button_text_style"
+            android:textAllCaps="false"/>
+
+        <TextView
+            android:id="@+id/tv_battery"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:gravity="right"
+            android:textSize="15sp"
+            android:textColor="#333"/>
+
+        <ImageView
+            android:id="@+id/iv_battery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_cube_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#333"
+        android:textSize="15sp"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"/>
+
+    <Button
+        android:id="@+id/bt_solved"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="@color/transparent"
+        android:textColor="@drawable/button_text_style"
+        android:text="@string/btn_mark_solve"
+        android:textSize="15sp"/>
+
+    <Button
+        android:id="@+id/bt_scrambled"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="@color/transparent"
+        android:textColor="@drawable/button_text_style"
+        android:text="@string/btn_mark_scramble"
+        android:textSize="15sp"/>
+</LinearLayout>

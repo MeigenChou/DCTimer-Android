@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".activity.MainActivity">
+
+    <com.dctimer.widget.CustomToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:background="@color/transparent"
+        app:contentInsetStartWithNavigation="0dp"
+        app:popupTheme="@style/AppTheme.PopupOverlay" >
+
+        <RadioGroup
+            android:id="@+id/radio_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal" >
+
+            <com.dctimer.widget.CenterRadioButton
+                android:id="@+id/rb_timer"
+                android:layout_width="?android:attr/actionBarSize"
+                android:layout_height="?android:attr/actionBarSize"
+                android:gravity="center"
+                android:text=""
+                android:checked="true"
+                android:button="@null"
+                android:drawableTop="@drawable/timer_button_style"/>
+
+            <com.dctimer.widget.CenterRadioButton
+                android:id="@+id/rb_result"
+                android:layout_width="?android:attr/actionBarSize"
+                android:layout_height="?android:attr/actionBarSize"
+                android:gravity="center"
+                android:button="@null"
+                android:drawableTop="@drawable/result_button_style"/>
+
+            <com.dctimer.widget.CenterRadioButton
+                android:id="@+id/rb_setting"
+                android:layout_width="?android:attr/actionBarSize"
+                android:layout_height="?android:attr/actionBarSize"
+                android:gravity="center"
+                android:button="@null"
+                android:drawableTop="@drawable/setting_button_style"/>
+        </RadioGroup>
+    </com.dctimer.widget.CustomToolbar>
+
+    <TabHost
+        android:id="@+id/tabhost"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <include android:id="@+id/tab_timer"
+                    layout="@layout/fragment_timer" />
+
+                <include android:id="@+id/tab_result"
+                    layout="@layout/fragment_result" />
+
+                <include android:id="@+id/tab_settings"
+                    layout="@layout/fragment_setting" />
+            </FrameLayout>
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+        </LinearLayout>
+    </TabHost>
+</RelativeLayout>
