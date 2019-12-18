@@ -28,7 +28,7 @@ public class Pyraminx {
         String scramble;
         do {
             int t = r.nextInt(2592), q = r.nextInt(360);
-            scramble = scramble(t, q);
+            scramble = scramble(q, t);
         } while (scramble.equals("error"));
         return scramble;
     }
@@ -42,14 +42,14 @@ public class Pyraminx {
             Utils.idxToFlip(ts, r.nextInt(8), 4, true);
             int p = Utils.permToIdx(ps, 6, true);
             int t = r.nextInt(3) * 864 + Utils.flipToIdx(ts, 6, true);
-            scramble = scramble(t, p);
+            scramble = scramble(p, t);
         } while (scramble.equals("error"));
         return scramble;
     }
 
-    private static String scramble(int t, int q) {
+    private static String scramble(int p, int t) {
         for (int l = 0; l < 12; l++)
-            if (search(q, t, l, -1)) {
+            if (search(p, t, l, -1)) {
                 if (l < 2) return "error";
                 if (l < 4) {
                     //sol = new StringBuilder();
@@ -166,16 +166,24 @@ public class Pyraminx {
         //fill it
         for (p = 0; p < 2592; p++) twst[p] = -1;
         twst[0] = 0;
-        for (l = 0; l <= 6; l++)
+        int n = 1;
+        for (l = 0; l <= 6; l++) {
             for (p = 0; p < 2592; p++)
                 if (twst[p] == l)
                     for (m = 0; m < 4; m++) {
-                        q = p >> 5; r = p & 31;
+                        q = p >> 5;
+                        r = p & 31;
                         for (c = 0; c < 2; c++) {
-                            q = twstmv[q][m]; r = flipmv[r][m];
-                            if (twst[q << 5 | r] == -1) twst[q << 5 | r] = (byte) (l + 1);
+                            q = twstmv[q][m];
+                            r = flipmv[r][m];
+                            if (twst[q << 5 | r] == -1) {
+                                twst[q << 5 | r] = (byte) (l + 1);
+                                n++;
+                            }
                         }
                     }
+            Log.w("dct", l+1+"\t"+n);
+        }
     }
 
     private static int getprmmv(int p, int m) {

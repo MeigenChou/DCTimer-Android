@@ -1,5 +1,7 @@
 package solver;
 
+import android.util.Log;
+
 import java.util.Random;
 
 public class Skewb {
@@ -88,7 +90,7 @@ public class Skewb {
         for (int i = 0; i < 2187; i++)
             for (int j = 0; j < 36; j++) cd[i][j] = -1;
         cd[0][0] = 0;
-        //c=1;
+        int c = 1;
         for (int d = 0; d < 7; d++) {
             for (int i = 0; i < 2187; i++)
                 for (int j = 0; j < 36; j++)
@@ -99,11 +101,11 @@ public class Skewb {
                                 p = com[p][k]; q = cpm[q][k];
                                 if (cd[p][q] == -1) {
                                     cd[p][q] = (byte) (d + 1);
-                                    //c++;
+                                    c++;
                                 }
                             }
                         }
-            //System.out.println(d+1+" "+c);
+            Log.w("dct", d+1+" "+c);
         }
     }
 

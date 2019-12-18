@@ -98,4 +98,26 @@ public class EightPuzzle {
         }
         return "error";
     }
+
+    public static int[] image(String scramble) {
+        for (int i = 0; i < 9; i++) pz[i] = i;
+        int pos = 8;
+        String[] s = scramble.split(" ");
+        for (int i = 0; i < s.length; i++) {
+            int move = "DURL".indexOf(s[i].charAt(0));
+            int next = moveIdx[pos][move];
+            if (next != -1) {
+                Utils.swap(pz, pos, next);
+                pos = next;
+            }
+            if (s[i].length() > 1) {
+                next = moveIdx[pos][move];
+                if (next != -1) {
+                    Utils.swap(pz, pos, next);
+                    pos = next;
+                }
+            }
+        }
+        return pz;
+    }
 }

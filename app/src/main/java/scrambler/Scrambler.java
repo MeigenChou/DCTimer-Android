@@ -37,7 +37,7 @@ public class Scrambler {
     public static final int TYPE_UFO = 28;
     public static final int TYPE_REDI = 29;
     public static final int TYPE_REL = 30;
-
+    public static final int TYPE_8PZ = 31;
 
     public static final int SCRAMBLE_NONE = 0;
     public static final int SCRAMBLING = 1;
@@ -868,10 +868,9 @@ public class Scrambler {
                 break;
             case 520:   //8 puzzle
                 scr = EightPuzzle.scramble(r);
-                imageType = 0;
+                imageType = TYPE_8PZ;
                 scrambleList.add(scr);
                 break;
-
             case 543:   //Gigaminx
                 scr = gigascramble(scrambleLen); imageType = 0;
                 scrambleList.add(scr);
@@ -1391,6 +1390,29 @@ public class Scrambler {
                 drawClock(width, p, c);
             } else if (scrambleIdx == 12) {
                 drawMega(width, p, c);
+            }
+        } else if (imageType == TYPE_8PZ) {
+            int[] img = EightPuzzle.image(scramble);
+            int wid = width / 5;
+            int stx = (width - wid * 3) / 2;
+            int sty = (width * 3 / 4 - wid * 3) / 2;
+            p.setTextSize(wid * 0.6f);
+            p.setTextAlign(Align.CENTER);
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    int num = img[i * 3 + j];
+                    if (num != 8) {
+                        p.setStyle(Paint.Style.FILL);
+                        p.setColor(0xffdddddd);
+                        c.drawRoundRect(new RectF(stx + wid * j + wid * 0.03f, sty + wid * i + wid * 0.03f, stx + wid * (j + 1) - wid * 0.03f, sty + wid * (i + 1) - wid * 0.03f), wid * 0.1f, wid * 0.1f, p);
+                        //c.drawRect(wid * j, wid * i, wid * (j + 1), wid * (i + 1), p);
+                        p.setColor(0xff333333);
+                        c.drawText(String.valueOf(num + 1), stx + wid * (j + 0.5f), sty + wid * (i + 0.72f), p);
+                        p.setStyle(Paint.Style.STROKE);
+                        p.setColor(0xdd000000);
+                        c.drawRoundRect(new RectF(stx + wid * j + wid * 0.03f, sty + wid * i + wid * 0.03f, stx + wid * (j + 1) - wid * 0.03f, sty + wid * (i + 1) - wid * 0.03f), wid * 0.1f, wid * 0.1f, p);
+                    }
+                }
             }
         } else {  //NxNxN
             drawNNN(imageType, scramble, colors, width, p, c);

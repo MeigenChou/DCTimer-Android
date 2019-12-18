@@ -9,22 +9,13 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.os.Build;
-import android.os.SystemClock;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.dctimer.R;
 import com.dctimer.activity.MainActivity;
+import com.dctimer.aes.Decrypt;
 import com.dctimer.model.SmartCube;
-import com.dctimer.model.Timer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static com.dctimer.APP.enterTime;
 
@@ -241,7 +232,7 @@ public class BluetoothTools {
             //Log.w("dct", "uuid "+uuid.toString()+" value "+Arrays.toString(value));
             if (uuid.equals(CHARACTER_UUID_DATA)) {
                 Log.w("dct", "value "+ Arrays.toString(value));
-                byte[] valhex = Utils.toHexValue(value);
+                byte[] valhex = Decrypt.toHexValue(value);
                 Log.w("dct", "valhex "+Arrays.toString(valhex));
                 String cubeState = Utils.parseGiikerState(valhex);
                 Log.w("dct", "state " + cubeState);
@@ -278,11 +269,11 @@ public class BluetoothTools {
                     }
                 } else Log.e("dct", "不支持的版本");
             } else if (uuid.equals(CHARACTER_UUID_HARDWARE)) {
-                byte[] key = Utils.getKey(cube.getVersion(), value);
+                byte[] key = Decrypt.getKey(cube.getVersion(), value);
                 if (key == null) Log.e("dct", "不支持的硬件");
                 else {
                     Log.w("dct", "key "+ StringUtils.binaryArray(key));
-                    Utils.initAES(key);
+                    Decrypt.initAES(key);
                     service = gatt.getService(SERVICE_UUID_GAN);
                     if (service == null) Log.e("dct", "service为null");
                     else {
@@ -292,7 +283,7 @@ public class BluetoothTools {
                 }
             } else if (uuid.equals(CHARACTER_UUID_F2)) {
                 //Log.w("dct", "cube state " + StringUtils.binaryArray(value));
-                value = Utils.decode(value);
+                value = Decrypt.decode(value);
                 Log.w("dct", "cube decode "+StringUtils.binaryArray(value));
                 String state = Utils.getCubeState(value);
                 Log.w("dct", "state "+state);
@@ -309,7 +300,7 @@ public class BluetoothTools {
                 }
             } else if (uuid.equals(CHARACTER_UUID_F3)) {
                 //Log.w("dct", "f3 data "+StringUtils.binaryArray(value));
-                value = Utils.decode(value);
+                value = Decrypt.decode(value);
                 Log.w("dct", "f3 decode "+StringUtils.binaryArray(value));
                 if (service == null) Log.e("dct", "service为null");
                 else {
@@ -319,7 +310,7 @@ public class BluetoothTools {
             }
             else if (uuid.equals(CHARACTER_UUID_F5)) {
                 //Log.w("dct", "gyro state "+StringUtils.binaryArray(value));
-                value = Utils.decode(value);
+                value = Decrypt.decode(value);
                 //Log.w("dct", "gyro decode "+StringUtils.binaryArray(value));
                 int moveCnt = value[12] & 0xff;
                 if (prevMoveCnt < 0) prevMoveCnt = moveCnt;
@@ -361,7 +352,7 @@ public class BluetoothTools {
                 }
             } else if (uuid.equals(CHARACTER_UUID_F6)) {
                 //Log.w("dct", "move data "+StringUtils.binaryArray(value));
-                value = Utils.decode(value);
+                value = Decrypt.decode(value);
                 //Log.w("dct", "move decode "+StringUtils.binaryArray(value));
                 int[] timeOffset = new int[9];
                 for (int i = 0; i < 9; i++) {
@@ -386,7 +377,7 @@ public class BluetoothTools {
             } else if (uuid.equals(CHARACTER_UUID_F7)) {
                 //Log.w("dct", "f7 data "+StringUtils.binaryArray(value));
                 lastTime = System.currentTimeMillis();
-                byte[] decode = Utils.decode(value);
+                byte[] decode = Decrypt.decode(value);
                 //Log.w("dct", "f7 decode "+StringUtils.binaryArray(decode));
                 //String address = gatt.getDevice().getAddress();
                 Log.w("dct", "电池电量 "+decode[7]);
@@ -423,7 +414,7 @@ public class BluetoothTools {
             byte[] value = characteristic.getValue();
             Log.w("dct", "value changed "+uuid.toString()+" value "+Arrays.toString(value));
             if (uuid.equals(CHARACTER_UUID_DATA)) {
-                byte[] valhex = Utils.toHexValue(value);
+                byte[] valhex = Decrypt.toHexValue(value);
                 //Log.w("dct", "valhex "+Arrays.toString(valhex));
                 String cubeState = Utils.parseGiikerState(valhex);
                 Log.w("dct", "state " + cubeState);

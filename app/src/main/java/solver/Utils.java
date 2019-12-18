@@ -265,7 +265,7 @@ public class Utils {
                     }
                 }
             }
-            Log.w("dct", d + 1 + "\t" + c);
+            //Log.w("dct", d + 1 + "\t" + c);
         }
     }
 
