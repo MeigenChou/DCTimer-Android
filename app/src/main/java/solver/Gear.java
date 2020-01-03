@@ -3,7 +3,7 @@ package solver;
 import java.util.Random;
 
 public class Gear {
-    private static byte[][] cpm = new byte[24][3], epm = new byte[24][3], eom = new byte[27][3];
+    private static short[][] cpm = new short[24][3], epm = new short[24][3], eom = new short[27][3];
     private static byte[][] pd = new byte[3][576];
     private static String[] turn = {"U", "R", "F"};
     private static String[] suff = {"'", "2'", "3'", "4'", "5'", "6", "5", "4", "3", "2", ""};
@@ -15,7 +15,7 @@ public class Gear {
             for (int j = 0; j < 3; j++) {
                 Utils.idxToPerm(arr, i, 4, false);
                 Utils.swap(arr, 3, j);
-                cpm[i][j] = (byte) Utils.permToIdx(arr, 4, false);
+                cpm[i][j] = (short) Utils.permToIdx(arr, 4, false);
             }
         }
         for (int i = 0; i < 24; i++) {
@@ -26,7 +26,7 @@ public class Gear {
                     case 1: Utils.swap(arr, 0, 1); break;
                     case 2: Utils.swap(arr, 1, 2); break;
                 }
-                epm[i][j] = (byte) Utils.permToIdx(arr, 4, false);
+                epm[i][j] = (short) Utils.permToIdx(arr, 4, false);
             }
         }
         arr = new int[3];
@@ -34,7 +34,7 @@ public class Gear {
             for (int j = 0; j < 3; j++) {
                 Utils.idxToOri(arr, i, 3, false);
                 arr[j] = (arr[j] + 1) % 3;
-                eom[i][j] = (byte) Utils.oriToIdx(arr, 3, false);
+                eom[i][j] = (short) Utils.oriToIdx(arr, 3, false);
             }
         }
         //int n;

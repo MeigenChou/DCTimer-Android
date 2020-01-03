@@ -8,6 +8,9 @@ import java.io.OutputStream;
 
 public class Utils {
     public static int[][] Cnk = new int[25][25];
+    public static String[] turn = {"U", "D", "L", "R", "F", "B"};
+    public static String[] suff = {"", "2", "'"};
+    public static String[] suffInv = {"'", "2", ""};
     static  {
         for (int i = 0; i < 25; i++) {
             Cnk[i][0] = 1;
@@ -204,13 +207,14 @@ public class Utils {
         return nInversions % 2 == 0;
     }
 
+    //pruning table
     public static void createPrun(byte[] prunTable, int depth, short[][] moveTable, int times) {
         int total = prunTable.length;
         int moves = moveTable[0].length;
         int c = 1;
         for (int d = 0; d < depth; d++) {
-            for (int i = 0; i < total; i++) {
-                if (prunTable[i] == d) {
+            for (int i = 0; i < total; i++)
+                if (prunTable[i] == d)
                     for (int j = 0; j < moves; j++) {
                         int next = i;
                         for (int k = 0; k < times; k++) {
@@ -221,28 +225,32 @@ public class Utils {
                             }
                         }
                     }
-                }
-            }
             //Log.w("dct", d + 1 + "\t" + c);
         }
     }
 
     public static void createPrun(byte[] prunTable, int depth, short[][] moveTable1, short[][] moveTable2, int times) {
-        int total = prunTable.length;
+        //int total = prunTable.length;
         int moves1 = moveTable1.length;
         int moves2 = moveTable2.length;
+        int moves = moveTable1[0].length;
         int c = 1;
         for (int d = 0; d < depth; d++) {
-            for (int i = 0; i < moves1; i++) {
-                for (int j = 0; j < moves2; j++) {
-                    if (prunTable[i * moves2 + j] == d) {
-                        int x = i, y = j;
-                        for (int k = 0; k < times; k++) {
-                            x = moveTable1[x][k];
+            for (int i = 0; i < moves1; i++)
+                for (int j = 0; j < moves2; j++)
+                    if (prunTable[i * moves2 + j] == d)
+                        for (int k = 0; k < moves; k++) {
+                            int x = i, y = j;
+                            for (int l = 0; l < times; l++) {
+                                x = moveTable1[x][k];
+                                y = moveTable2[y][k];
+                                if (prunTable[x * moves2 + y] < 0) {
+                                    prunTable[x * moves2 + y] = (byte) (d + 1);
+                                    c++;
+                                }
+                            }
                         }
-                    }
-                }
-            }
+            Log.w("dct", d + 1 + "\t" + c);
         }
     }
 
@@ -251,8 +259,8 @@ public class Utils {
         int moves = moveTable[0].length;
         int c = 1;
         for (int d = 0; d < depth; d++) {
-            for (int i = 0; i < total; i++) {
-                if (prunTable[i] == d) {
+            for (int i = 0; i < total; i++)
+                if (prunTable[i] == d)
                     for (int j = 0; j < moves; j++) {
                         int next = i;
                         for (int k = 0; k < times; k++) {
@@ -263,8 +271,6 @@ public class Utils {
                             }
                         }
                     }
-                }
-            }
             //Log.w("dct", d + 1 + "\t" + c);
         }
     }

@@ -2,15 +2,16 @@ package solver;
 
 import java.util.Random;
 
+import static solver.Utils.suffInv;
+
 public class Tower {
     static char[][] cpm = new char[40320][4];
-    static byte[][] epm = new byte[6][4];
+    static short[][] epm = new short[6][4];
     static byte[] cpd = new byte[40320];
-    static byte[] epd = new byte[6];
+    static byte[] epd = {0, 1, 1, 2, 2, 3};
     //private static StringBuilder sb;
     private static byte[] faces = {3, 1, 1, 3};
     private static String[] turn = {"U", "R", "F", "D"};
-    private static String[] suff = {"'", "2", ""};
     private static int[] seq = new int[20];
 
     private static boolean ini = false;
@@ -28,8 +29,8 @@ public class Tower {
                 Utils.set8Perm(arr, 8, i);
                 switch (j) {
                     case 0: Utils.circle(arr, 0, 3, 2, 1); break;	//U
-                    case 1: Utils.circle(arr, 1, 2, 5, 6); break;	//R2
-                    case 2: Utils.circle(arr, 2, 3, 4, 5); break;	//F2
+                    case 1: Utils.swap(arr, 1, 5, 2, 6); break; //Utils.circle(arr, 1, 2, 5, 6);	//R2
+                    case 2: Utils.swap(arr, 2, 4, 3, 5); break; //Utils.circle(arr, 2, 3, 4, 5);	//F2
                     case 3: Utils.circle(arr, 4, 7, 6, 5); break;	//D
                 }
                 cpm[i][j] = (char) Utils.get8Perm(arr, 8);
@@ -37,21 +38,7 @@ public class Tower {
         }
         for (int i = 1; i < 40320; i++) cpd[i] = -1;
         cpd[0] = 0;
-        //int n = 1;
-        for (int d = 0; d < 13; d++) {
-            for (int i = 0; i < 40320; i++)
-                if (cpd[i] == d)
-                    for (int k = 0; k < 4; k++)
-                        for (int y = i, m = 0; m < faces[k]; m++) {
-                            y = cpm[y][k];
-                            if (faces[k] == 1) y = cpm[y][k];
-                            if (cpd[y] < 0) {
-                                cpd[y] = (byte) (d + 1);
-                                //n++;
-                            }
-                        }
-            //System.out.println(d+1+" "+n);
-        }
+        Utils.createPrun(cpd, 13, cpm, 3);
 		/*	-	0
 		 *	2	1
 		 */
@@ -62,23 +49,8 @@ public class Tower {
                     case 1: Utils.swap(arr, 0, 1); break;	//R2
                     case 2: Utils.swap(arr, 1, 2); break;	//F2
                 }
-                epm[i][j] = (byte) Utils.permToIdx(arr, 3, false);
+                epm[i][j] = (short) Utils.permToIdx(arr, 3, false);
             }
-        }
-        for (int i = 1; i < 6; i++) epd[i] = -1;
-        epd[0] = 0;
-        //n = 1;
-        for (int d = 0; d < 3; d++) {
-            for (int i = 0; i < 6; i++)
-                if (epd[i] == d)
-                    for (int k = 1; k < 3; k++) {
-                        int y = epm[i][k];
-                        if (epd[y] < 0) {
-                            epd[y] = (byte) (d + 1);
-                            //n++;
-                        }
-                    }
-            //System.out.println(d+1+" "+n);
         }
         ini = true;
     }
@@ -92,7 +64,7 @@ public class Tower {
                 y = cp; s = ep;
                 for (int k = 0; k < faces[i]; k++) {
                     y = cpm[y][i];
-                    if (faces[i] == 1) y = cpm[y][i];
+                    //if (faces[i] == 1) y = cpm[y][i];
                     s = epm[s][i];
                     if (search(y, s, d - 1, i)) {
                         seq[d] = i * 3 + (faces[i] == 1 ? 1 : k);
@@ -118,7 +90,7 @@ public class Tower {
                 }
                 StringBuilder sb = new StringBuilder();
                 for (int i = 1; i <= d; i++)
-                    sb.append(turn[seq[i] / 3]).append(suff[seq[i] % 3]).append(" ");
+                    sb.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
                 return sb.toString();
             }
         }

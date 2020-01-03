@@ -15,27 +15,27 @@ public class TextAdapter extends BaseAdapter {
 	private List<String> mListData;
 	private String[] mArrayData;
 	private LayoutInflater mInflater;
-	private int type;
+	private int column;
 	private int selectedItem;
 	
 	final class ViewHolder {  
 		public TextView textView;
 	}
 	
-	public TextAdapter(Context context, List<String> listData, int selectItem, int type) {
+	public TextAdapter(Context context, List<String> listData, int selectItem, int column) {
 		this.mContext = context;
 		this.mInflater = LayoutInflater.from(context);
 		this.mListData = listData;
 		this.selectedItem = selectItem;
-		this.type = type;
+		this.column = column;
 	}
 	
-	public TextAdapter(Context context, String[] arrayData, int selectItem, int type) {
+	public TextAdapter(Context context, String[] arrayData, int selectItem, int column) {
 		this.mContext = context;
 		this.mInflater = LayoutInflater.from(context);
 		this.mArrayData = arrayData;
 		this.selectedItem = selectItem;
-		this.type = type;
+		this.column = column;
 	}
 	
 	public void setData(List<String> data) {
@@ -81,7 +81,7 @@ public class TextAdapter extends BaseAdapter {
 		} else holder = (ViewHolder) convertView.getTag();
 		if (mListData != null) holder.textView.setText(mListData.get(position));
 		else holder.textView.setText(mArrayData[position]);
-		if (type == 1) {
+		if (column == 1) {
 			if (position == selectedItem)
 				holder.textView.setBackgroundColor(Color.WHITE);
 			else holder.textView.setBackgroundResource(R.drawable.list_item_bgcolor);

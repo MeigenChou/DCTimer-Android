@@ -20,7 +20,7 @@ public class Session implements Serializable {
         this.multiPhase = multiPhase;
         this.avg = avg;
         this.sorting = sorting;
-        Log.w("dct", "["+id+"]"+name+"/"+sorting);
+        //Log.w("dct", "["+id+"]"+name+"/"+sorting);
     }
 
     public int getId() {

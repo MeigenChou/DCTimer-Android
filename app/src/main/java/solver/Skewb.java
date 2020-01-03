@@ -115,9 +115,9 @@ public class Skewb {
         if (d == 0) return ctd[ct] == 0 && cd[co][cp] == 0;
         if (ctd[ct] > d || cd[co][cp] > d) return false;
         if (l == -2) {
-            int next = r.nextInt(8);
-            int k = next / 2;
-            int n = next % 2;
+            int n = r.nextInt(8);
+            int k = n / 2;
+            n %= 2;
             int p = ct, q = cp, r = co;
             for (int m = 0; m < n; m++) {
                 p = ctm[p][k]; q = cpm[q][k]; r = com[r][k];
@@ -208,41 +208,36 @@ public class Skewb {
         for (int i = 0; i < 5; i++)
             for (int j = 0; j < 6; j++) img[j * 5 + i] = j;
     }
-//    private static void cir3(byte[] arr, int a, int b, int c) {
-//        byte temp = arr[a];
-//        arr[a] = arr[b];
-//        arr[b] = arr[c];
-//        arr[c] = temp;
-//    }
+
     private static void move(int turn) {
         switch (turn) {
             case 0:	//R
                 Utils.circle(img, 17, 27, 22);
                 Utils.circle(img, 19, 29, 23);
-                Utils.circle(img, 1, 14, 8);
+                Utils.circle(img,  1, 14,  8);
                 Utils.circle(img, 20, 18, 28);
                 Utils.circle(img, 16, 26, 24);
                 break;
             case 1:	//U
-                Utils.circle(img, 2, 22, 7);
-                Utils.circle(img, 0, 21, 5);
-                Utils.circle(img, 3, 20, 8);
+                Utils.circle(img,  2, 22,  7);
+                Utils.circle(img,  0, 21,  5);
+                Utils.circle(img,  3, 20,  8);
                 Utils.circle(img, 10, 16, 28);
-                Utils.circle(img, 6, 1, 24);
+                Utils.circle(img,  6,  1, 24);
                 break;
             case 2:	//L
-                Utils.circle(img, 12, 7, 27);
-                Utils.circle(img, 13, 9, 25);
-                Utils.circle(img, 3, 24, 18);
-                Utils.circle(img, 10, 8, 26);
-                Utils.circle(img, 6, 28, 14);
+                Utils.circle(img, 12,  7, 27);
+                Utils.circle(img, 13,  9, 25);
+                Utils.circle(img,  3, 24, 18);
+                Utils.circle(img, 10,  8, 26);
+                Utils.circle(img,  6, 28, 14);
                 break;
             case 3:	//B
-                Utils.circle(img, 22, 27, 7);
-                Utils.circle(img, 24, 28, 8);
-                Utils.circle(img, 0, 19, 13);
-                Utils.circle(img, 5, 23, 25);
-                Utils.circle(img, 21, 29, 9);
+                Utils.circle(img, 22, 27,  7);
+                Utils.circle(img, 24, 28,  8);
+                Utils.circle(img,  0, 19, 13);
+                Utils.circle(img,  5, 23, 25);
+                Utils.circle(img, 21, 29,  9);
                 break;
         }
     }

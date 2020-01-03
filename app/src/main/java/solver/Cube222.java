@@ -2,29 +2,25 @@ package solver;
 
 import java.util.Random;
 
+import static solver.Utils.suffInv;
+
 public class Cube222 {
-    static int[][] state = new int[2][8];
-    static byte[] perm = new byte[5040];
-    static byte[] twst = new byte[729];
-    static short[][] permmv = new short[5040][3];
-    static short[][] twstmv = new short[729][3];
+    private static int[][] state = new int[2][8];
+    private static byte[] perm = new byte[5040];
+    private static byte[] twst = new byte[729];
+    private static short[][] permmv = new short[5040][3];
+    private static short[][] twstmv = new short[729][3];
 
     private static String[] turn = {"U", "R", "F"};
-    private static String[] suff = {"'", "2", ""};
-    private static boolean ini = false;
     private static int[] seq = new int[12];
     //private static StringBuilder sol;
-
     private static Random r = new Random();
 
     static {
-        if (!ini) {
-            calcperm();
-            ini = true;
-        }
+        calcperm();
     }
 
-    static void permMove(int[] ps, int m) {
+    private static void permMove(int[] ps, int m) {
         switch (m) {
             case 0:	//U
                 Utils.circle(ps, 0, 1, 3, 2); break;
@@ -41,7 +37,7 @@ public class Cube222 {
         }
     }
 
-    static void twistMove(int[] ps, int m) {
+    private static void twistMove(int[] ps, int m) {
         int c;
         switch (m) {
             case 0:
@@ -65,7 +61,7 @@ public class Cube222 {
         }
     }
 
-    static void doMove(int m, int n) {
+    private static void doMove(int m, int n) {
         n %= 4;
         if (n > 0) {
             switch (m) {
@@ -123,13 +119,13 @@ public class Cube222 {
     }
 
     public static String scramble() {
-        String scr;
+        String scramble;
         do {
             int p = r.nextInt(5040);
             int o = r.nextInt(729);
-            scr = solve(p, o);
-        } while (scr.equals("error"));
-        return scr;
+            scramble = solve(p, o);
+        } while (scramble.equals("error"));
+        return scramble;
     }
 
     public static void randomEG(int type, String olls) {
@@ -153,7 +149,7 @@ public class Cube222 {
                     swap(4, 5);
                 break;
             case 5:	//不交换或交换相对块
-                if (r.nextInt(2) == 2)
+                if (r.nextInt(2) == 1)
                     swap(5, 6);
                 break;
             case 3:	//交换任意两块
@@ -291,7 +287,7 @@ public class Cube222 {
     }
 
     public static String scrambleEG(int type) {
-        String scr;
+        String scramble;
         do {
             switch (type) {
                 case 0:
@@ -306,64 +302,64 @@ public class Cube222 {
             }
             int p = Utils.get8Perm(state[0], 7);
             int o = Utils.oriToIdx(state[1], 7, true);
-            scr = solve(p, o);
-        } while (scr.equals("error"));
-        return scr;
+            scramble = solve(p, o);
+        } while (scramble.equals("error"));
+        return scramble;
     }
 
     public static String scramblePBL() {
-        String scr;
+        String scramble;
         do {
             randomEG(0, "N");
             int p = Utils.get8Perm(state[0], 7);
             int o = Utils.oriToIdx(state[1], 7, true);
-            scr = solve(p, o);
-        } while (scr.equals("error"));
-        return scr;
+            scramble = solve(p, o);
+        } while (scramble.equals("error"));
+        return scramble;
     }
 
     public static String scrambleTCLL(int twist) {
-        String scr;
+        String scramble;
         do {
             randomTEG(4, twist);
             int p = Utils.get8Perm(state[0], 7);
             int o = Utils.oriToIdx(state[1], 7, true);
-            scr = solve(p, o);
-        } while (scr.equals("error"));
-        return scr;
+            scramble = solve(p, o);
+        } while (scramble.equals("error"));
+        return scramble;
     }
 
     public static String randomTEG1(int twist) {
-        String scr;
+        String scramble;
         do {
             randomTEG(2, twist);
             int p = Utils.get8Perm(state[0], 7);
             int o = Utils.oriToIdx(state[1], 7, true);
-            scr = solve(p, o);
-        } while (scr.equals("error"));
-        return scr;
+            scramble = solve(p, o);
+        } while (scramble.equals("error"));
+        return scramble;
     }
 
     public static String randomTEG2(int twist) {
-        String scr;
+        String scramble;
         do {
             randomTEG(1, twist);
             int p = Utils.get8Perm(state[0], 7);
             int o = Utils.oriToIdx(state[1], 7, true);
-            scr = solve(p, o);
-        } while (scr.equals("error"));
-        return scr;
+            scramble = solve(p, o);
+        } while (scramble.equals("error"));
+        return scramble;
     }
 
     public static String scrambleEG(int type, String olls) {
-        String scr;
+        String scramble;
         do {
             randomEG(type, olls);
             int p = Utils.get8Perm(state[0], 7);
             int o = Utils.oriToIdx(state[1], 7, true);
-            scr = solve(p, o);
-        } while (scr.equals("error"));
-        return scr;
+            scramble = solve(p, o);
+        } while (scramble.equals("error"));
+        return scramble;
     }
 
     private static int getprmmv(int p, int m) {
@@ -410,19 +406,19 @@ public class Cube222 {
     }
 
     private static boolean search(int p, int t, int l, int lm) {
-        //searches for solution, from position q|t, in l moves exactly. last move was lm, current depth=d
+        //searches for solution, from position p|t, in l moves exactly. last move was lm, current depth=d
         if (l == 0) return p == 0 && t == 0;
         if (perm[p] > l || twst[t] > l) return false;
         if (lm == -2) {
-            int next = r.nextInt(9);
-            int m = next / 3;
-            int n = next % 3;
+            int n = r.nextInt(9);
+            int m = n / 3;
+            n %= 3;
             int q = p, s = t;
             for (int a = 0; a < n; a++) {
                 q = permmv[q][m];
                 s = twstmv[s][m];
             }
-            if (search(q, s, l-1, m)) {
+            if (search(q, s, l - 1, m)) {
                 seq[l] = m * 3 + n;
                 //sol.append(turn[m]).append(suff[n]).append(' ');
                 return true;
@@ -433,7 +429,7 @@ public class Cube222 {
                 for (int a = 0; a < 3; a++) {
                     q = permmv[q][m];
                     s = twstmv[s][m];
-                    if (search(q, s, l-1, m)) {
+                    if (search(q, s, l - 1, m)) {
                         seq[l] = m * 3 + a;
                         //sol.append(turn[m]).append(suff[a]).append(' ');
                         return true;
@@ -454,7 +450,7 @@ public class Cube222 {
                 }
                 StringBuilder sol = new StringBuilder();
                 for (int i = 1; i <= l; i++)
-                    sol.append(turn[seq[i] / 3]).append(suff[seq[i] % 3]).append(" ");
+                    sol.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
                 return sol.toString();
             }
         }
@@ -473,7 +469,7 @@ public class Cube222 {
                 }
                 StringBuilder sol = new StringBuilder();
                 for (int i = 1; i <= 11; i++)
-                    sol.append(turn[seq[i] / 3]).append(suff[seq[i] % 3]).append(" ");
+                    sol.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
                 return sol.toString();
             }
         }
@@ -481,10 +477,10 @@ public class Cube222 {
     }
 
     public static String scrambleWCA() {
-        String scr;
+        String scramble;
         do {
-            scr = scramble(4);
-        } while (scr.equals("error"));
-        return scr;
+            scramble = scramble(4);
+        } while (scramble.equals("error"));
+        return scramble;
     }
 }

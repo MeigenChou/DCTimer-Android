@@ -1,11 +1,14 @@
 package solver;
 
+import static solver.Utils.suff;
+import static solver.Utils.turn;
+
 public class EOline {
     private static short[][] eom = new short[2048][6];
     private static short[][] epm = new short[132][6];
     private static byte[] eod = new byte[2048];
     private static byte[] epd = new byte[132];
-    private static int[] seq = new int[21];
+    private static int[] seq = new int[10];
 
     static {
         int[] arr = new int[12];
@@ -13,14 +16,12 @@ public class EOline {
             for (int j = 0; j < 6; j++) {
                 Utils.idxToFlip(arr, i, 12, true);
                 switch (j) {
-                    case 0: Utils.circle(arr, 4, 7, 6, 5); break;
-                    case 1: Utils.circle(arr, 8, 9, 10, 11); break;
-                    case 2: Utils.circle(arr, 7, 3, 11, 2); break;
-                    case 3: Utils.circle(arr, 5, 1, 9, 0); break;
-                    case 4: Utils.circle(arr, 6, 2, 10, 1);
-                        arr[6] ^= 1; arr[2] ^= 1; arr[10] ^= 1; arr[1] ^= 1; break;
-                    case 5: Utils.circle(arr, 4, 0, 8, 3);
-                        arr[4] ^= 1; arr[0] ^= 1; arr[8] ^= 1; arr[3] ^= 1; break;
+                    case 0: Cross.circle(arr, 4,  5,  6, 7, 0); break;
+                    case 1: Cross.circle(arr, 8, 11, 10, 9, 0); break;
+                    case 2: Cross.circle(arr, 7,  2, 11, 3, 0); break;
+                    case 3: Cross.circle(arr, 5,  0,  9, 1, 0); break;
+                    case 4: Cross.circle(arr, 6,  1, 10, 2, 1); break;
+                    case 5: Cross.circle(arr, 4,  3,  8, 0, 1); break;
                 }
                 eom[i][j] = (short) Utils.flipToIdx(arr, 12, true);
             }
@@ -32,7 +33,6 @@ public class EOline {
         for (int i = 1; i < 2048; i++) eod[i] = -1;
         eod[0] = 0;
         Utils.createPrun(eod, 7, eom, 3);
-
         for (int i = 0; i < 132; i++) epd[i] = -1;
         epd[106] = 0;
         Utils.createPrun(epd, 4, epm, 3);
@@ -49,12 +49,12 @@ public class EOline {
         for (int i = 0; i < 12; i++)
             if (combination[i] != 0) ep[i] = selectedEdges[permutation[next++]];
         switch (k) {
-            case 0: Utils.circle(ep, 4, 7, 6, 5); break;
+            case 0: Utils.circle(ep, 4, 7,  6,  5); break;
             case 1: Utils.circle(ep, 8, 9, 10, 11); break;
-            case 2: Utils.circle(ep, 7, 3, 11, 2); break;
-            case 3: Utils.circle(ep, 5, 1, 9, 0); break;
-            case 4: Utils.circle(ep, 6, 2, 10, 1); break;
-            case 5: Utils.circle(ep, 4, 0, 8, 3); break;
+            case 2: Utils.circle(ep, 7, 3, 11,  2); break;
+            case 3: Utils.circle(ep, 5, 1,  9,  0); break;
+            case 4: Utils.circle(ep, 6, 2, 10,  1); break;
+            case 5: Utils.circle(ep, 4, 0,  8,  3); break;
         }
         byte[] edgesMapping = {0, 1, 2, 3};
         int[] ec = new int[12];
@@ -74,19 +74,17 @@ public class EOline {
     protected static String[] moveIdx = {"UDLRFB", "UDFBRL", "DURLFB", "DUFBLR",
             "RLUDFB", "RLFBDU", "LRDUFB", "LRFBUD", "BFLRUD", "BFUDRL", "FBLRDU", "FBDURL"};
     protected static String[] rotateIdx = {"", "y", "z2", "z2 y", "z'", "z' y", "z", "z y", "x'", "x' y", "x", "x y"};
-    private static String[] turn = {"U", "D", "L", "R", "F", "B"};
-    private static String[] suff = {"", "2", "'"};
 
     private static boolean search(int eo, int ep, int depth, int l) {
         if (depth == 0) return eo == 0 && ep == 106;
         if (eod[eo] > depth || epd[ep] > depth) return false;
         for (int i = 0; i < 6; i++)
             if (i != l) {
-                int w = eo, y = ep;
+                int x = eo, y = ep;
                 for (int j = 0; j < 3; j++) {
+                    x = eom[x][i];
                     y = epm[y][i];
-                    w = eom[w][i];
-                    if (search(w, y, depth - 1, i)) {
+                    if (search(x, y, depth - 1, i)) {
                         seq[depth] = i * 3 + j;
                         //sb.insert(0, " " + turn[i] + suff[j]);
                         return true;
@@ -97,21 +95,21 @@ public class EOline {
     }
 
     private static String eoline(String scramble, int face) {
-        String[] scr = scramble.split(" ");
+        String[] s = scramble.split(" ");
         int ep = 106, eo = 0;
-        for (int d = 0; d < scr.length; d++) {
-            if (0 != scr[d].length()) {
-                int o = moveIdx[face].indexOf(scr[d].charAt(0));
+        for (int d = 0; d < s.length; d++) {
+            if (s[d].length() > 0) {
+                int o = moveIdx[face].indexOf(s[d].charAt(0));
                 ep = epm[ep][o]; eo = eom[eo][o];
-                if (scr[d].length() > 1) {
+                if (s[d].length() > 1) {
                     eo = eom[eo][o]; ep = epm[ep][o];
-                    if (scr[d].charAt(1) == '\'') {
+                    if (s[d].charAt(1) == '\'') {
                         eo = eom[eo][o]; ep = epm[ep][o];
                     }
                 }
             }
         }
-        for (int d = 0; d < 20; d++) {
+        for (int d = 0; d < 10; d++) {
             if (search(eo, ep, d, -1)) {
                 StringBuilder sb = new StringBuilder();
                 for (int j = d; j > 0; j--)

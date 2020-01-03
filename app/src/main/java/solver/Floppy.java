@@ -1,5 +1,7 @@
 package solver;
 
+import android.util.Log;
+
 import java.util.Random;
 
 public class Floppy {
@@ -13,10 +15,9 @@ public class Floppy {
             for (int j = 0; j < 16; j++)
                 distance[i][j] = -1;
         distance[0][0] = 0;
-        int n;
-        int depth = 0;
-        while (depth < 8) {
-            n = 0;
+        int n = 1;
+        for (int depth = 0; depth < 8; depth++) {
+            //n = 0;
             for (int i = 0; i < 24; i++)
                 for (int j = 0; j < 16; j++)
                     if (distance[i][j] == depth)
@@ -28,8 +29,7 @@ public class Floppy {
                                 n++;
                             }
                         }
-            depth++;
-            //Log.w("dct", depth+"\t"+n);
+            Log.w("dct", depth + 1 + "\t" + n);
         }
     }
 
@@ -69,20 +69,20 @@ public class Floppy {
 
     public static String scramble() {
         Random r = new Random();
-        while (true) {
-            int cp = r.nextInt(24);
-            int eo = r.nextInt(16);
-            if (distance[cp][eo] > 1) {
-                for (int d = 3; d < 9; d++) {
-                    if (search(cp, eo, d, -1)) {
-                        StringBuilder sb = new StringBuilder();
-                        for (int i = 1; i <= d; i++)
-                            sb.append(turn[seq[i]]).append("2 ");
-                        return sb.toString();
-                    }
-                }
+        int cp, eo;
+        do {
+            cp = r.nextInt(24);
+            eo = r.nextInt(16);
+        } while (distance[cp][eo] < 2);
+        for (int d = 3; d < 9; d++) {
+            if (search(cp, eo, d, -1)) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 1; i <= d; i++)
+                    sb.append(turn[seq[i]]).append("2 ");
+                return sb.toString();
             }
         }
+        return "error";
     }
 
     private static int[] img = new int[30];

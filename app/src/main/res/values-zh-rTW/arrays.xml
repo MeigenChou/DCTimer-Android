@@ -20,7 +20,7 @@
         <item>15 puzzle</item>
         <item>其他</item>
         <item>3階子集</item>
-        <item>捆綁方塊</item>
+        <item>綁帶方塊</item>
         <item>Megaminx子集</item>
         <item>連解</item>
     </array>
@@ -33,7 +33,6 @@
         <item>三階盲解</item>
         <item>三階單手</item>
         <item>三階最少步</item>
-        <item>三階腳解</item>
         <item>Megaminx</item>
         <item>金字塔</item>
         <item>Square-1</item>
@@ -91,21 +90,21 @@
         <item>傳統</item>
         <item>SiGN</item>
         <item>YJ</item>
-        <item>對棱訓練</item>
+        <item>棱塊訓練</item>
         <item>R,r,U,u</item>
     </array>
 
     <array name="item_555">
         <item>prefix</item>
         <item>SiGN</item>
-        <item>對棱訓練</item>
+        <item>棱塊訓練</item>
     </array>
 
     <array name="item_666">
         <item>prefix</item>
         <item>SiGN</item>
         <item>suffix</item>
-        <item>對棱訓練</item>
+        <item>棱塊訓練</item>
     </array>
 
     <array name="item_mega">
@@ -257,7 +256,7 @@
         <item>六階</item>
         <item>七階</item>
         <item>金字塔</item>
-        <item>斜轉</item>
+        <item>斜轉方塊</item>
     </array>
 
     <array name="opt_vibrate">
@@ -305,7 +304,7 @@
         <item>計時器更新方式</item>
         <item>計時器精確度</item>
         <item>啟動延時</item>
-        <item>分段計時</item>
+        <item>多階段計時</item>
         <item>兩手模擬Stackmat計時</item>
         <item>計時介面顯示統計簡要</item>
         <item>感應停止計時</item>

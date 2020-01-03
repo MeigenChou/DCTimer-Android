@@ -1,5 +1,7 @@
 package solver;
 
+import static solver.Utils.suff;
+
 public class Cube2l {
     //private static byte[][] Cnk=new byte[8][8];
     private static short[][] cpm = new short[1680][6];
@@ -79,8 +81,8 @@ public class Cube2l {
     }
 
     private static String[] turn = {"U", "D", "L", "R", "F", "B"};
-    private static String[] suff = {"", "2", "'"};
-    private static StringBuilder sb;
+    private static int[] seq = new int[12];
+    //private static StringBuilder sb;
     private static boolean search(int cp, int co, int depth, int lm) {
         if (depth == 0) return (cp == 0 || cp == 18 || cp == 16 || cp == 9) && co == 0;
         if (cpd[cp] > depth || cod[co] > depth) return false;
@@ -90,7 +92,8 @@ public class Cube2l {
                 for (int j = 0; j < 3; j++) {
                     y = cpm[y][i]; s = com[s][i];
                     if (search(y, s, depth - 1, i)) {
-                        sb.insert(0, " " + turn[i] + suff[j]);
+                        //sb.insert(0, " " + turn[i] + suff[j]);
+                        seq[depth] = i * 3 + j;
                         return true;
                     }
                 }
@@ -120,11 +123,17 @@ public class Cube2l {
                     }
                 }
         }
-        sb = new StringBuilder();
-        for (int d = 0; ; d++)
+        //sb = new StringBuilder();
+        for (int d = 0; d < 12; d++)
             for (int idx = 0; idx < 6; idx++)
-                if (search(cp[idx], co[idx], d, -1))
-                    return "\n" + color[face] + rotIdx[idx] + sb.toString();
+                if (search(cp[idx], co[idx], d, -1)) {
+                    StringBuilder sb = new StringBuilder("\n");
+                    sb.append(color[face]).append(rotIdx[idx]);
+                    for (int i = d; i > 0; i--)
+                        sb.append(" ").append(turn[seq[i] / 3]).append(suff[seq[i] % 3]);
+                    return sb.toString();
+                }
+        return "\nerror";
     }
 
     public static String solveFirstLayer(String scramble, int face) {

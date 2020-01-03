@@ -1,13 +1,12 @@
 package solver;
 
-import android.util.Log;
-
 import java.io.*;
 import java.util.Random;
 
 import com.dctimer.APP;
 
 import static solver.Utils.Cnk;
+import static solver.Utils.suff;
 import static solver.Utils.getPruning;
 import static solver.Utils.read;
 import static solver.Utils.setPruning;
@@ -20,7 +19,7 @@ public class Cross {
     private static int[] ed = new int[23760];
     private static byte[][] fcm = new byte[24][6], fem = new byte[24][6];
     private static byte[][] fecd = new byte[4][576];
-    private static String[] seq = new String[20];
+    private static int[] seq = new int[20];
     public static boolean ini, inif;
     private static String[] color = {"D", "U", "L", "R", "F", "B"};
     private static String[][] moveIdx = {
@@ -43,7 +42,6 @@ public class Cross {
             { "R", "L", "U", "D", "F", "B" }, { "L", "R", "D", "U", "F", "B" },
             { "B", "F", "L", "R", "U", "D" }, { "F", "B", "L", "R", "D", "U" }
     };
-    private static String[] suff = {"", "2", "'"};
 
     public static void circle(int[] ary, int a, int b, int c, int d, int ori) {
         int t = ary[a];
@@ -53,7 +51,7 @@ public class Cross {
         ary[b] = t ^ ori;
     }
 
-    protected static void idxToPerm(int[] arr, int p) {
+    static void idxToPerm(int[] arr, int p) {
         int j;
         for (int i = 1; i <= 4; i++) {
             int t = p % i;
@@ -63,7 +61,7 @@ public class Cross {
         }
     }
 
-    protected static int permToIdx(int[] arr) {
+    static int permToIdx(int[] arr) {
         int idx = 0, j, t;
         for (int i = 0; i < 4; i++) {
             for (j = t = 0; j < 4 && arr[j] != i; j++)
@@ -73,56 +71,39 @@ public class Cross {
         return idx;
     }
 
-    private static int idxToComb(int[] n, int[] s, int c, int o) {
+    private static void idxToComb(int[] arr, int[] s, int c, int o) {
         int q = 4;
         for (int i = 0; i < 12; i++)
             if (c >= Cnk[11 - i][q]) {
                 c -= Cnk[11 - i][q--];
-                n[i] = s[q] << 1 | o & 1;
+                arr[i] = s[q] << 1 | o & 1;
                 o >>= 1;
-            } else n[i] = -1;
-        return o;
+            } else arr[i] = -1;
     }
 
-    private static int getmv(int c, int p, int o, int f) {
-        int[] arr = new int[12], s = new int[4];
+    private static int getmv(int c, int po, int f) {
+        int[] arr = new int[12], pm = new int[4];
         int q, t;
-        idxToPerm(s, p);
-        o = idxToComb(arr, s, c, o);
+        idxToPerm(pm, po);
+        idxToComb(arr, pm, c, po);
         switch (f) {
-            case 0:
-                circle(arr, 0, 1, 2, 3, 0);
-                break;
-            case 1:
-                circle(arr, 11, 10, 9, 8, 0);
-                break;
-            case 2:
-                circle(arr, 1, 4, 9, 5, 0);
-                break;
-            case 3:
-                circle(arr, 3, 6, 11, 7, 0);
-                break;
-            case 4:
-                circle(arr, 0, 7, 8, 4, 1);
-                break;
-            case 5:
-                circle(arr, 2, 5, 10, 6, 1);
-                break;
+            case 0: circle(arr,  0,  1,  2, 3, 0); break;
+            case 1: circle(arr, 11, 10,  9, 8, 0); break;
+            case 2: circle(arr,  1,  4,  9, 5, 0); break;
+            case 3: circle(arr,  3,  6, 11, 7, 0); break;
+            case 4: circle(arr,  0,  7,  8, 4, 1); break;
+            case 5: circle(arr,  2,  5, 10, 6, 1); break;
         }
-        c = 0;
+        c = po = 0;
         q = 4;
         for (t = 0; t < 12; t++)
             if (arr[t] >= 0) {
                 c += Cnk[11 - t][q--];
-                s[q] = arr[t] >> 1;
-                o |= (arr[t] & 1) << 3 - q;
+                pm[q] = arr[t] >> 1;
+                po |= (arr[t] & 1) << 3 - q;
             }
-        int i = permToIdx(s);
-        // for (q=0;4>q;q++) {
-        // for (v=t=0;4>v&&!(s[v]==q);v++) if (s[v]>q) t++;
-        // i=i*(4-q)+t;
-        // }
-        return 24 * c + i << 4 | o;
+        int i = permToIdx(pm);
+        return 24 * c + i << 4 | po;
     }
 
     private static void init() {
@@ -138,10 +119,10 @@ public class Cross {
             for (a = 0; a < 495; a++) {
                 for (b = 0; b < 24; b++) {
                     for (c = 0; c < 6; c++) {
-                        d = getmv(a, b, b, c);
+                        d = getmv(a, b, c);
                         epm[24 * a + b][c] = (short) (d >> 4);
                         if (b < 16)
-                            eom[16 * a + b][c] = (short) (((d >> 4) / 24) << 4 | d & 15);
+                            eom[16 * a + b][c] = (short) ((d / 384) << 4 | d & 15);
                     }
                 }
             }
@@ -163,6 +144,7 @@ public class Cross {
         for (a = 0; a < 495; a++)
             eofd[a << 4] = 0;
         Utils.createPrun(eofd, 7, eom, 3);
+
         //xcross
         byte[][] p = {
                 {1, 0, 3, 0, 0, 4}, {2, 1, 1, 5, 1, 0}, {3, 2, 2, 1, 6, 2}, {0, 3, 7, 3, 2, 3},
@@ -206,7 +188,7 @@ public class Cross {
         ini = true;
     }
 
-    private static boolean idacross(int ep, int eo, int d, int lm, int face) {
+    private static boolean idacross(int ep, int eo, int d, int lm) {
         if (d == 0) return 0 == ep && 0 == eo;
         if (epd[ep] > d || eod[eo] > d) return false;
         for (int i = 0; i < 6; i++)
@@ -214,8 +196,8 @@ public class Cross {
                 int epx = ep, eox = eo;
                 for (int j = 0; j < 3; j++) {
                     epx = epm[epx][i]; eox = eom[eox][i];
-                    if (idacross(epx, eox, d - 1, i, face)) {
-                        seq[d] = turn[face][i] + suff[j];
+                    if (idacross(epx, eox, d - 1, i)) {
+                        seq[d] = i * 3 + j;
                         //sb.insert(0, " " + turn[face][i] + suff[j]);
                         return true;
                     }
@@ -233,7 +215,7 @@ public class Cross {
                 for (int j = 0; j < 3; j++) {
                     epx = epm[epx][i]; eox = eom[eox][i]; eofx = eom[eofx][i];
                     if (idaeofc(epx, eox, eofx, d-1, i)) {
-                        seq[d] = turn[0][i] + suff[j];
+                        seq[d] = i * 3 + j;
                         return true;
                     }
                 }
@@ -251,7 +233,7 @@ public class Cross {
                     cox = fcm[cox][i]; fx = fem[fx][i];
                     epx = epm[epx][i]; eox = eom[eox][i];
                     if (idaxcross(epx, eox, cox, fx, idx, d - 1, i)) {
-                        seq[d] = turn[0][i] + suff[j];
+                        seq[d] = i * 3 + j;
                         //sb.insert(0, " " + turn[0][i] + suff[j]);
                         return true;
                     }
@@ -287,12 +269,12 @@ public class Cross {
             }
         //sb = new StringBuilder();
         for (int d = 0; d < 10; d++) {
-            if (idacross(ep, eo, d, -1, face)) {
+            if (idacross(ep, eo, d, -1)) {
                 //Log.w("dct", i+"\t"+sb.toString());
                 StringBuilder sb = new StringBuilder("\nCross(");
                 sb.append(color[side]).append("): ").append(rotIdx[face][side]);
-                for (int j = d; j > 0; j--)
-                    sb.append(' ').append(seq[j]);
+                for (int i = d; i > 0; i--)
+                    sb.append(' ').append(turn[face][seq[i] / 3]).append(suff[seq[i] % 3]);
                 return sb.toString();
             }
         }
@@ -339,16 +321,15 @@ public class Cross {
                     }
                 }
             }
-        //sb = new StringBuilder();
         for (int d = 0; d < 12; d++)
             for (int slot = 0; slot < 4; slot++)
                 if (idaxcross(ep, eo, co[slot], feo[slot], slot, d, -1)) {
                     StringBuilder sb = new StringBuilder("\nXCross(");
                     sb.append(color[side]).append("): ").append(rotIdx[0][side]);
-                    for (int i = d; i > 0; i--) sb.append(' ').append(seq[i]);
+                    for (int i = d; i > 0; i--)
+                        sb.append(' ').append(turn[0][seq[i] / 3]).append(suff[seq[i] % 3]);
                     return sb.toString();
                 }
-                    //return "\nXCross(" + color[side] + "): " + rotateIdx[0][side] + sb.toString();
         return "\nerror";
     }
 
@@ -381,7 +362,8 @@ public class Cross {
             if (idaeofc(ep, eo, eof, d, -1)) {
                 StringBuilder sb = new StringBuilder("\n");
                 sb.append(sideStr[side]).append(": ").append(EOline.rotateIdx[side]);
-                for (int j = d; j > 0; j--) sb.append(' ').append(seq[j]);
+                for (int i = d; i > 0; i--)
+                    sb.append(' ').append(turn[0][seq[i] / 3]).append(suff[seq[i] % 3]);
                 return sb.toString();
             }
         }

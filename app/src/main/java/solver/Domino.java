@@ -2,6 +2,8 @@ package solver;
 
 import java.util.Random;
 
+import static solver.Utils.suffInv;
+
 public class Domino {
     private static char[][] cpm = new char[40320][5];
     private static char[][] epm = new char[40320][5];
@@ -9,7 +11,6 @@ public class Domino {
     private static byte[] epd = new byte[40320];
     private static byte[] faces = {3, 1, 1, 1, 1};
     private static String[] turn = {"U", "L", "R", "F", "B"};
-    private static String[] suff = {"'", "2", ""};
     private static int[] seq = new int[20];
 
     private static boolean ini = false;
@@ -44,39 +45,12 @@ public class Domino {
             }
         }
 
-        for (int i = 1; i < 40320; i++)
-            cpd[i] = epd[i] = -1;
+        for (int i = 1; i < 40320; i++) cpd[i] = epd[i] = -1;
         cpd[0] = epd[0] = 0;
-        //int n = 1;
-        for (int d = 0; d < 13; d++) {
-            for (int i = 0; i < 40320; i++)
-                if (cpd[i] == d)
-                    for (int k = 0; k < 5; k++)
-                        for (int y = i, m = 0; m < faces[k]; m++) {
-                            y = cpm[y][k];
-                            if (cpd[y] < 0) {
-                                cpd[y] = (byte) (d + 1);
-                                //n++;
-                            }
-                        }
-            //System.out.println(d+1+" "+n);
-        }
-        //n = 1;
-        for (int d = 0; d < 11; d++) {
-            for (int i = 0; i < 40320; i++)
-                if (epd[i] == d)
-                    for (int k = 0; k < 5; k++)
-                        for (int y = i, m = 0; m < faces[k]; m++) {
-                            y = epm[y][k];
-                            if (epd[y] < 0) {
-                                epd[y] = (byte) (d + 1);
-                                //n++;
-                            }
-                        }
-            //System.out.println(d+1+" "+n);
-        }
+        Utils.createPrun(cpd, 13, cpm, 3);
+        Utils.createPrun(epd, 11, epm, 3);
         t = System.currentTimeMillis() - t;
-        //Log.w("dct", "init "+t);
+        //Log.w("dct", "init " + t + "ms");
         ini = true;
     }
 
@@ -111,7 +85,7 @@ public class Domino {
                 if (d < 4) continue;
                 StringBuilder s = new StringBuilder();
                 for (int i = 1; i <= d; i++) {
-                    s.append(turn[seq[i] / 3]).append(suff[seq[i] % 3]).append(' ');
+                    s.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(' ');
                 }
                 return s.toString();
             }

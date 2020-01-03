@@ -216,31 +216,10 @@ public class Scrambler {
             case -32:	//三速
             case -27:	//三单
             case -25:	//脚拧
-            case 33:
                 scr = scramble333();
                 imageType = scr.startsWith("Error") ? 0 : 3;
                 scrambleList.add(scr);
                 hint = solve333(scr);
-                break;
-            case -26:	//最少步
-                char axis1, axis2, axis3, axis4;
-                do {
-                    scr = scramble333();
-                    String[] seq = scr.split(" ");
-                    if (seq.length < 2) {
-                        axis1 = axis2 = 'F';
-                        axis3 = axis4 = 'R';
-                    } else {
-                        axis1 = seq[0].charAt(0);
-                        axis2 = seq[1].charAt(0);
-                        axis3 = seq[seq.length - 1].charAt(0);
-                        axis4 = seq[seq.length - 2].charAt(0);
-                    }
-
-                } while (axis1 == 'F' || (axis1 == 'B' && axis2 == 'F') || axis3 == 'R' || (axis3 == 'L' && axis4 == 'R'));
-                scr = "R' U' F " + scr + "R' U' F";
-                imageType = scr.startsWith("Error") ? 0 : 3;
-                scrambleList.add(scr);
                 break;
             case -31:	//四速
                 scr = cube4.randomState(false);
@@ -259,6 +238,26 @@ public class Scrambler {
             case -28:	//三盲
                 String cube = Tools.randomCube();
                 scr = cube3.solution(cube, true, r);
+                imageType = scr.startsWith("Error") ? 0 : 3;
+                scrambleList.add(scr);
+                break;
+            case -26:	//最少步
+                char axis1, axis2, axis3, axis4;
+                do {
+                    scr = scramble333();
+                    String[] seq = scr.split(" ");
+                    if (seq.length < 2) {
+                        axis1 = axis2 = 'F';
+                        axis3 = axis4 = 'R';
+                    } else {
+                        axis1 = seq[0].charAt(0);
+                        axis2 = seq[1].charAt(0);
+                        axis3 = seq[seq.length - 1].charAt(0);
+                        axis4 = seq[seq.length - 2].charAt(0);
+                    }
+
+                } while (axis1 == 'F' || (axis1 == 'B' && axis2 == 'F') || axis3 == 'R' || (axis3 == 'L' && axis4 == 'R'));
+                scr = "R' U' F " + scr + "R' U' F";
                 imageType = scr.startsWith("Error") ? 0 : 3;
                 scrambleList.add(scr);
                 break;
@@ -343,15 +342,9 @@ public class Scrambler {
                 //hint = "\n" + Cube2l.solveFirstLayer(scr, APP.solve222);
                 break;
             case 3:
-                scr = Cube222.scrambleEG(0); imageType = 2;
-                scrambleList.add(scr);
-                break;
             case 4:
-                scr = Cube222.scrambleEG(1); imageType = 2;
-                scrambleList.add(scr);
-                break;
             case 5:
-                scr = Cube222.scrambleEG(2); imageType = 2;
+                scr = Cube222.scrambleEG(category - 3); imageType = 2;
                 scrambleList.add(scr);
                 break;
             case 6:
@@ -391,6 +384,13 @@ public class Scrambler {
                 scrambleList.add(scr);
                 hint = solve333(scr);
                 break;
+            case 33:
+                scr = scramble333();
+                imageType = scr.startsWith("Error") ? 0 : 3;
+                scrambleList.add(scr);
+                hint = solve333(scr);
+                Log.w("dct", "求解 "+hint);
+                break;
             case 34:    //F2L
                 scr = cube3.solution(cubeState = Tools.randomCrossSolved());
                 imageType = scr.startsWith("Error") ? 0 : 3;
@@ -402,11 +402,9 @@ public class Scrambler {
                 scrambleList.add(scr);
                 break;
             case 36:    //PLL
-                int len;
                 do {
                     scr = cube3.solution(cubeState = Tools.randomPLL());
-                    len = scr.split(" ").length;
-                } while (len < 3);
+                } while (scr.length() < 6);
                 imageType = scr.startsWith("Error") ? 0 : 3;
                 scrambleList.add(scr);
                 break;
@@ -443,16 +441,16 @@ public class Scrambler {
             case 43:
                 switch (r.nextInt(4)) {
                     case 0:
-                        scr = cube3.solution(cubeState = Tools.randomState(new int[] {0,1,2,3,4,5,6,7}, new int[] {0,0,0,0,0,0,0,0}, new int[] {-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new int[] {-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}));
+                        scr = cube3.solution(cubeState = Tools.randomState(new int[]{0, 1, 2, 3, 4, 5, 6, 7}, new int[]{0, 0, 0, 0, 0, 0, 0, 0}, new int[]{-1, -1, -1, -1, 4, -1, 6, -1, 8, 9, 10, 11}, new int[]{-1, -1, -1, -1, 0, -1, 0, -1, 0, 0, 0, 0}));
                         break;
                     case 1:
-                        scr = cube3.solution(cubeState = Tools.randomState(new int[] {3,2,6,7,0,1,5,4}, new int[] {2,1,2,1,1,2,1,2}, new int[] {11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new int[] {0,-1,0,-1,0,-1,0,-1,0,0,-1,-1})) + "x'";
+                        scr = cube3.solution(cubeState = Tools.randomState(new int[]{3, 2, 6, 7, 0, 1, 5, 4}, new int[]{2, 1, 2, 1, 1, 2, 1, 2}, new int[]{11, -1, 10, -1, 8, -1, 9, -1, 0, 2, -1, -1}, new int[]{0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, -1})) + "x'";
                         break;
                     case 2:
-                        scr = cube3.solution(cubeState = Tools.randomState(new int[] {7,6,5,4,3,2,1,0}, new int[] {0,0,0,0,0,0,0,0}, new int[] {4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new int[] {0,-1,0,-1,-1,-1,-1,-1,0,0,0,0})) + "x2";
+                        scr = cube3.solution(cubeState = Tools.randomState(new int[]{7, 6, 5, 4, 3, 2, 1, 0}, new int[]{0, 0, 0, 0, 0, 0, 0, 0}, new int[]{4, -1, 6, -1, -1, -1, -1, -1, 11, 10, 9, 8}, new int[]{0, -1, 0, -1, -1, -1, -1, -1, 0, 0, 0, 0})) + "x2";
                         break;
                     default:
-                        scr = cube3.solution(cubeState = Tools.randomState(new int[] {4,5,1,0,7,6,2,3}, new int[] {2,1,2,1,1,2,1,2}, new int[] {8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new int[] {0,-1,0,-1,0,-1,0,-1,-1,-1,0,0})) + "x";
+                        scr = cube3.solution(cubeState = Tools.randomState(new int[]{4, 5, 1, 0, 7, 6, 2, 3}, new int[]{2, 1, 2, 1, 1, 2, 1, 2}, new int[]{8, -1, 9, -1, 11, -1, 10, -1, -1, -1, 2, 0}, new int[]{0, -1, 0, -1, 0, -1, 0, -1, -1, -1, 0, 0})) + "x";
                         break;
                 }
                 imageType = scr.startsWith("Error") ? 0 : 3;
@@ -461,16 +459,16 @@ public class Scrambler {
             case 44:
                 switch (r.nextInt(4)) {
                     case 0:
-                        scr = cube3.solution(cubeState = Tools.randomState(new int[] {-1,-1,-1,-1,4,5,6,7}, new int[] {-1,-1,-1,-1,0,0,0,0}, new int[] {-1,-1,-1,-1,4,-1,6,-1,8,9,10,11}, new int[] {-1,-1,-1,-1,0,-1,0,-1,0,0,0,0}));
+                        scr = cube3.solution(cubeState = Tools.randomState(new int[]{-1, -1, -1, -1, 4, 5, 6, 7}, new int[]{-1, -1, -1, -1, 0, 0, 0, 0}, new int[]{-1, -1, -1, -1, 4, -1, 6, -1, 8, 9, 10, 11}, new int[]{-1, -1, -1, -1, 0, -1, 0, -1, 0, 0, 0, 0}));
                         break;
                     case 1:
-                        scr = cube3.solution(cubeState = Tools.randomState(new int[] {3,2,-1,-1,0,1,-1,-1}, new int[] {2,1,-1,-1,1,2,-1,-1}, new int[] {11,-1,10,-1,8,-1,9,-1,0,2,-1,-1}, new int[] {0,-1,0,-1,0,-1,0,-1,0,0,-1,-1})) + "x'";
+                        scr = cube3.solution(cubeState = Tools.randomState(new int[]{3, 2, -1, -1, 0, 1, -1, -1}, new int[]{2, 1, -1, -1, 1, 2, -1, -1}, new int[]{11, -1, 10, -1, 8, -1, 9, -1, 0, 2, -1, -1}, new int[]{0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, -1})) + "x'";
                         break;
                     case 2:
-                        scr = cube3.solution(cubeState = Tools.randomState(new int[] {7,6,5,4,-1,-1,-1,-1}, new int[] {0,0,0,0,-1,-1,-1,-1}, new int[] {4,-1,6,-1,-1,-1,-1,-1,11,10,9,8}, new int[] {0,-1,0,-1,-1,-1,-1,-1,0,0,0,0})) + "x2";
+                        scr = cube3.solution(cubeState = Tools.randomState(new int[]{7, 6, 5, 4, -1, -1, -1, -1}, new int[]{0, 0, 0, 0, -1, -1, -1, -1}, new int[]{4, -1, 6, -1, -1, -1, -1, -1, 11, 10, 9, 8}, new int[]{0, -1, 0, -1, -1, -1, -1, -1, 0, 0, 0, 0})) + "x2";
                         break;
                     default:
-                        scr = cube3.solution(cubeState = Tools.randomState(new int[] {-1,-1,1,0,-1,-1,2,3}, new int[] {-1,-1,2,1,-1,-1,1,2}, new int[] {8,-1,9,-1,11,-1,10,-1,-1,-1,2,0}, new int[] {0,-1,0,-1,0,-1,0,-1,-1,-1,0,0})) + "x";
+                        scr = cube3.solution(cubeState = Tools.randomState(new int[]{-1, -1, 1, 0, -1, -1, 2, 3}, new int[]{-1, -1, 2, 1, -1, -1, 1, 2}, new int[]{8, -1, 9, -1, 11, -1, 10, -1, -1, -1, 2, 0}, new int[]{0, -1, 0, -1, 0, -1, 0, -1, -1, -1, 0, 0})) + "x";
                         break;
                 }
                 imageType = scr.startsWith("Error") ? 0 : 3;
@@ -513,7 +511,7 @@ public class Scrambler {
                 hint = solve333(scr);
                 break;
             case 52:    //2gll
-                scr = cube3.solution(cubeState = Tools.randomState(Tools.STATE_SOLVED, new int[] {-1,-1,-1,-1,0,0,0,0}, new int[] {-1,-1,-1,-1,4,5,6,7,8,9,10,11}, Tools.STATE_SOLVED));
+                scr = cube3.solution(cubeState = Tools.randomState(Tools.STATE_SOLVED, new int[]{-1, -1, -1, -1, 0, 0, 0, 0}, new int[]{-1, -1, -1, -1, 4, 5, 6, 7, 8, 9, 10, 11}, Tools.STATE_SOLVED));
                 imageType = scr.startsWith("Error") ? 0 : 3;
                 scrambleList.add(scr);
                 break;
@@ -530,16 +528,14 @@ public class Scrambler {
             case 55:    //3循环棱块
                 do {
                     scr = cube3.solution(cubeState = Tools.random3Edge());
-                    len = scr.split(" ").length;
-                } while (len < 3);
+                } while (scr.length() < 6);
                 imageType = scr.startsWith("Error") ? 0 : 3;
                 scrambleList.add(scr);
                 break;
             case 56:    //3循环角块
                 do {
                     scr = cube3.solution(cubeState = Tools.random3Corner());
-                    len = scr.split(" ").length;
-                } while (len < 3);
+                } while (scr.length() < 6);
                 imageType = scr.startsWith("Error") ? 0 : 3;
                 scrambleList.add(scr);
                 break;
@@ -679,23 +675,28 @@ public class Scrambler {
                 scrambleList.add(scr);
                 break;
             case 288:	//魔表
-                scr = clock.scramble(); imageType = TYPE_CLK;
+                scr = clock.scramble();
+                imageType = TYPE_CLK;
                 scrambleList.add(scr);
                 break;
             case 289:
-                scr = clock.scrambleJaap(false); imageType = TYPE_CLK;
+                scr = clock.scrambleJaap(false);
+                imageType = TYPE_CLK;
                 scrambleList.add(scr);
                 break;
             case 290:
-                scr = clock.scrambleJaap(true); imageType = TYPE_CLK;
+                scr = clock.scrambleJaap(true);
+                imageType = TYPE_CLK;
                 scrambleList.add(scr);
                 break;
             case 291:
-                scr = clock.scrambleEpo(); imageType = TYPE_CLK;
+                scr = clock.scrambleEpo();
+                imageType = TYPE_CLK;
                 scrambleList.add(scr);
                 break;
             case 320:	//Skewb
-                scr = Skewb.scramble(); imageType = TYPE_SKW;
+                scr = Skewb.scramble();
+                imageType = TYPE_SKW;
                 scrambleList.add(scr);
                 break;
             case 321:
@@ -1094,25 +1095,23 @@ public class Scrambler {
         return (idx == -1 && (idx2 == 1 || idx2 == 15)) || (idx == 2 && idx2 == 5);
     }
 
-    public String solve333(String scr) {
+    public String solve333(String scramble) {
         switch (APP.solve333) {
-            case 0:
-                return "";
             case 1:
-                return Cross.solveCross(scr, APP.solverType[1]);
+                return Cross.solveCross(scramble, APP.solverType[1]);
             case 2:
-                return Cross.solveXcross(scr, APP.solverType[1]);
+                return Cross.solveXcross(scramble, APP.solverType[1]);
             case 3:
-                return EOline.solveEoline(scr, APP.solverType[1]);
+                return EOline.solveEoline(scramble, APP.solverType[1]);
             case 4:
-                return Roux.solveRoux1(scr, APP.solverType[3]);
+                return Roux.solveRoux1(scramble, APP.solverType[3]);
             case 5:
-                return Petrus.solvePetrus(scr, APP.solverType[2]);
+                return Petrus.solvePetrus(scramble, APP.solverType[2]);
             case 6:
-                return Cross.solveEofc(scr, APP.solverType[1]);
+                return Cross.solveEofc(scramble, APP.solverType[1]);
+            default:
+                return "";
         }
-        //Log.w("dct", "solve "+scr+"/"+solveStr);
-        return "";
     }
 
     public void drawScramble(int width, Paint p, Canvas c) {
@@ -1252,10 +1251,14 @@ public class Scrambler {
                     int num = img[i * 4 + j];
                     if (num != 15) {
                         p.setStyle(Paint.Style.FILL);
-                        p.setColor(0xffdddddd);
+                        if (num == 10 || num == 11 || num == 14)
+                            p.setColor(0xffaaaa66);
+                        else if (num == 5 || num == 6 || num == 7 || num == 9 || num == 13)
+                            p.setColor(0xff9999ff);
+                        else p.setColor(0xffff6666);
                         c.drawRoundRect(new RectF(stx + wid * j + wid * 0.03f, sty + wid * i + wid * 0.03f, stx + wid * (j + 1) - wid * 0.03f, sty + wid * (i + 1) - wid * 0.03f), wid * 0.1f, wid * 0.1f, p);
                         //c.drawRect(wid * j, wid * i, wid * (j + 1), wid * (i + 1), p);
-                        p.setColor(0xff333333);
+                        p.setColor(0xffffffff);
                         c.drawText(String.valueOf(num + 1), stx + wid * (j + 0.5f), sty + wid * (i + 0.72f), p);
                         p.setStyle(Paint.Style.STROKE);
                         p.setColor(0xdd000000);
@@ -1403,10 +1406,12 @@ public class Scrambler {
                     int num = img[i * 3 + j];
                     if (num != 8) {
                         p.setStyle(Paint.Style.FILL);
-                        p.setColor(0xffdddddd);
+                        if (num == 4 || num == 5 || num == 7)
+                            p.setColor(0xff44aa55);
+                        else p.setColor(0xffff3333);
                         c.drawRoundRect(new RectF(stx + wid * j + wid * 0.03f, sty + wid * i + wid * 0.03f, stx + wid * (j + 1) - wid * 0.03f, sty + wid * (i + 1) - wid * 0.03f), wid * 0.1f, wid * 0.1f, p);
                         //c.drawRect(wid * j, wid * i, wid * (j + 1), wid * (i + 1), p);
-                        p.setColor(0xff333333);
+                        p.setColor(0xffffffff);
                         c.drawText(String.valueOf(num + 1), stx + wid * (j + 0.5f), sty + wid * (i + 0.72f), p);
                         p.setStyle(Paint.Style.STROKE);
                         p.setColor(0xdd000000);
@@ -1817,7 +1822,9 @@ public class Scrambler {
         switch (size) {
             case 3:
                 scramble = scramble.replace("M'", "r R'").replace("M2", "r2 R2").replace("M", "r' R")
-                        .replace("x'", "r' L").replace("x2", "r2 L2").replace("x", "r L'");
+                        .replace("x'", "r' L").replace("x2", "r2 L2").replace("x", "r L'")
+                        .replace("y'", "u' D").replace("y2", "u2 D2").replace("y", "u D'")
+                        .replace("z'", "f' B").replace("z2", "f2 B2").replace("z", "f B'");
                 break;
             case 4:
                 scramble = scramble.replace("x'", "r' l").replace("x2", "r2 l2").replace("x", "r l'")

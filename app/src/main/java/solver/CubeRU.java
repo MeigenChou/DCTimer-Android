@@ -5,12 +5,13 @@ import android.util.Log;
 import java.util.Random;
 
 import static solver.Utils.permutationSign;
+import static solver.Utils.suffInv;
 
 public class CubeRU {
     private static short[][] cpm = new short[720][2];
     private static short[][] epm = new short[5040][2];
     private static short[][] com = new short[243][2];
-    private static byte[][] cd = new byte[720][243];
+    private static byte[] cd = new byte[720 * 243];
     private static byte[] epd = new byte[5040];
     private static int[] seq = new int[21];
 
@@ -46,28 +47,10 @@ public class CubeRU {
                 epm[i][j] = (short) Utils.permToIdx(arr, 7, false);
             }
         }
-        for (int i = 0; i < 720; i++)
-            for (int j = 0; j < 243; j++) cd[i][j] = -1;
-        cd[0][0] = 0;
-        int d = 0;
-        int c = 1;
-        while (c > 0) {
-            c = 0;
-            for (int i = 0; i < 720; i++)
-                for (int j = 0; j < 243; j++)
-                    if (cd[i][j] == d)
-                        for (int k = 0; k < 2; k++)
-                            for (int y = i, s = j, l = 0; l < 3; l++) {
-                                y = cpm[y][k]; s = com[s][k];
-                                if (cd[y][s] < 0) {
-                                    cd[y][s] = (byte) (d + 1);
-                                    c++;
-                                }
-                            }
-            d++;
-            //Log.w("dct", d + "\t" + c);
-        }
-        for (int i = 0; i < 5040; i++) epd[i] = -1;
+        for (int i = 1; i < 174960; i++) cd[i] = -1;
+        cd[0] = 0;
+        Utils.createPrun(cd, 14, cpm, com, 3);
+        for (int i = 1; i < 5040; i++) epd[i] = -1;
         epd[0] = 0;
         Utils.createPrun(epd, 11, epm, 3);
         time = System.currentTimeMillis() - time;
@@ -75,10 +58,9 @@ public class CubeRU {
     }
 
     private static String[] turn = {"U", "R"};
-    private static String[] suff = {"", "2", "'"};
     private static boolean search(int cp, int co, int ep, int depth, int lm) {
         if (depth == 0) return cp == 0 && co == 0 && ep == 0;
-        if (cd[cp][co] > depth || epd[ep] > depth) return false;
+        if (cd[cp * 243 + co] > depth || epd[ep] > depth) return false;
         for (int i = 0; i < 2; i++) {
             if (i != lm) {
                 int d = cp, w = co, y = ep;
@@ -104,7 +86,7 @@ public class CubeRU {
                 cp = r.nextInt(720);
                 co = r.nextInt(243);
             }
-            while (cd[cp][co] < 0);
+            while (cd[cp * 243 + co] < 0);
             ep = r.nextInt(5040);
             Utils.idxToPerm(c, cp, 6, false);
             Utils.idxToPerm(e, ep, 7, false);
@@ -117,7 +99,7 @@ public class CubeRU {
                 }
                 StringBuilder sb = new StringBuilder();
                 for (int i = 1; i <= d; i++) {
-                    sb.append(turn[seq[i] / 3]).append(suff[seq[i] % 3]).append(" ");
+                    sb.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
                 }
                 return sb.toString();
             }

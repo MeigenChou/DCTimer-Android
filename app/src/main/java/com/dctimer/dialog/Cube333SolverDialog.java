@@ -50,10 +50,10 @@ public class Cube333SolverDialog extends DialogFragment {
         int[] chkids = {R.id.chk_d, R.id.chk_u, R.id.chk_l, R.id.chk_r, R.id.chk_f, R.id.chk_b};
         for (int i=0; i<chks.length; i++) {
             chks[i] = view.findViewById(chkids[i]);
-            chks[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            chks[i].setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    solverType[1] = Utils.getCheck(chks);
+                public void onClick(View view) {
+                    solverType[1] = getCheck(chks);
                     //Log.w("dct", solverType[1]+"");
                     if (getActivity() instanceof MainActivity) {
                         MainActivity dct = (MainActivity) getActivity();
@@ -67,10 +67,10 @@ public class Cube333SolverDialog extends DialogFragment {
         chkids = new int[] {R.id.chk_ulf, R.id.chk_ulb, R.id.chk_urf, R.id.chk_urb, R.id.chk_dlf, R.id.chk_dlb, R.id.chk_drf, R.id.chk_drb};
         for (int i=0; i<chkp.length; i++) {
             chkp[i] = view.findViewById(chkids[i]);
-            chkp[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            chkp[i].setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    solverType[2] = Utils.getCheck(chkp);
+                public void onClick(View view) {
+                    solverType[2] = getCheck(chkp);
                     if (getActivity() instanceof MainActivity) {
                         MainActivity dct = (MainActivity) getActivity();
                         dct.setPref("pside", solverType[2]);
@@ -83,10 +83,10 @@ public class Cube333SolverDialog extends DialogFragment {
         chkids = new int[] {R.id.chk_lu, R.id.chk_ld, R.id.chk_fu, R.id.chk_fd, R.id.chk_ru, R.id.chk_rd, R.id.chk_bu, R.id.chk_bd};
         for (int i=0; i<chkr.length; i++) {
             chkr[i] = view.findViewById(chkids[i]);
-            chkr[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            chkr[i].setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    solverType[3] = Utils.getCheck(chkr);
+                public void onClick(View view) {
+                    solverType[3] = getCheck(chkr);
                     if (getActivity() instanceof MainActivity) {
                         MainActivity dct = (MainActivity) getActivity();
                         dct.setPref("rside", solverType[3]);
@@ -96,11 +96,11 @@ public class Cube333SolverDialog extends DialogFragment {
             });
         }
         if (solve333 == 0 || solve333 == 4 || solve333 == 5) llCross.setVisibility(View.GONE);
-        else Utils.setCheck(solverType[1], chks);
+        else setCheck(solverType[1], chks);
         if (solve333 != 5) llPetrus.setVisibility(View.GONE);
-        else Utils.setCheck(solverType[2], chkp);
+        else setCheck(solverType[2], chkp);
         if (solve333 == 4)
-            Utils.setCheck(solverType[3], chkr);
+            setCheck(solverType[3], chkr);
         else llRoux.setVisibility(View.GONE);
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -132,15 +132,15 @@ public class Cube333SolverDialog extends DialogFragment {
                     llCross.setVisibility(View.GONE);
                 else {
                     llCross.setVisibility(View.VISIBLE);
-                    Utils.setCheck(solverType[1], chks);
+                    setCheck(solverType[1], chks);
                 }
                 if (solve333 == 5) {
                     llPetrus.setVisibility(View.VISIBLE);
-                    Utils.setCheck(solverType[2], chkp);
+                    setCheck(solverType[2], chkp);
                 } else llPetrus.setVisibility(View.GONE);
                 if (solve333 == 4) {
                     llRoux.setVisibility(View.VISIBLE);
-                    Utils.setCheck(solverType[3], chkr);
+                    setCheck(solverType[3], chkr);
                 } else llRoux.setVisibility(View.GONE);
                 if (getActivity() instanceof MainActivity) {
                     MainActivity dct = (MainActivity) getActivity();
@@ -152,5 +152,20 @@ public class Cube333SolverDialog extends DialogFragment {
         });
         buidler.setView(view).setNegativeButton(R.string.btn_close, null);
         return buidler.create();
+    }
+
+    private void setCheck(int ch, CheckBox[] chks) {
+        for (int i = 0; i < chks.length; i++) {
+            chks[i].setChecked(((ch >> i) & 1) != 0);
+        }
+    }
+
+    private int getCheck(CheckBox[] chks) {
+        int ch = 0;
+        for (int i = 0; i < chks.length; i++) {
+            if (chks[i].isChecked())
+                ch |= (1 << i);
+        }
+        return ch;
     }
 }

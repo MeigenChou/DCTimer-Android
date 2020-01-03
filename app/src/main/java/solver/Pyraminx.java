@@ -106,32 +106,32 @@ public class Pyraminx {
         return "error";
     }
 
-    private static boolean search(int q, int t, int l, int lm) {
-        //searches for solution, from position q|t, in l moves exactly. last move was lm, current depth=d
-        if (l == 0) return q == 0 && t == 0;
-        if (perm[q] > l || twst[t] > l) return false;
-        int p, s, a, m;
+    private static boolean search(int p, int t, int l, int lm) {
+        //searches for solution, from position p|t, in l moves exactly. last move was lm, current depth=d
+        if (l == 0) return p == 0 && t == 0;
+        if (perm[p] > l || twst[t] > l) return false;
+        int q, s, a, m;
         if (lm == -2) {
-            int next = r.nextInt(8);
-            m = next / 2;
-            int n = next % 2;
-            p = q; s = t;
+            int n = r.nextInt(8);
+            m = n / 2;
+            n %= 2;
+            q = p; s = t;
             for (a = 0; a < n; a++) {
-                p = permmv[p][m];
+                q = permmv[q][m];
                 s = twstmv[s >> 5][m] << 5 | flipmv[s & 31][m];
             }
-            if (search(p, s, l - 1, m)) {
+            if (search(q, s, l - 1, m)) {
                 seq[l] = m * 3 + n;
                 //sol.append(turn[m]).append(suff[n]).append(' ');
                 return true;
             }
         } else for (m = 0; m < 4; m++) {
             if (m != lm) {
-                p = q; s = t;
+                q = p; s = t;
                 for (a = 0; a < 2; a++) {
-                    p = permmv[p][m];
+                    q = permmv[q][m];
                     s = twstmv[s >> 5][m] << 5 | flipmv[s & 31][m];
-                    if (search(p, s, l - 1, m)) {
+                    if (search(q, s, l - 1, m)) {
                         seq[l] = m * 3 + a;
                         //sol.append(turn[m]).append(suff[a]).append(' ');
                         return true;
@@ -182,7 +182,7 @@ public class Pyraminx {
                             }
                         }
                     }
-            Log.w("dct", l+1+"\t"+n);
+            //Log.w("dct", l+1+"\t"+n);
         }
     }
 

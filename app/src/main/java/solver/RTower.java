@@ -1,5 +1,7 @@
 package solver;
 
+import android.util.Log;
+
 import java.util.Random;
 
 public class RTower {
@@ -20,7 +22,6 @@ public class RTower {
         if (ini) return;
         Tower.init();
         int[] arr = new int[8];
-
 		/*	0	1
 		 *	3	2
 		 *
@@ -54,7 +55,6 @@ public class RTower {
             }
         }
 
-
         int n = 1;
         epd[0] = 0;
         for (int i = 1; i < 5040; i++) {
@@ -65,7 +65,6 @@ public class RTower {
             }
             else epd[i] = -1;
         }
-        //Log.w("dct", "0\t"+n);
         //System.out.println("0 "+n);
         Utils.createPrun(epd, 4, epm, 3);
 
@@ -99,7 +98,7 @@ public class RTower {
         eo = r.nextInt(729);
         ep = r.nextInt(5040);
         cp = r.nextInt(40320);
-        for (len1 = 0; ; len1++) {
+        for (len1 = 0; len1 < 20; len1++) {
             if (search1(ep, eo, len1, -1)) {
                 if (len1 + len2 < 3) return scramble();
                 StringBuilder sb = new StringBuilder();
@@ -111,6 +110,7 @@ public class RTower {
                 return sb.toString();
             }
         }
+        return "error";
     }
 
     private static boolean search1(int ep, int eo, int d, int lf) {
@@ -135,7 +135,7 @@ public class RTower {
     private static boolean init2() {
         int epx = ep, cpx = cp;
         for (int i = len1; i > 0; i--) {
-            int m = sol[i] / 3, t = sol[i]%3;
+            int m = sol[i] / 3, t = sol[i] % 3;
             epx = epm[epx][m]; cpx = Tower.cpm[cpx][m];
             if (t > 0) {
                 epx = epm[epx][m]; cpx = Tower.cpm[cpx][m];
@@ -164,7 +164,6 @@ public class RTower {
                 int y = cp, s = ep;
                 for (int k = 0; k < faces[i]; k++) {
                     y = Tower.cpm[y][i];
-                    if (faces[i] == 1) y = Tower.cpm[y][i];
                     s = Tower.epm[s][i];
                     sol[d + len1] = i * 3 + (faces[i] == 1 ? 1 : k);
                     if (search2(y, s, d - 1, i)) {

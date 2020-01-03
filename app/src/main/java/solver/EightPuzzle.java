@@ -9,7 +9,7 @@ public class EightPuzzle {
     private static byte[] prun = new byte[362880];
     private static int[] pz = new int[9];
     static int[] seq = new int[25];
-    static String[] suff = {" ", "2 "};
+    private static String[] suff = {" ", "2 "};
     private static boolean ini = false;
     private static int[][] moveIdx = {
             {-1, 3, -1, 1}, {-1, 4, 0, 2}, {-1, 5, 1, -1},
@@ -23,9 +23,9 @@ public class EightPuzzle {
         int[] arr = new int[9];
         Arrays.fill(prun, (byte) -1);
         prun[0] = 0;
-        int c;
+        int c = 1;
         for (int d = 0; d < 24; d++) {
-            c = 0;
+            //c = 0;
             for (int i=0; i<362880; i++)
                 if (prun[i] == d) {
                     Utils.set11Perm(arr, i, 9);
@@ -42,7 +42,7 @@ public class EightPuzzle {
                         }
                     }
                 }
-            //Log.w("dct", d+1+"\t"+c);
+            //Log.w("dct", d + 1 + "\t" + c);
         }
         time = System.currentTimeMillis() - time;
         Log.w("dct", "init "+time+"ms");
@@ -101,20 +101,22 @@ public class EightPuzzle {
 
     public static int[] image(String scramble) {
         for (int i = 0; i < 9; i++) pz[i] = i;
-        int pos = 8;
+        int blank = 8;
         String[] s = scramble.split(" ");
         for (int i = 0; i < s.length; i++) {
-            int move = "DURL".indexOf(s[i].charAt(0));
-            int next = moveIdx[pos][move];
-            if (next != -1) {
-                Utils.swap(pz, pos, next);
-                pos = next;
-            }
-            if (s[i].length() > 1) {
-                next = moveIdx[pos][move];
+            if (s[i].length() > 0) {
+                int move = "DURL".indexOf(s[i].charAt(0));
+                int next = moveIdx[blank][move];
                 if (next != -1) {
-                    Utils.swap(pz, pos, next);
-                    pos = next;
+                    Utils.swap(pz, blank, next);
+                    blank = next;
+                }
+                if (s[i].length() > 1 && s[i].charAt(1) == '2') {
+                    next = moveIdx[blank][move];
+                    if (next != -1) {
+                        Utils.swap(pz, blank, next);
+                        blank = next;
+                    }
                 }
             }
         }

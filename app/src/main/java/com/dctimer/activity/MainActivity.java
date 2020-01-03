@@ -906,6 +906,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 case R.id.bt_scramble:	//选择打乱
                     selectIdx = scrambleIdx >> 5;
                     selectIdx2 = scrambleIdx & 0x1f;
+                    if (selectIdx == -1 && selectIdx2 > 7) selectIdx2--;
                     int resId = R.layout.popup_window;
                     view = LayoutInflater.from(context).inflate(resId, null);
                     ListView listView = view.findViewById(R.id.list1);
@@ -1014,14 +1015,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         s1Adapter.setSelectItem(selectIdx + 1);
                         s1Adapter.notifyDataSetChanged();
                         s2Adapter.setData(getResources().getStringArray(Utils.getScrambleArrayId(arg2 - 1)));
-                        if (selectIdx == (scrambleIdx >> 5)) s2Adapter.setSelectItem(scrambleIdx & 0x1f);
-                        else s2Adapter.setSelectItem(-1);
+                        if (selectIdx == (scrambleIdx >> 5)) {
+                            int idx2 = scrambleIdx & 0x1f;
+                            if (selectIdx == -1 && idx2 > 7) idx2--;
+                            s2Adapter.setSelectItem(idx2);
+                        } else s2Adapter.setSelectItem(-1);
                         s2Adapter.notifyDataSetChanged();
                     }
                     break;
                 case R.id.list2:
                     if (selectIdx != (scrambleIdx >> 5) || selectIdx2 != arg2) {
                         selectIdx2 = arg2;
+                        if (selectIdx == -1 && selectIdx2 >= 7) selectIdx2++;
                         scrambleIdx = selectIdx << 5 | selectIdx2;
                         setScramble();
                         if (selectSession) {    //自动选择分组
@@ -1229,7 +1234,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             else setTimerText("IMPORT");
                             tvMulPhase.setText("");
                             timer.setTimerState(Timer.READY);
-                        } else if (enterTime == 2) {
+                        } else if (i < 4) {
                             if (Build.VERSION.SDK_INT > 22) {
                                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO)
                                         != PackageManager.PERMISSION_GRANTED) {
@@ -2231,7 +2236,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setTimerText("0" + (decimalMark == 0 ? "." : ",") + (timerAccuracy == 0 ? "00" : "000"));
         } else if (enterTime == 1)
             setTimerText("IMPORT");
-        else if (enterTime == 2) {  //TODO SS计时器
+        else if (enterTime == 2 || enterTime == 3) {  //TODO SS计时器
             startStackmat();
         }
 
@@ -2396,8 +2401,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setScramble() {
         //Log.w("dct", "new scr");
+        if (scrambleIdx == -25)
+            scrambleIdx = 33;
         int idx = scrambleIdx >> 5;
         int idx2 = scrambleIdx & 0x1f;
+        if (idx == -1 && idx2 > 7) idx2--;
         String[] subitems = getResources().getStringArray(Utils.getScrambleArrayId(idx));
         if (idx2 >= subitems.length) idx2 = 0;
         btnScramble.setText(scrambleItems[idx + 1] + " - " + subitems[idx2]);
@@ -2434,7 +2442,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 (idx == 1) ||
                 (idx == 2 && idx2 == 5) ||
                 idx == 8 ||
-                (idx == 11 && (idx2 < 5 || idx2 == 6 || idx2 == 8)) ||
+                (idx == 11 && (idx2 > 1 && idx2 < 5 || idx2 == 6 || idx2 == 8)) ||
                 (idx == 16 && idx2 == 8) ||
                 (idx == 17 && (idx2 < 3 || idx2 == 6)) ||
                 idx == 20) {    //TODO
@@ -2608,6 +2616,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setPref("session", sessionIdx);
         int puzzle = sessionManager.getPuzzle(sessionIdx);
         if (puzzle != scrambleIdx && scrambleState == SCRAMBLE_DONE) {
+            if (puzzle == -25) puzzle = 33;
             scrambleIdx = puzzle;
             setScramble();
         }
@@ -2728,9 +2737,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 }).setNegativeButton(R.string.btn_cancel, null).show();
                         break;
                     case 5: //手动输入时间
-                        enterTime();
-                        //InputTimeDialog inputDialog = InputTimeDialog.newInstance(1);
-                        //inputDialog.show(getSupportFragmentManager(), "InputTime");
+                        inputTime();
                         break;
                     case 6: //查看打乱详情
                         ScrambleDetailDialog scrambleDialog = ScrambleDetailDialog.newInstance(currentScramble.getScramble(), currentScramble.getScrambleLen());
@@ -2749,16 +2756,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
                 }
                 isSwipe = false;
-            } else if(enterTime > 2) { //蓝牙魔方
+            } else if(enterTime > 3) { //蓝牙魔方
                 if (bluetoothTools.getCube() != null) {
                     CubeStateDialog dialog = CubeStateDialog.newInstance(bluetoothTools.getCube());
                     dialog.show(getSupportFragmentManager(), "CubeState");
                 }
             } else if (enterTime == 1) { //手动输入成绩
                 tvTimer.setTextColor(colors[1]);
-                enterTime();
-                //InputTimeDialog dialog = InputTimeDialog.newInstance(1);
-                //dialog.show(getSupportFragmentManager(), "InputTime");
+                inputTime();
             } else if (enterTime == 0) {
                 if (freezeTime ==0 || canStart) {    //可以开始计时
                     //Log.w("dct", "freeze=0 & canstart");
@@ -2809,7 +2814,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void enterTime() {
+    private void inputTime() {
         final KeypadDialog dialog = new KeypadDialog(this);
         dialog.getKeypad().setOnClickListener(new KeypadView.OnClickListener() {
             @Override
