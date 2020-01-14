@@ -1,5 +1,7 @@
 package cs.threephase;
 
+import android.util.Log;
+
 import static cs.threephase.Util.*;
 import static cs.threephase.Moves.*;
 
@@ -36,7 +38,7 @@ class Center1 {
                 sym2raw[count++] = i;
             }
         }
-        System.out.println("c1 move");
+        //Log.w("dct", "c1 move...");
         Center1 d = new Center1();
         for (int i = 0; i < 15582; i++) {
             d.set(sym2raw[i]);

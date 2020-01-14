@@ -44,7 +44,7 @@ public class APP extends Application {
     public static boolean showImage;
     public static boolean monoFont;
     public static boolean promptToSave;
-    public static int[] solverType = new int[4];
+    public static int[] solverType = new int[6];
     public static int importType;
     public static int sessionIdx;
     public static int timerSize;
@@ -175,15 +175,15 @@ public class APP extends Application {
         avg2len = sp.getInt("l2len", 12);
         selectSession = sp.getBoolean("selses", false);	//自动选择分组
         solve333 = sp.getInt("cxe", 0);	//三阶求解
-        solverType[0] = sp.getInt("cface", 0);	// 十字求解底面
+        //solverType[0] = sp.getInt("cface", 0);	// 十字求解底面
         int cside = sp.getInt("cside", 1);
         if (cside > 6) cside = 1;
         solverType[1] = sp.getInt("sside", 1 << cside);	// 十字求解颜色
         solverType[2] = sp.getInt("pside", 1);    //Petrus求解
         solverType[3] = sp.getInt("rside", 1);    //Roux求解
         solveSq1 = sp.getInt("sq1s", 0);	//SQ1复形计算
-        //int c2layer = sp.getInt("cube2l", 0);
-        solve222 = sp.getInt("cube2l", 0);//sp.getInt("c2face", 1 << c2layer);	// 二阶底层求解
+        solve222 = sp.getInt("c2fl", 0);//sp.getInt("cube2l", 0);	// 二阶求解
+        solverType[4] = sp.getInt("cface", 1);
         megaColorScheme = sp.getInt("minxc", 1);	//五魔配色
         darkList = sp.getBoolean("dark", false);
         timerFont = sp.getInt("tfont", 3);	// 计时器字体

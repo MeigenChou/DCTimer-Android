@@ -97,9 +97,8 @@ public class HalfTurn {
         return false;
     }
 
-    public static String scramble() {
+    public static String scramble(Random r) {
         int cp1, cp2;
-        Random r = new Random();
         do {
             cp1 = r.nextInt(24);
             cp2 = r.nextInt(24);
@@ -112,7 +111,7 @@ public class HalfTurn {
         } while (epd[ep1][ep2][ep3] < 0);
         for (int d = 0; d < 20; d++) {
             if (search(cp1, cp2, ep1, ep2, ep3, d, -1)) {
-                if (d < 2) return scramble();
+                if (d < 2) return scramble(r);
                 if (d < 4) {
                     continue;
                 }

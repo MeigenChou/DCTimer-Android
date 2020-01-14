@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="15dp">
+        android:padding="16dp">
 
         <RadioGroup
             android:id="@+id/rgroup"
@@ -136,16 +136,6 @@
                 android:paddingLeft="15dp"
                 android:text="@string/side_b"
                 android:textSize="18sp"/>
-
-            <CheckBox
-                android:id="@+id/chk_all"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:paddingLeft="15dp"
-                android:text="@string/side_all"
-                android:textSize="18sp"
-                android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout

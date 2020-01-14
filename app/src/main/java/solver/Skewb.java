@@ -6,10 +6,10 @@ import java.util.Random;
 
 public class Skewb {
     private static short[][] ctm = new short[360][4];
-    private static byte[][] cpm = new byte[36][4];
+    private static short[][] cpm = new short[36][4];
     private static short[][] com = new short[2187][4];
     private static byte[] ctd = new byte[360];
-    private static byte[][] cd = new byte[2187][36];
+    private static byte[] cd = new byte[2187 * 36];
     private static Random r = new Random();
     private static int[] seq = new int[12];
 
@@ -33,12 +33,11 @@ public class Skewb {
                 ctm[i][j] = (short) Utils.permToIdx(arr, 6, true);
             }
 		/* corner permutation
-		 *	0		1
-		 *		3
-		 *		2
-		 *
-		 *		0
-		 *	1		2
+		 *     2-0
+		 *  0		1
+		 *  	3
+		 * 2-1	   2-2
+		 *      2
 		 */
         int[] arr2 = new int[3];
         for (int i = 0; i < 12; i++)
@@ -52,7 +51,7 @@ public class Skewb {
                         case 2: Utils.circle(arr, 2, 0, 3); break;	//L
                         case 3: Utils.circle(arr2, 0, 2, 1); break;	//B
                     }
-                    cpm[i * 3 + j][k] = (byte) (Utils.permToIdx(arr, 4, true) * 3 + Utils.permToIdx(arr2, 3, true));
+                    cpm[i * 3 + j][k] = (short) (Utils.permToIdx(arr, 4, true) * 3 + Utils.permToIdx(arr2, 3, true));
                 }
             }
         //corner orientation
@@ -81,39 +80,21 @@ public class Skewb {
         }
 
         // distance table
-        for (int i = 0; i < 360; i++)
-            ctd[i] = -1;
+        for (int i = 0; i < 360; i++) ctd[i] = -1;
         ctd[0] = 0;
         //int c = 1;
         Utils.createPrun(ctd, 5, ctm, 2);
 
-        for (int i = 0; i < 2187; i++)
-            for (int j = 0; j < 36; j++) cd[i][j] = -1;
-        cd[0][0] = 0;
-        int c = 1;
-        for (int d = 0; d < 7; d++) {
-            for (int i = 0; i < 2187; i++)
-                for (int j = 0; j < 36; j++)
-                    if (cd[i][j] == d)
-                        for (int k = 0; k < 4; k++) {
-                            int p = i, q = j;
-                            for (int l = 0; l < 2; l++) {
-                                p = com[p][k]; q = cpm[q][k];
-                                if (cd[p][q] == -1) {
-                                    cd[p][q] = (byte) (d + 1);
-                                    c++;
-                                }
-                            }
-                        }
-            Log.w("dct", d+1+" "+c);
-        }
+        for (int i = 0; i < 78732; i++) cd[i] = -1;
+        cd[0] = 0;
+        Utils.createPrun(cd, 7, com, cpm, 2);
     }
 
     private static String[] turn = {"R", "U", "L", "B"};
     private static String[] suff = {"'", ""};
     private static boolean search(int ct, int cp, int co, int d, int l) {
-        if (d == 0) return ctd[ct] == 0 && cd[co][cp] == 0;
-        if (ctd[ct] > d || cd[co][cp] > d) return false;
+        if (d == 0) return ct == 0 && co == 0 && cp == 0;
+        if (ctd[ct] > d || cd[co * 36 + cp] > d) return false;
         if (l == -2) {
             int n = r.nextInt(8);
             int k = n / 2;
@@ -123,7 +104,7 @@ public class Skewb {
                 p = ctm[p][k]; q = cpm[q][k]; r = com[r][k];
             }
             if (search(p, q, r, d-1, k)) {
-                seq[d] = k * 3 + n;
+                seq[d] = k << 1 | n;
                 //sol.append("RULB".charAt(k)).append(suff[n]).append(' ');
                 return true;
             }
@@ -133,7 +114,7 @@ public class Skewb {
                 for (int m = 0; m < 2; m++) {
                     p = ctm[p][k]; q = cpm[q][k]; r = com[r][k];
                     if (search(p, q, r, d-1, k)) {
-                        seq[d] = k * 3 + m;
+                        seq[d] = k << 1 | m;
                         //sol.append("RULB".charAt(k)).append(suff[m]).append(' ');
                         return true;
                     }
@@ -147,7 +128,7 @@ public class Skewb {
         do {
             cp = r.nextInt(36);
             co = r.nextInt(2187);
-        } while (cd[co][cp] < 0);
+        } while (cd[co * 36 + cp] < 0);
         for (int d = 0; d < 12; d++)
             if (search(ct, cp, co, d, -1)) {
                 if (d < 2) return scramble();
@@ -156,7 +137,7 @@ public class Skewb {
                 }
                 StringBuilder sol = new StringBuilder();
                 for (int i = 1; i <= d; i++)
-                    sol.append(turn[seq[i] / 3]).append(suff[seq[i] % 3]).append(" ");
+                    sol.append(turn[seq[i] >> 1]).append(suff[seq[i] & 1]).append(" ");
                 return sol.toString();
             }
         return "error";
@@ -167,10 +148,9 @@ public class Skewb {
         do {
             cp = r.nextInt(36);
             co = r.nextInt(2187);
-        } while (cd[co][cp] < 0);
+        } while (cd[co * 36 + cp] < 0);
         for (int d = 0; d < 12; d++)
             if (search(ct, cp, co, d, -1)) {
-                //Log.w("dct", "skw "+d);
                 if (d < minLen) return "error";
                 if (d < 11) {
                     //sol = new StringBuilder();
@@ -178,7 +158,7 @@ public class Skewb {
                 }
                 StringBuilder sol = new StringBuilder();
                 for (int i = 1; i <= 11; i++)
-                    sol.append(turn[seq[i] / 3]).append(suff[seq[i] % 3]).append(" ");
+                    sol.append(turn[seq[i] >> 1]).append(suff[seq[i] & 1]).append(" ");
                 return sol.toString();
             }
         return "error";
@@ -242,7 +222,6 @@ public class Skewb {
         }
     }
 
-    //private static String moveIdx = "RULB";
     public static int[] image(String scramble) {
         initColor();
         String[] s = scramble.split(" ");

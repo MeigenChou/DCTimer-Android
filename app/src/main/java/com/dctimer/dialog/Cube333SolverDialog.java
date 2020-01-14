@@ -20,6 +20,8 @@ import com.dctimer.util.Utils;
 import static com.dctimer.APP.itemStr;
 import static com.dctimer.APP.solve333;
 import static com.dctimer.APP.solverType;
+import static com.dctimer.util.Utils.getCheck;
+import static com.dctimer.util.Utils.setCheck;
 
 public class Cube333SolverDialog extends DialogFragment {
     private int position;
@@ -152,20 +154,5 @@ public class Cube333SolverDialog extends DialogFragment {
         });
         buidler.setView(view).setNegativeButton(R.string.btn_close, null);
         return buidler.create();
-    }
-
-    private void setCheck(int ch, CheckBox[] chks) {
-        for (int i = 0; i < chks.length; i++) {
-            chks[i].setChecked(((ch >> i) & 1) != 0);
-        }
-    }
-
-    private int getCheck(CheckBox[] chks) {
-        int ch = 0;
-        for (int i = 0; i < chks.length; i++) {
-            if (chks[i].isChecked())
-                ch |= (1 << i);
-        }
-        return ch;
     }
 }

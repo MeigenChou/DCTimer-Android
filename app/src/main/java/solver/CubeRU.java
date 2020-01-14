@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.Random;
 
 import static solver.Utils.permutationSign;
+import static solver.Utils.suff;
 import static solver.Utils.suffInv;
 
 public class CubeRU {
@@ -17,7 +18,7 @@ public class CubeRU {
 
     static {
         long time = System.currentTimeMillis();
-        int[] arr = new int[6];
+        int[] arr = new int[7];
         for (int i = 0; i < 720; i++) {
             for (int j = 0; j < 2; j++) {
                 Utils.idxToPerm(arr, i, 6, false);
@@ -38,7 +39,6 @@ public class CubeRU {
                 com[i][j] = (short) Utils.oriToIdx(arr, 6, true);
             }
         }
-        arr = new int[7];
         for (int i = 0; i < 5040; i++) {
             for (int j = 0; j < 2; j++) {
                 Utils.idxToPerm(arr, i, 7, false);
@@ -58,6 +58,7 @@ public class CubeRU {
     }
 
     private static String[] turn = {"U", "R"};
+    private static String[] turnlu = {"U", "L"};
     private static boolean search(int cp, int co, int ep, int depth, int lm) {
         if (depth == 0) return cp == 0 && co == 0 && ep == 0;
         if (cd[cp * 243 + co] > depth || epd[ep] > depth) return false;
@@ -77,7 +78,7 @@ public class CubeRU {
         return false;
     }
 
-    public static String scramble() {
+    public static String scramble(boolean lu) {
         int cp, co, ep;
         int[] c = new int[6], e = new int[7];
         Random r = new Random();
@@ -91,15 +92,16 @@ public class CubeRU {
             Utils.idxToPerm(c, cp, 6, false);
             Utils.idxToPerm(e, ep, 7, false);
         } while (permutationSign(c) != permutationSign(e));
-        for (int d = 0; d < 20; d++) {
+        for (int d = 0; d < 21; d++) {
             if (search(cp, co, ep, d, -1)) {
-                if (d < 2) return scramble();
+                if (d < 2) return scramble(lu);
                 if (d < 4) {
                     continue;
                 }
                 StringBuilder sb = new StringBuilder();
                 for (int i = 1; i <= d; i++) {
-                    sb.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
+                    if (lu) sb.append(turnlu[seq[i] / 3]).append(suff[seq[i] % 3]).append(" ");
+                    else sb.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
                 }
                 return sb.toString();
             }

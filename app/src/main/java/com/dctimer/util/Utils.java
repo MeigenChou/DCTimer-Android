@@ -509,6 +509,21 @@ public class Utils {
         }
     }
 
+    public static void setCheck(int ch, CheckBox[] chks) {
+        for (int i = 0; i < chks.length; i++) {
+            chks[i].setChecked(((ch >> i) & 1) != 0);
+        }
+    }
+
+    public static int getCheck(CheckBox[] chks) {
+        int ch = 0;
+        for (int i = 0; i < chks.length; i++) {
+            if (chks[i].isChecked())
+                ch |= (1 << i);
+        }
+        return ch;
+    }
+
     public static String getCubeState(byte[] value) {
         //byte[] state = new byte[54];
         int f = 0;

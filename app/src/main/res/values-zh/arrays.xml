@@ -215,13 +215,8 @@
 
     <array name="opt_solve_222">
         <item>不显示</item>
-        <item>D (黄)</item>
-        <item>U (白)</item>
-        <item>L (橙)</item>
-        <item>R (红)</item>
-        <item>F (绿)</item>
-        <item>B (蓝)</item>
-        <item>全部显示</item>
+        <item>显示底面求解</item>
+        <item>显示底层求解</item>
     </array>
 
     <array name="opt_timer_font">
@@ -331,7 +326,7 @@
     <array name="item_tools">
         <item>三阶求解</item>
         <item>SQ1复形求解</item>
-        <item>二阶底层求解</item>
+        <item>二阶求解</item>
     </array>
 
     <array name="item_scheme">

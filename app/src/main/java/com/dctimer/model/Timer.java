@@ -78,7 +78,7 @@ public class Timer {
                 dct.setTimerColor(0xffff0000);
                 timerTask = new InspectTask();
                 eightSec = twelveSec = false;
-                myTimer.schedule(timerTask, 0, 100);
+                myTimer.schedule(timerTask, 0, 200);
             } else {
                 if (APP.wca && timerTask != null) {
                     timerTask.cancel();

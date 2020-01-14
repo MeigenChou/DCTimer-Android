@@ -15,7 +15,6 @@ public class RouxMU {
     private static byte[] eod = new byte[32 * 16];
     private static String[] turn = {"M", "U"};
     private static int[] seq = new int[21];
-    //private static StringBuilder sb;
 
     static {
         int i, j;
@@ -68,7 +67,7 @@ public class RouxMU {
                                 }
                             }
                         }
-            Log.w("dct", d + 1 + "\t" + c);
+            //Log.w("dct", d + 1 + "\t" + c);
         }
     }
 
@@ -98,10 +97,9 @@ public class RouxMU {
         return a == b;
     }
 
-    public static String scramble() {
+    public static String scramble(Random r) {
         int ep, ct, cp;
         int[] p = new int[6];
-        Random r = new Random();
         do {
             ep = r.nextInt(720);
             ct = r.nextInt(4);
@@ -111,12 +109,12 @@ public class RouxMU {
         int eo = r.nextInt(32);
         for (int d = 0; d < 21; d++) {
             if (search(ep, eo, ct, cp, d, -1)) {
-                if (d < 2) return scramble();
+                if (d < 2) return scramble(r);
                 if (d < 4) {
                     continue;
                 }
                 StringBuilder sb = new StringBuilder();
-                for (int i = 1; i < d; i++)
+                for (int i = 1; i <= d; i++)
                     sb.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
                 return sb.toString();
             }

@@ -33,7 +33,6 @@ public class Domino {
                 }
                 cpm[i][j] = (char) Utils.get8Perm(arr, 8);
                 System.arraycopy(temp, 0, arr, 0, 8);
-                //Util.set8Perm(arr, i);
                 switch (j) {
                     case 0: Utils.circle(arr, 0, 3, 2, 1); break;	//U
                     case 1: Utils.swap(arr, 3, 7); break;	//L

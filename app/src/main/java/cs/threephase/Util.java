@@ -70,9 +70,7 @@ public class Util {
             read(Edge3.eprun, 1538, in);
             in.close();
         } catch (Exception e) {
-            System.out.println("e3 prun");
             Edge3.createPrun(handler);
-            System.out.println("edge done");
             try {
                 OutputStream out = new BufferedOutputStream(new FileOutputStream(APP.dataPath + "edge.dat"));
                 write(Edge3.eprun, 1538, out);

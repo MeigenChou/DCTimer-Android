@@ -11,7 +11,7 @@ public class Utils {
     public static String[] turn = {"U", "D", "L", "R", "F", "B"};
     public static String[] suff = {"", "2", "'"};
     public static String[] suffInv = {"'", "2", ""};
-    static  {
+    static {
         for (int i = 0; i < 25; i++) {
             Cnk[i][0] = 1;
             for (int j = Cnk[i][i] = 1; j < i; j++)

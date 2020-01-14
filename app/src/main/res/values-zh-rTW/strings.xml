@@ -138,6 +138,8 @@
     <string name="confirm_overwrite">已存在該檔案，是否覆蓋？</string>
     <string name="delete_items">是否刪除所選中的分組</string>
     <string name="solve_none">無</string>
+    <string name="cube2_face">底面</string>
+    <string name="cube2_layer">底層</string>
     <string name="side_u">U (白)</string>
     <string name="side_d">D (黄)</string>
     <string name="side_l">L (橙)</string>
@@ -145,7 +147,6 @@
     <string name="side_f">F (綠)</string>
     <string name="side_b">B (藍)</string>
     <string name="roux_s2">顯示Roux S2求解</string>
-    <string name="side_all">全部顯示</string>
     <!-- 杂项 -->
     <string name="cur_scramble">當前轉亂</string>
     <string name="scramble_len">轉亂長度：</string>

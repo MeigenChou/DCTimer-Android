@@ -252,13 +252,8 @@
 
     <array name="opt_solve_222">
         <item>None</item>
-        <item>D (yellow)</item>
-        <item>U (white)</item>
-        <item>L (orange)</item>
-        <item>R (red)</item>
-        <item>F (green)</item>
-        <item>B (blue)</item>
-        <item>All</item>
+        <item>Face</item>
+        <item>Layer</item>
     </array>
 
     <array name="opt_timer_font">

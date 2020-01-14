@@ -1513,8 +1513,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         handler.sendEmptyMessage(26);
                                     }
                                 }.start();
-                            }
-                            else {
+                            } else {
                                 currentScramble.updateHint(0);
                                 tvScramble.setText(currentScramble.getScramble());
                                 if (nextScramble != null)
@@ -1526,37 +1525,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }).setNegativeButton(R.string.btn_cancel, null).show();
                 break;
             case 30:    //二阶求解
-                new AlertDialog.Builder(context).setSingleChoiceItems(ITEMS_ID[6], solve222, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (solve222 == i) return;
-                        solve222 = i;
-                        stAdapter.setText(position, itemStr[6][i]);
-                        setPref("cube2l", i);
-                        final int sel = i;
-                        if (currentScramble.is222Scramble()) {
-                            if (i == 0) {
-                                currentScramble.updateHint(0);
-                                tvScramble.setText(currentScramble.getScramble());
-                                if (nextScramble != null)
-                                    nextScramble.updateHint(0);
-                            }
-                            else new Thread() {
-                                public void run() {
-                                    handler.sendEmptyMessage(4);
-                                    currentScramble.updateHint(sel);
-                                    showScramble();
-                                    scrambleState = SCRAMBLING_NEXT;
-                                    if (nextScramble != null)
-                                        nextScramble.updateHint(sel);
-                                    scrambleState = SCRAMBLE_DONE;
-                                    handler.sendEmptyMessage(26);
-                                }
-                            }.start();
-                        }
-                        dialogInterface.dismiss();
-                    }
-                }).setNegativeButton(R.string.btn_cancel, null).show();
+                Cube222SolverDialog.newInstance(position).show(getSupportFragmentManager(), "222Solver");
                 break;
             //配色设置
             case 32:    //n阶
@@ -2001,6 +1970,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void show222Hint(final int idx) {
+        if (currentScramble.is222Scramble()) {
+            if (idx == 0) {
+                currentScramble.updateHint(0);
+                tvScramble.setText(currentScramble.getScramble());
+                if (nextScramble != null)
+                    nextScramble.updateHint(0);
+            } else new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    handler.sendEmptyMessage(4);
+                    currentScramble.updateHint(idx);
+                    showScramble();
+                    scrambleState = SCRAMBLING_NEXT;
+                    if (nextScramble != null)
+                        nextScramble.updateHint(idx);
+                    scrambleState = SCRAMBLE_DONE;
+                    handler.sendEmptyMessage(26);
+                }
+            }).start();
+        }
+    }
+
     public void updateSettingList(int position, String text) {
         stAdapter.setText(position, text);
     }
@@ -2175,6 +2167,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         edit.remove("tapt");	edit.remove("intv");	edit.remove("opac");
         edit.remove("mclr");	edit.remove("prom");	edit.remove("sq1s");
         edit.remove("l1tp");	edit.remove("l2tp");    edit.remove("dark");
+        edit.remove("c2fl");
         edit.remove("hidls");	edit.remove("conft");	edit.remove("list1");
         edit.remove("list2");	edit.remove("timmh");	edit.remove("tiway");
         edit.remove("cface");	edit.remove("cside");	edit.remove("srate");

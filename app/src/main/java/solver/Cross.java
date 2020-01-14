@@ -348,7 +348,7 @@ public class Cross {
         int eo = 0, ep = 0, eof = 69 << 4;
         for (int i = 0; i < s.length; i++)
             if (s[i].length() != 0) {
-                int m = EOline.moveIdx[side].indexOf(s[i].charAt(0));
+                int m = EOline.moveStr[side].indexOf(s[i].charAt(0));
                 eo = eom[eo][m]; ep = epm[ep][m]; eof = eom[eof][m];
                 if (s[i].length() > 1) {
                     eo = eom[eo][m]; ep = epm[ep][m]; eof = eom[eof][m];
@@ -361,7 +361,7 @@ public class Cross {
             //Log.w("dct", ""+d);
             if (idaeofc(ep, eo, eof, d, -1)) {
                 StringBuilder sb = new StringBuilder("\n");
-                sb.append(sideStr[side]).append(": ").append(EOline.rotateIdx[side]);
+                sb.append(sideStr[side]).append(": ").append(EOline.rotateStr[side]);
                 for (int i = d; i > 0; i--)
                     sb.append(' ').append(turn[0][seq[i] / 3]).append(suff[seq[i] % 3]);
                 return sb.toString();

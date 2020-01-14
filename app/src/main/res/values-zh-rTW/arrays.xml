@@ -220,13 +220,8 @@
 
     <array name="opt_solve_222">
         <item>不顯示</item>
-        <item>D (黄)</item>
-        <item>U (白)</item>
-        <item>L (橙)</item>
-        <item>R (紅)</item>
-        <item>F (緑)</item>
-        <item>B (藍)</item>
-        <item>全部顯示</item>
+        <item>顯示底面求解</item>
+        <item>顯示底層求解</item>
     </array>
 
     <array name="opt_timer_font">

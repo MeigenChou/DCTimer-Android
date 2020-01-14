@@ -164,13 +164,6 @@ public class FullCube {
         return Shape.getShape2Idx(getParity() << 24 | ulx << 18 | urx << 12 | dlx << 6 | drx);
     }
 
-    void print() {
-        System.out.println(Integer.toHexString(ul));
-        System.out.println(Integer.toHexString(ur));
-        System.out.println(Integer.toHexString(dl));
-        System.out.println(Integer.toHexString(dr));
-    }
-
     int[] prm = new int[8];
 
     void getSquare(Square sq) {

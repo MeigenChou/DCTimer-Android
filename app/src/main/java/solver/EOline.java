@@ -71,9 +71,9 @@ public class EOline {
 
     private static String[] sideStr = {"DF DB", "DL DR", "UF UB", "UL UR",
             "LF LB", "LU LD", "RF RB", "RU RD", "FU FD", "FL FR", "BU BD", "BL BR"};
-    protected static String[] moveIdx = {"UDLRFB", "UDFBRL", "DURLFB", "DUFBLR",
+    protected static String[] moveStr = {"UDLRFB", "UDFBRL", "DURLFB", "DUFBLR",
             "RLUDFB", "RLFBDU", "LRDUFB", "LRFBUD", "BFLRUD", "BFUDRL", "FBLRDU", "FBDURL"};
-    protected static String[] rotateIdx = {"", "y", "z2", "z2 y", "z'", "z' y", "z", "z y", "x'", "x' y", "x", "x y"};
+    protected static String[] rotateStr = {"", "y", "z2", "z2 y", "z'", "z' y", "z", "z y", "x'", "x' y", "x", "x y"};
 
     private static boolean search(int eo, int ep, int depth, int l) {
         if (depth == 0) return eo == 0 && ep == 106;
@@ -99,7 +99,7 @@ public class EOline {
         int ep = 106, eo = 0;
         for (int d = 0; d < s.length; d++) {
             if (s[d].length() > 0) {
-                int o = moveIdx[face].indexOf(s[d].charAt(0));
+                int o = moveStr[face].indexOf(s[d].charAt(0));
                 ep = epm[ep][o]; eo = eom[eo][o];
                 if (s[d].length() > 1) {
                     eo = eom[eo][o]; ep = epm[ep][o];
@@ -114,7 +114,7 @@ public class EOline {
                 StringBuilder sb = new StringBuilder();
                 for (int j = d; j > 0; j--)
                     sb.append(' ').append(turn[seq[j] / 3]).append(suff[seq[j] % 3]);
-                return "\n" + sideStr[face] + ": " + rotateIdx[face] + sb.toString();
+                return "\n" + sideStr[face] + ": " + rotateStr[face] + sb.toString();
             }
         }
         return "\nerror";

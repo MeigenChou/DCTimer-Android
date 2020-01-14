@@ -141,6 +141,8 @@
     <string name="confirm_overwrite">File already exists. Overwrite?</string>
     <string name="delete_items">Delete selected items?</string>
     <string name="solve_none">None</string>
+    <string name="cube2_face">Face</string>
+    <string name="cube2_layer">Layer</string>
     <string name="side_u">U (white)</string>
     <string name="side_d">D (yellow)</string>
     <string name="side_l">L (orange)</string>
@@ -148,7 +150,6 @@
     <string name="side_f">F (green)</string>
     <string name="side_b">B (blue)</string>
     <string name="roux_s2">Solve Roux S2</string>
-    <string name="side_all">Display all</string>
     <!-- Others -->
     <string name="cur_scramble">Current scramble</string>
     <string name="scramble_len">"Length: "</string>

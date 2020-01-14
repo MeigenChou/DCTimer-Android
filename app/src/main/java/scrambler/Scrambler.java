@@ -196,7 +196,9 @@ public class Scrambler {
         } else if (isSqScramble()) {
             hint = Sq1Shape.solve(idx, scramble);
         } else if (is222Scramble()) {
-            hint = "\n" + Cube2l.solveFirstLayer(scramble, idx);
+            if (idx == 1)
+                hint = Cube2Face.solveFace(scramble, APP.solverType[4]);
+            else hint = Cube2Layer.solveFirstLayer(scramble, APP.solverType[4]);
         }
     }
 
@@ -233,7 +235,7 @@ public class Scrambler {
             case -29:	//二阶
                 scr = Cube222.scrambleWCA(); imageType = 2;
                 scrambleList.add(scr);
-                hint = "\n" + Cube2l.solveFirstLayer(scr, APP.solve222);
+                hint = solve222(scr);
                 break;
             case -28:	//三盲
                 String cube = Tools.randomCube();
@@ -327,13 +329,13 @@ public class Scrambler {
                 scr = Cube222.scramble();
                 imageType = 2;
                 scrambleList.add(scr);
-                hint = "\n" + Cube2l.solveFirstLayer(scr, APP.solve222);
+                hint = solve222(scr);
                 break;
             case 1:
                 scr = scrambleCube(2);
                 imageType = 2;
                 scrambleList.add(scr);
-                hint = "\n" + Cube2l.solveFirstLayer(scr, APP.solve222);
+                hint = solve222(scr);
                 break;
             case 2:
                 scr = megascramble(new String[][][] {{{"U", "D"}}, {{"R", "L"}}, {{"F", "B"}}}, cubesuff, scrambleLen);
@@ -878,18 +880,17 @@ public class Scrambler {
                 break;
             case 544:	//3x3x3 subsets
                 //scr = megascramble(new String[][] {{"U"}, {"R"}}, csuff);
-                scr = CubeRU.scramble(); imageType = 3;
+                scr = CubeRU.scramble(false); imageType = 3;
                 scrambleList.add(scr);
                 break;
             case 545:
                 //scr = megascramble(new String[][] {{"U"}, {"L"}, csuff);
-                scr = CubeRU.scramble().replace('R', 'L');
-                imageType = 3;
+                scr = CubeRU.scramble(true); imageType = 3;
                 scrambleList.add(scr);
                 break;
             case 546:
                 //scr = megascramble(new String[][] {{"U"}, {"M"}, csuff);
-                scr = RouxMU.scramble(); imageType = 3;
+                scr = RouxMU.scramble(r); imageType = 3;
                 scrambleList.add(scr);
                 break;
             case 547:
@@ -907,7 +908,7 @@ public class Scrambler {
             case 550:
                 //turn2 = new String[][] {{"U", "D"}, {"R", "L"}, {"F", "B"}};
                 //scr = megascramble(turn2, new String[] {"2"}, 25);
-                scr = HalfTurn.scramble(); imageType = 3;
+                scr = HalfTurn.scramble(r); imageType = 3;
                 scrambleList.add(scr);
                 break;
             case 551:	//LSLL
@@ -1051,7 +1052,7 @@ public class Scrambler {
 
     private String scramble333() {
         cubeState = Tools.randomCube();
-        return cube3.solution(cubeState, 21, 10000, 50, 2);
+        return cube3.solution(cubeState, 21, 50000, 50, 2);
     }
 
     private String scramble444() {
@@ -1109,6 +1110,17 @@ public class Scrambler {
                 return Petrus.solvePetrus(scramble, APP.solverType[2]);
             case 6:
                 return Cross.solveEofc(scramble, APP.solverType[1]);
+            default:
+                return "";
+        }
+    }
+
+    public String solve222(String scramble) {
+        switch (APP.solve222) {
+            case 1:
+                return Cube2Face.solveFace(scramble, APP.solverType[4]);
+            case 2:
+                return Cube2Layer.solveFirstLayer(scramble, APP.solverType[4]);
             default:
                 return "";
         }
