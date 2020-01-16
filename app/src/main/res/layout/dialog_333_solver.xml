@@ -217,7 +217,7 @@
                 android:textSize="18sp"/>
 
             <CheckBox
-                android:id="@+id/chk_s2"
+                android:id="@+id/chk_roux_s2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/roux_s2"
@@ -303,6 +303,15 @@
                 android:layout_marginTop="5dp"
                 android:paddingLeft="15dp"
                 android:text="DRB"
+                android:textSize="18sp"/>
+
+            <CheckBox
+                android:id="@+id/chk_petrus_s2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:paddingLeft="15dp"
+                android:text="@string/petrus_s2"
                 android:textSize="18sp"/>
         </LinearLayout>
     </LinearLayout>

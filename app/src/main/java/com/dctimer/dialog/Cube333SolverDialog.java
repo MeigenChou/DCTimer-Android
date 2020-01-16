@@ -65,8 +65,8 @@ public class Cube333SolverDialog extends DialogFragment {
                 }
             });
         }
-        final CheckBox[] chkp = new CheckBox[8];
-        chkids = new int[] {R.id.chk_ulf, R.id.chk_ulb, R.id.chk_urf, R.id.chk_urb, R.id.chk_dlf, R.id.chk_dlb, R.id.chk_drf, R.id.chk_drb};
+        final CheckBox[] chkp = new CheckBox[9];
+        chkids = new int[] {R.id.chk_ulf, R.id.chk_ulb, R.id.chk_urf, R.id.chk_urb, R.id.chk_dlf, R.id.chk_dlb, R.id.chk_drf, R.id.chk_drb, R.id.chk_petrus_s2};
         for (int i=0; i<chkp.length; i++) {
             chkp[i] = view.findViewById(chkids[i]);
             chkp[i].setOnClickListener(new View.OnClickListener() {

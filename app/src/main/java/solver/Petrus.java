@@ -1,30 +1,31 @@
 package solver;
 
+import android.util.Log;
+
 import static solver.Utils.suff;
 
 public class Petrus {
     static short[][] epm = new short[1320][6];
     static short[][] eom = new short[1760][6];
     private static byte[][] com = new byte[24][6];
-    private static short[][] epm2 = new short[72][3];
-    private static short[][] eom2 = new short[144][3];
-    private static short[][] com2 = new short[21][3];
+    private static short[][] epm2 = new short[132][6];
+    private static short[][] eom2 = new short[264][6];
 
     private static byte[] epd = new byte[1320];
     private static byte[] eod = new byte[1760];
+    private static byte[] ed2 = new byte[528];
 
-    private static byte[] ed2 = new byte[36 * 8];
+    private static int[] moves2 = {0, 3, 4};
 
-    private static int edgemv(int c, int p, int o, int f) {
+    private static int edgemv(int c, int po, int k, int f) {
         int[] n = new int[12], s = new int[3];
-        Utils.idxToPerm(s, p, 3, false);
-        int t, q = 3;
-        //Cross.idxToComb(n, s, c, 12, 3, o);
+        Utils.idxToPerm(s, po, k, false);
+        int t, q = k;
         for (t = 0; t < 12; t++)
             if (c >= Utils.Cnk[11 - t][q]) {
                 c -= Utils.Cnk[11 - t][q--];
-                n[t] = s[q] << 1 | o & 1;
-                o >>= 1;
+                n[t] = s[q] << 1 | po & 1;
+                po >>= 1;
             } else n[t] = -1;
         switch (f) {
             case 0: Cross.circle(n,  0,  1,  2, 3, 0); break;
@@ -34,38 +35,15 @@ public class Petrus {
             case 4: Cross.circle(n,  0,  7,  8, 4, 1); break;
             case 5: Cross.circle(n,  2,  5, 10, 6, 1); break;
         }
-        c = 0; q = 3;
+        c = po = 0; q = k;
         for (t = 0; t < 12; t++)
             if (n[t] >= 0) {
                 c += Utils.Cnk[11 - t][q--];
                 s[q] = n[t] >> 1;
-                o |= (n[t] & 1) << 2 - q;
+                po |= (n[t] & 1) << (k - 1 - q);
             }
-        p = Utils.permToIdx(s, 3, false);
-        return 6 * c + p << 3 | o;
-    }
-
-    private static int edgemv2(int c, int p, int f) {
-        int[] n = new int[9], s = new int[2];
-        Utils.idxToPerm(s, p, 2, false);
-        int t, q = 2;
-        for (t = 0; t < 9; t++)
-            if (c >= Utils.Cnk[8 - t][q]) {
-                c -= Utils.Cnk[8 - t][q--];
-                n[t] = s[q] << 1 | p & 1;
-                p >>= 1;
-            } else n[t] = -1;
-        switch (f) {
-
-        }
-        c = p = 0; q = 2;
-        for (t = 0; t < 9; t++)
-            if (n[t] >= 0) {
-                c += Utils.Cnk[8 - t][q--];
-                s[q] = n[t] >> 1;
-                p |= (n[t] & 1) << 1 - q;
-            }
-        return c * 2 + p << 2 | p;
+        int p = Utils.permToIdx(s, k, false);
+        return Utils.fact[k] * c + p << 3 | po;
     }
 
     private static boolean ini = false;
@@ -75,7 +53,7 @@ public class Petrus {
         for (i = 0; i < 220; i++)
             for (j = 0; j < 8; j++)
                 for (int k = 0; k < 6; k++) {
-                    int d = edgemv(i, j, j, k);
+                    int d = edgemv(i, j, 3, k);
                     if (j < 6) epm[i * 6 + j][k] = (short) (d >> 3);
                     eom[i * 8 + j][k] = (short) ((d / 48) << 3 | d & 7);
                 }
@@ -111,13 +89,35 @@ public class Petrus {
     private static boolean inip2 = false;
     private static void initp2() {
         if (inip2) return;
-        for (int i = 0; i < 36; i++)
-            for (int j = 0; j < 4; j++)
-                for (int k = 0; k < 3; k++) {
-                    int d = edgemv2(i, j, k);
-                    if (j < 2) epm2[i << 1 | j][k] = (short) (d >> 2);
-                    eom2[i << 2 | j][k] = (short) ((d / 8) << 2 | d & 3);
+        int i, j;
+        for (i = 0; i < 66; i++)
+            for (j = 0; j < 4; j++)
+                for (int k = 0; k < 6; k++) {
+                    int d = edgemv(i, j, 2, k);
+                    if (j < 2) epm2[i * 2 + j][k] = (short) (d >> 3);
+                    eom2[i * 4 + j][k] = (short) ((d / 16) << 2 | d & 3);
                 }
+        for (i = 0; i < 528; i++) ed2[i] = -1;
+        ed2[54 * 8] = ed2[10 * 8] = ed2[24 * 8] = 0;
+        int c = 3;
+        for (int d = 0; d < 6; d++) {
+            //c = 0;
+            for (i = 0; i < 132; i++)
+                for (j = 0; j < 4; j++)
+                    if (ed2[i * 4 + j] == d)
+                        for (int l = 0; l < 3; l++) {
+                            int x = i, y = j;
+                            for (int m = 0; m < 3; m++) {
+                                y = eom2[(x / 2) << 2 | y & 3][moves2[l]] & 3;
+                                x = epm2[x][moves2[l]];
+                                if (ed2[x * 4 + y] < 0) {
+                                    ed2[x * 4 + y] = (byte) (d + 1);
+                                    c++;
+                                }
+                            }
+                        }
+            Log.w("dct", d+1+"\t"+c);
+        }
         inip2 = true;
     }
 
@@ -127,8 +127,7 @@ public class Petrus {
             { "U", "D", "F", "B", "R", "L" }, { "U", "D", "L", "R", "F", "B" },
             { "U", "D", "R", "L", "B", "F" }, { "U", "D", "B", "F", "L", "R" }
     };
-    //private static StringBuilder sb = new StringBuilder();
-    private static String[] seq = new String[10];
+    private static int[] seq = new int[10];
     private static boolean idaPetrus1(int co, int ep, int eo, int depth, int lm, int block) {
         if (depth == 0) return co == 12 && ep == 132 && eo == 176;
         if (epd[ep] > depth || eod[eo] > depth) return false;
@@ -140,7 +139,27 @@ public class Petrus {
                     y = epm[y][i];
                     s = eom[s][i];
                     if (idaPetrus1(w, y, s, depth - 1, i, block)) {
-                        seq[depth] = turn[block][i] + suff[j];
+                        seq[depth] = i * 3 + j;
+                        return true;
+                    }
+                }
+            }
+        return false;
+    }
+
+    private static int[] solvedEp = {108, 20, 48}, solvedEo = {216, 40, 96}, solvedCo = {0, 15, 21};
+    private static boolean idaPetrus2(int co, int ep, int eo, int depth, int lm, int idx) {
+        if (depth == 0) return ep == solvedEp[idx] && eo == solvedEo[idx] && co == solvedCo[idx];
+        if (ed2[ep << 2 | eo & 3] > depth) return false;
+        for (int i = 0; i < 3; i++)
+            if (i != lm) {
+                int x = co, y = ep, s = eo;
+                for (int j = 0; j < 3; j++) {
+                    x = com[x][moves2[i]];
+                    y = epm2[y][moves2[i]];
+                    s = eom2[s][moves2[i]];
+                    if (idaPetrus2(x, y, s, depth - 1, i, idx)) {
+                        seq[depth] = moves2[i] * 3 + j;
                         return true;
                     }
                 }
@@ -151,16 +170,16 @@ public class Petrus {
     private static String[] moveIdx = {"DULRBF", "FBLRDU", "DUFBLR", "DURLFB",
             "UDFBRL", "UDLRFB", "UDRLBF", "UDBFLR"};
     private static String[] blks = {"ULF:", "ULB:", "URF:", "URB:", "DLF:", "DLB:", "DRF:", "DRB:"};
-    private static String petrus1(String scramble, int block) {
-        String[] scr = scramble.split(" ");
+    private static String petrus1(String scramble, int block, boolean solveS2) {
+        String[] s = scramble.split(" ");
         int co = 12, ep = 132, eo = 176;
-        for (int d = 0; d < scr.length; d++)
-            if (0 != scr[d].length()) {
-                int o = moveIdx[block].indexOf(scr[d].charAt(0));
+        for (int d = 0; d < s.length; d++)
+            if (0 != s[d].length()) {
+                int o = moveIdx[block].indexOf(s[d].charAt(0));
                 co = com[co][o]; ep = epm[ep][o]; eo = eom[eo][o];
-                if (scr[d].length() > 1) {
+                if (s[d].length() > 1) {
                     co = com[co][o]; eo = eom[eo][o]; ep = epm[ep][o];
-                    if (scr[d].charAt(1) == '\'') {
+                    if (s[d].charAt(1) == '\'') {
                         co = com[co][o]; eo = eom[eo][o]; ep = epm[ep][o];
                     }
                 }
@@ -171,18 +190,70 @@ public class Petrus {
                 StringBuilder sb = new StringBuilder("\n");
                 sb.append(blks[block]);
                 for (int i = d; i > 0; i--)
-                    sb.append(' ').append(seq[i]);
+                    sb.append(' ').append(turn[block][seq[i] / 3]).append(suff[seq[i] % 3]);
+                if (solveS2) sb.append(petrus2(s, block, d));
                 return sb.toString();
             }
         }
         return "\nerror";
     }
 
+    static String petrus2(String[] s, int block, int d) {
+        int[] co2 = new int[3], ep2 = new int[3], eo2 = new int[3];
+        for (int i = 0; i < 3; i++) {
+            co2[i] = solvedCo[i];
+            ep2[i] = solvedEp[i];
+            eo2[i] = solvedEo[i];
+        }
+        for (int i = 0; i < s.length; i++) {
+            if (s[i].length() > 0) {
+                int o = moveIdx[block].indexOf(s[i].charAt(0));
+                for (int j = 0; j < 3; j++) {
+                    co2[j] = com[co2[j]][o];
+                    ep2[j] = epm2[ep2[j]][o];
+                    eo2[j] = eom2[eo2[j]][o];
+                    if (s[i].length() > 1) {
+                        co2[j] = com[co2[j]][o];
+                        ep2[j] = epm2[ep2[j]][o];
+                        eo2[j] = eom2[eo2[j]][o];
+                        if (s[i].charAt(1) == '\'') {
+                            co2[j] = com[co2[j]][o];
+                            ep2[j] = epm2[ep2[j]][o];
+                            eo2[j] = eom2[eo2[j]][o];
+                        }
+                    }
+                }
+            }
+        }
+        for (int i = d; i > 0; i--) {
+            int m = seq[i] / 3, n = seq[i] % 3;
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k <= n; k++) {
+                    co2[j] = com[co2[j]][m];
+                    ep2[j] = epm2[ep2[j]][m];
+                    eo2[j] = eom2[eo2[j]][m];
+                }
+            }
+        }
+        for (int l = 0; l < 10; l++) {
+            for (int idx = 0; idx < 3; idx++)
+                if (idaPetrus2(co2[idx], ep2[idx], eo2[idx], l, -1, idx)) {
+                    StringBuilder sb = new StringBuilder(" /");
+                    for (int i = l; i > 0; i--)
+                        sb.append(' ').append(turn[block][seq[i] / 3]).append(suff[seq[i] % 3]);
+                    return sb.toString();
+                }
+        }
+        return " / error";
+    }
+
     public static String solvePetrus(String scramble, int block) {
         initp1();
+        boolean solveS2 = ((block >> 8) & 1) != 0;
+        if (solveS2) initp2();
         StringBuilder s = new StringBuilder("\n");
         for (int i = 0; i < 8; i++) {
-            if (((block >> i) & 1) != 0) s.append(petrus1(scramble, i));
+            if (((block >> i) & 1) != 0) s.append(petrus1(scramble, i, solveS2));
         }
         return s.toString();
     }

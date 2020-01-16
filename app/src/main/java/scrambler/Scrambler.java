@@ -100,6 +100,7 @@ public class Scrambler {
     }
 
     public String getScrambleWithHint(boolean landscape) {
+        if (scramble == null) return "error";
         if (landscape) return scramble.replace("\n", " ") + hint;
         return scramble + hint;
     }

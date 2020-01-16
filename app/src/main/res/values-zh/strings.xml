@@ -146,6 +146,7 @@
     <string name="side_r">R (红)</string>
     <string name="side_f">F (绿)</string>
     <string name="side_b">B (蓝)</string>
+    <string name="petrus_s2">显示Petrus S2求解</string>
     <string name="roux_s2">显示Roux S2求解</string>
     <!-- 杂项 -->
     <string name="cur_scramble">当前打乱</string>

@@ -286,19 +286,17 @@ public class Utils {
 
     public static void showKeyboard(final EditText et) {
         et.requestFocus();
-        new Thread() {
+        et.postDelayed(new Runnable() {
+            @Override
             public void run() {
-                try {
-                    sleep(300);
-                    InputMethodManager imm = (InputMethodManager) et.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(et, 0);
-                } catch (Exception e) { }
+                InputMethodManager imm = (InputMethodManager) et.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(et, 0);
             }
-        }.start();
+        }, 300);
     }
 
     public static void hideKeyboard(EditText et) {
-        InputMethodManager imm = (InputMethodManager)et.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) et.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(et.getWindowToken(), 0);
     }
 

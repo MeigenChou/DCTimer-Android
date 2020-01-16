@@ -149,6 +149,7 @@
     <string name="side_r">R (red)</string>
     <string name="side_f">F (green)</string>
     <string name="side_b">B (blue)</string>
+    <string name="petrus_s2">Solve Petrus S2</string>
     <string name="roux_s2">Solve Roux S2</string>
     <!-- Others -->
     <string name="cur_scramble">Current scramble</string>
