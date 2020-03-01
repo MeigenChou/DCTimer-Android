@@ -1,8 +1,3 @@
-<a href="https://play.google.com/store/apps/details?id=com.dctimer" target="_blank">
-  <img alt="Get it on Google Play"
-       src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height="60"/>
-</a>
-
 # English
 Main features:
 - Supports all WCA's official scrambles, including random-state scramble of 2x2-4x4, Pyraminx, Square-1, Clock and Skewb.
@@ -22,7 +17,7 @@ Main features:
 
 # License GPLv3
 
-    Copyright (C) 2019  Meigen Chou
+    Copyright (C) 2020  Meigen Chou
 
     This program is free software: you can redistribute it and/or modify it under the terms
     of the GNU General Public License as published by the Free Software Foundation, either

@@ -97,35 +97,35 @@ public class StringUtils {
     }
 
     public static int getImageType(String scramble) {
-        if (scramble.matches("([FRU][2']?\\s*)+")) return 2;
-        if (scramble.matches("([ULRB]'?\\s*)+")) return Scrambler.TYPE_SKW;
-        if (scramble.matches("([ULRBulrb]'?\\s*)+")) return Scrambler.TYPE_PYR;
-        if (scramble.matches("([xyzFRUBLDMfrubld][2']?\\s*)+")) return 3;
-        if (scramble.matches("(([xyzFRUBLDfru]|[FRU]w)[2']?\\s*)+")) return 4;
-        if (scramble.matches("(([FRUBLDfrubld]|([FRUBLD]w?))[2']?\\s*)+")) return 5;
-        if (scramble.matches("(((2?[FRUBLD])|(3[FRU]w))[2']?\\s*)+")) return 6;
-        if (scramble.matches("(([23]?[FRUBLD])[2']?\\s*)+")) return 7;
+        if (scramble.matches("([URF][2']?\\s*)+")) return 2;
+        if (scramble.matches("([URLB]'?\\s*)+")) return Scrambler.TYPE_SKW;
+        if (scramble.matches("([URLBurlb]'?\\s*)+")) return Scrambler.TYPE_PYR;
+        if (scramble.matches("([xyzURFDLBMurfdlb][2']?\\s*)+")) return 3;
+        if (scramble.matches("(([xyzURFDLBurf]|[URF]w)[2']?\\s*)+")) return 4;
+        if (scramble.matches("(([URFDLBurfdlb]|[URFDLB]w)[2']?\\s*)+")) return 5;
+        if (scramble.matches("((2?[URFDLB]w?|[urfdlb]|3[URF]w?|3[urf])[2']?\\s*)+")) return 6;
+        if (scramble.matches("(([23]?[URFDLB]w?|3?[urfdlb])[2']?\\s*)+")) return 7;
         return 0;
     }
 
     public static int getImageType(String scramble, int type) {
         switch (type) {
             case 1: //二阶
-                return scramble.matches("([FRU][2']?\\s*)+") ? 2 : 0;
+                return scramble.matches("([URFDLB][2']?\\s*)+") ? 2 : 0;
             case 2: //三阶
-                return scramble.matches("([xyzFRUBLDMfrubld][2']?\\s*)+") ? 3 : 0;
+                return scramble.matches("([xyzURFDLBMurfdlb][2']?\\s*)+") ? 3 : 0;
             case 3: //四阶
-                return scramble.matches("(([xyzFRUBLDfru]|[FRU]w)[2']?\\s*)+") ? 4 : 0;
+                return scramble.matches("(([xyzURFDLBurf]|[URF]w)[2']?\\s*)+") ? 4 : 0;
             case 4: //五阶
-                return scramble.matches("(([FRUBLDfrubld]|([FRUBLD]w?))[2']?\\s*)+") ? 5 : 0;
+                return scramble.matches("(([URFDLBurfdlb]|[URFDLB]w)[2']?\\s*)+") ? 5 : 0;
             case 5: //六阶
-                return scramble.matches("(((2?[FRUBLD])|(3[FRU]w))[2']?\\s*)+") ? 6 : 0;
+                return scramble.matches("((2?[URFDLB]w?|[urfdlb]|3[URF]w?|3[urf])[2']?\\s*)+") ? 6 : 0;
             case 6: //七阶
-                return scramble.matches("(([23]?[FRUBLD])[2']?\\s*)+") ? 7 : 0;
+                return scramble.matches("(([23]?[URFDLB]w?|3?[urfdlb])[2']?\\s*)+") ? 7 : 0;
             case 7: //金字塔
-                return scramble.matches("([ULRBulrb]'?\\s*)+") ? Scrambler.TYPE_PYR : 0;
+                return scramble.matches("([URLBulrb]'?\\s*)+") ? Scrambler.TYPE_PYR : 0;
             case 8: //斜转
-                return scramble.matches("([ULRB]'?\\s*)+") ? Scrambler.TYPE_SKW : 0;
+                return scramble.matches("([URLB]'?\\s*)+") ? Scrambler.TYPE_SKW : 0;
             default:
                 return 0;
         }

@@ -151,6 +151,8 @@
     <!-- 杂项 -->
     <string name="cur_scramble">當前轉亂</string>
     <string name="scramble_len">轉亂長度：</string>
+    <string name="hint_cross">提示 - Cross</string>
+    <string name="hint_xcross">提示 - Xcross</string>
     <string name="enter_time">輸入時間</string>
     <string name="enter_length">輸入長度 (3~1000)</string>
     <string name="stat_save">保存統計</string>

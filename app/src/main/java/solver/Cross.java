@@ -1,6 +1,7 @@
 package solver;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 import com.dctimer.APP;
@@ -20,6 +21,7 @@ public class Cross {
     private static byte[][] fcm = new byte[24][6], fem = new byte[24][6];
     private static byte[][] fecd = new byte[4][576];
     private static int[] seq = new int[20];
+    private static ArrayList<String> solutions;
     public static boolean ini, inif;
     private static String[] color = {"D", "U", "L", "R", "F", "B"};
     private static String[][] moveIdx = {
@@ -30,7 +32,7 @@ public class Cross {
             { "UDLRFB", "DULRBF", "RLBFUD", "LRFBUD", "BFLRUD", "FBRLUD" },
             { "UDLRFB", "DULRBF", "RLFBDU", "LRBFDU", "BFRLDU", "FBLRDU" }
     };
-    private static String[][] rotIdx = {
+    private static String[][] rotateStr = {
             { "", "z2", "z'", "z", "x'", "x" }, { "z2", "", "z", "z'", "x", "x'" },
             { "z", "z'", "", "z2", "y", "y'" }, { "z'", "z", "z2", "", "y'", "y" },
             { "x", "x'", "y'", "y", "", "y2" }, { "x'", "x", "y", "y'", "y2", "" }
@@ -206,6 +208,33 @@ public class Cross {
         return false;
     }
 
+    private static void idacross(int ep, int eo, int d, int lm, int face, int[] path) {
+        if (d == 0) {
+            if (ep == 0 && eo == 0) {
+                StringBuilder sb = new StringBuilder(rotateStr[0][face]);
+                int qtm = 0;
+                for (int i = path.length - 1; i > 0; i--) {
+                    sb.append(' ').append(turn[0][path[i] / 3]).append(suff[path[i] % 3]);
+                    if (path[i] % 3 == 1) qtm += 2;
+                    else qtm++;
+                }
+                sb.append("\t").append(path.length - 1).append("f, ").append(qtm).append("q");
+                solutions.add(sb.toString());
+            }
+            return;
+        }
+        if (epd[ep] > d || eod[eo] > d) return;
+        for (int i = 0; i < 6; i++)
+            if (i != lm && !(i/2 == lm/2 && i < lm)) {
+                int epx = ep, eox = eo;
+                for (int j = 0; j < 3; j++) {
+                    epx = epm[epx][i]; eox = eom[eox][i];
+                    path[d] = i * 3 + j;
+                    idacross(epx, eox, d - 1, i, face, path);
+                }
+            }
+    }
+
     private static boolean idaeofc(int ep, int eo, int eof, int d, int lm) {
         if (d == 0) return 0 == ep && 0 == eo && (eof & 15) == 0;
         if (epd[ep] > d || eod[eo] > d || eofd[eof] > d) return false;
@@ -223,16 +252,16 @@ public class Cross {
         return false;
     }
 
-    private static boolean idaxcross(int ep, int eo, int co, int feo, int idx, int d, int l) {
-        if (d == 0) return ep == 0 && eo == 0 && co == (idx + 4) * 3 && feo == idx * 2;
-        if (epd[ep] > d || eod[eo] > d || fecd[idx][feo * 24 + co] > d) return false;
+    private static boolean idaxcross(int ep, int eo, int co, int feo, int slot, int d, int lm) {
+        if (d == 0) return ep == 0 && eo == 0 && co == (slot + 4) * 3 && feo == slot * 2;
+        if (epd[ep] > d || eod[eo] > d || fecd[slot][feo * 24 + co] > d) return false;
         for (int i = 0; i < 6; i++)
-            if (i != l) {
+            if (i != lm) {
                 int cox = co, epx = ep, eox = eo, fx = feo;
                 for (int j = 0; j < 3; j++) {
                     cox = fcm[cox][i]; fx = fem[fx][i];
                     epx = epm[epx][i]; eox = eom[eox][i];
-                    if (idaxcross(epx, eox, cox, fx, idx, d - 1, i)) {
+                    if (idaxcross(epx, eox, cox, fx, slot, d - 1, i)) {
                         seq[d] = i * 3 + j;
                         //sb.insert(0, " " + turn[0][i] + suff[j]);
                         return true;
@@ -242,55 +271,120 @@ public class Cross {
         return false;
     }
 
-    public static String solveCross(String scramble, int side) {
-        init();
-        StringBuilder s = new StringBuilder("\n");
-        for (int i = 0; i < 6; i++) {
-            if (((side >> i) & 1) != 0) s.append(cross(scramble, 0, i));
+    private static void idaxcross(int ep, int eo, int co, int feo, int slot, int d, int lm, int face, int[] path) {
+        if (d == 0) {
+            if (ep == 0 && eo == 0 && co == (slot + 4) * 3 && feo == slot * 2) {
+                StringBuilder sb = new StringBuilder(rotateStr[0][face]);
+                int qtm = 0;
+                for (int i = path.length - 1; i > 0; i--) {
+                    sb.append(' ').append(turn[0][path[i] / 3]).append(suff[path[i] % 3]);
+                    if (path[i] % 3 == 1) qtm += 2;
+                    else qtm++;
+                }
+                sb.append("\t").append(path.length - 1).append("f, ").append(qtm).append("q");
+                solutions.add(sb.toString());
+            }
+            return;
         }
-        return s.toString();
+        if (epd[ep] > d || eod[eo] > d || fecd[slot][feo * 24 + co] > d) return;
+        for (int i = 0; i < 6; i++)
+            if (i != lm && !(i/2 == lm/2 && i < lm)) {
+                int cox = co, epx = ep, eox = eo, fx = feo;
+                for (int j = 0; j < 3; j++) {
+                    cox = fcm[cox][i]; fx = fem[fx][i];
+                    epx = epm[epx][i]; eox = eom[eox][i];
+                    path[d] = i * 3 + j;
+                    idaxcross(epx, eox, cox, fx, slot, d - 1, i, face, path);
+                }
+            }
     }
 
-    private static String cross(String scramble, int face, int side) {
-        String[] q = scramble.split(" ");
+    private static String cross(String scramble, int side, int face) {
+        String[] s = scramble.split(" ");
         int eo = 0, ep = 0;
-        for (int i = 0; i < q.length; i++)
-            if (q[i].length() != 0) {
-                int m = moveIdx[face][side].indexOf(q[i].charAt(0));
+        for (int i = 0; i < s.length; i++)
+            if (s[i].length() != 0) {
+                int m = moveIdx[side][face].indexOf(s[i].charAt(0));
                 eo = eom[eo][m]; ep = epm[ep][m];
-                if (q[i].length() > 1) {
+                if (s[i].length() > 1) {
                     eo = eom[eo][m];
                     ep = epm[ep][m];
-                    if (q[i].charAt(1) == '\'') {
+                    if (s[i].charAt(1) == '\'') {
                         eo = eom[eo][m];
                         ep = epm[ep][m];
                     }
                 }
             }
         //sb = new StringBuilder();
-        for (int d = 0; d < 10; d++) {
+        for (int d = 0; d < 9; d++) {
             if (idacross(ep, eo, d, -1)) {
-                //Log.w("dct", i+"\t"+sb.toString());
-                StringBuilder sb = new StringBuilder("\nCross(");
-                sb.append(color[side]).append("): ").append(rotIdx[face][side]);
+                StringBuilder sb = new StringBuilder(rotateStr[side][face]);
                 for (int i = d; i > 0; i--)
-                    sb.append(' ').append(turn[face][seq[i] / 3]).append(suff[seq[i] % 3]);
+                    sb.append(' ').append(turn[side][seq[i] / 3]).append(suff[seq[i] % 3]);
                 return sb.toString();
             }
         }
-        return "\nerror";
+        return "error";
     }
 
-    public static String solveXcross(String scramble, int side) {
+    public static String solveCross(String scramble, int face) {
         init();
         StringBuilder sb = new StringBuilder("\n");
-        for (int i = 0; i < 6; i++) {
-            if (((side >> i) & 1) != 0) sb.append(xcross(scramble, i));
+        for (int i = 0; i < 6; i++)
+            if (((face >> i) & 1) != 0) {
+                sb.append("\nCross(").append(color[i]).append("): ");
+                sb.append(cross(scramble, 0, i));
+            }
+        return sb.toString();
+    }
+
+    public static String solveCross(String scramble) {
+        init();
+        //String[] s = scramble.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for (int face = 0; face < 6; face++) {
+            sb.append(color[face]).append(": ");
+            sb.append(cross(scramble, 0, face)).append("\n");
         }
         return sb.toString();
     }
 
-    private static String xcross(String scramble, int side) {
+    public static String solveCrossf(String scramble) {
+        init();
+        String[] s = scramble.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for (int face = 0; face < 6; face++) {
+            int eo = 0, ep = 0;
+            for (int i = 0; i < s.length; i++)
+                if (s[i].length() != 0) {
+                    int m = moveIdx[0][face].indexOf(s[i].charAt(0));
+                    eo = eom[eo][m]; ep = epm[ep][m];
+                    if (s[i].length() > 1) {
+                        eo = eom[eo][m]; ep = epm[ep][m];
+                        if (s[i].charAt(1) == '\'') {
+                            eo = eom[eo][m]; ep = epm[ep][m];
+                        }
+                    }
+                }
+            solutions = new ArrayList<>();
+            for (int d = 0; d < 9; d++) {
+                int[] path = new int[d + 1];
+                idacross(ep, eo, d, -1, face, path);
+                if (solutions.size() > 0) {
+                    sb.append(color[face]).append(":\n");
+                    for (String sol : solutions) {
+                        int idx = sol.indexOf('\t');
+                        sb.append("  ").append(sol.substring(0, idx)).append("\n");
+                    }
+                    sb.append("\n");
+                    break;
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+    private static String xcross(String scramble, int face) {
         String[] s = scramble.split(" ");
         int[] co = new int[4], feo = new int[4];
         for (int i = 0; i < 4; i++) {
@@ -300,7 +394,7 @@ public class Cross {
         int ep = 0, eo = 0;
         for (int d = 0; d < s.length; d++)
             if (s[d].length() != 0) {
-                int m = moveIdx[0][side].indexOf(s[d].charAt(0));
+                int m = moveIdx[0][face].indexOf(s[d].charAt(0));
                 for (int i = 0; i < 4; i++) {
                     co[i] = fcm[co[i]][m];
                     feo[i] = fem[feo[i]][m];
@@ -321,16 +415,90 @@ public class Cross {
                     }
                 }
             }
-        for (int d = 0; d < 12; d++)
+        for (int d = 0; d < 11; d++)
             for (int slot = 0; slot < 4; slot++)
                 if (idaxcross(ep, eo, co[slot], feo[slot], slot, d, -1)) {
-                    StringBuilder sb = new StringBuilder("\nXCross(");
-                    sb.append(color[side]).append("): ").append(rotIdx[0][side]);
+                    StringBuilder sb = new StringBuilder(rotateStr[0][face]);
                     for (int i = d; i > 0; i--)
                         sb.append(' ').append(turn[0][seq[i] / 3]).append(suff[seq[i] % 3]);
                     return sb.toString();
                 }
-        return "\nerror";
+        return "error";
+    }
+
+    public static String solveXcross(String scramble, int face) {
+        init();
+        StringBuilder sb = new StringBuilder("\n");
+        for (int i = 0; i < 6; i++)
+            if (((face >> i) & 1) != 0) {
+                sb.append("\nXCross(").append(color[face]).append("): ");
+                sb.append(xcross(scramble, i));
+            }
+        return sb.toString();
+    }
+
+    public static String solveXcross(String scramble) {
+        init();
+        StringBuilder sb = new StringBuilder();
+        for (int face = 0; face < 6; face++) {
+            sb.append(color[face]).append(": ");
+            sb.append(xcross(scramble, face)).append("\n");
+        }
+        return sb.toString();
+    }
+
+    public static String solveXcrossf(String scramble) {
+        init();
+        String[] s = scramble.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for (int face = 0; face < 6; face++) {
+            int[] co = new int[4], feo = new int[4];
+            for (int i = 0; i < 4; i++) {
+                co[i] = (i + 4) * 3;
+                feo[i] = i * 2;
+            }
+            int ep = 0, eo = 0;
+            for (int d = 0; d < s.length; d++)
+                if (s[d].length() != 0) {
+                    int m = moveIdx[0][face].indexOf(s[d].charAt(0));
+                    for (int i = 0; i < 4; i++) {
+                        co[i] = fcm[co[i]][m];
+                        feo[i] = fem[feo[i]][m];
+                    }
+                    ep = epm[ep][m]; eo = eom[eo][m];
+                    if (s[d].length() > 1) {
+                        for (int i = 0; i < 4; i++) {
+                            co[i] = fcm[co[i]][m];
+                            feo[i] = fem[feo[i]][m];
+                        }
+                        eo = eom[eo][m]; ep = epm[ep][m];
+                        if (s[d].charAt(1) == '\'') {
+                            for (int i = 0; i < 4; i++) {
+                                co[i] = fcm[co[i]][m];
+                                feo[i] = fem[feo[i]][m];
+                            }
+                            eo = eom[eo][m]; ep = epm[ep][m];
+                        }
+                    }
+                }
+            solutions = new ArrayList<>();
+            for (int d = 0; d < 11; d++) {
+                for (int slot = 0; slot < 4; slot++) {
+                    int[] path = new int[d + 1];
+                    idaxcross(ep, eo, co[slot], feo[slot], slot, d, -1, face, path);
+                }
+                if (solutions.size() > 0) {
+                    sb.append(color[face]).append(":\n");
+                    for (String sol : solutions) {
+                        int idx = sol.indexOf('\t');
+                        sb.append("  ").append(sol.substring(0, idx)).append("\n");
+                    }
+                    sb.append("\n");
+                    break;
+                }
+            }
+        }
+        return sb.toString();
     }
 
     public static String solveEofc(String scramble, int side) {

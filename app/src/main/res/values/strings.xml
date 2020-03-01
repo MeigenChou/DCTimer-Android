@@ -154,6 +154,8 @@
     <!-- Others -->
     <string name="cur_scramble">Current scramble</string>
     <string name="scramble_len">"Length: "</string>
+    <string name="hint_cross">Hint - Cross</string>
+    <string name="hint_xcross">Hint - Xcross</string>
     <string name="enter_time">Enter time</string>
     <string name="enter_length">Enter length (3~1000):</string>
     <string name="stat_save">Save statistics</string>

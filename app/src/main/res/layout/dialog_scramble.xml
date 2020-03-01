@@ -56,8 +56,77 @@
                     android:inputType="number"
                     android:imeOptions="actionDone|flagNoExtractUi"
                     android:maxLength="3"
+                    android:textSize="15sp"
                     android:textColor="#000" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_hintc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:background="@drawable/item_background" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/hint_cross"
+                    android:textSize="15sp"
+                    android:textColor="#000" />
+
+                <ImageView
+                    android:id="@+id/iv_arrowc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_down"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/text_hintc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:textSize="14sp"
+                android:textColor="#000" />
+
+            <LinearLayout
+                android:id="@+id/ll_hintx"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:background="@drawable/item_background" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/hint_xcross"
+                    android:textSize="15sp"
+                    android:textColor="#000" />
+
+                <ImageView
+                    android:id="@+id/iv_arrowx"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_down"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/text_hintx"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:textSize="14sp"
+                android:textColor="#000" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

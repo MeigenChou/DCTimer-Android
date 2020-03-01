@@ -12,8 +12,7 @@ public class Cube222 {
     private static short[][] twstmv = new short[729][3];
 
     private static String[] turn = {"U", "R", "F"};
-    private static int[] seq = new int[12];
-    //private static StringBuilder sol;
+    //private static int[] seq = new int[12];
     private static Random r = new Random();
 
     static {
@@ -405,7 +404,7 @@ public class Cube222 {
         Utils.createPrun(twst, 6, twstmv, 3);
     }
 
-    private static boolean search(int p, int t, int l, int lm) {
+    private static boolean search(int p, int t, int l, int lm, int[] seq) {
         //searches for solution, from position p|t, in l moves exactly. last move was lm, current depth=d
         if (l == 0) return p == 0 && t == 0;
         if (perm[p] > l || twst[t] > l) return false;
@@ -414,13 +413,12 @@ public class Cube222 {
             int m = n / 3;
             n %= 3;
             int q = p, s = t;
-            for (int a = 0; a < n; a++) {
+            for (int a = 0; a <= n; a++) {
                 q = permmv[q][m];
                 s = twstmv[s][m];
             }
-            if (search(q, s, l - 1, m)) {
+            if (search(q, s, l - 1, m, seq)) {
                 seq[l] = m * 3 + n;
-                //sol.append(turn[m]).append(suff[n]).append(' ');
                 return true;
             }
         } else for (int m = 0; m < 3; m++) {
@@ -429,9 +427,8 @@ public class Cube222 {
                 for (int a = 0; a < 3; a++) {
                     q = permmv[q][m];
                     s = twstmv[s][m];
-                    if (search(q, s, l - 1, m)) {
+                    if (search(q, s, l - 1, m, seq)) {
                         seq[l] = m * 3 + a;
-                        //sol.append(turn[m]).append(suff[a]).append(' ');
                         return true;
                     }
                 }
@@ -441,8 +438,9 @@ public class Cube222 {
     }
 
     private static String solve(int p, int o) {
+        int[] seq = new int[12];
         for (int l = 0; l < 12; l++) {
-            if (search(p, o, l, -1))  {
+            if (search(p, o, l, -1, seq))  {
                 if (l < 2) return "error";
                 if (l < 4) {
                     //sol = new StringBuilder();
@@ -460,16 +458,20 @@ public class Cube222 {
     private static String scramble(int minLen) {
         int p = r.nextInt(5040);
         int o = r.nextInt(729);
+        int[] seq = new int[12];
         for (int l = 0; l < 12; l++) {
-            if (search(p, o, l, -1)) {
+            if (search(p, o, l, -1, seq)) {
                 if (l < minLen) return "error";
                 if (l < 11) {
-                    //sol = new StringBuilder();
-                    search(p, o, 11, -2);
+                    search(p, o, 11, -2, seq);
                 }
                 StringBuilder sol = new StringBuilder();
-                for (int i = 1; i <= 11; i++)
+                int last = -1;
+                for (int i = 1; i <= 11; i++) {
+                    if (last == seq[i] / 3) return "error";
                     sol.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
+                    last = seq[i] / 3;
+                }
                 return sol.toString();
             }
         }

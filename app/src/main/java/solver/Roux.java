@@ -285,7 +285,7 @@ public class Roux {
             {"UDBFLR", "DUBFRL", "RLBFUD", "LRBFDU"}
     };
 
-    private static String[] sideStr = {"LU", "LD", "FU", "FD","RU", "RD", "BU", "BD"};
+    private static String[] sideStr = {"LU", "LD", "FU", "FD", "RU", "RD", "BU", "BD"};
     private static String[] rotateIdx = {"", "y", "z2", "y'"}; //"z", "z'", "", "z2", "y", "y'"
     private static String[] rotateIdx2 = {"", " x2", " x'", " x"};
     private static int[] scp = {50, 7, 49, 12}, sco = {225, 27, 221, 61};

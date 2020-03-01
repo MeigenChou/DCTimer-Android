@@ -283,6 +283,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        rvResult.setLayoutManager(lm);
         btnSession = findViewById(R.id.btn_session);
         btnSession.setOnClickListener(mOnClickListener);
+        btnSession.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                sessionManager.updateSessionCount();
+                Intent intent = new Intent(context, SessionActivity.class);
+                startActivityForResult(intent, 2);
+                return true;
+            }
+        });
         ImageButton btSearch = findViewById(R.id.btn_search);
         btSearch.setOnClickListener(mOnClickListener);
         ImageButton btClear = findViewById(R.id.btn_clear);
@@ -514,7 +523,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final LayoutInflater factory;
         switch (id) {
             case R.id.action_scramble:  //打乱详情
-                ScrambleDetailDialog scrambleDialog = ScrambleDetailDialog.newInstance(currentScramble.getScramble(), currentScramble.getScrambleLen());
+                ScrambleDetailDialog scrambleDialog = ScrambleDetailDialog.newInstance(currentScramble.getScramble(), currentScramble.getScrambleLen(), currentScramble.is333Scramble() ? 3 : 0);
                 scrambleDialog.show(getSupportFragmentManager(), "ScrambleDetail");
                 break;
             case R.id.action_import_scramble:   //导入打乱
@@ -2733,7 +2742,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         inputTime();
                         break;
                     case 6: //查看打乱详情
-                        ScrambleDetailDialog scrambleDialog = ScrambleDetailDialog.newInstance(currentScramble.getScramble(), currentScramble.getScrambleLen());
+                        ScrambleDetailDialog scrambleDialog = ScrambleDetailDialog.newInstance(currentScramble.getScramble(), currentScramble.getScrambleLen(), currentScramble.is333Scramble() ? 3 : 0);
                         scrambleDialog.show(getSupportFragmentManager(), "ScrambleDetail");
                         break;
                     case 7: //切换分组
@@ -2846,7 +2855,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     case 2: addTime(time + penaltyTime, 2); break;
                                 }
                             }
-                        }).setNegativeButton(R.string.btn_delete, new DialogInterface.OnClickListener() {
+                        }).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         newScramble();

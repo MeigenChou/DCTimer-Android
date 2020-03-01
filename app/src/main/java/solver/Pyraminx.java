@@ -1,8 +1,5 @@
 package solver;
 
-import android.util.Log;
-
-import java.util.Arrays;
 import java.util.Random;
 
 public class Pyraminx {
@@ -10,13 +7,12 @@ public class Pyraminx {
     private static byte[] perm = new byte[360];	// pruning table for edge permutation
     private static byte[] twst = new byte[2592];	// pruning table for edge orientation+twist
     private static short[][] permmv = new short[360][4];	// transition table for edge permutation
-    private static byte[][] twstmv = new byte[81][4];	// transition table for corner orientation
-    private static byte[][] flipmv = new byte[32][4];	// transition table for edge orientation
+    private static short[][] twstmv = new short[81][4];	// transition table for corner orientation
+    private static short[][] flipmv = new short[32][4];	// transition table for edge orientation
     private static String[] turn = {"L", "R", "B", "U"};
     private static String[] suff = {"'", ""};
     private static String[] tips = {"l", "r", "b", "u"};
-    //private static StringBuilder sol;
-    private static int[] seq = new int[12];
+    //private static int[] seq = new int[12];
     private static int[] img = new int[91];
     private static Random r = new Random();
 
@@ -48,16 +44,16 @@ public class Pyraminx {
     }
 
     private static String scramble(int p, int t) {
+        int[] seq = new int[12];
         for (int l = 0; l < 12; l++)
-            if (search(p, t, l, -1)) {
+            if (search(p, t, l, -1, seq)) {
                 if (l < 2) return "error";
                 if (l < 4) {
-                    //sol = new StringBuilder();
                     continue;
                 }
                 StringBuilder sol = new StringBuilder();
                 for (int i = 1; i <= l; i++)
-                    sol.append(turn[seq[i] / 3]).append(suff[seq[i] % 3]).append(" ");
+                    sol.append(turn[seq[i] >> 1]).append(suff[seq[i] & 1]).append(" ");
                 for (int i = 0; i < 4; i++) {
                     int j = r.nextInt(3);
                     if (j < 2)
@@ -85,17 +81,21 @@ public class Pyraminx {
                 a++;
         }
         int t = r.nextInt(2592), q = r.nextInt(360);
+        int[] seq = new int[12];
         for (int l = 0; l < 12; l++) {
-            if (search(q, t, l, -1)) {
-                //Log.w("dct", "pyr "+l);
+            if (search(q, t, l, -1, seq)) {
                 if (l + a < minLen) return "error";
                 if (l < 11) {
                     //sol = new StringBuilder();
-                    search(q, t, 11, -2);
+                    search(q, t, 11, -2, seq);
                 }
                 StringBuilder sol = new StringBuilder();
-                for (int i = 1; i <= 11; i++)
-                    sol.append(turn[seq[i] / 3]).append(suff[seq[i] % 3]).append(" ");
+                int last = -1;
+                for (int i = 1; i <= 11; i++) {
+                    if (last == seq[i] / 2) return "error";
+                    sol.append(turn[seq[i] >> 1]).append(suff[seq[i] & 1]).append(" ");
+                    last = seq[i] >> 1;
+                }
                 for (int i = 0; i < 4; i++) {
                     if (tip[i] < 2)
                         sol.append(tips[i]).append(suff[tip[i]]).append(' ');
@@ -106,7 +106,7 @@ public class Pyraminx {
         return "error";
     }
 
-    private static boolean search(int p, int t, int l, int lm) {
+    private static boolean search(int p, int t, int l, int lm, int[] seq) {
         //searches for solution, from position p|t, in l moves exactly. last move was lm, current depth=d
         if (l == 0) return p == 0 && t == 0;
         if (perm[p] > l || twst[t] > l) return false;
@@ -116,13 +116,12 @@ public class Pyraminx {
             m = n / 2;
             n %= 2;
             q = p; s = t;
-            for (a = 0; a < n; a++) {
+            for (a = 0; a <= n; a++) {
                 q = permmv[q][m];
                 s = twstmv[s >> 5][m] << 5 | flipmv[s & 31][m];
             }
-            if (search(q, s, l - 1, m)) {
-                seq[l] = m * 3 + n;
-                //sol.append(turn[m]).append(suff[n]).append(' ');
+            if (search(q, s, l - 1, m, seq)) {
+                seq[l] = m << 1 | n;
                 return true;
             }
         } else for (m = 0; m < 4; m++) {
@@ -131,9 +130,8 @@ public class Pyraminx {
                 for (a = 0; a < 2; a++) {
                     q = permmv[q][m];
                     s = twstmv[s >> 5][m] << 5 | flipmv[s & 31][m];
-                    if (search(q, s, l - 1, m)) {
-                        seq[l] = m * 3 + a;
-                        //sol.append(turn[m]).append(suff[a]).append(' ');
+                    if (search(q, s, l - 1, m, seq)) {
+                        seq[l] = m << 1 | a;
                         return true;
                     }
                 }
@@ -160,30 +158,13 @@ public class Pyraminx {
         //initialise arrays
         for (p = 0; p < 81; p++)
             for (m = 0; m < 4; m++) {
-                twstmv[p][m] = (byte) gettwsmv(p, m);
-                if (p < 32) flipmv[p][m] = (byte) getflpmv(p, m);
+                twstmv[p][m] = (short) gettwsmv(p, m);
+                if (p < 32) flipmv[p][m] = (short) getflpmv(p, m);
             }
         //fill it
         for (p = 0; p < 2592; p++) twst[p] = -1;
         twst[0] = 0;
-        int n = 1;
-        for (l = 0; l <= 6; l++) {
-            for (p = 0; p < 2592; p++)
-                if (twst[p] == l)
-                    for (m = 0; m < 4; m++) {
-                        q = p >> 5;
-                        r = p & 31;
-                        for (c = 0; c < 2; c++) {
-                            q = twstmv[q][m];
-                            r = flipmv[r][m];
-                            if (twst[q << 5 | r] == -1) {
-                                twst[q << 5 | r] = (byte) (l + 1);
-                                n++;
-                            }
-                        }
-                    }
-            //Log.w("dct", l+1+"\t"+n);
-        }
+        Utils.createPrun(twst, 7, twstmv, flipmv, 2);
     }
 
     private static int getprmmv(int p, int m) {

@@ -220,7 +220,7 @@ public class Scrambler {
             case -27:	//三单
             case -25:	//脚拧
                 scr = scramble333();
-                imageType = scr.startsWith("Error") ? 0 : 3;
+                imageType = 3;
                 scrambleList.add(scr);
                 hint = solve333(scr);
                 break;
@@ -258,10 +258,9 @@ public class Scrambler {
                         axis3 = seq[seq.length - 1].charAt(0);
                         axis4 = seq[seq.length - 2].charAt(0);
                     }
-
                 } while (axis1 == 'F' || (axis1 == 'B' && axis2 == 'F') || axis3 == 'R' || (axis3 == 'L' && axis4 == 'R'));
                 scr = "R' U' F " + scr + "R' U' F";
-                imageType = scr.startsWith("Error") ? 0 : 3;
+                imageType = 3;
                 scrambleList.add(scr);
                 break;
             case -24:	//五魔
@@ -389,56 +388,56 @@ public class Scrambler {
                 break;
             case 33:
                 scr = scramble333();
-                imageType = scr.startsWith("Error") ? 0 : 3;
+                imageType = 3;
                 scrambleList.add(scr);
                 hint = solve333(scr);
                 Log.w("dct", "求解 "+hint);
                 break;
             case 34:    //F2L
                 scr = cube3.solution(cubeState = Tools.randomCrossSolved());
-                imageType = scr.startsWith("Error") ? 0 : 3;
+                imageType = 3;
                 scrambleList.add(scr);
                 break;
             case 35:    //OLL
                 scr = cube3.solution(cubeState = Tools.randomLastLayer());
-                imageType = scr.startsWith("Error") ? 0 : 3;
+                imageType = 3;
                 scrambleList.add(scr);
                 break;
             case 36:    //PLL
                 do {
                     scr = cube3.solution(cubeState = Tools.randomPLL());
                 } while (scr.length() < 6);
-                imageType = scr.startsWith("Error") ? 0 : 3;
+                imageType = 3;
                 scrambleList.add(scr);
                 break;
             case 37:
                 scr = cube3.solution(cubeState = Tools.randomCornerSolved());
-                imageType = scr.startsWith("Error") ? 0 : 3;
+                imageType = 3;
                 scrambleList.add(scr);
                 break;
             case 38:
                 scr = cube3.solution(cubeState = Tools.randomEdgeSolved());
-                imageType = scr.startsWith("Error") ? 0 : 3;
+                imageType = 3;
                 scrambleList.add(scr);
                 break;
             case 39:
                 scr = cube3.solution(cubeState = Tools.randomLastSlot());
-                imageType = scr.startsWith("Error") ? 0 : 3;
+                imageType = 3;
                 scrambleList.add(scr);
                 break;
             case 40:
                 scr = cube3.solution(cubeState = Tools.randomZBLastLayer());
-                imageType = scr.startsWith("Error") ? 0 : 3;
+                imageType = 3;
                 scrambleList.add(scr);
                 break;
             case 41:
                 scr = cube3.solution(cubeState = Tools.randomEdgeOfLastLayer());
-                imageType = scr.startsWith("Error") ? 0 : 3;
+                imageType = 3;
                 scrambleList.add(scr);
                 break;
             case 42:
                 scr = cube3.solution(cubeState = Tools.randomCornerOfLastLayer());
-                imageType = scr.startsWith("Error") ? 0 : 3;
+                imageType = 3;
                 scrambleList.add(scr);
                 break;
             case 43:
@@ -1053,7 +1052,11 @@ public class Scrambler {
 
     private String scramble333() {
         cubeState = Tools.randomCube();
-        return cube3.solution(cubeState, 21, 50000, 50, 2);
+        String scramble;
+        do {
+            scramble = cube3.solution(cubeState, 21, 50000, 50, 2);
+        } while (scramble.startsWith("Error"));
+        return scramble;
     }
 
     private String scramble444() {
@@ -1440,17 +1443,12 @@ public class Scrambler {
     private void drawNNN(int size, String scramble, int[] colors, int width, Paint p, Canvas c) {
         int[] img;
         if (APP.isImportScr) {
-            Cube.parse(size);
-            img = cubeImage(scramble, size);
+            img = Cube.image(scramble, size);
         } else if (size == 3 || size == 2) {
-            Cube.parse(size);
-            img = cubeImage(scramble, size);
+            img = Cube.image(scramble, size);
         } else if (size > 7) img = Cube.image();
         else if ((category & 0x1f) == 0) img = Cube.image();
-        else {
-            Cube.parse(size);
-            img = cubeImage(scramble, size);
-        }
+        else img = Cube.image(scramble, size);
         int a = (width * 92 / 100) / (size * 4), i, j, d = 0, b = size;
         int sp = width / 50;
         int imageWid = 4 * a * b + sp * 3, imageHei = 3 * a * b + sp * 2;
@@ -1829,93 +1827,6 @@ public class Scrambler {
                     new float[] {stx + dx3, stx + (dx3 + dx2) / 2, stx + (dx1 + dx3) / 2},
                     new float[] {sty + dy3, sty + (dy3 + dy2) / 2, sty + (dy1 + dy3) / 2}, true);
         }
-    }
-
-    public int[] cubeImage(String scramble, int size) {
-        switch (size) {
-            case 3:
-                scramble = scramble.replace("M'", "r R'").replace("M2", "r2 R2").replace("M", "r' R")
-                        .replace("x'", "r' L").replace("x2", "r2 L2").replace("x", "r L'")
-                        .replace("y'", "u' D").replace("y2", "u2 D2").replace("y", "u D'")
-                        .replace("z'", "f' B").replace("z2", "f2 B2").replace("z", "f B'");
-                break;
-            case 4:
-                scramble = scramble.replace("x'", "r' l").replace("x2", "r2 l2").replace("x", "r l'")
-                        .replace("y'", "u' d").replace("y2", "u2 d2").replace("y", "u d'")
-                        .replace("z'", "f' b").replace("z2", "f2 b2").replace("z", "f b'");
-                break;
-            case 6:
-            case 7:
-                //scramble = scramble.replace("3R", "3r r'");
-                break;
-        }
-        String[] s = scramble.split(" ");
-        int k, len = s.length;
-        if (len > 0) {
-            int[] seq = new int[len];
-            int count = 0;
-            for (int i = 0; i < len; i++) {
-                k = 0;
-                if (s[i].length() > 0) {
-                    switch (s[i].charAt(0)) {
-                        case '5': k = 4;  break;
-                        case '4': k = 3;  break;
-                        case '3': k = 2;  break;
-                        case '2': k = 1;  break;
-                        case 'R': seq[count] = 16;  break;
-                        case 'L': seq[count] = 4;   break;
-                        case 'U': seq[count] = 12;  break;
-                        case 'D': seq[count] = 0;   break;
-                        case 'F': seq[count] = 20;  break;
-                        case 'B': seq[count] = 8;   break;
-                        case 'r': seq[count] = 16;  k = 1;  break;
-                        case 'l': seq[count] = 4;   k = 1;  break;
-                        case 'u': seq[count] = 12;  k = 1;  break;
-                        case 'd': seq[count] = 0;   k = 1;  break;
-                        case 'f': seq[count] = 20;  k = 1;  break;
-                        case 'b': seq[count] = 8;   k = 1;  break;
-                    }
-                    if (s[i].length() > 1) {
-                        switch (s[i].charAt(1)) {
-                            case '\'': seq[count] += 2; break;
-                            case '2': seq[count]++;     break;
-                            case 0xb3: k = 2;   break;
-                            case 0xb2: k = 1;   break;
-                            case 'w': seq[count] += 24; break;
-                            case 'r':
-                            case 'R': seq[count] = 16;  break;
-                            case 'l':
-                            case 'L': seq[count] = 4;   break;
-                            case 'u':
-                            case 'U': seq[count] = 12;  break;
-                            case 'd':
-                            case 'D': seq[count] = 0;   break;
-                            case 'f':
-                            case 'F': seq[count] = 20;  break;
-                            case 'b':
-                            case 'B': seq[count] = 8;   break;
-                        }
-                        if (s[i].length() > 2) {
-                            switch (s[i].charAt(2)) {
-                                case '\'': seq[count] += 2; break;
-                                case '2':  seq[count]++;    break;
-                            }
-                            if (s[i].length() > 3) {
-                                switch (s[i].charAt(3)) {
-                                    case '\'': seq[count] += 2; break;
-                                    case '2':  seq[count]++;    break;
-                                }
-                            }
-                        }
-                    }
-                    seq[count++] += k * 24;
-                }
-            }
-            Cube.seq = new int[count];
-            for (int i = 0; i < count; i++)
-                Cube.seq[i] = seq[i];
-        }
-        return Cube.image();
     }
 
     private void drawSideBackground(Paint p, Canvas c, int width, int cx, int cy, int clockRadius,

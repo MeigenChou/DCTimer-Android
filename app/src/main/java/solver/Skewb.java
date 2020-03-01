@@ -1,7 +1,5 @@
 package solver;
 
-import android.util.Log;
-
 import java.util.Random;
 
 public class Skewb {
@@ -11,7 +9,7 @@ public class Skewb {
     private static byte[] ctd = new byte[360];
     private static byte[] cd = new byte[2187 * 36];
     private static Random r = new Random();
-    private static int[] seq = new int[12];
+    //private static int[] seq = new int[12];
 
     static {
         // move tables
@@ -82,7 +80,6 @@ public class Skewb {
         // distance table
         for (int i = 0; i < 360; i++) ctd[i] = -1;
         ctd[0] = 0;
-        //int c = 1;
         Utils.createPrun(ctd, 5, ctm, 2);
 
         for (int i = 0; i < 78732; i++) cd[i] = -1;
@@ -92,7 +89,7 @@ public class Skewb {
 
     private static String[] turn = {"R", "U", "L", "B"};
     private static String[] suff = {"'", ""};
-    private static boolean search(int ct, int cp, int co, int d, int l) {
+    private static boolean search(int ct, int cp, int co, int d, int l, int[] seq) {
         if (d == 0) return ct == 0 && co == 0 && cp == 0;
         if (ctd[ct] > d || cd[co * 36 + cp] > d) return false;
         if (l == -2) {
@@ -100,12 +97,11 @@ public class Skewb {
             int k = n / 2;
             n %= 2;
             int p = ct, q = cp, r = co;
-            for (int m = 0; m < n; m++) {
+            for (int m = 0; m <= n; m++) {
                 p = ctm[p][k]; q = cpm[q][k]; r = com[r][k];
             }
-            if (search(p, q, r, d-1, k)) {
+            if (search(p, q, r, d-1, k, seq)) {
                 seq[d] = k << 1 | n;
-                //sol.append("RULB".charAt(k)).append(suff[n]).append(' ');
                 return true;
             }
         } else for (int k = 0; k < 4; k++)
@@ -113,9 +109,8 @@ public class Skewb {
                 int p = ct, q = cp, r = co;
                 for (int m = 0; m < 2; m++) {
                     p = ctm[p][k]; q = cpm[q][k]; r = com[r][k];
-                    if (search(p, q, r, d-1, k)) {
+                    if (search(p, q, r, d-1, k, seq)) {
                         seq[d] = k << 1 | m;
-                        //sol.append("RULB".charAt(k)).append(suff[m]).append(' ');
                         return true;
                     }
                 }
@@ -129,8 +124,9 @@ public class Skewb {
             cp = r.nextInt(36);
             co = r.nextInt(2187);
         } while (cd[co * 36 + cp] < 0);
+        int[] seq = new int[12];
         for (int d = 0; d < 12; d++)
-            if (search(ct, cp, co, d, -1)) {
+            if (search(ct, cp, co, d, -1, seq)) {
                 if (d < 2) return scramble();
                 if (d < 4) {
                     continue;
@@ -149,16 +145,21 @@ public class Skewb {
             cp = r.nextInt(36);
             co = r.nextInt(2187);
         } while (cd[co * 36 + cp] < 0);
+        int[] seq = new int[12];
         for (int d = 0; d < 12; d++)
-            if (search(ct, cp, co, d, -1)) {
+            if (search(ct, cp, co, d, -1, seq)) {
                 if (d < minLen) return "error";
                 if (d < 11) {
                     //sol = new StringBuilder();
-                    search(ct, cp, co, 11, -2);
+                    search(ct, cp, co, 11, -2, seq);
                 }
                 StringBuilder sol = new StringBuilder();
-                for (int i = 1; i <= 11; i++)
+                int last = -1;
+                for (int i = 1; i <= 11; i++) {
+                    if (last == seq[i] / 2) return "error";
                     sol.append(turn[seq[i] >> 1]).append(suff[seq[i] & 1]).append(" ");
+                    last = seq[i] >> 1;
+                }
                 return sol.toString();
             }
         return "error";

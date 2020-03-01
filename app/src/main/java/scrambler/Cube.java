@@ -8,7 +8,7 @@ public class Cube {
     private static boolean mult = true;
     // list of available colours
     private static int[] colors = {0, 5, 1, 3, 2, 4}; //stores colours used
-    public static int[] seq;  // move sequences
+    private static int[] seq;  // move sequences
     private static int[] posit;  // facelet array
     private static int[] colorPerm = {0, 1, 2, 3, 4, 5};
     //private static StringBuilder sb;
@@ -32,9 +32,9 @@ public class Cube {
         }
     }
 
-    public static void parse(int s) {
-        size = s;
-    }
+//    public static void parse(int s) {
+//        size = s;
+//    }
 
     private static void scramble() {
         int i;
@@ -49,7 +49,7 @@ public class Cube {
         seq = new int[seqLen]; // moves generated so far
         seql = 0;
         // reset slice/direction counters
-        char moved = 0;
+        int moved = 0;
         // while generated sequence not long enough
         while (seql + moved < seqLen) {
             int ax, sl, q;
@@ -94,7 +94,7 @@ public class Cube {
 
     public static String scramblestring(int siz, int sel) {
         seqLen = sel;
-        parse(siz);
+        size = siz;
         scramble();
         int j, k;
         StringBuilder sb = new StringBuilder();
@@ -115,6 +115,90 @@ public class Cube {
             if (j != 0) sb.append(" 2'".charAt(j));
         }
         return sb.toString();
+    }
+
+    public static int[] image(String scramble, int size) {
+        switch (Cube.size = size) {
+            case 3:
+                scramble = scramble.replace("M'", "r R'").replace("M2", "r2 R2").replace("M", "r' R")
+                        .replace("x'", "r' L").replace("x2", "r2 L2").replace("x", "r L'")
+                        .replace("y'", "u' D").replace("y2", "u2 D2").replace("y", "u D'")
+                        .replace("z'", "f' B").replace("z2", "f2 B2").replace("z", "f B'");
+                break;
+            case 4:
+                scramble = scramble.replace("x'", "r' l").replace("x2", "r2 l2").replace("x", "r l'")
+                        .replace("y'", "u' d").replace("y2", "u2 d2").replace("y", "u d'")
+                        .replace("z'", "f' b").replace("z2", "f2 b2").replace("z", "f b'");
+                break;
+            case 6:
+            case 7:
+                //scramble = scramble.replace("3R", "3r r'");
+                break;
+        }
+        String[] s = scramble.split(" ");
+        int k, len = s.length;
+        if (len > 0) {
+            seq = new int[len];
+            int count = 0;
+            for (int i = 0; i < len; i++) {
+                k = 0;
+                if (s[i].length() > 0) {
+                    switch (s[i].charAt(0)) {
+                        case '5': k = 4;  break;
+                        case '4': k = 3;  break;
+                        case '3': k = 2;  break;
+                        case '2': k = 1;  break;
+                        case 'R': seq[count] = 16;  break;
+                        case 'L': seq[count] = 4;   break;
+                        case 'U': seq[count] = 12;  break;
+                        case 'D': seq[count] = 0;   break;
+                        case 'F': seq[count] = 20;  break;
+                        case 'B': seq[count] = 8;   break;
+                        case 'r': seq[count] = 16;  k = 1;  break;
+                        case 'l': seq[count] = 4;   k = 1;  break;
+                        case 'u': seq[count] = 12;  k = 1;  break;
+                        case 'd': seq[count] = 0;   k = 1;  break;
+                        case 'f': seq[count] = 20;  k = 1;  break;
+                        case 'b': seq[count] = 8;   k = 1;  break;
+                    }
+                    if (s[i].length() > 1) {
+                        switch (s[i].charAt(1)) {
+                            case '\'': seq[count] += 2; break;
+                            case '2': seq[count]++;     break;
+                            case 0xb3: k = 2;   break;
+                            case 0xb2: k = 1;   break;
+                            case 'w': seq[count] += 24; break;
+                            case 'r':
+                            case 'R': seq[count] = 16;  break;
+                            case 'l':
+                            case 'L': seq[count] = 4;   break;
+                            case 'u':
+                            case 'U': seq[count] = 12;  break;
+                            case 'd':
+                            case 'D': seq[count] = 0;   break;
+                            case 'f':
+                            case 'F': seq[count] = 20;  break;
+                            case 'b':
+                            case 'B': seq[count] = 8;   break;
+                        }
+                        if (s[i].length() > 2) {
+                            switch (s[i].charAt(2)) {
+                                case '\'': seq[count] += 2; break;
+                                case '2':  seq[count]++;    break;
+                            }
+                            if (s[i].length() > 3) {
+                                switch (s[i].charAt(3)) {
+                                    case '\'': seq[count] += 2; break;
+                                    case '2':  seq[count]++;    break;
+                                }
+                            }
+                        }
+                    }
+                    seq[count++] += k * 24;
+                }
+            }
+        }
+        return image();
     }
 
     public static int[] image() {
