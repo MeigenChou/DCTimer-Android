@@ -156,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             R.array.opt_average, R.array.opt_solve_333, R.array.opt_solve_222, R.array.opt_mega_scheme,
             R.array.opt_timer_font, R.array.opt_screen_ori, R.array.opt_vibrate, R.array.opt_vibrate_time,
             R.array.opt_sq_solver, R.array.opt_time_format, R.array.opt_average, R.array.opt_gesture, R.array.opt_decimal};
-    private String[] scrambleItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,8 +193,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         dataPath = getFilesDir().getParent() + "/databases/";
         app.readPref(sp);
-        scrambleItems = getResources().getStringArray(R.array.item_scr);
-        for (int i=0; i<itemStr.length; i++)
+        StringUtils.scrambleItems = getResources().getStringArray(R.array.item_scr);
+        StringUtils.scrambleSubitems = new String[StringUtils.scrambleItems.length][];
+        int[] subid = {R.array.item_wca, R.array.item_222, R.array.item_333, R.array.item_444, R.array.item_555, R.array.item_666,
+                R.array.item_666, R.array.item_mega, R.array.item_pyr, R.array.item_sq1, R.array.item_clk, R.array.item_skewb,
+                R.array.item_mnl, R.array.item_cmt, R.array.item_gear, R.array.item_smc, R.array.item_15p, R.array.item_other,
+                R.array.item_333_sub, R.array.item_bandage, R.array.item_minx_sub, R.array.item_relay};
+        for (int i = 0; i < subid.length; i++)
+            StringUtils.scrambleSubitems[i] = getResources().getStringArray(subid[i]);
+        for (int i = 0; i < itemStr.length; i++)
             itemStr[i] = getResources().getStringArray(ITEMS_ID[i]);
         version = Utils.getVersion(context);
         if (screenOn) acquireWakeLock();
@@ -326,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new Object[] {promptToSave, itemStr[14][avg1Type], String.valueOf(avg1len), itemStr[4][avg2Type], String.valueOf(avg2len), selectSession},
                 new int[6]);
         Utils.addSection(headers, cells, getString(R.string.title_tools), getResources().getStringArray(R.array.item_tools),
-                new int[5], new Object[] {itemStr[5][solve333], itemStr[12][solveSq1], itemStr[6][solve222]}, new int[5]);
+                new int[6], new Object[] {itemStr[5][solve333], itemStr[12][solveSq1], itemStr[6][solve222], ""}, new int[6]);
         Utils.addSection(headers, cells, getString(R.string.title_scheme), getResources().getStringArray(R.array.item_scheme),
                 new int[5], new Object[] {"", "", "", "", itemStr[7][megaColorScheme]}, new int[5]);
         Utils.addSection(headers, cells, getString(R.string.title_interface), getResources().getStringArray(R.array.item_interface),
@@ -910,8 +916,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {    //按钮监听事件
         @Override
         public void onClick(View v) {
-            final int sel = v.getId();
-            switch (sel) {
+            switch (v.getId()) {
                 case R.id.bt_scramble:	//选择打乱
                     selectIdx = scrambleIdx >> 5;
                     selectIdx2 = scrambleIdx & 0x1f;
@@ -919,12 +924,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     int resId = R.layout.popup_window;
                     view = LayoutInflater.from(context).inflate(resId, null);
                     ListView listView = view.findViewById(R.id.list1);
-                    s1Adapter = new TextAdapter(context, scrambleItems, selectIdx +1, 1);
+                    s1Adapter = new TextAdapter(context, StringUtils.scrambleItems, selectIdx + 1, 1);
                     listView.setAdapter(s1Adapter);
                     listView.setSelection(selectIdx + 1);
                     listView.setOnItemClickListener(mOnItemListener);
                     listView = view.findViewById(R.id.list2);
-                    s2Adapter = new TextAdapter(context, getResources().getStringArray(Utils.getScrambleArrayId(selectIdx)), selectIdx2, 2);
+                    s2Adapter = new TextAdapter(context, StringUtils.scrambleSubitems[selectIdx + 1], selectIdx2, 2);
                     listView.setAdapter(s2Adapter);
                     if (selectIdx2 > 5) listView.setSelection(selectIdx2 - 5);
                     //listView.setSelection(0);
@@ -1023,7 +1028,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         selectIdx = arg2 - 1;
                         s1Adapter.setSelectItem(selectIdx + 1);
                         s1Adapter.notifyDataSetChanged();
-                        s2Adapter.setData(getResources().getStringArray(Utils.getScrambleArrayId(arg2 - 1)));
+                        s2Adapter.setData(StringUtils.scrambleSubitems[selectIdx + 1]);
                         if (selectIdx == (scrambleIdx >> 5)) {
                             int idx2 = scrambleIdx & 0x1f;
                             if (selectIdx == -1 && idx2 > 7) idx2--;
@@ -1536,8 +1541,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case 30:    //二阶求解
                 Cube222SolverDialog.newInstance(position).show(getSupportFragmentManager(), "222Solver");
                 break;
+            case 31:    //Pyraminx V求解
+                final boolean[] chks = new boolean[4];
+                for (int i=0; i<4; i++)
+                    chks[i] = (((solvePyr >> i) & 1) != 0);
+                new AlertDialog.Builder(context).setMultiChoiceItems(R.array.opt_solve_pyr, chks, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                        int s = 0;
+                        for (int j=0; j<4; j++)
+                            if (chks[j]) s |= 1 << j;
+                        setPref("pyrv", solvePyr = s);
+                        if (currentScramble.isPyrScramble()) {
+                            if (s > 0) {
+                                final int sel = s;
+                                new Thread() {
+                                    public void run() {
+                                        handler.sendEmptyMessage(4);
+                                        currentScramble.updateHint(sel);
+                                        showScramble();
+                                        scrambleState = SCRAMBLING_NEXT;
+                                        if (nextScramble != null)
+                                            nextScramble.updateHint(sel);
+                                        scrambleState = SCRAMBLE_DONE;
+                                        handler.sendEmptyMessage(26);
+                                    }
+                                }.start();
+                            } else {
+                                currentScramble.updateHint(0);
+                                tvScramble.setText(currentScramble.getScramble());
+                                if (nextScramble != null)
+                                    nextScramble.updateHint(0);
+                            }
+                        }
+                    }
+                }).setNegativeButton(R.string.btn_close, null).show();
+                break;
             //配色设置
-            case 32:    //n阶
+            case 33:    //n阶
                 int[] cs = {sp.getInt("csn1", Color.YELLOW), sp.getInt("csn2", Color.BLUE), sp.getInt("csn3", Color.RED),
                         sp.getInt("csn4", Color.WHITE), sp.getInt("csn5", 0xff009900), sp.getInt("csn6", 0xffff9900)};
                 colorSchemeView = new ColorSchemeView(this, (int) (dpi * 290), cs, 1);
@@ -1559,7 +1600,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
                 break;
-            case 33:    //金字塔
+            case 34:    //金字塔
                 cs = new int[] {sp.getInt("csp1", Color.RED), sp.getInt("csp2", 0xff009900),
                         sp.getInt("csp3", Color.BLUE), sp.getInt("csp4", Color.YELLOW)};
                 colorSchemeView = new ColorSchemeView(this, (int) (dpi * 290), cs, 2);
@@ -1579,7 +1620,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
                 break;
-            case 34:    //SQ1
+            case 35:    //SQ1
                 cs = new int[] {sp.getInt("csq1", Color.WHITE), sp.getInt("csq2", 0xffff9900), sp.getInt("csq3", 0xff009900),
                         sp.getInt("csq4", Color.YELLOW), sp.getInt("csq5", Color.RED), sp.getInt("csq6", Color.BLUE)};
                 colorSchemeView = new ColorSchemeView(this, (int) (dpi * 290), cs, 3);
@@ -1599,7 +1640,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
                 break;
-            case 35:    //skewb
+            case 36:    //skewb
                 cs = new int[] {sp.getInt("csw1", Color.YELLOW), sp.getInt("csw2", Color.BLUE), sp.getInt("csw3", Color.RED),
                         sp.getInt("csw4", Color.WHITE), sp.getInt("csw5", 0xff009900), sp.getInt("csw6", 0xffff9900)};
                 colorSchemeView = new ColorSchemeView(this, (int) (dpi * 290), cs, 4);
@@ -1619,7 +1660,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
                 break;
-            case 36:    //五魔
+            case 37:    //五魔
                 new AlertDialog.Builder(context).setSingleChoiceItems(ITEMS_ID[7], megaColorScheme, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -1632,7 +1673,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }).setNegativeButton(R.string.btn_cancel, null).show();
                 break;
             //界面设置
-            case 38:    //计时器字体
+            case 39:    //计时器字体
                 new AlertDialog.Builder(context).setSingleChoiceItems(ITEMS_ID[8], timerFont, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -1645,7 +1686,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }).setNegativeButton(R.string.btn_cancel, null).show();
                 break;
-            case 40:    //背景颜色
+            case 41:    //背景颜色
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
                 View dialogLayout = LayoutInflater.from(context).inflate(R.layout.dialog_color_picker, null);
                 final LineColorPicker colorPicker = dialogLayout.findViewById(R.id.color_picker_primary);
@@ -1707,7 +1748,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
                 dialogBuilder.show();
                 break;
-            case 41:    //文字颜色
+            case 42:    //文字颜色
                 new ColorPickerDialog(context, colors[1], -1, new OnColorPickerListener() {
                     @Override
                     public void onColorCancel(ColorPickerDialog dialog) { }
@@ -1735,7 +1776,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }).show();
                 break;
-            case 42:    //背景图片
+            case 43:    //背景图片
                 if (Build.VERSION.SDK_INT > 22) {
                     if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
                             != PackageManager.PERMISSION_GRANTED) {
@@ -1745,7 +1786,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     } else selectPic();
                 } else selectPic();
                 break;
-            case 43:    //显示背景图
+            case 44:    //显示背景图
                 if (useBgcolor) {
                     setBackground();
                 } else setBackground(colors[0]);
@@ -1754,7 +1795,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 stAdapter.setCheck(position, !useBgcolor);
                 setPref("bgcolor", useBgcolor);
                 break;
-            case 45:    //最快单次颜色
+            case 46:    //最快单次颜色
                 new ColorPickerDialog(context, colors[2], 0xffff00ff, new OnColorPickerListener() {
                     @Override
                     public void onColorCancel(ColorPickerDialog dialog) { }
@@ -1778,7 +1819,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }).show();
                 break;
-            case 46:    //最慢单次颜色
+            case 47:    //最慢单次颜色
                 new ColorPickerDialog(context, colors[3], 0xffff0000, new OnColorPickerListener() {
                     @Override
                     public void onColorCancel(ColorPickerDialog dialog) { }
@@ -1802,7 +1843,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }).show();
                 break;
-            case 47:    //最快平均颜色
+            case 48:    //最快平均颜色
                 new ColorPickerDialog(context, colors[4], 0xff009900, new OnColorPickerListener() {
                     @Override
                     public void onColorCancel(ColorPickerDialog dialog) { }
@@ -1827,7 +1868,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }).show();
                 break;
             //手势管理
-            case 49:    //左
+            case 50:    //左
                 new AlertDialog.Builder(context).setSingleChoiceItems(ITEMS_ID[15], swipeType[0], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -1839,7 +1880,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }).setNegativeButton(R.string.btn_cancel, null).show();
                 break;
-            case 50:    //右
+            case 51:    //右
                 new AlertDialog.Builder(context).setSingleChoiceItems(ITEMS_ID[15], swipeType[1], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -1851,7 +1892,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }).setNegativeButton(R.string.btn_cancel, null).show();
                 break;
-            case 51:    //上
+            case 52:    //上
                 new AlertDialog.Builder(context).setSingleChoiceItems(ITEMS_ID[15], swipeType[2], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -1863,7 +1904,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }).setNegativeButton(R.string.btn_cancel, null).show();
                 break;
-            case 52:    //下
+            case 53:    //下
                 new AlertDialog.Builder(context).setSingleChoiceItems(ITEMS_ID[15], swipeType[3], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -1876,7 +1917,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }).setNegativeButton(R.string.btn_cancel, null).show();
                 break;
             //硬件设置
-            case 54:    //屏幕常亮
+            case 55:    //屏幕常亮
                 if (screenOn) {
                     if (timer.getTimerState() != 1) releaseWakeLock();
                 } else acquireWakeLock();
@@ -1884,7 +1925,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 stAdapter.setCheck(position, screenOn);
                 setPref("scron", screenOn);
                 break;
-            case 55:    //触感反馈
+            case 56:    //触感反馈
                 new AlertDialog.Builder(context).setSingleChoiceItems(ITEMS_ID[10], vibrateType, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -1896,7 +1937,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }).setNegativeButton(R.string.btn_cancel, null).show();
                 break;
-            case 56:    //触感时间
+            case 57:    //触感时间
                 new AlertDialog.Builder(context).setSingleChoiceItems(ITEMS_ID[11], vibrateTime, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -1908,7 +1949,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }).setNegativeButton(R.string.btn_cancel, null).show();
                 break;
-            case 57:    //屏幕方向
+            case 58:    //屏幕方向
                 new AlertDialog.Builder(context).setSingleChoiceItems(ITEMS_ID[9], screenOri, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -2026,12 +2067,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 setImageSize();
                 setPref("svsize", imageSize);
                 break;
-            case 39: //计时器大小
+            case 40: //计时器大小
                 timerSize = progress + 50;
                 setTimerSize();
                 setPref("ttsize", timerSize);
                 break;
-            case 44: //不透明度
+            case 45: //不透明度
                 opacity = progress + 20;
                 if (!useBgcolor)
                     setBackground();
@@ -2402,15 +2443,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setScramble() {
-        //Log.w("dct", "new scr");
         if (scrambleIdx == -25)
             scrambleIdx = 33;
         int idx = scrambleIdx >> 5;
         int idx2 = scrambleIdx & 0x1f;
         if (idx == -1 && idx2 > 7) idx2--;
-        String[] subitems = getResources().getStringArray(Utils.getScrambleArrayId(idx));
-        if (idx2 >= subitems.length) idx2 = 0;
-        btnScramble.setText(scrambleItems[idx + 1] + " - " + subitems[idx2]);
+        btnScramble.setText(StringUtils.getScrambleName(idx, idx2));
         newScramble();
     }
 

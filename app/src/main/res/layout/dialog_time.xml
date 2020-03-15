@@ -2,75 +2,77 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:paddingTop="15dp"
+    android:paddingLeft="22dp"
+    android:paddingRight="22dp"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="15dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical" >
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/tv_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#333"
-            android:textSize="18sp" />
+            android:textColor="#666"
+            android:textSize="19sp" />
 
         <TextView
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:textColor="#000"
-            android:textSize="19sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tv_date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:textColor="#666"
-            android:textSize="15sp" />
     </LinearLayout>
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical" >
+        android:scrollbars="vertical">
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp" >
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#333"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_scramble"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
                 android:textColor="#333"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
 
             <RadioGroup
                 android:id="@+id/rg_penalty"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
                 android:checkedButton="@+id/rb_no_penalty"
                 android:gravity="center"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <RadioButton
                     android:id="@+id/rb_no_penalty"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/no_penalty"
-                    android:textColor="#333" />
+                    android:textColor="#333"
+                    android:textSize="15sp" />
 
                 <RadioButton
                     android:id="@+id/rb_plus2"
@@ -78,7 +80,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
                     android:text="@string/penalty_plus2"
-                    android:textColor="#333" />
+                    android:textColor="#333"
+                    android:textSize="15sp" />
 
                 <RadioButton
                     android:id="@+id/rb_dnf"
@@ -86,14 +89,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
                     android:text="@string/penalty_dnf"
-                    android:textColor="#333" />
+                    android:textColor="#333"
+                    android:textSize="15sp" />
             </RadioGroup>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -130,14 +134,14 @@
                 android:text="@string/btn_solution"
                 android:textSize="15sp"
                 android:textColor="@drawable/button_text_style"
-                android:textAllCaps="false"/>
+                android:textAllCaps="false" />
 
             <TextView
                 android:id="@+id/tv_solution"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:textColor="#333"/>
+                android:textColor="#333" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

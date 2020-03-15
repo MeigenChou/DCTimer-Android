@@ -256,6 +256,13 @@
         <item>Layer</item>
     </array>
 
+    <array name="opt_solve_pyr">
+        <item>D</item>
+        <item>L</item>
+        <item>R</item>
+        <item>F</item>
+    </array>
+
     <array name="opt_timer_font">
         <item>monospace</item>
         <item>serif</item>
@@ -374,7 +381,8 @@
     <array name="item_tools">
         <item>Solve 3x3x3 cube</item>
         <item>Solve square-1 cube shape</item>
-        <item>Solve 2x2x2 first layer</item>
+        <item>Solve 2x2x2 cube</item>
+        <item>Solve Pyraminx V</item>
     </array>
 
     <array name="item_scheme">

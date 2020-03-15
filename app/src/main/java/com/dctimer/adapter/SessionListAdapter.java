@@ -21,6 +21,7 @@ import com.dctimer.R;
 import com.dctimer.activity.SessionActivity;
 import com.dctimer.database.SessionManager;
 import com.dctimer.model.Session;
+import com.dctimer.util.StringUtils;
 import com.dctimer.util.Utils;
 
 import java.util.ArrayList;
@@ -123,7 +124,7 @@ public class SessionListAdapter extends RecyclerView.Adapter<SessionListAdapter.
 
     @Override
     public @NonNull ViewHolder onCreateViewHolder(@NonNull ViewGroup vg, int viewType) {
-        View view = LayoutInflater.from(parent).inflate(R.layout.list_session, vg, false);
+        View view = LayoutInflater.from(parent).inflate(R.layout.session_list_item, vg, false);
         final ViewHolder holder = new ViewHolder(view);
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -238,8 +239,11 @@ public class SessionListAdapter extends RecyclerView.Adapter<SessionListAdapter.
         if (select == i) {
             holder.textView.setTextColor(0xff0088ff);
         } else holder.textView.setTextColor(0xff000000);
+        int puzzle = session.getPuzzle();
+        int idx = puzzle >> 5;
+        int sub = puzzle & 31;
         int count = session.getCount();
-        holder.detailView.setText(parent.getString(R.string.num_of_solve) + count);
+        holder.detailView.setText(StringUtils.getScrambleName(idx, sub) + "\n" + parent.getString(R.string.num_of_solve) + count);
         holder.checkBox.setVisibility(editMode ? View.VISIBLE : View.GONE);
         holder.checkBox.setChecked(checkItems.get(i));
         holder.imageDrag.setVisibility(editMode ? View.VISIBLE : View.GONE);

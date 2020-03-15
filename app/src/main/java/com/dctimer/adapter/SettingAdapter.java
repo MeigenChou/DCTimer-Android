@@ -154,40 +154,40 @@ public class SettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 case 30:    //二阶求解
                     map.put("detail", itemStr[6][solve222]);
                     break;
-                case 36:    //五魔配色
+                case 37:    //五魔配色
                     map.put("detail", itemStr[7][megaColorScheme]);
                     break;
-                case 38:    //计时器字体
+                case 39:    //计时器字体
                     map.put("detail", itemStr[8][timerFont]);
                     break;
-                case 39:    //计时器大小
+                case 40:    //计时器大小
                     map.put("detail", String.valueOf(timerSize));
                     map.put("value", timerSize - 50);
-                case 43:    //显示背景图
+                case 44:    //显示背景图
                     map.put("detail", !useBgcolor);
                     break;
-                case 49:    //左
+                case 50:    //左
                     map.put("detail", itemStr[15][swipeType[0]]);
                     break;
-                case 50:    //右
+                case 51:    //右
                     map.put("detail", itemStr[15][swipeType[1]]);
                     break;
-                case 51:    //上
+                case 52:    //上
                     map.put("detail", itemStr[15][swipeType[2]]);
                     break;
-                case 52:    //下
+                case 53:    //下
                     map.put("detail", itemStr[15][swipeType[3]]);
                     break;
-                case 54:    //屏幕常亮
+                case 55:    //屏幕常亮
                     map.put("detail", screenOn);
                     break;
-                case 55:    //触感反馈
+                case 56:    //触感反馈
                     map.put("detail", itemStr[10][vibrateType]);
                     break;
-                case 56:    //持续时间
+                case 57:    //持续时间
                     map.put("detail", itemStr[11][vibrateTime]);
                     break;
-                case 57:    //屏幕方向
+                case 58:    //屏幕方向
                     map.put("detail", itemStr[9][screenOri]);
                     break;
             }
@@ -245,13 +245,13 @@ public class SettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         case 18:    //打乱状态
                             //map.put("value", i);
                             break;
-                        case 39:    //计时器大小
+                        case 40:    //计时器大小
                             //map.put("value", i);
                             detail = String.valueOf(i + 50);
                             map.put("detail", detail);
                             dct.updatePref(pos, detail);
                             break;
-                        case 44:    //不透明度
+                        case 45:    //不透明度
                             //map.put("value", i);
                             break;
                     }

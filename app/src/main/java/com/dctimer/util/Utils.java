@@ -300,32 +300,32 @@ public class Utils {
         imm.hideSoftInputFromWindow(et.getWindowToken(), 0);
     }
 
-    public static int getScrambleArrayId(int s) {
-        switch (s) {
-            case -1: return R.array.item_wca;
-            case 0: return R.array.item_222;
-            case 1: return R.array.item_333;
-            case 2: return R.array.item_444;
-            case 3: return R.array.item_555;
-            case 4:
-            case 5: return R.array.item_666;
-            case 6: return R.array.item_mega;
-            case 7: return R.array.item_pyr;
-            case 8: return R.array.item_sq1;
-            case 9: return R.array.item_clk;
-            case 15: return R.array.item_15p;
-            case 11: return R.array.item_mnl;
-            case 12: return R.array.item_cmt;
-            case 13: return R.array.item_gear;
-            case 14: return R.array.item_smc;
-            case 10: return R.array.item_skewb;
-            case 16: return R.array.item_other;
-            case 17: return R.array.item_333_sub;
-            case 18: return R.array.item_bandage;
-            case 19: return R.array.item_minx_sub;
-            default: return R.array.item_relay;
-        }
-    }
+//    public static int getScrambleArrayId(int s) {
+//        switch (s) {
+//            case -1: return R.array.item_wca;
+//            case 0: return R.array.item_222;
+//            case 1: return R.array.item_333;
+//            case 2: return R.array.item_444;
+//            case 3: return R.array.item_555;
+//            case 4:
+//            case 5: return R.array.item_666;
+//            case 6: return R.array.item_mega;
+//            case 7: return R.array.item_pyr;
+//            case 8: return R.array.item_sq1;
+//            case 9: return R.array.item_clk;
+//            case 15: return R.array.item_15p;
+//            case 11: return R.array.item_mnl;
+//            case 12: return R.array.item_cmt;
+//            case 13: return R.array.item_gear;
+//            case 14: return R.array.item_smc;
+//            case 10: return R.array.item_skewb;
+//            case 16: return R.array.item_other;
+//            case 17: return R.array.item_333_sub;
+//            case 18: return R.array.item_bandage;
+//            case 19: return R.array.item_minx_sub;
+//            default: return R.array.item_relay;
+//        }
+//    }
 
     public static void saveScramble(Context context, final ProgressDialog progress, final Handler handler, final Scrambler scramble, final String path, final int num) {
         File fPath = new File(path);

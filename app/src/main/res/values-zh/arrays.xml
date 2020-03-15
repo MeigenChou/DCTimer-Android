@@ -324,9 +324,10 @@
     </array>
 
     <array name="item_tools">
-        <item>三阶求解</item>
+        <item>三阶相关求解</item>
         <item>SQ1复形求解</item>
-        <item>二阶求解</item>
+        <item>二阶相关求解</item>
+        <item>Pyraminx V求解</item>
     </array>
 
     <array name="item_scheme">

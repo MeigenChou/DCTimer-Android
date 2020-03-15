@@ -64,7 +64,7 @@ public class ResultDialog extends DialogFragment {
         etComment = view.findViewById(R.id.et_comment);
         Button btnSolution = view.findViewById(R.id.bt_solution);
         TextView tvSolution = view.findViewById(R.id.tv_solution);
-        tvNum.setText(num + 1 + ". ");
+        tvNum.setText("#" + (num + 1));
         tvTime.setText(time);
         tvScramble.setText(scramble);
         tvDate.setText(date);

@@ -24,7 +24,7 @@ public class Cross {
     private static ArrayList<String> solutions;
     public static boolean ini, inif;
     private static String[] color = {"D", "U", "L", "R", "F", "B"};
-    private static String[][] moveIdx = {
+    private static String[][] moveStr = {
             { "UDLRFB", "DURLFB", "RLUDFB", "LRDUFB", "BFLRUD", "FBLRDU" },
             { "UDLRFB", "DURLFB", "RLUDFB", "LRDUFB", "BFRLDU", "FBRLUD" },
             { "UDLRFB", "DURLFB", "RLUDFB", "LRDUFB", "BFUDRL", "FBUDLR" },
@@ -39,11 +39,7 @@ public class Cross {
     };
     private static String[] sideStr = {"D(FB)", "D(LR)", "U(FB)", "U(LR)",
             "L(FB)", "L(UD)", "R(FB)", "R(UD)", "F(UD)", "F(LR)", "B(UD)", "B(LR)"};
-    private static String[][] turn = {
-            { "U", "D", "L", "R", "F", "B" }, { "D", "U", "R", "L", "F", "B" },
-            { "R", "L", "U", "D", "F", "B" }, { "L", "R", "D", "U", "F", "B" },
-            { "B", "F", "L", "R", "U", "D" }, { "F", "B", "L", "R", "D", "U" }
-    };
+    //private static String[] turn = { "UDLRFB", "DURLFB", "RLUDFB", "LRDUFB", "BFLRUD", "FBLRDU" };
 
     public static void circle(int[] ary, int a, int b, int c, int d, int ori) {
         int t = ary[a];
@@ -214,7 +210,7 @@ public class Cross {
                 StringBuilder sb = new StringBuilder(rotateStr[0][face]);
                 int qtm = 0;
                 for (int i = path.length - 1; i > 0; i--) {
-                    sb.append(' ').append(turn[0][path[i] / 3]).append(suff[path[i] % 3]);
+                    sb.append(' ').append(moveStr[0][0].charAt(path[i] / 3)).append(suff[path[i] % 3]);
                     if (path[i] % 3 == 1) qtm += 2;
                     else qtm++;
                 }
@@ -277,7 +273,7 @@ public class Cross {
                 StringBuilder sb = new StringBuilder(rotateStr[0][face]);
                 int qtm = 0;
                 for (int i = path.length - 1; i > 0; i--) {
-                    sb.append(' ').append(turn[0][path[i] / 3]).append(suff[path[i] % 3]);
+                    sb.append(' ').append(moveStr[0][0].charAt(path[i] / 3)).append(suff[path[i] % 3]);
                     if (path[i] % 3 == 1) qtm += 2;
                     else qtm++;
                 }
@@ -304,7 +300,7 @@ public class Cross {
         int eo = 0, ep = 0;
         for (int i = 0; i < s.length; i++)
             if (s[i].length() != 0) {
-                int m = moveIdx[side][face].indexOf(s[i].charAt(0));
+                int m = moveStr[side][face].indexOf(s[i].charAt(0));
                 eo = eom[eo][m]; ep = epm[ep][m];
                 if (s[i].length() > 1) {
                     eo = eom[eo][m];
@@ -320,7 +316,7 @@ public class Cross {
             if (idacross(ep, eo, d, -1)) {
                 StringBuilder sb = new StringBuilder(rotateStr[side][face]);
                 for (int i = d; i > 0; i--)
-                    sb.append(' ').append(turn[side][seq[i] / 3]).append(suff[seq[i] % 3]);
+                    sb.append(' ').append(moveStr[0][side].charAt(seq[i] / 3)).append(suff[seq[i] % 3]);
                 return sb.toString();
             }
         }
@@ -357,7 +353,7 @@ public class Cross {
             int eo = 0, ep = 0;
             for (int i = 0; i < s.length; i++)
                 if (s[i].length() != 0) {
-                    int m = moveIdx[0][face].indexOf(s[i].charAt(0));
+                    int m = moveStr[0][face].indexOf(s[i].charAt(0));
                     eo = eom[eo][m]; ep = epm[ep][m];
                     if (s[i].length() > 1) {
                         eo = eom[eo][m]; ep = epm[ep][m];
@@ -394,7 +390,7 @@ public class Cross {
         int ep = 0, eo = 0;
         for (int d = 0; d < s.length; d++)
             if (s[d].length() != 0) {
-                int m = moveIdx[0][face].indexOf(s[d].charAt(0));
+                int m = moveStr[0][face].indexOf(s[d].charAt(0));
                 for (int i = 0; i < 4; i++) {
                     co[i] = fcm[co[i]][m];
                     feo[i] = fem[feo[i]][m];
@@ -420,7 +416,7 @@ public class Cross {
                 if (idaxcross(ep, eo, co[slot], feo[slot], slot, d, -1)) {
                     StringBuilder sb = new StringBuilder(rotateStr[0][face]);
                     for (int i = d; i > 0; i--)
-                        sb.append(' ').append(turn[0][seq[i] / 3]).append(suff[seq[i] % 3]);
+                        sb.append(' ').append(moveStr[0][0].charAt(seq[i] / 3)).append(suff[seq[i] % 3]);
                     return sb.toString();
                 }
         return "error";
@@ -460,7 +456,7 @@ public class Cross {
             int ep = 0, eo = 0;
             for (int d = 0; d < s.length; d++)
                 if (s[d].length() != 0) {
-                    int m = moveIdx[0][face].indexOf(s[d].charAt(0));
+                    int m = moveStr[0][face].indexOf(s[d].charAt(0));
                     for (int i = 0; i < 4; i++) {
                         co[i] = fcm[co[i]][m];
                         feo[i] = fem[feo[i]][m];
@@ -531,7 +527,7 @@ public class Cross {
                 StringBuilder sb = new StringBuilder("\n");
                 sb.append(sideStr[side]).append(": ").append(EOline.rotateStr[side]);
                 for (int i = d; i > 0; i--)
-                    sb.append(' ').append(turn[0][seq[i] / 3]).append(suff[seq[i] % 3]);
+                    sb.append(' ').append(moveStr[0][0].charAt(seq[i] / 3)).append(suff[seq[i] % 3]);
                 return sb.toString();
             }
         }

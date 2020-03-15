@@ -1,132 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingRight="16dp"
-    android:paddingLeft="16dp"
-    android:orientation="vertical" >
+    android:paddingRight="22dp"
+    android:paddingLeft="22dp"
+    android:scrollbars="vertical" >
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="15dip"
-        android:paddingBottom="5dp"
-        android:text="@string/action_scramble"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:textColor="#000" />
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical" >
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_scramble"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="#000" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="center_vertical" >
 
             <TextView
-                android:id="@+id/text_scramble"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/scramble_len"
                 android:textSize="15sp"
                 android:textColor="#000" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <EditText
+                android:id="@+id/edit_len"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/scramble_len"
-                    android:textSize="15sp"
-                    android:textColor="#000" />
-
-                <EditText
-                    android:id="@+id/edit_len"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dip"
-                    android:layout_weight="1"
-                    android:digits="1234567890"
-                    android:inputType="number"
-                    android:imeOptions="actionDone|flagNoExtractUi"
-                    android:maxLength="3"
-                    android:textSize="15sp"
-                    android:textColor="#000" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_hintc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:clickable="true"
-                android:background="@drawable/item_background" >
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/hint_cross"
-                    android:textSize="15sp"
-                    android:textColor="#000" />
-
-                <ImageView
-                    android:id="@+id/iv_arrowc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_arrow_down"/>
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/text_hintc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:paddingLeft="2dp"
-                android:paddingRight="2dp"
-                android:textSize="14sp"
-                android:textColor="#000" />
-
-            <LinearLayout
-                android:id="@+id/ll_hintx"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:clickable="true"
-                android:background="@drawable/item_background" >
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/hint_xcross"
-                    android:textSize="15sp"
-                    android:textColor="#000" />
-
-                <ImageView
-                    android:id="@+id/iv_arrowx"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_arrow_down"/>
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/text_hintx"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:paddingLeft="2dp"
-                android:paddingRight="2dp"
-                android:textSize="14sp"
+                android:layout_marginLeft="2dip"
+                android:layout_weight="1"
+                android:digits="1234567890"
+                android:inputType="number"
+                android:imeOptions="actionDone|flagNoExtractUi"
+                android:maxLength="3"
+                android:textSize="15sp"
                 android:textColor="#000" />
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_hintc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:background="@drawable/item_background" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/hint_cross"
+                android:textSize="15sp"
+                android:textColor="#000" />
+
+            <ImageView
+                android:id="@+id/iv_arrowc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_down"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_hintc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:textSize="14sp"
+            android:textColor="#000" />
+
+        <LinearLayout
+            android:id="@+id/ll_hintx"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:background="@drawable/item_background" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/hint_xcross"
+                android:textSize="15sp"
+                android:textColor="#000" />
+
+            <ImageView
+                android:id="@+id/iv_arrowx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_down"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_hintx"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:textSize="14sp"
+            android:textColor="#000" />
+    </LinearLayout>
+</ScrollView>

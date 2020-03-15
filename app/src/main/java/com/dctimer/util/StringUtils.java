@@ -22,9 +22,12 @@ import static com.dctimer.APP.avg1Type;
 import static com.dctimer.APP.avg1len;
 import static com.dctimer.APP.avg2Type;
 import static com.dctimer.APP.avg2len;
+import static com.dctimer.APP.scrambleIdx;
 
 public class StringUtils {
     private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+    public static String[] scrambleItems;
+    public static String[][] scrambleSubitems;
 
     public static String getDate() {
         return formatter.format(new Date());
@@ -129,6 +132,13 @@ public class StringUtils {
             default:
                 return 0;
         }
+    }
+
+    public static String getScrambleName(int idx, int sub) {
+        //String[] subitems;// = getResources().getStringArray(Utils.getScrambleArrayId(idx));
+        String[] subitems = scrambleSubitems[idx + 1];
+        if (sub >= subitems.length) sub = 0;
+        return scrambleItems[idx + 1] + " - " + subitems[sub];
     }
 
     public static String meanOf(Context context, Result result, int n, int i, String[] detail) {

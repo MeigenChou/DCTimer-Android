@@ -37,6 +37,7 @@ public class Skewb {
 		 * 2-1	   2-2
 		 *      2
 		 */
+		//corner permutation
         int[] arr2 = new int[3];
         for (int i = 0; i < 12; i++)
             for (int j = 0; j < 3; j++) {
@@ -229,9 +230,12 @@ public class Skewb {
         for (int i = 0; i < s.length; i++)
             if (s[i].length() > 0) {
                 int mov = "RULB".indexOf(s[i].charAt(0));
+                if (mov < 0) return null;
                 move(mov);
-                if (s[i].length() > 1)
+                if (s[i].length() > 1) {
+                    if (s[i].charAt(1) != '\'') return null;
                     move(mov);
+                }
             }
         return img;
     }

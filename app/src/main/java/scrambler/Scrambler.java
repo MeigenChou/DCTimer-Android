@@ -200,6 +200,8 @@ public class Scrambler {
             if (idx == 1)
                 hint = Cube2Face.solveFace(scramble, APP.solverType[4]);
             else hint = Cube2Layer.solveFirstLayer(scramble, APP.solverType[4]);
+        } else if (isPyrScramble()) {
+            hint = PyraminxV.solveV(scramble, idx);
         }
     }
 
@@ -270,6 +272,7 @@ public class Scrambler {
             case -23:	//金字塔
                 scr = Pyraminx.scrambleWCA(); imageType = TYPE_PYR;
                 scrambleList.add(scr);
+                if (APP.solvePyr > 0) hint = PyraminxV.solveV(scr, APP.solvePyr);
                 break;
             case -22:	//SQ1
                 scr = cubesq.scrambleWCA(); imageType = TYPE_SQ1;
@@ -627,6 +630,7 @@ public class Scrambler {
             case 224: //金字塔
                 scr = Pyraminx.scramble(); imageType = TYPE_PYR;
                 scrambleList.add(scr);
+                if (APP.solvePyr > 0) hint = PyraminxV.solveV(scr, APP.solvePyr);
                 break;
             case 225:
                 String[][] ss = {{"", "b ", "b' "}, {"", "l ", "l' "}, {"", "u ", "u' "}, {"", "r ", "r' "}};
@@ -642,6 +646,7 @@ public class Scrambler {
                 scrambleLen += cnt;
                 imageType = TYPE_PYR;
                 scrambleList.add(scr);
+                if (APP.solvePyr > 0) hint = PyraminxV.solveV(scr, APP.solvePyr);
                 break;
             case 226:   //L4E
                 scr = Pyraminx.scrambleL4E();
@@ -1077,27 +1082,33 @@ public class Scrambler {
 
     public boolean is333Scramble() {
         int idx = category >> 5;
-        int idx2 = category & 0x1f;
-        return (idx == -1 && (idx2 == 0 || idx2 == 5 || idx2 == 7)) ||
-                (idx == 1 && (idx2 == 0 || idx2 == 1 || idx2 == 19));
+        int sub = category & 0x1f;
+        return (idx == -1 && (sub == 0 || sub == 5 || sub == 7)) ||
+                (idx == 1 && (sub == 0 || sub == 1 || sub == 19));
     }
 
     public boolean isSqScramble() {
         int idx = category >> 5;
-        int idx2 = category & 0x1f;
-        return (idx == 8 && idx2 < 3) || (idx == -1 && idx2 == 10);
+        int sub = category & 0x1f;
+        return (idx == 8 && sub < 3) || (idx == -1 && sub == 10);
     }
 
     public boolean is222Scramble() {
         int idx = category >> 5;
-        int idx2 = category & 0x1f;
-        return (idx == 0 && idx2 < 2) || (idx == -1 && idx2 == 3);
+        int sub = category & 0x1f;
+        return (idx == 0 && sub < 2) || (idx == -1 && sub == 3);
     }
 
     public boolean is444Scramble() {
         int idx = category >> 5;
-        int idx2 = category & 0x1f;
-        return (idx == -1 && (idx2 == 1 || idx2 == 15)) || (idx == 2 && idx2 == 5);
+        int sub = category & 0x1f;
+        return (idx == -1 && (sub == 1 || sub == 15)) || (idx == 2 && sub == 5);
+    }
+
+    public boolean isPyrScramble() {
+        int idx = category >> 5;
+        int sub = category & 0x1f;
+        return (idx == -1 && sub == 8) || (idx == 8 && sub < 2);
     }
 
     public String solve333(String scramble) {
@@ -1254,7 +1265,9 @@ public class Scrambler {
                     c.drawRect(stx + sp + (j + 2) * a, sty + sp * 2 + (5 + i) * a, stx + sp + (j + 3) * a, sty + sp * 2 + (6 + i) * a, p);
                 }
         } else if (imageType == TYPE_SKW) { //斜转
-            drawSkewb(scramble, width, p, c);
+            int[] img = Skewb.image(scramble);
+            if (img == null) return;
+            drawSkewb(img, width, p, c);
         } else if (imageType == TYPE_15P || imageType == TYPE_15PB) {   //15 puzzle
             int[] img = FifteenPuzzle.image(scramble, imageType == TYPE_15P);
             int wid = width / 6;
@@ -1389,7 +1402,9 @@ public class Scrambler {
                 } else if (scrambleIdx == 6) {
                     drawSQ1(scrambleList.get(scrambleIdx), width, p, c);
                 } else if (scrambleIdx == 7) {
-                    drawSkewb(scrambleList.get(scrambleIdx), width, p, c);
+                    int[] img = Skewb.image(scrambleList.get(scrambleIdx));
+                    if (img == null) return;
+                    drawSkewb(img, width, p, c);
                 } else if (scrambleIdx == 8) {
                     drawClock(width, p, c);
                 } else if (scrambleIdx == 9) {
@@ -1404,7 +1419,9 @@ public class Scrambler {
             } else if (scrambleIdx == 9) {
                 drawSQ1(scrambleList.get(scrambleIdx), width, p, c);
             } else if (scrambleIdx == 10) {
-                drawSkewb(scrambleList.get(scrambleIdx), width, p, c);
+                int[] img = Skewb.image(scrambleList.get(scrambleIdx));
+                if (img == null) return;
+                drawSkewb(img, width, p, c);
             } else if (scrambleIdx == 11) {
                 drawClock(width, p, c);
             } else if (scrambleIdx == 12) {
@@ -1795,8 +1812,7 @@ public class Scrambler {
         drawPeg(p, c, width, cx-faceDist / 2, cy + faceDist / 2, pegs[3]);
     }
 
-    private void drawSkewb(String scramble, int width, Paint p, Canvas c) {
-        int[] img = Skewb.image(scramble);
+    private void drawSkewb(int[] img, int width, Paint p, Canvas c) {
         int[] colors = {pref.getInt("csw4", Color.WHITE), pref.getInt("csw6", 0xffff9900), pref.getInt("csw5", 0xff009900),
                 pref.getInt("csw3", Color.RED), pref.getInt("csw2", Color.BLUE), pref.getInt("csw1", Color.YELLOW)};
         int b = width / 4, a = (int) (b * Math.sqrt(3) / 2);

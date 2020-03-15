@@ -106,7 +106,7 @@ public class ScrambleDetailDialog extends DialogFragment {
             tvHintx.setVisibility(View.GONE);
         }
         AlertDialog.Builder buidler = new AlertDialog.Builder(getActivity());
-        buidler.setView(view)
+        buidler.setTitle(R.string.action_scramble).setView(view)
                 .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

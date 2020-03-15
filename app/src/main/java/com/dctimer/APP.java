@@ -64,6 +64,7 @@ public class APP extends Application {
     public static int solve333;
     public static int solveSq1;
     public static int solve222;
+    public static int solvePyr;
     public static int screenOri;
     public static int vibrateType;
     public static int vibrateTime;
@@ -183,6 +184,7 @@ public class APP extends Application {
         solverType[3] = sp.getInt("rside", 1);    //Roux求解
         solveSq1 = sp.getInt("sq1s", 0);	//SQ1复形计算
         solve222 = sp.getInt("c2fl", 0);//sp.getInt("cube2l", 0);	// 二阶求解
+        solvePyr = sp.getInt("pyrv", 0);    //Pyraminx V求解
         solverType[4] = sp.getInt("cface", 1);
         megaColorScheme = sp.getInt("minxc", 1);	//五魔配色
         darkList = sp.getBoolean("dark", false);
@@ -207,7 +209,6 @@ public class APP extends Application {
         vibrateType = sp.getInt("vibra", 0);	// 震动反馈
         vibrateTime = sp.getInt("vibtime", 2);	// 震动时长
         screenOri = sp.getInt("screenori", 0);	// 屏幕方向
-
         savePath = sp.getString("scrpath", defaultPath);
     }
 
@@ -219,7 +220,7 @@ public class APP extends Application {
         showImage = true; monoFont = false; imageSize = 220;
         promptToSave = true; avg1Type = 0; avg2Type = 0;
         avg1len = 5; avg2len = 12; selectSession = false;
-        solve333 = 0; solveSq1 = 0; solve222 = 0;
+        solve333 = 0; solveSq1 = 0; solve222 = 0; solvePyr = 0;
         megaColorScheme = 1; darkList = false; timerFont = 3;
         timerSize = 60; useBgcolor = true; opacity = 35;
         fullScreen = false; screenOn = false; vibrateType = 0;

@@ -185,7 +185,7 @@
     <string name="menu_feedback">意见反馈</string>
     <string name="menu_help">帮助</string>
     <string name="menu_about">关于</string>
-    <string name="about_msg">"版本：%1$s\n版权所有 © 2012-2019 MeigenChou"</string>
+    <string name="about_msg">"版本：%1$s\n版权所有 © 2012-2020 MeigenChou"</string>
     <string name="feedback_title">DCTimer反馈</string>
     <string name="language">cn</string>
 </resources>
