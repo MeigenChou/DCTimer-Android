@@ -9,7 +9,6 @@ public class PyraminxV {
     private static short[][] com = new short[27][4];
     private static byte[] prun = new byte[3240];
     private static String[] moveStr = { "LRBU", "ULBR", "RUBL", "LURB" };
-    private static String faceStr = "DLRF";
     private static String[] suff = { "", "'" };
     private static int[] seq = new int[7];
     private static boolean ini;
@@ -21,10 +20,8 @@ public class PyraminxV {
                 for (int f = 0; f < 4; f++) {
                     int c = getmv(a, b, b, f);
                     eom[4 * a + b][f] = (short) ((c / 8) << 2 | (c & 3));
-                    //epm[24 * a + b][f] = (short) (c >> 4);
                     if (b < 2)
                         epm[2 * a + b][f] = (short) (c >> 2);
-                        //eom[16 * a + b][f] = (short) (((c >> 4) / 24) << 4 | c & 15);
                 }
             }
         }
@@ -46,14 +43,13 @@ public class PyraminxV {
                 com[p][m] = (short) Utils.oriToIdx(tws, 3, false);
             }
         Arrays.fill(prun, (byte)-1);
-        prun[3 * 8] = prun[4 * 8] = prun[0] = 0; //prun[3 * 8] = prun[4 * 8] =
+        prun[3 * 8] = prun[4 * 8] = prun[0] = 0;
         int c = 3;
-        System.out.println("0\t3");
-        for (int d=0; d<6; d++) {
+        for (int d = 0; d < 6; d++) {
             //int p = 0;
-            for (int i=0; i<27; i++)
-                for (int j=0; j<30; j++)
-                    for (int k=0; k<4; k++)
+            for (int i = 0; i < 27; i++)
+                for (int j = 0; j < 30; j++)
+                    for (int k = 0; k < 4; k++)
                         if (prun[i * 120 + j * 4 + k] == d)
                             for (int m = 0; m < 4; m++) {
                                 int x = i, y = j, z = k;
@@ -61,7 +57,6 @@ public class PyraminxV {
                                     x = com[x][m];
                                     z = eom[y / 2 * 4 + z % 4][m] % 4;
                                     y = epm[y][m];
-                                    //r = ctm[r][m]; s = com[s][m]; t = cpm[t][m];
                                     int next = x * 120 + y * 4 + z;
                                     if (prun[next] < 0) {
                                         prun[next] = (byte) (d + 1);
@@ -120,18 +115,8 @@ public class PyraminxV {
             } else n[t] = -1;
     }
 
-//    static int combToIdx(int[] n) {
-//        int c = 0, q = 2;
-//        for (int t = 0; t < 6; t++)
-//            if (n[t] > 0) {
-//                c += Utils.Cnk[5 - t][q--];
-//            }
-//        return c;
-//    }
-
     private static boolean search(int p, int f, int t, int solvedp, int d, int lm) {
         if (d == 0) return p == solvedp && f == solvedp * 2 && t == 0;
-        //if (t * 120 + p * 4 + f % 4 >= prun.length) System.out.println("err "+t+","+p+","+f);
         if (prun[t * 120 + p * 4 + f % 4] > d) return false;
         for (int i = 0; i < 4; i++)
             if (i != lm) {
@@ -188,7 +173,7 @@ public class PyraminxV {
         StringBuilder sb = new StringBuilder("\n");
         for (int i = 0; i < 4; i++) {
             if (((face >> i) & 1) != 0)
-                sb.append('\n').append(faceStr.charAt(i)).append(": ").append(solve(scramble, i));
+                sb.append('\n').append("DLRF".charAt(i)).append(": ").append(solve(scramble, i));
         }
         return sb.toString();
     }

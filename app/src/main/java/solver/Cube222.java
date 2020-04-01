@@ -1,5 +1,7 @@
 package solver;
 
+import android.util.Log;
+
 import java.util.Random;
 
 import static solver.Utils.suffInv;
@@ -12,6 +14,10 @@ public class Cube222 {
     private static short[][] twstmv = new short[729][3];
 
     private static String[] turn = {"U", "R", "F"};
+    private static byte[][] cFacelet = {
+            { 3, 4, 9 }, { 1, 20, 5 }, { 2, 8, 17 }, { 0, 16, 21 },
+            { 13, 11, 6 }, { 15, 7, 22 }, { 12, 19, 10 }, { 14, 23, 18 }
+    };
     //private static int[] seq = new int[12];
     private static Random r = new Random();
 
@@ -117,14 +123,109 @@ public class Cube222 {
         }
     }
 
-    public static String scramble() {
-        String scramble;
-        do {
-            int p = r.nextInt(5040);
-            int o = r.nextInt(729);
-            scramble = solve(p, o);
-        } while (scramble.equals("error"));
-        return scramble;
+    private static int getprmmv(int p, int m) {
+        //given position p<5040 and move m<3, return new position number
+        //convert number into array;
+        int[] ps = new int[7];
+        Utils.set8Perm(ps, 7, p);
+        //perform move on array
+        permMove(ps, m);
+        //convert array back to number
+        return Utils.get8Perm(ps, 7);
+    }
+
+    private static int gettwsmv(int p, int m) {
+        //given orientation p<729 and move m<3, return new orientation number
+        //convert number into array;
+        int[] ps = new int[7];
+        Utils.idxToOri(ps, p, 7, true);
+        //perform move on array
+        twistMove(ps, m);
+        //convert array back to number
+        return Utils.oriToIdx(ps, 7, true);
+    }
+
+    private static void calcperm() {
+        //calculate solving arrays
+        //first permutation
+        for (int p = 0; p < 5040; p++) {
+            perm[p] = -1;
+            for (int m = 0; m < 3; m++)
+                permmv[p][m] = (short) getprmmv(p, m);
+        }
+        perm[0] = 0;
+        Utils.createPrun(perm, 7, permmv, 3);
+
+        //then twist
+        for (int p = 0; p < 729; p++) {
+            twst[p] = -1;
+            for (int m = 0; m < 3; m++)
+                twstmv[p][m] = (short) gettwsmv(p, m);
+        }
+        twst[0] = 0;
+        Utils.createPrun(twst, 6, twstmv, 3);
+    }
+
+    private static boolean search(int p, int t, int l, int lm, int[] seq) {
+        //searches for solution, from position p|t, in l moves exactly. last move was lm, current depth=d
+        if (l == 0) return p == 0 && t == 0;
+        if (perm[p] > l || twst[t] > l) return false;
+        if (lm == -2) {
+            int n = r.nextInt(9);
+            int m = n / 3;
+            n %= 3;
+            int q = p, s = t;
+            for (int a = 0; a <= n; a++) {
+                q = permmv[q][m];
+                s = twstmv[s][m];
+            }
+            if (search(q, s, l - 1, m, seq)) {
+                seq[l] = m * 3 + n;
+                return true;
+            }
+        } else for (int m = 0; m < 3; m++) {
+            if (m != lm) {
+                int q = p, s = t;
+                for (int a = 0; a < 3; a++) {
+                    q = permmv[q][m];
+                    s = twstmv[s][m];
+                    if (search(q, s, l - 1, m, seq)) {
+                        seq[l] = m * 3 + a;
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private static String solve(int p, int o) {
+        int[] seq = new int[12];
+        for (int l = 0; l < 12; l++) {
+            if (search(p, o, l, -1, seq))  {
+                if (l < 2) return "error";
+                if (l < 4) {
+                    //sol = new StringBuilder();
+                    continue;
+                }
+                StringBuilder sol = new StringBuilder();
+                for (int i = 1; i <= l; i++)
+                    sol.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
+                return sol.toString();
+            }
+        }
+        return "error";
+    }
+
+    private static boolean checkNobar(int[] perm, int[] ori) {
+        char[] ts = {1, 2, 4, 8, 16, 32};
+        char[] f = new char[24];
+        Utils.fillFacelet(cFacelet, f, perm, ori, ts, 4);
+        for (int i = 0; i < 24; i += 4) {
+            if (((f[i] | f[i + 3]) & (f[i + 1] | f[i + 2])) != 0)
+                return false;
+        }
+        return true;
     }
 
     public static void randomEG(int type, String olls) {
@@ -285,6 +386,16 @@ public class Cube222 {
         }
     }
 
+    public static String scramble() {
+        String scramble;
+        do {
+            int p = r.nextInt(5040);
+            int o = r.nextInt(729);
+            scramble = solve(p, o);
+        } while (scramble.equals("error"));
+        return scramble;
+    }
+
     public static String scrambleEG(int type) {
         String scramble;
         do {
@@ -328,7 +439,7 @@ public class Cube222 {
         return scramble;
     }
 
-    public static String randomTEG1(int twist) {
+    public static String scrambleTEG1(int twist) {
         String scramble;
         do {
             randomTEG(2, twist);
@@ -339,7 +450,7 @@ public class Cube222 {
         return scramble;
     }
 
-    public static String randomTEG2(int twist) {
+    public static String scrambleTEG2(int twist) {
         String scramble;
         do {
             randomTEG(1, twist);
@@ -361,98 +472,18 @@ public class Cube222 {
         return scramble;
     }
 
-    private static int getprmmv(int p, int m) {
-        //given position p<5040 and move m<3, return new position number
-        //convert number into array;
-        int[] ps = new int[7];
-        Utils.set8Perm(ps, 7, p);
-        //perform move on array
-        permMove(ps, m);
-        //convert array back to number
-        return Utils.get8Perm(ps, 7);
-    }
-
-    private static int gettwsmv(int p, int m) {
-        //given orientation p<729 and move m<3, return new orientation number
-        //convert number into array;
-        int[] ps = new int[7];
-        Utils.idxToOri(ps, p, 7, true);
-        //perform move on array
-        twistMove(ps, m);
-        //convert array back to number
-        return Utils.oriToIdx(ps, 7, true);
-    }
-
-    private static void calcperm() {
-        //calculate solving arrays
-        //first permutation
-        for (int p = 0; p < 5040; p++) {
-            perm[p] = -1;
-            for (int m = 0; m < 3; m++)
-                permmv[p][m] = (short) getprmmv(p, m);
-        }
-        perm[0] = 0;
-        Utils.createPrun(perm, 7, permmv, 3);
-
-        //then twist
-        for (int p = 0; p < 729; p++) {
-            twst[p] = -1;
-            for (int m = 0; m < 3; m++)
-                twstmv[p][m] = (short) gettwsmv(p, m);
-        }
-        twst[0] = 0;
-        Utils.createPrun(twst, 6, twstmv, 3);
-    }
-
-    private static boolean search(int p, int t, int l, int lm, int[] seq) {
-        //searches for solution, from position p|t, in l moves exactly. last move was lm, current depth=d
-        if (l == 0) return p == 0 && t == 0;
-        if (perm[p] > l || twst[t] > l) return false;
-        if (lm == -2) {
-            int n = r.nextInt(9);
-            int m = n / 3;
-            n %= 3;
-            int q = p, s = t;
-            for (int a = 0; a <= n; a++) {
-                q = permmv[q][m];
-                s = twstmv[s][m];
-            }
-            if (search(q, s, l - 1, m, seq)) {
-                seq[l] = m * 3 + n;
-                return true;
-            }
-        } else for (int m = 0; m < 3; m++) {
-            if (m != lm) {
-                int q = p, s = t;
-                for (int a = 0; a < 3; a++) {
-                    q = permmv[q][m];
-                    s = twstmv[s][m];
-                    if (search(q, s, l - 1, m, seq)) {
-                        seq[l] = m * 3 + a;
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private static String solve(int p, int o) {
-        int[] seq = new int[12];
-        for (int l = 0; l < 12; l++) {
-            if (search(p, o, l, -1, seq))  {
-                if (l < 2) return "error";
-                if (l < 4) {
-                    //sol = new StringBuilder();
-                    continue;
-                }
-                StringBuilder sol = new StringBuilder();
-                for (int i = 1; i <= l; i++)
-                    sol.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
-                return sol.toString();
-            }
-        }
-        return "error";
+    public static String scrambleNobar() {
+        int[] perm = new int[8];
+        int[] ori = new int[8];
+        perm[7] = 7;
+        int p, o;
+        do {
+            p = r.nextInt(5040);
+            o = r.nextInt(729);
+            Utils.idxToPerm(perm, p, 7, false);
+            Utils.idxToOri(ori, o, 7, true);
+        } while (!checkNobar(perm, ori));
+        return solve(p, o);
     }
 
     private static String scramble(int minLen) {

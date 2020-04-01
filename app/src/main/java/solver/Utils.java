@@ -225,7 +225,7 @@ public class Utils {
                             }
                         }
                     }
-            //Log.w("dct", d + 1 + "\t" + c);
+            Log.w("dct", d + 1 + "\t" + c);
         }
     }
 
@@ -272,6 +272,15 @@ public class Utils {
                         }
                     }
             //Log.w("dct", d + 1 + "\t" + c);
+        }
+    }
+
+    //facelet
+    static void fillFacelet(byte[][] facelet, char[] f, int[] perm, int[] ori, char[] ts, int pcs) {
+        for (int c = 0; c < facelet.length; c++) {
+            int o = facelet[c].length;
+            for (int n = 0; n < o; n++)
+                f[facelet[c][(n + ori[c]) % o]] = ts[facelet[perm[c]][n] / pcs];
         }
     }
 

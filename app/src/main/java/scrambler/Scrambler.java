@@ -51,7 +51,7 @@ public class Scrambler {
     private int scrambleIdx = 0;
     private String hint;
     private static short[][] defaultLength = {
-            {0, 15, 15, 0, 0, 0, 0, 0, 0, 0},   //2x2
+            {0, 15, 15, 0, 0, 0, 0, 0, 0, 0, 0},   //2x2
             {25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0},    //3x3
             {40, 40, 40, 8, 40, 0}, //4x4
             {60, 60, 8},    //5x5
@@ -369,19 +369,23 @@ public class Scrambler {
                 scrambleList.add(scr);
                 break;
             case 10:
-                scr = Cube222.randomTEG1(1); imageType = 2;
+                scr = Cube222.scrambleNobar(); imageType = 2;
                 scrambleList.add(scr);
                 break;
             case 11:
-                scr = Cube222.randomTEG1(2); imageType = 2;
+                scr = Cube222.scrambleTEG1(1); imageType = 2;
                 scrambleList.add(scr);
                 break;
             case 12:
-                scr = Cube222.randomTEG2(1); imageType = 2;
+                scr = Cube222.scrambleTEG1(2); imageType = 2;
                 scrambleList.add(scr);
                 break;
             case 13:
-                scr = Cube222.randomTEG2(2); imageType = 2;
+                scr = Cube222.scrambleTEG2(1); imageType = 2;
+                scrambleList.add(scr);
+                break;
+            case 14:
+                scr = Cube222.scrambleTEG2(2); imageType = 2;
                 scrambleList.add(scr);
                 break;
             case 32: //3阶
@@ -614,7 +618,7 @@ public class Scrambler {
                 scrambleList.add(scr);
                 break;
             case 163:
-                scr = edgescramble("3r r 3b b", new String[] {"3b' b' 3r' r'", "3b' b' 3r' U2 r U2 r U2 r U2 r", "3b' b' r' U2 3r U2 3r U2 3r U2 3r", "3b' b' r2 U2 3R U2 3R U2 3R U2 3R"},
+                scr = edgescramble("3r r 3b b", new String[] {"3b' b' 3r' r'", "3b' b' 3r' U2 r U2 r U2 r U2 r", "3b' b' r' U2 3r U2 3r U2 3r U2 3r", "3b' b' r2 U2 3r U2 3r U2 3r U2 3r U2 r"},
                         new String[] {"u", "3u", "3d", "d"}, scrambleLen);
                 imageType = 7;
                 scrambleList.add(scr);
@@ -1108,7 +1112,7 @@ public class Scrambler {
     public boolean isPyrScramble() {
         int idx = category >> 5;
         int sub = category & 0x1f;
-        return (idx == -1 && sub == 8) || (idx == 8 && sub < 2);
+        return (idx == -1 && sub == 9) || (idx == 7 && sub < 2);
     }
 
     public String solve333(String scramble) {

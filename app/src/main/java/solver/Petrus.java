@@ -27,14 +27,7 @@ public class Petrus {
                 n[t] = s[q] << 1 | po & 1;
                 po >>= 1;
             } else n[t] = -1;
-        switch (f) {
-            case 0: Cross.circle(n,  0,  1,  2, 3, 0); break;
-            case 1: Cross.circle(n, 11, 10,  9, 8, 0); break;
-            case 2: Cross.circle(n,  1,  4,  9, 5, 0); break;
-            case 3: Cross.circle(n,  3,  6, 11, 7, 0); break;
-            case 4: Cross.circle(n,  0,  7,  8, 4, 1); break;
-            case 5: Cross.circle(n,  2,  5, 10, 6, 1); break;
-        }
+        Cross.edgemv(n, f);
         c = po = 0; q = k;
         for (t = 0; t < 12; t++)
             if (n[t] >= 0) {
@@ -78,10 +71,10 @@ public class Petrus {
                 for (int k = 0; k < 6; k++)
                     com[i * 3 + j][k] = (byte) (p[i][k] * 3 + (o[i][k] + j) % 3);
         for (i = 0; i < 1320; i++) epd[i] = -1;
-        epd[132] = 0;
+        epd[17 * 6] = 0;
         Utils.createPrun(epd, 5, epm, 3);
         for (i = 0; i < 1760; i++) eod[i] = -1;
-        eod[176] = 0;
+        eod[17 * 8] = 0;
         Utils.createPrun(eod, 5, eom, 3);
         inip1 = true;
     }
@@ -98,7 +91,7 @@ public class Petrus {
                     eom2[i * 4 + j][k] = (short) ((d / 16) << 2 | d & 3);
                 }
         for (i = 0; i < 528; i++) ed2[i] = -1;
-        ed2[54 * 8] = ed2[10 * 8] = ed2[24 * 8] = 0;
+        ed2[44 * 8] = ed2[21 * 8] = ed2[17 * 8] = 0;
         int c = 3;
         for (int d = 0; d < 6; d++) {
             //c = 0;
@@ -121,15 +114,10 @@ public class Petrus {
         inip2 = true;
     }
 
-    private static String[][] turn = {
-            { "D", "U", "L", "R", "B", "F" }, { "F", "B", "L", "R", "D", "U" },
-            { "D", "U", "F", "B", "L", "R" }, { "D", "U", "R", "L", "F", "B" },
-            { "U", "D", "F", "B", "R", "L" }, { "U", "D", "L", "R", "F", "B" },
-            { "U", "D", "R", "L", "B", "F" }, { "U", "D", "B", "F", "L", "R" }
-    };
+
     private static int[] seq = new int[10];
     private static boolean idaPetrus1(int co, int ep, int eo, int depth, int lm, int block) {
-        if (depth == 0) return co == 12 && ep == 132 && eo == 176;
+        if (depth == 0) return co == 12 && ep == 102 && eo == 136;
         if (epd[ep] > depth || eod[eo] > depth) return false;
         for (int i = 0; i < 6; i++)
             if (i != lm) {
@@ -147,7 +135,7 @@ public class Petrus {
         return false;
     }
 
-    private static int[] solvedEp = {108, 20, 48}, solvedEo = {216, 40, 96}, solvedCo = {0, 15, 21};
+    private static int[] solvedEp = {88, 42, 34}, solvedEo = {176, 84, 68}, solvedCo = {0, 15, 21};
     private static boolean idaPetrus2(int co, int ep, int eo, int depth, int lm, int idx) {
         if (depth == 0) return ep == solvedEp[idx] && eo == solvedEo[idx] && co == solvedCo[idx];
         if (ed2[ep << 2 | eo & 3] > depth) return false;
@@ -172,7 +160,7 @@ public class Petrus {
     private static String[] blks = {"ULF:", "ULB:", "URF:", "URB:", "DLF:", "DLB:", "DRF:", "DRB:"};
     private static String petrus1(String scramble, int block, boolean solveS2) {
         String[] s = scramble.split(" ");
-        int co = 12, ep = 132, eo = 176;
+        int co = 12, ep = 102, eo = 136;
         for (int d = 0; d < s.length; d++)
             if (0 != s[d].length()) {
                 int o = moveIdx[block].indexOf(s[d].charAt(0));
@@ -190,7 +178,7 @@ public class Petrus {
                 StringBuilder sb = new StringBuilder("\n");
                 sb.append(blks[block]);
                 for (int i = d; i > 0; i--)
-                    sb.append(' ').append(turn[block][seq[i] / 3]).append(suff[seq[i] % 3]);
+                    sb.append(' ').append(moveIdx[block].charAt(seq[i] / 3)).append(suff[seq[i] % 3]);
                 if (solveS2) sb.append(petrus2(s, block, d));
                 return sb.toString();
             }
@@ -240,7 +228,7 @@ public class Petrus {
                 if (idaPetrus2(co2[idx], ep2[idx], eo2[idx], l, -1, idx)) {
                     StringBuilder sb = new StringBuilder(" /");
                     for (int i = l; i > 0; i--)
-                        sb.append(' ').append(turn[block][seq[i] / 3]).append(suff[seq[i] % 3]);
+                        sb.append(' ').append(moveIdx[block].charAt(seq[i] / 3)).append(suff[seq[i] % 3]);
                     return sb.toString();
                 }
         }

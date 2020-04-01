@@ -41,7 +41,13 @@ public class Roux {
                 }
 
         for (i = 0; i < 10560; i++) ed[i] = -1;
-        ed[52 * 48] = 0;
+        int ep = Petrus.epm[72][2], eo = Petrus.eom[96][2];
+        for (i=0; i<3; i++) {
+            Log.w("dct", ep+", "+eo);
+            ep = Petrus.epm[ep][2]; eo = Petrus.eom[eo][2];
+        }
+
+        ed[12 * 48] = 0;
         int c = 1;
         for (int d = 0; d < 7; d++) {
             //c = 0;
@@ -244,7 +250,7 @@ public class Roux {
     }
 
     private static boolean idaRoux1(int cp, int co, int ep, int eo, int depth, int lm) {
-        if (depth == 0) return cp == 50 && co == 225 && ep == 312 && eo == 416;
+        if (depth == 0) return cp == 50 && co == 225 && ep == 72 && eo == 96;
         if (ed[ep << 3 | eo & 7] > depth || cd[cp * 9 + co % 9] > depth) return false;
         for (int i = 0; i < 6; i++)
             if (i != lm)
@@ -289,7 +295,7 @@ public class Roux {
     private static String[] rotateIdx = {"", "y", "z2", "y'"}; //"z", "z'", "", "z2", "y", "y'"
     private static String[] rotateIdx2 = {"", " x2", " x'", " x"};
     private static int[] scp = {50, 7, 49, 12}, sco = {225, 27, 221, 61};
-    private static int[] sep = {312, 887, 860, 826}, seo = {416, 1176, 1144, 1096};
+    private static int[] sep = {72, 518, 580, 575}, seo = {96, 688, 768, 760};
     private static int[][] oriIdx = {{1, 0, 2, 3}, {0, 1, 3, 2}, {2, 3, 0, 1}, {3, 2, 1, 0}};
 
     private static String roux1(String scramble, int side, boolean solveS2) {

@@ -15,14 +15,7 @@ public class EOline {
         for (int i = 0; i < 2048; i++) {
             for (int j = 0; j < 6; j++) {
                 Utils.idxToFlip(arr, i, 12, true);
-                switch (j) {
-                    case 0: Cross.circle(arr, 4,  5,  6, 7, 0); break;
-                    case 1: Cross.circle(arr, 8, 11, 10, 9, 0); break;
-                    case 2: Cross.circle(arr, 7,  2, 11, 3, 0); break;
-                    case 3: Cross.circle(arr, 5,  0,  9, 1, 0); break;
-                    case 4: Cross.circle(arr, 6,  1, 10, 2, 1); break;
-                    case 5: Cross.circle(arr, 4,  3,  8, 0, 1); break;
-                }
+                Cross.edgemv(arr, j);
                 eom[i][j] = (short) Utils.flipToIdx(arr, 12, true);
             }
         }

@@ -1,17 +1,14 @@
 package solver;
 
-import java.io.*;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Random;
-
-import com.dctimer.APP;
 
 import static solver.Utils.Cnk;
 import static solver.Utils.suff;
 import static solver.Utils.getPruning;
-import static solver.Utils.read;
 import static solver.Utils.setPruning;
-import static solver.Utils.write;
 
 public class Cross {
     private static short[][] epm = new short[11880][6], eom = new short[7920][6];
@@ -49,26 +46,6 @@ public class Cross {
         ary[b] = t ^ ori;
     }
 
-    static void idxToPerm(int[] arr, int p) {
-        int j;
-        for (int i = 1; i <= 4; i++) {
-            int t = p % i;
-            for (p = p / i, j = i - 2; j >= t; j--)
-                arr[j + 1] = arr[j];
-            arr[t] = 4 - i;
-        }
-    }
-
-    static int permToIdx(int[] arr) {
-        int idx = 0, j, t;
-        for (int i = 0; i < 4; i++) {
-            for (j = t = 0; j < 4 && arr[j] != i; j++)
-                if (arr[j] > i) t++;
-            idx = idx * (4 - i) + t;
-        }
-        return idx;
-    }
-
     private static void idxToComb(int[] arr, int[] s, int c, int o) {
         int q = 4;
         for (int i = 0; i < 12; i++)
@@ -79,69 +56,69 @@ public class Cross {
             } else arr[i] = -1;
     }
 
+    private static void idxToComb(int[] arr, int[] s, int c, int o, int[] map) {
+        int q = 4;
+        for (int t = 0; t < 12; t++)
+            if (c >= Cnk[11 - t][q]) {
+                c -= Cnk[11 - t][q--];
+                arr[t] = map[s[q]] << 1 | o & 1;
+                o >>= 1;
+            } else arr[t] = -1;
+    }
+
     private static int getmv(int c, int po, int f) {
-        int[] arr = new int[12], pm = new int[4];
-        int q, t;
-        idxToPerm(pm, po);
-        idxToComb(arr, pm, c, po);
-        switch (f) {
-            case 0: circle(arr,  0,  1,  2, 3, 0); break;
-            case 1: circle(arr, 11, 10,  9, 8, 0); break;
-            case 2: circle(arr,  1,  4,  9, 5, 0); break;
-            case 3: circle(arr,  3,  6, 11, 7, 0); break;
-            case 4: circle(arr,  0,  7,  8, 4, 1); break;
-            case 5: circle(arr,  2,  5, 10, 6, 1); break;
-        }
+        int[] arr = new int[12], ps = new int[4];
+        Utils.idxToPerm(ps, po, 4, false);
+        idxToComb(arr, ps, c, po);
+        edgemv(arr, f);
         c = po = 0;
-        q = 4;
-        for (t = 0; t < 12; t++)
+        int q = 4;
+        for (int t = 0; t < 12; t++)
             if (arr[t] >= 0) {
                 c += Cnk[11 - t][q--];
-                pm[q] = arr[t] >> 1;
+                ps[q] = arr[t] >> 1;
                 po |= (arr[t] & 1) << 3 - q;
             }
-        int i = permToIdx(pm);
+        int i = Utils.permToIdx(ps, 4, false);//permToIdx(pm);
         return 24 * c + i << 4 | po;
+    }
+
+    static void edgemv(int[] arr, int m) {
+        switch (m) {
+            case 0: circle(arr, 0,  1, 2,  3, 0); break;
+            case 1: circle(arr, 4,  7, 6,  5, 0); break;
+            case 2: circle(arr, 2,  9, 6, 10, 0); break;
+            case 3: circle(arr, 0, 11, 4,  8, 0); break;
+            case 4: circle(arr, 1,  8, 5,  9, 1); break;
+            case 5: circle(arr, 3, 10, 7, 11, 1); break;
+        }
     }
 
     private static void init() {
         if (ini)
             return;
         int a, b, c, d, e, f;
-        try {
-            InputStream in = new BufferedInputStream(new FileInputStream(APP.dataPath + "cross.dat"));
-            read(epm, in);
-            read(eom, in);
-            in.close();
-        } catch (Exception ex) {
-            for (a = 0; a < 495; a++) {
-                for (b = 0; b < 24; b++) {
-                    for (c = 0; c < 6; c++) {
-                        d = getmv(a, b, c);
-                        epm[24 * a + b][c] = (short) (d >> 4);
-                        if (b < 16)
-                            eom[16 * a + b][c] = (short) ((d / 384) << 4 | d & 15);
-                    }
+        for (a = 0; a < 495; a++) {
+            for (b = 0; b < 24; b++) {
+                for (c = 0; c < 6; c++) {
+                    d = getmv(a, b, c);
+                    epm[24 * a + b][c] = (short) (d >> 4);
+                    if (b < 16)
+                        eom[16 * a + b][c] = (short) ((d / 384) << 4 | d & 15);
                 }
             }
-            try {
-                OutputStream out = new BufferedOutputStream(new FileOutputStream(APP.dataPath + "cross.dat"));
-                write(epm, out);
-                write(eom, out);
-                out.close();
-            } catch (Exception ex2) { }
         }
-        for (a = 1; a < 11880; a++)
+        for (a = 0; a < 11880; a++)
             epd[a] = -1;
-        epd[0] = 0;
+        epd[69 * 24] = 0;
         Utils.createPrun(epd, 6, epm, 3);
         for (a = 0; a < 7920; a++)
             eod[a] = eofd[a] = -1;
-        eod[0] = 0;
+        eod[69 * 16] = 0;
         Utils.createPrun(eod, 7, eom, 3);
         for (a = 0; a < 495; a++)
             eofd[a << 4] = 0;
-        Utils.createPrun(eofd, 7, eom, 3);
+        Utils.createPrun(eofd, 4, eom, 3);
 
         //xcross
         byte[][] p = {
@@ -187,7 +164,7 @@ public class Cross {
     }
 
     private static boolean idacross(int ep, int eo, int d, int lm) {
-        if (d == 0) return 0 == ep && 0 == eo;
+        if (d == 0) return ep == 1656 && eo == 1104;
         if (epd[ep] > d || eod[eo] > d) return false;
         for (int i = 0; i < 6; i++)
             if (i != lm) {
@@ -206,7 +183,7 @@ public class Cross {
 
     private static void idacross(int ep, int eo, int d, int lm, int face, int[] path) {
         if (d == 0) {
-            if (ep == 0 && eo == 0) {
+            if (ep == 1656 && eo == 1104) {
                 StringBuilder sb = new StringBuilder(rotateStr[0][face]);
                 int qtm = 0;
                 for (int i = path.length - 1; i > 0; i--) {
@@ -232,7 +209,7 @@ public class Cross {
     }
 
     private static boolean idaeofc(int ep, int eo, int eof, int d, int lm) {
-        if (d == 0) return 0 == ep && 0 == eo && (eof & 15) == 0;
+        if (d == 0) return ep == 1656 && eo == 1104 && (eof & 15) == 0;
         if (epd[ep] > d || eod[eo] > d || eofd[eof] > d) return false;
         for (int i = 0; i < 6; i++)
             if (i != lm) {
@@ -249,7 +226,7 @@ public class Cross {
     }
 
     private static boolean idaxcross(int ep, int eo, int co, int feo, int slot, int d, int lm) {
-        if (d == 0) return ep == 0 && eo == 0 && co == (slot + 4) * 3 && feo == slot * 2;
+        if (d == 0) return ep == 1656 && eo == 1104 && co == (slot + 4) * 3 && feo == slot * 2;
         if (epd[ep] > d || eod[eo] > d || fecd[slot][feo * 24 + co] > d) return false;
         for (int i = 0; i < 6; i++)
             if (i != lm) {
@@ -269,7 +246,7 @@ public class Cross {
 
     private static void idaxcross(int ep, int eo, int co, int feo, int slot, int d, int lm, int face, int[] path) {
         if (d == 0) {
-            if (ep == 0 && eo == 0 && co == (slot + 4) * 3 && feo == slot * 2) {
+            if (ep == 1656 && eo == 1104 && co == (slot + 4) * 3 && feo == slot * 2) {
                 StringBuilder sb = new StringBuilder(rotateStr[0][face]);
                 int qtm = 0;
                 for (int i = path.length - 1; i > 0; i--) {
@@ -297,7 +274,7 @@ public class Cross {
 
     private static String cross(String scramble, int side, int face) {
         String[] s = scramble.split(" ");
-        int eo = 0, ep = 0;
+        int ep = 1656, eo = 1104;
         for (int i = 0; i < s.length; i++)
             if (s[i].length() != 0) {
                 int m = moveStr[side][face].indexOf(s[i].charAt(0));
@@ -350,7 +327,7 @@ public class Cross {
         String[] s = scramble.split(" ");
         StringBuilder sb = new StringBuilder();
         for (int face = 0; face < 6; face++) {
-            int eo = 0, ep = 0;
+            int ep = 1656, eo = 1104;
             for (int i = 0; i < s.length; i++)
                 if (s[i].length() != 0) {
                     int m = moveStr[0][face].indexOf(s[i].charAt(0));
@@ -387,7 +364,7 @@ public class Cross {
             co[i] = (i + 4) * 3;
             feo[i] = i * 2;
         }
-        int ep = 0, eo = 0;
+        int ep = 1656, eo = 1104;
         for (int d = 0; d < s.length; d++)
             if (s[d].length() != 0) {
                 int m = moveStr[0][face].indexOf(s[d].charAt(0));
@@ -453,7 +430,7 @@ public class Cross {
                 co[i] = (i + 4) * 3;
                 feo[i] = i * 2;
             }
-            int ep = 0, eo = 0;
+            int ep = 1656, eo = 1104;
             for (int d = 0; d < s.length; d++)
                 if (s[d].length() != 0) {
                     int m = moveStr[0][face].indexOf(s[d].charAt(0));
@@ -509,7 +486,7 @@ public class Cross {
 
     public static String eofc(String scramble, int side) {
         String[] s = scramble.split(" ");
-        int eo = 0, ep = 0, eof = 69 << 4;
+        int ep = 1656, eo = 1104, eof = 0;
         for (int i = 0; i < s.length; i++)
             if (s[i].length() != 0) {
                 int m = EOline.moveStr[side].indexOf(s[i].charAt(0));
@@ -539,7 +516,7 @@ public class Cross {
             init();
             long t = System.currentTimeMillis();
             for (int i = 0; i < 23760; i++) ed[i] = -1;
-            setPruning(ed, 0, 0);
+            setPruning(ed, 494 * 384, 0);
             int c = 1;
             for (int d = 0; d < 8; d++) {
                 // c=0;
@@ -548,9 +525,8 @@ public class Cross {
                         for (int m = 0; m < 6; m++) {
                             int x = i;
                             for (int n = 0; n < 3; n++) {
-                                int ori = x & 15;
                                 int p = epm[x >> 4][m];
-                                int o = eom[x / 384 << 4 | ori][m];
+                                int o = eom[x / 384 << 4 | (x & 15)][m];
                                 x = p << 4 | (o & 15);
                                 if (getPruning(ed, x) == 0xf) {
                                     setPruning(ed, x, d + 1);
@@ -558,7 +534,7 @@ public class Cross {
                                 }
                             }
                         }
-                //Log.w("dct", d+1+"\t"+c);
+                Log.w("dct", d+1+"\t"+c);
             }
             t = System.currentTimeMillis() - t;
             //Log.w("dct", t+"ms init");
@@ -566,7 +542,7 @@ public class Cross {
         }
         Random r = new Random();
         int i;// = r.nextInt(190080);
-        if (depth == 0) i = 0;
+        if (depth == 0) i = 494 * 384;
         else do {
             i = r.nextInt(190080);
         } while (getPruning(ed, i) > depth);
@@ -575,16 +551,15 @@ public class Cross {
         int ori = i & 15;
         int[] c = new int[12];
         int[] p = new int[4];
-        idxToPerm(p, perm);
-        idxToComb(c, p, comb, ori);
+        Utils.idxToPerm(p, perm, 4, false);
+        idxToComb(c, p, comb, ori, new int[] {3, 2, 1, 0});
         int[][] arr = new int[2][12];
-        int[] idx = { 7, 6, 5, 4, 10, 9, 8, 11, 3, 2, 1, 0 };
         for (i = 0; i < 12; i++) {
-            if (c[i] == -1)
-                arr[0][idx[i]] = arr[1][idx[i]] = -1;
+            if (c[i] < 0)
+                arr[0][i] = arr[1][i] = -1;
             else {
-                arr[0][idx[i]] = c[i] >> 1;
-                arr[1][idx[i]] = c[i] & 1;
+                arr[0][i] = c[i] >> 1;
+                arr[1][i] = c[i] & 1;
             }
         }
         return arr;
