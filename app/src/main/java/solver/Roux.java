@@ -41,11 +41,6 @@ public class Roux {
                 }
 
         for (i = 0; i < 10560; i++) ed[i] = -1;
-        int ep = Petrus.epm[72][2], eo = Petrus.eom[96][2];
-        for (i=0; i<3; i++) {
-            Log.w("dct", ep+", "+eo);
-            ep = Petrus.epm[ep][2]; eo = Petrus.eom[eo][2];
-        }
 
         ed[12 * 48] = 0;
         int c = 1;

@@ -21,7 +21,6 @@
     <string name="action_histogram">Histogram</string>
     <string name="action_graph">Graph</string>
     <string name="action_import_export">Import/Export database</string>
-    <string name="action_algorithm">Algorithms</string>
     <string name="action_share">Share</string>
     <string name="action_exit">Exit</string>
     <string name="action_stackmat">Use Stackmat timer</string>
@@ -132,6 +131,7 @@
     <string name="delete_time">Delete</string>
     <string name="reset_all">Reset All</string>
     <string name="new_version">"New version: "</string>
+    <string name="confirm_delete_result">"Delete result: "</string>
     <string name="confirm_delete_last">"Delete last result: "</string>
     <string name="confirm_clear_session">Clear all times in this session?</string>
     <string name="confirm_delete_session">Delete this session?</string>
@@ -188,6 +188,7 @@
     <string name="menu_feedback">Feedback</string>
     <string name="menu_help">Help</string>
     <string name="menu_about">About</string>
+    <string name="menu_website">Websites</string>
     <string name="about_msg">"Version: %1$s\nCopyright © 2012-2020 MeigenChou"</string>
     <string name="feedback_title">Feedback of DCTimer</string>
     <string name="language">en</string>

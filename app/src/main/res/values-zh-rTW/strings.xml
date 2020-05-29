@@ -19,7 +19,6 @@
     <string name="action_histogram">成績分佈</string>
     <string name="action_graph">折線圖</string>
     <string name="action_import_export">匯入匯出數據庫</string>
-    <string name="action_algorithm">公式集</string>
     <string name="action_share">分享</string>
     <string name="action_exit">退出</string>
     <string name="action_stackmat">使用Stackmat計時</string>
@@ -129,6 +128,7 @@
     <string name="copy_scramble">複製轉亂</string>
     <string name="delete_time">刪除</string>
     <string name="new_version">發現新版本：</string>
+    <string name="confirm_delete_result">刪除成績：</string>
     <string name="confirm_delete_last">刪除上一次成績：</string>
     <string name="confirm_clear_session">確認清空成績</string>
     <string name="confirm_delete_session">確認刪除分組</string>
@@ -175,6 +175,7 @@
     <string name="menu_feedback">意見反饋</string>
     <string name="menu_help">幫助</string>
     <string name="menu_about">關於</string>
+    <string name="menu_website">相關網站</string>
     <string name="about_msg">"版本：%1$s\n版權所有 © 2012-2020 MeigenChou"</string>
     <string name="feedback_title">DCTimer反饋</string>
     <string name="language">cn</string>

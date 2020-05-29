@@ -669,6 +669,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     } else ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, 3);
                 } else new ImportExportDialog().newInstance().show(getSupportFragmentManager(), "ImportExport");
                 break;
+            case R.id.nav_algorithm:    //公式库
+                Intent intent = new Intent(context, WebActivity.class);
+                String web = "http://algdb.net";
+                intent.putExtra("web", web);
+                intent.putExtra("title", "AlgDb.net");
+                startActivity(intent);
+                break;
+            case R.id.nav_algcubing: //alg.cubing
+                intent = new Intent(context, WebActivity.class);
+                web = "https://alg.cubing.net";
+                intent.putExtra("web", web);
+                intent.putExtra("title", "alg.cubing.net");
+                startActivity(intent);
+                break;
             case R.id.nav_test:
                 //随机生成成绩
                 result.insert(10000, 12000, 4000000, currentScramble.getScramble());
@@ -3040,14 +3054,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }).setNegativeButton(R.string.btn_close, null).show();
     }
 
-    public void delete(int i) {
-        result.delete(i);
-        btnSessionMean.setText(getString(R.string.session_mean, result.getSessionMean()));
-        result.calcAvg();
-        if (multiPhase > 0) result.calcMpMean();
-        if (sortType != 0) result.sortResult();
-        resAdapter.reload();
-        setStatsLabel();
+    public void delete(final int num) {
+        new AlertDialog.Builder(context).setTitle(getString(R.string.confirm_delete_result) + result.getTimeAt(num, false)).setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                result.delete(num);
+                btnSessionMean.setText(getString(R.string.session_mean, result.getSessionMean()));
+                result.calcAvg();
+                if (multiPhase > 0) result.calcMpMean();
+                if (sortType != 0) result.sortResult();
+                resAdapter.reload();
+                setStatsLabel();
+            }
+        }).setNegativeButton(R.string.btn_cancel, null).show();
     }
 
     private void deleteAll() {

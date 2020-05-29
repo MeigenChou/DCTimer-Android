@@ -2,12 +2,17 @@ package com.dctimer.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.http.SslError;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -26,6 +31,7 @@ import static com.dctimer.APP.screenOri;
 public class WebActivity extends AppCompatActivity {
     private WebView webView;
     private ProgressBar progress;
+    private String webUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,10 @@ public class WebActivity extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
         setContentView(R.layout.activity_web);
+
+        Intent intent = getIntent();
+        webUrl = intent.getStringExtra("web");
+        String title = intent.getStringExtra("title");
 
         LinearLayout layout = findViewById(R.id.layout);
         layout.setBackgroundColor(colors[0]);
@@ -61,6 +71,7 @@ public class WebActivity extends AppCompatActivity {
         }
 
         CustomToolbar toolbar = findViewById(R.id.toolbar);
+        if (title != null) toolbar.setTitle(title);
         setSupportActionBar(toolbar);
         toolbar.setBackgroundColor(colors[0]);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -72,22 +83,40 @@ public class WebActivity extends AppCompatActivity {
         toolbar.setItemColor(colors[1]);
 
         webView = findViewById(R.id.webview);
-        webView.setWebChromeClient(new WebClient());
+        //webView.setWebViewClient(new WebClient());
+        webView.setWebChromeClient(new ChromeClient());
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setBuiltInZoomControls(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 
         progress = findViewById(R.id.progress);
 
         //屏幕方向
         setRequestedOrientation(SCREEN_ORIENTATION[screenOri]);
 
-        Intent intent = getIntent();
-        String web = intent.getStringExtra("web");
-        webView.loadUrl(web);
+        webView.loadUrl(webUrl);
     }
 
-    private class WebClient extends WebChromeClient {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.web, menu);
+        //mMenu = menu;
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_refresh) {
+            webView.reload();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private class ChromeClient extends WebChromeClient {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             if (newProgress == 100) {
@@ -98,6 +127,21 @@ public class WebActivity extends AppCompatActivity {
                 progress.setProgress(newProgress);
             }
             super.onProgressChanged(view, newProgress);
+        }
+    }
+
+    private class WebClient extends WebViewClient {
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            Log.w("dct", "on page finish");
+            super.onPageFinished(view, url);
+        }
+
+        @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            Log.w("dct", "on receive ssl error");
+            handler.proceed();
         }
     }
 }

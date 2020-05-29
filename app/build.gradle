@@ -6,8 +6,8 @@ android {
         applicationId "com.dctimer"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 37
-        versionName "1.1.9"
+        versionCode 38
+        versionName "1.1.10"
     }
     buildTypes {
         release {
