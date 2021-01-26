@@ -1,5 +1,7 @@
 package scrambler;
 
+import android.util.Log;
+
 import java.util.regex.*;
 
 public class SQ1 {
@@ -107,6 +109,7 @@ public class SQ1 {
         posit = new int[] {0, 0, 1, 2, 2, 3, 4, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 11, 12, 13, 13, 14, 15, 15, 1};
         //mi = true;
         for (int i = 0; i < s.length; i++) {
+            if (s[i].length() == 0) continue;
             if (s[i].equals("/")) {
                 domove(0);
                 posit[24] = 1 - posit[24];

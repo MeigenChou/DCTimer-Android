@@ -150,15 +150,20 @@ public class Cross {
         for (f = 0; f < 4; f++) {
             for (a = 0; a < 576; a++) fecd[f][a] = -1;
             fecd[f][f * 51 + 12] = 0;
-            for (d = 0; d < 6; d++)
+            for (d = 0; d < 6; d++) {
+                int cc = 0;
                 for (a = 0; a < 576; a++)
                     if (fecd[f][a] == d)
                         for (b = 0; b < 6; b++)
                             for (e = a, c = 0; c < 3; c++) {
                                 e = 24 * fem[e / 24][b] + fcm[e % 24][b];
-                                if (fecd[f][e] == -1)
+                                if (fecd[f][e] == -1) {
                                     fecd[f][e] = (byte) (d + 1);
+                                    cc++;
+                                }
                             }
+                Log.w("dct", d+1+"\t"+cc);
+            }
         }
         ini = true;
     }

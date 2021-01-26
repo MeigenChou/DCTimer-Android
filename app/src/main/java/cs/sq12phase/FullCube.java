@@ -191,5 +191,9 @@ public class FullCube {
 
         sq.ml = ml;
     }
+
+    boolean isSolved() {
+        return ul == 0x011233 && ur == 0x455677 && dl == 0x998bba && dr == 0xddcffe && ml == 0;
+    }
 }
 

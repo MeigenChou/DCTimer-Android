@@ -7,29 +7,20 @@
     android:paddingRight="22dp"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tv_num"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:textColor="#666"
+        android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/tv_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#666"
-            android:textSize="19sp" />
-
-        <TextView
-            android:id="@+id/tv_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:textColor="#000"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -39,7 +30,7 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="2dp"
             android:orientation="vertical">
 
             <TextView
@@ -53,9 +44,16 @@
                 android:id="@+id/tv_scramble"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="5dp"
                 android:textColor="#333"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
+
+            <ImageView
+                android:id="@+id/img_scramble"
+                android:layout_width="240dp"
+                android:layout_height="180dp"
+                android:layout_marginTop="3dp"
+                android:layout_gravity="center_horizontal" />
 
             <RadioGroup
                 android:id="@+id/rg_penalty"

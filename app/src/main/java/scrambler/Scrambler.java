@@ -13,6 +13,7 @@ import android.graphics.Paint.Align;
 import android.util.Log;
 
 import com.dctimer.APP;
+import com.dctimer.util.StringUtils;
 
 import static scrambler.MegaScramble.*;
 
@@ -202,6 +203,34 @@ public class Scrambler {
             else hint = Cube2Layer.solveFirstLayer(scramble, APP.solverType[4]);
         } else if (isPyrScramble()) {
             hint = PyraminxV.solveV(scramble, idx);
+        }
+    }
+
+    public void parseScramble(int category, String scramble) {
+        this.category = category;
+        this.scramble = scramble;
+        if (category == -29 || (category >= 0 && category < 32)) {   //二阶
+            imageType = StringUtils.getImageType(scramble, 1);
+        } else if (category == -32 || category == -27 || category == -25 || category == -28 || category == -26 || (category > 31 && category < 64) || (category > 543 && category < 576)) {
+            imageType = StringUtils.getImageType(scramble, 2);
+        } else if (category == -31 || category == -17 || (category > 63 && category < 96)) {    //四阶
+            imageType = StringUtils.getImageType(scramble, 3);
+        } else if (category == -30 || category == -16 || (category > 95 && category < 128)) {   //五阶
+            imageType = StringUtils.getImageType(scramble, 4);
+        } else if (category == -19 || (category > 127 && category < 160)) { //六阶
+            imageType = StringUtils.getImageType(scramble, 5);
+        } else if (category == -18 || (category > 159 && category < 192)) { //七阶
+            imageType = StringUtils.getImageType(scramble, 6);
+        } else if (category == -23 || (category > 223 && category < 256)) { //金字塔
+            imageType = StringUtils.getImageType(scramble, 7);
+        } else if (category == -20 || (category > 319 && category < 352)) { //斜转
+            imageType = StringUtils.getImageType(scramble, 8);
+        } else if (category == -24 || (category > 191 && category < 224)) { //五魔
+
+        } else if (category == -22 || (category > 255 && category < 288)) { //SQ1
+
+        } else if (category == -21 || (category > 287 && category < 320)) { //魔表
+
         }
     }
 
@@ -681,7 +710,7 @@ public class Scrambler {
                 scrambleList.add(scr);
                 break;
             case 260:
-                scr = cubesq.scramblePLL(r);
+                scr = cubesq.scramblePBL(r);
                 imageType = TYPE_SQ1;
                 scrambleList.add(scr);
                 break;
@@ -1113,6 +1142,18 @@ public class Scrambler {
         int idx = category >> 5;
         int sub = category & 0x1f;
         return (idx == -1 && sub == 9) || (idx == 7 && sub < 2);
+    }
+
+    public boolean isBlindfoldScramble() {
+        int idx = category >> 5;
+        int sub = category & 0x1f;
+        return idx == -1 && (sub == 4 || sub == 15 || sub == 16 || sub == 17);
+    }
+
+    public boolean isFMCScramble() {
+        int idx = category >> 5;
+        int sub = category & 0x1f;
+        return idx == -1 && sub == 6;
     }
 
     public String solve333(String scramble) {
@@ -1565,8 +1606,8 @@ public class Scrambler {
         if (APP.megaColorScheme == 0)
             colors = new int[] {Color.WHITE, 0xff880088, 0xff008800, 0xff88ddff, 0xff882222, Color.BLUE,
                     Color.RED, 0xffff9900, Color.GREEN, 0xffff44ff, 0xff000088, Color.YELLOW};
-        else colors = new int[] {Color.WHITE, Color.RED, 0xff008800, 0xff880088, Color.YELLOW, Color.BLUE,
-                0xffffff88, 0xff88ddff, 0xffff9900, Color.GREEN, 0xffff44ff, Color.GRAY};
+        else colors = new int[] {Color.WHITE, Color.RED, 0xff008800, 0xff880088, 0xffffdd00, Color.BLUE,
+                0xffffff99, 0xff88ddff, 0xffff9900, Color.GREEN, 0xffff44ff, Color.GRAY};
         float edgeFrac = (float) ((1 + Math.sqrt(5)) / 4);
         float centerFrac = 0.5f;
         float scale = width / 350f;

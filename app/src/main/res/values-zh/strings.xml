@@ -18,6 +18,7 @@
     <string name="action_sort">排序方式</string>
     <string name="action_histogram">成绩分布</string>
     <string name="action_graph">折线图</string>
+    <string name="action_daily">日常统计</string>
     <string name="action_import_export">导入导出数据库</string>
     <string name="action_share">分享</string>
     <string name="action_exit">退出</string>
@@ -91,6 +92,7 @@
     <string name="scan_device">正在扫描设备…</string>
     <string name="cube_not_connected">已断开</string>
     <string name="ble_not_supported">当前设备不支持蓝牙BLE</string>
+    <string name="search_hint">搜索时间或注释</string>
     <!-- 统计 -->
     <string name="detail_avg">详细成绩：%1$d次去尾平均</string>
     <string name="detail_mean">详细成绩：%1$d次平均</string>
@@ -186,7 +188,7 @@
     <string name="menu_help">帮助</string>
     <string name="menu_about">关于</string>
     <string name="menu_website">相关网站</string>
-    <string name="about_msg">"版本：%1$s\n版权所有 © 2012-2020 MeigenChou"</string>
+    <string name="about_msg">"版本：%1$s\n版权所有 © 2012-2021 MeigenChou"</string>
     <string name="feedback_title">DCTimer反馈</string>
     <string name="language">cn</string>
 </resources>

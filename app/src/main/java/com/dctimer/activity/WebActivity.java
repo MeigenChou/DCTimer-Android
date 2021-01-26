@@ -83,7 +83,7 @@ public class WebActivity extends AppCompatActivity {
         toolbar.setItemColor(colors[1]);
 
         webView = findViewById(R.id.webview);
-        //webView.setWebViewClient(new WebClient());
+        webView.setWebViewClient(new WebClient());
         webView.setWebChromeClient(new ChromeClient());
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -131,7 +131,6 @@ public class WebActivity extends AppCompatActivity {
     }
 
     private class WebClient extends WebViewClient {
-
         @Override
         public void onPageFinished(WebView view, String url) {
             Log.w("dct", "on page finish");

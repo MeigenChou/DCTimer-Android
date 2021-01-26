@@ -53,6 +53,7 @@ public class Sq1Shape {
 
     public static int applyMove(int state, String move) {
         //State state = this;
+        if (move.length() == 0) return state;
         if (move.equals("/")) {
             state = twist(state);
         } else {

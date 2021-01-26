@@ -53,6 +53,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_daily"
+        android:orderInCategory="109"
+        android:title="@string/action_daily"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_share"
         android:orderInCategory="119"
         android:title="@string/action_share"

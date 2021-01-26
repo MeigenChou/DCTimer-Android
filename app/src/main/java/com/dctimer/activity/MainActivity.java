@@ -1,6 +1,12 @@
 package com.dctimer.activity;
 
 import static com.dctimer.APP.*;
+import static com.dctimer.adapter.SettingAdapter.ST_IMAGE_SIZE;
+import static com.dctimer.adapter.SettingAdapter.ST_OPACITY;
+import static com.dctimer.adapter.SettingAdapter.ST_SCR_FONT;
+import static com.dctimer.adapter.SettingAdapter.ST_SENSITIVITY;
+import static com.dctimer.adapter.SettingAdapter.ST_START_DELAY;
+import static com.dctimer.adapter.SettingAdapter.ST_TIMER_SIZE;
 import static scrambler.Scrambler.*;
 
 import android.Manifest;
@@ -455,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             timer.timeEnd = SystemClock.uptimeMillis();
             timer.count();
             setVisibility(true);
-            if (!wca) { penaltyTime = 0; isDNF = false; }
+            if (!wca || currentScramble.isBlindfoldScramble()) { penaltyTime = 0; isDNF = false; }
             save((int) timer.time);
             timer.setTimerState(0);
             if (!screenOn) releaseWakeLock();
@@ -511,11 +517,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             menu.findItem(R.id.action_sort).setVisible(true);
             menu.findItem(R.id.action_histogram).setVisible(true);
             menu.findItem(R.id.action_graph).setVisible(true);
+            menu.findItem(R.id.action_daily).setVisible(true);
         } else {
             menu.findItem(R.id.action_rename).setVisible(false);
             menu.findItem(R.id.action_sort).setVisible(false);
             menu.findItem(R.id.action_histogram).setVisible(false);
             menu.findItem(R.id.action_graph).setVisible(false);
+            menu.findItem(R.id.action_daily).setVisible(false);
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -614,9 +622,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Graph.drawHist(result, dip300, p, c);
                 iv.setImageBitmap(bm);
                 new AlertDialog.Builder(context).setView(view).setNegativeButton(R.string.btn_close, null).show();
-//                Intent intent = new Intent(context, GraphActivity.class);
-//                intent.putExtra("type", 1);
-//                startActivity(intent);
                 break;
             case R.id.action_graph: //折线图
                 factory = LayoutInflater.from(context);
@@ -637,8 +642,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new AlertDialog.Builder(context).setView(view)
                         .setNegativeButton(R.string.btn_close, null).show();
                 break;
+            case R.id.action_daily:
+                Intent intent = new Intent(MainActivity.this, GraphActivity.class);
+                startActivity(intent);
+                break;
             case R.id.action_share: //分享
-                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");	//纯文本
                 intent.putExtra(Intent.EXTRA_SUBJECT, "SHARE");
                 intent.putExtra(Intent.EXTRA_TEXT, Utils.getShareContent(this));
@@ -918,7 +927,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         int timeRes = cube.getResult();
                         tvMulPhase.setText(String.format(Locale.getDefault(), "%d moves\n%.1f tps", cube.getMovesCount(), cube.getMovesCount() * 1000f / timeRes));
                         Log.w("dct", "成绩 "+timeRes);
-                        if (!wca) { penaltyTime = 0; isDNF = false;}
+                        if (!wca || currentScramble.isBlindfoldScramble()) { penaltyTime = 0; isDNF = false;}
                         timer.setTimerState(Timer.READY);
                         save(timeRes);
                     }
@@ -1994,7 +2003,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             setVisibility(true);
                             timer.timeEnd = SystemClock.uptimeMillis();
                             timer.count();
-                            if (!wca) { penaltyTime = 0; isDNF = false;}
+                            if (!wca || currentScramble.isBlindfoldScramble()) { penaltyTime = 0; isDNF = false;}
                             save((int) timer.time);
                             timer.setTimerState(0);
                             if (!screenOn) releaseWakeLock();
@@ -2063,30 +2072,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void updatePref(int position, int progress) {
         switch (position) {
-            case 8: //启动延时
+            case ST_START_DELAY: //启动延时
                 freezeTime = progress;
                 setPref("tapt", freezeTime);
                 break;
-            case 13:    //灵敏度
+            case ST_SENSITIVITY:    //灵敏度
                 sensitivity = (progress + 5) / 100d;
                 setPref("sensity", progress + 5);
                 break;
-            case 15: //打乱字体
+            case ST_SCR_FONT: //打乱字体
                 scrambleSize = progress + 12;
                 setScrambleSize();
                 setPref("stsize", scrambleSize);
                 break;
-            case 18: //打乱状态
+            case ST_IMAGE_SIZE: //打乱状态
                 imageSize = progress * 10 + 160;
                 setImageSize();
                 setPref("svsize", imageSize);
                 break;
-            case 40: //计时器大小
+            case ST_TIMER_SIZE: //计时器大小
                 timerSize = progress + 50;
                 setTimerSize();
                 setPref("ttsize", timerSize);
                 break;
-            case 45: //不透明度
+            case ST_OPACITY: //不透明度
                 opacity = progress + 20;
                 if (!useBgcolor)
                     setBackground();
@@ -2155,7 +2164,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 case 8: Toast.makeText(context, R.string.conning, Toast.LENGTH_SHORT).show();	break;
                 case 9: Toast.makeText(context, getString(R.string.network_error), Toast.LENGTH_SHORT).show();	break;
                 case 10: Toast.makeText(context, R.string.lastest_version, Toast.LENGTH_LONG).show();	break;
-                case 11: Toast.makeText(context, getString(R.string.import_fail), Toast.LENGTH_SHORT).show(); break;
+                case 11:
+                    Toast.makeText(context, getString(R.string.import_fail), Toast.LENGTH_SHORT).show();
+                    Intent intent = getIntent();
+                    finish();
+                    startActivity(intent);
+                    break;
                 case 12:
                     Toast.makeText(context, getString(R.string.import_success), Toast.LENGTH_SHORT).show(); //TODO
 //                    APP.getInstance().initSession(context);
@@ -2169,9 +2183,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                    btnSession.setText(sessionManager.getSessionName(sessionIdx));
 //                    btnSessionMean.setText(getString(R.string.session_mean, result.getSessionMean()));
 //                    setStatsLabel();
-                    Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    //与正常页面跳转一样可传递序列化数据,在Launch页面内获得
-                    intent.putExtra("REBOOT","reboot");
+//                    Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    //与正常页面跳转一样可传递序列化数据,在Launch页面内获得
+//                    intent.putExtra("REBOOT","reboot");
+//                    startActivity(intent);
+                    intent = getIntent();
+                    finish();
                     startActivity(intent);
                     break;
                 case 14: scrambleView.setVisibility(View.GONE); break;
@@ -2627,6 +2644,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         newScramble();
     }
 
+    public boolean isBLDScramble() {
+        return currentScramble.isBlindfoldScramble();
+    }
+
     private void changeSession() {
         btnSession.setText(sessionManager.getSessionName(sessionIdx));
         int mp = sessionManager.getMultiPhase(sessionIdx);
@@ -2714,7 +2735,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            if (enterTime == 1) {
 //                setTimerColor(0xff00ff00);
 //            }
-            if (freezeTime == 0 || (wca && timer.getTimerState() == Timer.READY)) {
+            if (freezeTime == 0 || (wca && !currentScramble.isBlindfoldScramble() && timer.getTimerState() == Timer.READY)) {
                 setTimerColor(0xff00ff00);
                 canStart = true;
             } else {
@@ -2861,7 +2882,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 setTimerColor(0xffff0000);
             }
         } else {
-            if (!wca) { penaltyTime = 0; isDNF = false;}
+            if (!wca || currentScramble.isBlindfoldScramble()) { penaltyTime = 0; isDNF = false;}
             save((int) timer.time);
             timer.setTimerState(Timer.READY);
             if (!screenOn) releaseWakeLock();
@@ -2962,7 +2983,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (multiPhase > 0) {   //TODO 显示各分段成绩
 
         }
-        ResultDialog dialog = ResultDialog.newInstance(p, time, scramble, date, penalty, comment, solution);
+        ResultDialog dialog = ResultDialog.newInstance(p, time, scramble, date, penalty, comment, solution, sessionManager.getPuzzle(sessionIdx));
         dialog.show(getSupportFragmentManager(), "result");
     }
 

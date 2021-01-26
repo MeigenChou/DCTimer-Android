@@ -1,25 +1,34 @@
 package com.dctimer.dialog;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.dctimer.APP;
 import com.dctimer.R;
 import com.dctimer.activity.MainActivity;
 import com.dctimer.activity.WebActivity;
 import com.dctimer.util.Utils;
+
+import scrambler.Scrambler;
 
 public class ResultDialog extends DialogFragment {
     private EditText etComment;
@@ -30,8 +39,9 @@ public class ResultDialog extends DialogFragment {
     private int penalty;
     private String comment;
     private String solution;
+    private int puzzle;
 
-    public static ResultDialog newInstance(int num, String time, String scramble, String date, int penalty, String comment, String solution) {
+    public static ResultDialog newInstance(int num, String time, String scramble, String date, int penalty, String comment, String solution, int puzzle) {
         ResultDialog dialog = new ResultDialog();
         Bundle bundle = new Bundle();
         bundle.putInt("num", num);
@@ -41,6 +51,7 @@ public class ResultDialog extends DialogFragment {
         bundle.putInt("penalty", penalty);
         bundle.putString("comment", comment);
         bundle.putString("solution", solution);
+        bundle.putInt("puzzle", puzzle);
         dialog.setArguments(bundle);
         return dialog;
     }
@@ -55,6 +66,7 @@ public class ResultDialog extends DialogFragment {
         penalty = getArguments().getInt("penalty", 0);
         comment = getArguments().getString("comment");
         solution = getArguments().getString("solution");
+        puzzle = getArguments().getInt("puzzle", 0);
         AlertDialog.Builder buidler = new AlertDialog.Builder(getActivity());
         final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_time, null);
         TextView tvNum = view.findViewById(R.id.tv_num);
@@ -67,6 +79,22 @@ public class ResultDialog extends DialogFragment {
         tvNum.setText("#" + (num + 1));
         tvTime.setText(time);
         tvScramble.setText(scramble);
+        ImageView ivScramble = view.findViewById(R.id.img_scramble);
+        Scrambler scrambler = new Scrambler(getActivity().getSharedPreferences("dctimer", Activity.MODE_PRIVATE));
+        Log.w("dct", "puzz "+puzzle);
+        scrambler.parseScramble(puzzle, scramble);
+        if (scrambler.getImageType() == 0) ivScramble.setVisibility(View.GONE);
+        else {
+            int dip240 = (int) (APP.dpi * 240);
+            Bitmap bitmap = Bitmap.createBitmap(dip240, dip240 * 3 / 4, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(bitmap);
+            c.drawColor(0);
+            Paint p = new Paint();
+            p.setAntiAlias(true);
+            p.setStrokeWidth(APP.dpi);
+            scrambler.drawScramble(dip240, p, c);
+            ivScramble.setImageBitmap(bitmap);
+        }
         tvDate.setText(date);
         if (penalty == 2) {
             RadioButton rb = view.findViewById(R.id.rb_dnf);
@@ -140,7 +168,7 @@ public class ResultDialog extends DialogFragment {
                     ((MainActivity) getActivity()).delete(num);
                 }
             }
-        }).setNeutralButton(R.string.btn_copy, new DialogInterface.OnClickListener() {
+        }).setNeutralButton(R.string.copy_scramble, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (getActivity() instanceof MainActivity) {

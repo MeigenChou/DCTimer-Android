@@ -65,25 +65,25 @@
         <item>F2L訓練</item>
         <item>頂層訓練</item>
         <item>PLL訓練</item>
-        <item>稜塊訓練</item>
+        <item>邊塊訓練</item>
         <item>角塊訓練</item>
-        <item>單組F2L訓練</item>
-        <item>ZBLL訓練</item>
-        <item>頂層棱块</item>
-        <item>頂層角块</item>
-        <item>橋式六棱</item>
+        <item>LSLL</item>
+        <item>ZBLL</item>
+        <item>ELL</item>
+        <item>CLL</item>
+        <item>LSE</item>
         <item>橋式四角</item>
-        <item>棱塊位置</item>
-        <item>棱塊色相</item>
+        <item>邊塊位置</item>
+        <item>邊塊色相</item>
         <item>角塊位置</item>
         <item>角塊色相</item>
         <item>位置訓練</item>
         <item>色相訓練</item>
         <item>簡單十字</item>
-        <item>2GLL訓練</item>
-        <item>ZBLS訓練</item>
-        <item>ZZLL訓練</item>
-        <item>三循環棱塊</item>
+        <item>2GLL</item>
+        <item>ZBLS</item>
+        <item>ZZLL</item>
+        <item>三循環邊塊</item>
         <item>三循環角塊</item>
     </array>
 
@@ -91,21 +91,21 @@
         <item>傳統</item>
         <item>SiGN</item>
         <item>YJ</item>
-        <item>棱塊訓練</item>
+        <item>邊塊訓練</item>
         <item>R,r,U,u</item>
     </array>
 
     <array name="item_555">
         <item>prefix</item>
         <item>SiGN</item>
-        <item>棱塊訓練</item>
+        <item>邊塊訓練</item>
     </array>
 
     <array name="item_666">
         <item>prefix</item>
         <item>SiGN</item>
         <item>suffix</item>
-        <item>棱塊訓練</item>
+        <item>邊塊訓練</item>
     </array>
 
     <array name="item_mega">
@@ -397,8 +397,31 @@
         <item>日</item>
         <item>周</item>
         <item>月</item>
-        <item>季度</item>
         <item>年</item>
-        <item>範圍</item>
+    </array>
+
+    <array name="item_week">
+        <item>日</item>
+        <item>一</item>
+        <item>二</item>
+        <item>三</item>
+        <item>四</item>
+        <item>五</item>
+        <item>六</item>
+    </array>
+
+    <array name="item_month">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
     </array>
 </resources>

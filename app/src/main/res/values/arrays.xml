@@ -462,11 +462,34 @@
     </array>
 
     <array name="item_date_range">
-        <item>Date</item>
+        <item>Day</item>
         <item>Week</item>
         <item>Month</item>
-        <item>Quarter</item>
         <item>Year</item>
-        <item>Range</item>
+    </array>
+
+    <array name="item_week">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </array>
+
+    <array name="item_month">
+        <item>J</item>
+        <item>F</item>
+        <item>M</item>
+        <item>A</item>
+        <item>M</item>
+        <item>J</item>
+        <item>J</item>
+        <item>A</item>
+        <item>S</item>
+        <item>O</item>
+        <item>N</item>
+        <item>D</item>
     </array>
 </resources>

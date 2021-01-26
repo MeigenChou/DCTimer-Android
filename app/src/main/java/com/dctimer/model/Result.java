@@ -84,6 +84,10 @@ public class Result {
         stats = new Stats(this);
     }
 
+    public void setMod(boolean mod) {
+        this.mod = mod;
+    }
+
     private void expand() {
         byte[] pen;
         int[] res;
@@ -216,7 +220,6 @@ public class Result {
         return cursor.getString(column + offset);
     }
 
-
     public void insert(int time, int penalty, String scramble, boolean mp, SmartCube cube) {
         addResult(time, penalty, mp);
         int d = 1;
@@ -320,6 +323,19 @@ public class Result {
         mod = true;
         stats.maxIdx = stats.minIdx = -1;
         stats.mpMean = new int[6];
+    }
+
+    public String[] getDates() {
+        if (mod) {
+            cursor = db.getResult(sessionId);
+        }
+        String[] date = new String[length];
+        cursor.moveToFirst();
+        for (int i = 0; i < length; i++) {
+            date[i] = cursor.getString(5 + offset);
+            cursor.moveToNext();
+        }
+        return date;
     }
 
     public List<Integer> search(String key) {
@@ -437,7 +453,7 @@ public class Result {
 
     public int getMpMinIdx(int idx) {
         return stats.mpMin[idx];
-    }
+    };
 
     public int getMpMaxIdx(int idx) {
         return stats.mpMax[idx];

@@ -25,7 +25,7 @@ import static com.dctimer.APP.avg2len;
 import static com.dctimer.APP.scrambleIdx;
 
 public class StringUtils {
-    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+    public static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
     public static String[] scrambleItems;
     public static String[][] scrambleSubitems;
 
@@ -116,7 +116,7 @@ public class StringUtils {
             case 1: //二阶
                 return scramble.matches("([URFDLB][2']?\\s*)+") ? 2 : 0;
             case 2: //三阶
-                return scramble.matches("([xyzURFDLBMurfdlb][2']?\\s*)+") ? 3 : 0;
+                return scramble.matches("([xyzURFDLBMurfdlb]w?[2']?\\s*)+") ? 3 : 0;
             case 3: //四阶
                 return scramble.matches("(([xyzURFDLBurf]|[URF]w)[2']?\\s*)+") ? 4 : 0;
             case 4: //五阶
@@ -129,6 +129,8 @@ public class StringUtils {
                 return scramble.matches("([URLBulrb]'?\\s*)+") ? Scrambler.TYPE_PYR : 0;
             case 8: //斜转
                 return scramble.matches("([URLB]'?\\s*)+") ? Scrambler.TYPE_SKW : 0;
+            case 9: //SQ1
+
             default:
                 return 0;
         }

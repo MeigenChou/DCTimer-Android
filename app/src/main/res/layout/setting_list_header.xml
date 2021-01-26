@@ -9,14 +9,7 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="#f5f5f5" />
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ddd"
-        android:visibility="gone" />
+        android:background="#eee" />
 
     <TextView
         android:id="@+id/list_header_title"

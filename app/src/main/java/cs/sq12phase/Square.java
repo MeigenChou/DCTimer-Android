@@ -1,5 +1,7 @@
 package cs.sq12phase;
 
+import android.util.Log;
+
 import solver.Utils;
 
 class Square {
@@ -9,21 +11,11 @@ class Square {
     boolean botEdgeFirst;	//true if bottom layer starts with edge right of seam
     int ml;			//shape of middle layer (+/-1, or 0 if ignored)
 
-    static byte SquarePrun[] = new byte[40320 * 2];			//pruning table; #twists to solve corner|edge permutation
+    static byte[] SquarePrun = new byte[40320 * 2];			//pruning table; #twists to solve corner|edge permutation
 
-    static char sqTwistMove[] = new char[40320];			//transition table for twists
-    static char sqTopMove[] = new char[40320];			//transition table for top layer turns
-    static char sqBottomMove[] = new char[40320];			//transition table for bottom layer turns
-
-//	static int get8Comb(byte[] arr) {
-//		int idx = 0, r = 4;
-//		for (int i=0; i<8; i++) {
-//			if (arr[i] >= 4) {
-//				idx += Im.Cnk[7-i][r--];
-//			}
-//		}
-//		return idx;
-//	}
+    static char[] sqTwistMove = new char[40320];			//transition table for twists
+    static char[] sqTopMove = new char[40320];			//transition table for top layer turns
+    static char[] sqBottomMove = new char[40320];			//transition table for bottom layer turns
 
     static boolean ini = false;
 
@@ -66,40 +58,42 @@ class Square {
             ++depth;
             OUT:
             for (int i = 0; i < 40320 * 2; i++) {
-                if (SquarePrun[i] == find) {
-                    int idx = i >> 1;
-                    int ml = i & 1;
+                if (SquarePrun[i] != find) {
+                    continue;
+                }
+                int perm = i >> 1;
+                int ml = i & 1;
 
-                    //try twist
-                    int idxx = sqTwistMove[idx]<<1 | (1 - ml);
-                    if (SquarePrun[idxx] == check) {
+                //try twist
+                int idx = sqTwistMove[perm] << 1 | (1 - ml);
+                if (SquarePrun[idx] == check) {
+                    ++done;
+                    SquarePrun[inv ? i : idx] = (byte) (depth);
+                    if (inv) continue;
+                }
+
+                //try turning top layer
+                for (int m = 0; m < 4; m++) {
+                    perm = sqTopMove[perm];
+                    idx = perm << 1 | ml;
+                    if (SquarePrun[idx] == check) {
                         ++done;
-                        SquarePrun[inv ? i : idxx] = (byte) (depth);
+                        SquarePrun[inv ? i : idx] = (byte) (depth);
                         if (inv) continue OUT;
                     }
-
-                    //try turning top layer
-                    idxx = idx;
-                    for (int m = 0; m < 4; m++) {
-                        idxx = sqTopMove[idxx];
-                        if (SquarePrun[idxx << 1 | ml] == check) {
-                            ++done;
-                            SquarePrun[inv ? i : (idxx << 1 | ml)] = (byte) (depth);
-                            if (inv) continue OUT;
-                        }
-                    }
-                    //try turning bottom layer
-                    for (int m = 0; m < 4; m++) {
-                        idxx = sqBottomMove[idxx];
-                        if (SquarePrun[idxx << 1 | ml] == check) {
-                            ++done;
-                            SquarePrun[inv ? i : (idxx << 1 | ml)] = (byte) (depth);
-                            if (inv) continue OUT;
-                        }
+                }
+                //try turning bottom layer
+                for (int m = 0; m < 4; m++) {
+                    perm = sqBottomMove[perm];
+                    idx = perm << 1 | ml;
+                    if (SquarePrun[idx] == check) {
+                        ++done;
+                        SquarePrun[inv ? i : idx] = (byte) (depth);
+                        if (inv) continue OUT;
                     }
                 }
             }
-            //System.out.println(depth+'\t'+done);
+            //Log.w("dct", "sq "+depth+"\t"+done);
         }
         ini = true;
     }

@@ -50,7 +50,7 @@ public class Utils {
             PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
             return info.versionCode;
         } catch (Exception e) {
-            return 29;
+            return 39;
         }
     }
 
@@ -60,7 +60,7 @@ public class Utils {
             PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
             return info.versionName;
         } catch (Exception e) {
-            return "1.1";
+            return "1.2";
         }
     }
 

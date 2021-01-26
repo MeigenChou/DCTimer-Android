@@ -73,7 +73,7 @@ public class Timer {
     public void count() {
         if (timerState == READY || timerState == INSPECTING) {
             time = 0;
-            if (timerState == READY && APP.wca) {
+            if (timerState == READY && APP.wca && !dct.isBLDScramble()) {
                 timerState = INSPECTING;
                 dct.setTimerColor(0xffff0000);
                 timerTask = new InspectTask();

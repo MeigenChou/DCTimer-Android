@@ -8,6 +8,7 @@ import static com.dctimer.util.StringUtils.timeToString;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 import com.dctimer.APP;
 import com.dctimer.model.Result;
@@ -151,8 +152,7 @@ public class Stats {
     }
 
     public String sessionMean() {
-        long sum = 0;
-        double sum2 = 0;
+        double sum = 0, sum2 = 0;
         maxIdx = minIdx = mean = -1;
         solved = result.length();
         if (solved == 0) return "0/0): N/A (N/A)";
@@ -188,8 +188,7 @@ public class Stats {
                 if (n < result.length() - trim) return "DNF";
             } else data[count++] = result.getTime(i);
         }
-        long sum = 0;
-        double sum2 = 0;
+        double sum = 0, sum2 = 0;
         Arrays.sort(data, 0, count);
         for (int j = trim; j < result.length() - trim; j++) {
             if (timerAccuracy == 0) data[j] /= 10;
@@ -231,8 +230,7 @@ public class Stats {
         } else {
             for (int j = nSolves - trim; j < nSolves - dnf; j++) ary.add((int) data[j]);
             for (int j = 0; j < dnf; j++) ary.add(dnfIdx.get(j));
-            double sum = 0;
-            double sum2 = 0;
+            double sum = 0, sum2 = 0;
             for (int j = trim; j < nSolves - trim; j++) {
                 data[j] >>= 32;
                 if (timerAccuracy == 0) data[j] /= 10;
@@ -316,7 +314,7 @@ public class Stats {
     public String getSD(int i) {
         if (i < 0) return "N/A";
         if (timerAccuracy == 1) i = (i + 5) / 10;
-        return String.format("%.2f", i / 100f);
+        return String.format(Locale.getDefault(), "%.2f", i / 100f);
     }
 
     public void sortResult() {

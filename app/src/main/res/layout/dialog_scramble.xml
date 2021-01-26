@@ -61,6 +61,7 @@
                 android:layout_weight="1"
                 android:text="@string/hint_cross"
                 android:textSize="15sp"
+                android:textStyle="bold"
                 android:textColor="#000" />
 
             <ImageView
@@ -95,6 +96,7 @@
                 android:layout_weight="1"
                 android:text="@string/hint_xcross"
                 android:textSize="15sp"
+                android:textStyle="bold"
                 android:textColor="#000" />
 
             <ImageView

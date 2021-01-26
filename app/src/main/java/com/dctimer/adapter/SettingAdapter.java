@@ -2,6 +2,7 @@ package com.dctimer.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +18,18 @@ import com.dctimer.activity.MainActivity;
 import com.dctimer.R;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.dctimer.APP.*;
 
 public class SettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public static final int ST_START_DELAY = 8;
+    public static final int ST_SENSITIVITY = 13;
+    public static final int ST_SCR_FONT = 15;
+    public static final int ST_IMAGE_SIZE = 18;
+    public static final int ST_TIMER_SIZE = 40;
+    public static final int ST_OPACITY = 45;
     private MainActivity dct;
     private Map<Integer, String> headers;
     private List<Map<String, Object>> cells;
@@ -100,8 +108,8 @@ public class SettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 case 7: //计时器精度
                     map.put("detail", itemStr[2][timerAccuracy]);
                     break;
-                case 8: //启动延时
-                    map.put("detail", String.format("%.02fs", freezeTime/20f));
+                case ST_START_DELAY: //启动延时
+                    map.put("detail", String.format(Locale.getDefault(), "%.02fs", freezeTime/20f));
                     map.put("value", freezeTime);
                 case 9: //分段计时
                     map.put("detail", itemStr[3][multiPhase]);
@@ -115,10 +123,10 @@ public class SettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 case 12:    //拍桌子停表
                     map.put("detail", dropToStop);
                     break;
-                case 13:    //灵敏度
+                case ST_SENSITIVITY:    //灵敏度
 
                     break;
-                case 15:    //打乱字体大小
+                case ST_SCR_FONT:    //打乱字体大小
                     map.put("detail", String.valueOf(scrambleSize));
                     map.put("value", scrambleSize - 12);
                 case 16:    //显示打乱
@@ -160,7 +168,7 @@ public class SettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 case 39:    //计时器字体
                     map.put("detail", itemStr[8][timerFont]);
                     break;
-                case 40:    //计时器大小
+                case ST_TIMER_SIZE:    //计时器大小
                     map.put("detail", String.valueOf(timerSize));
                     map.put("value", timerSize - 50);
                 case 44:    //显示背景图
@@ -226,32 +234,32 @@ public class SettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Map<String, Object> map = cells.get(pos);
                     //Log.w("seek", pos+"/"+i);
                     switch (pos) {
-                        case 8: //启动延时
+                        case ST_START_DELAY: //启动延时
                             //map.put("value", i);
-                            String detail = String.format("%.02fs", i/20f);
+                            String detail = String.format(Locale.getDefault(), "%.02fs", i/20f);
                             map.put("detail", detail);
                             dct.updatePref(pos, detail);
                             //notifyItemChanged(pos, 1);
                             break;
-                        case 13:    //拍桌子停表
+                        case ST_SENSITIVITY:    //拍桌子停表
                             //map.put("detail", detail);
                             break;
-                        case 15:    //打乱字体
+                        case ST_SCR_FONT:    //打乱字体
                             //map.put("value", i);
                             detail = String.valueOf(i + 12);
                             map.put("detail", detail);
                             dct.updatePref(pos, detail);
                             break;
-                        case 18:    //打乱状态
+                        case ST_IMAGE_SIZE:    //打乱状态
                             //map.put("value", i);
                             break;
-                        case 40:    //计时器大小
+                        case ST_TIMER_SIZE:    //计时器大小
                             //map.put("value", i);
                             detail = String.valueOf(i + 50);
                             map.put("detail", detail);
                             dct.updatePref(pos, detail);
                             break;
-                        case 45:    //不透明度
+                        case ST_OPACITY:    //不透明度
                             //map.put("value", i);
                             break;
                     }
@@ -319,7 +327,7 @@ public class SettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 vh.checkAccessory.setVisibility(View.GONE);
                 vh.seekAccessory.setVisibility(View.GONE);
                 String detail = (String) map.get("detail");
-                if (detail.length() == 0) vh.detailView.setVisibility(View.GONE);
+                if (TextUtils.isEmpty(detail)) vh.detailView.setVisibility(View.GONE);
                 else {
                     vh.detailView.setVisibility(View.VISIBLE);
                     vh.detailView.setText(detail);
@@ -341,13 +349,13 @@ public class SettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 //Log.w("seek", position+"/"+max+"/"+progress);
                 vh.seekAccessory.setProgress(progress);
                 String detail = (String) map.get("detail");
-                if (detail.length() == 0) vh.detailView.setVisibility(View.GONE);
+                if (detail == null || detail.length() == 0) vh.detailView.setVisibility(View.GONE);
                 else {
                     vh.detailView.setVisibility(View.VISIBLE);
                     vh.detailView.setText(detail);
                 }
             }
-            if (headers.containsKey(position + 1)) {
+            if (headers.containsKey(position - 1)) {
                 vh.divider.setVisibility(View.GONE);
             } else vh.divider.setVisibility(View.VISIBLE);
         }

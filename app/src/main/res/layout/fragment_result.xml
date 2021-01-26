@@ -33,7 +33,8 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:textSize="15sp"
-            android:textColor="#333"/>
+            android:textColor="#333"
+            android:hint="@string/search_hint" />
 
         <ImageButton
             android:id="@+id/btn_prev"

@@ -41,14 +41,13 @@
 
         <activity android:name=".activity.DetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_detail"
-            android:parentActivityName=".activity.MainActivity" />
+            android:label="@string/title_activity_detail" />
 
-        <activity android:name=".activity.WebActivity" />
+        <activity android:name=".activity.WebActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
 
         <activity android:name=".activity.GraphActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            />
+            android:configChanges="orientation|keyboardHidden|screenSize" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
