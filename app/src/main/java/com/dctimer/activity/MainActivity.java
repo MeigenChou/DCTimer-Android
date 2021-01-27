@@ -3075,19 +3075,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }).setNegativeButton(R.string.btn_close, null).show();
     }
 
-    public void delete(final int num) {
-        new AlertDialog.Builder(context).setTitle(getString(R.string.confirm_delete_result) + result.getTimeAt(num, false)).setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                result.delete(num);
-                btnSessionMean.setText(getString(R.string.session_mean, result.getSessionMean()));
-                result.calcAvg();
-                if (multiPhase > 0) result.calcMpMean();
-                if (sortType != 0) result.sortResult();
-                resAdapter.reload();
-                setStatsLabel();
-            }
-        }).setNegativeButton(R.string.btn_cancel, null).show();
+    public void delete(final int num, boolean prompt) {
+        if (prompt) {
+            new AlertDialog.Builder(context).setTitle(getString(R.string.confirm_delete_result) + result.getTimeAt(num, false)).setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    delete(num);
+                }
+            }).setNegativeButton(R.string.btn_cancel, null).show();
+        } else delete(num);
+    }
+
+    private void delete(int num) {
+        result.delete(num);
+        btnSessionMean.setText(getString(R.string.session_mean, result.getSessionMean()));
+        result.calcAvg();
+        if (multiPhase > 0) result.calcMpMean();
+        if (sortType != 0) result.sortResult();
+        resAdapter.reload();
+        setStatsLabel();
     }
 
     private void deleteAll() {

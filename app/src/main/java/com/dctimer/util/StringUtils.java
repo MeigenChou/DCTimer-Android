@@ -130,7 +130,11 @@ public class StringUtils {
             case 8: //斜转
                 return scramble.matches("([URLB]'?\\s*)+") ? Scrambler.TYPE_SKW : 0;
             case 9: //SQ1
-
+                return scramble.matches("((/|\\(-?\\d+,-?\\d+\\))\\s*)+") ? Scrambler.TYPE_SQ1 : 0;
+            case 10:    //五魔
+                return scramble.matches("((R\\+\\+|R--|D\\+\\+|D--|U'?)\\s*)+") ? Scrambler.TYPE_MEGA : 0;
+            case 11:    //魔表
+                if (scramble.matches("((UR|DR|DL|UL|U|R|D|L|ALL|y2)(\\d[+-])?\\s*)+")) return Scrambler.TYPE_CLK;
             default:
                 return 0;
         }

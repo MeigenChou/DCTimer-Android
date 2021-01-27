@@ -35,6 +35,7 @@ import com.dctimer.util.Utils;
 import com.dctimer.widget.CustomToolbar;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -118,11 +119,12 @@ public class GraphActivity extends AppCompatActivity {
         toolbar.setItemColor(colors[1]);
         tabLayout = findViewById(R.id.tablayout);
         String[] items = getResources().getStringArray(R.array.item_date_range);
+        weekText = getResources().getStringArray(R.array.item_week);
+        monthText = getResources().getStringArray(R.array.item_month);
+        Log.w("dct", "month " + Arrays.toString(monthText));
         for (int i = 0; i < items.length; i++) {
             tabLayout.addTab(tabLayout.newTab().setText(items[i]));
         }
-        weekText = getResources().getStringArray(R.array.item_week);
-        monthText = getResources().getStringArray(R.array.item_month);
         tvHyphen = findViewById(R.id.tv_hyphen);
         tvNums = findViewById(R.id.tv_nums);
         tvMean = findViewById(R.id.tv_mean);

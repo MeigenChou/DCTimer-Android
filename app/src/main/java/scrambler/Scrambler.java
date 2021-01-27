@@ -226,11 +226,18 @@ public class Scrambler {
         } else if (category == -20 || (category > 319 && category < 352)) { //斜转
             imageType = StringUtils.getImageType(scramble, 8);
         } else if (category == -24 || (category > 191 && category < 224)) { //五魔
-
+            imageType = StringUtils.getImageType(scramble, 10);
+            if (imageType == TYPE_MEGA) {
+                megaminx.image(scramble);
+            }
         } else if (category == -22 || (category > 255 && category < 288)) { //SQ1
-
+            imageType = StringUtils.getImageType(scramble, 9);
         } else if (category == -21 || (category > 287 && category < 320)) { //魔表
-
+            imageType = StringUtils.getImageType(scramble, 11);
+            Log.w("dct", "image type "+imageType);
+            if (imageType == TYPE_CLK) {
+                clock.image(scramble);
+            }
         }
     }
 

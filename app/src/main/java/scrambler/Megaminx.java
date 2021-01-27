@@ -75,9 +75,9 @@ public class Megaminx {
         return state;
     }
 
-    public int[] image(String scr) {
+    public int[] image(String scramble) {
         initState();
-        String[] s = scr.split(" ");
+        String[] s = scramble.split("[ \n]");
         for (int i = 0; i < s.length; i++) {
             if (s[i].length() > 0) {
                 if (s[i].equals("D++")) state = applyMove(state, permD2);

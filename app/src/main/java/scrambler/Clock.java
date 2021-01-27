@@ -1,5 +1,9 @@
 package scrambler;
 
+import android.content.Intent;
+
+import com.dctimer.util.StringUtils;
+
 public class Clock {
     private static String[] turns = {"UR", "DR", "DL", "UL", "U", "R", "D", "L", "ALL"};
     private static int[][] moves = {
@@ -160,5 +164,55 @@ public class Clock {
 
     public int[] getPegs() {
         return pegs;
+    }
+
+    public int[] image(String scramble) {
+        String[] s = scramble.split(" ");
+        pegs = new int[] {1, 1, 1, 1};
+        int[] positCopy = new int[18];
+        for (int i=0; i<s.length; i++) {
+            if (s[i].length() > 0) {
+                if (s[i].equals("UR")) pegs[1] = 0;
+                else if (s[i].equals("DR")) pegs[3] = 0;
+                else if (s[i].equals("DL")) pegs[2] = 0;
+                else if (s[i].equals("UL")) pegs[0] = 0;
+                else if (s[i].equals("y2")) {
+                    for (int j = 0; j < 9; j++) {
+                        posit[j] = positCopy[j + 9];
+                        posit[j + 9] = positCopy[j];
+                    }
+                    System.arraycopy(posit, 0, positCopy, 0, 18);
+                } else {
+                    int x = indexOf(s[i]);
+                    if (x >= 0) {
+                        int turn = getTurn(s[i]);
+                        for (int j = 0; j < 18; j++) {
+                            positCopy[j] += turn * moves[x][j];
+                        }
+                    }
+                }
+            }
+        }
+        System.arraycopy(positCopy, 0, posit, 0, 18);
+        return posit;
+    }
+
+    private int indexOf(String s) {
+        for (int i=0; i<turns.length; i++) {
+            if (s.startsWith(turns[i])) return i;
+        }
+        return -1;
+    }
+
+    private int getTurn(String s) {
+        StringBuilder sb = new StringBuilder();
+        for (int i=0; i<s.length(); i++) {
+            char c = s.charAt(i);
+            if (Character.isDigit(c)) sb.append(c);
+        }
+        int turn = Integer.parseInt(sb.toString());
+        if (s.endsWith("-")) return -turn;
+        if (s.endsWith("+")) return turn;
+        return 0;
     }
 }

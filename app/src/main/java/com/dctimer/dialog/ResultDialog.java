@@ -162,10 +162,11 @@ public class ResultDialog extends DialogFragment {
             }
         }).setNegativeButton(R.string.delete_time, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(final DialogInterface dialogInterface, int i) {
                 Utils.hideKeyboard(etComment);
                 if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).delete(num);
+                    //Log.w("dct", "num "+num+", "+getActivity());
+                    ((MainActivity) getActivity()).delete(num, true);
                 }
             }
         }).setNeutralButton(R.string.copy_scramble, new DialogInterface.OnClickListener() {
