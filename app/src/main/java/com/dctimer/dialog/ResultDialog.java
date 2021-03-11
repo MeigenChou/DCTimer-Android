@@ -81,11 +81,10 @@ public class ResultDialog extends DialogFragment {
         tvScramble.setText(scramble);
         ImageView ivScramble = view.findViewById(R.id.img_scramble);
         Scrambler scrambler = new Scrambler(getActivity().getSharedPreferences("dctimer", Activity.MODE_PRIVATE));
-        Log.w("dct", "puzz "+puzzle);
         scrambler.parseScramble(puzzle, scramble);
         if (scrambler.getImageType() == 0) ivScramble.setVisibility(View.GONE);
         else {
-            int dip240 = (int) (APP.dpi * 240);
+            int dip240 = APP.getPixel(240);
             Bitmap bitmap = Bitmap.createBitmap(dip240, dip240 * 3 / 4, Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(bitmap);
             c.drawColor(0);

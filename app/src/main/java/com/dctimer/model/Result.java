@@ -216,6 +216,15 @@ public class Result {
         return cursor.getString(column + offset);
     }
 
+    public int getId(int i) {
+        if (mod) {
+            cursor = db.getResult(sessionId);
+            mod = false;
+        }
+        cursor.moveToPosition(i);
+        return cursor.getInt(0);
+    }
+
     public String getString(int column) {
         return cursor.getString(column + offset);
     }
@@ -297,12 +306,16 @@ public class Result {
         mod = true;
     }
 
-    public void delete(int idx) {
+    public int delete(int idx) {
         if (mod) {
             cursor = db.getResult(sessionId);
         }
+        if (idx >= cursor.getCount()) {
+            return -1;
+        }
         cursor.moveToPosition(idx);
         int id = cursor.getInt(0);
+        Log.w("dct", "id: "+id);
         if (idx != length - 1) {
             for (int i = idx; i < length - 1; i++) {
                 result[i] = result[i + 1];
@@ -315,6 +328,7 @@ public class Result {
         length--;
         db.deleteResult(sessionId, id);
         mod = true;
+        return 0;
     }
 
     public void clear() {
@@ -386,8 +400,16 @@ public class Result {
         return stats.minIdx;
     }
 
+    public String getBestTime() {
+        return getTimeAt(getMinIdx(), false);
+    }
+
     public int getMaxIdx() {
         return stats.maxIdx;
+    }
+
+    public String getWorstTime() {
+        return getTimeAt(getMaxIdx(), false);
     }
 
     public int sessionMean() {

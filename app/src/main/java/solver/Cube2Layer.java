@@ -105,10 +105,10 @@ public class Cube2Layer {
             case 0: //U
                 Utils.circle(n, 0, 1, 3, 2); break;
             case 1: //R
-                t = n[0]; n[0] = n[4] + 2; n[4] = n[5] + 1; n[5] = n[1] + 2; n[1] = t + 1;
+                Utils.circle(n, 0, 4, 5, 1, new int[] {2, 1, 2, 1});
                 break;
             case 2: //F
-                t = n[0]; n[0] = n[2] + 1; n[2] = n[6] + 2; n[6] = n[4] + 1; n[4] = t + 2;
+                Utils.circle(n, 0, 2, 6, 4, new int[] {1, 2, 1, 2});
                 break;
         }
         c = po = 0; q = k;

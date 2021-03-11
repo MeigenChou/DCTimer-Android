@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.media.AudioFormat;
 import android.util.DisplayMetrics;
 
 import com.dctimer.database.DBHelper;
@@ -91,6 +92,8 @@ public class APP extends Application {
     public static boolean dropToStop;
     public static double sensitivity;
     public static boolean darkList;
+    public static int samplingRate;
+    public static int dataFormat;
 
     @Override
     public void onCreate() {
@@ -210,6 +213,8 @@ public class APP extends Application {
         vibrateTime = sp.getInt("vibtime", 2);	// 震动时长
         screenOri = sp.getInt("screenori", 0);	// 屏幕方向
         savePath = sp.getString("scrpath", defaultPath);
+        samplingRate = sp.getInt("srate", 44100);
+        dataFormat = sp.getInt("dform", AudioFormat.ENCODING_PCM_8BIT);
     }
 
     public static void resetPref() {
@@ -228,5 +233,10 @@ public class APP extends Application {
         colors[0] = 0xff2196F3;	colors[1] = 0xffffffff;	colors[2] = 0xffff00ff;
         colors[3] = 0xffff0000;	colors[4] = 0xff009900;
         for (int i = 0; i < 4; i++) swipeType[i] = i + 1;
+        samplingRate = 44100; dataFormat = AudioFormat.ENCODING_PCM_8BIT;
+    }
+
+    public static int getPixel(int dp) {
+        return (int) (dpi * dp);
     }
 }

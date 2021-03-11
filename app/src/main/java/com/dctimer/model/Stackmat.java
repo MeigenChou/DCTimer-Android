@@ -2,9 +2,12 @@ package com.dctimer.model;
 
 import com.dctimer.APP;
 import com.dctimer.activity.MainActivity;
+import com.dctimer.activity.TestActivity;
 
+import android.app.Activity;
 import android.media.*;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -14,23 +17,41 @@ public class Stackmat {
 	public AudioRecord record;
 	private boolean isRecording;
 	private int channelConfig = AudioFormat.CHANNEL_IN_MONO;
-	private int audioEncoding = AudioFormat.ENCODING_PCM_16BIT; 
-	public static int samplingRate = 44100;
+	private int audioEncoding = AudioFormat.ENCODING_PCM_8BIT;
+	private int samplingRate = 44100;
 	public int switchThreshold;
 	private int noiseSpikeThreshold;
 	private double signalLengthPerBit;
 	private int newPeriod;
 	private int invSign;
 	private boolean milliTime;
-	MainActivity dct;
+	private FragmentActivity activity;
 	private byte state;	//0-off, 1-not ready, 2-running, 3-stop
 	private int lasttime = 0;
+	private Integer[] sampleArray;
 
-	public Stackmat(MainActivity dct) {
-		this.dct = dct;
+//	public Stackmat(MainActivity dct) {
+//		this.activity = dct;
+//		newPeriod = samplingRate / 44;
+//		signalLengthPerBit = samplingRate / 1200.0;
+//		noiseSpikeThreshold = samplingRate * 25 / 44100;
+//	}
+
+	public Stackmat(FragmentActivity activity, int samplingRate, int dataFormat) {
+		this.activity = activity;
+		this.samplingRate = samplingRate;
+		this.audioEncoding = dataFormat;
 		newPeriod = samplingRate / 44;
 		signalLengthPerBit = samplingRate / 1200.0;
 		noiseSpikeThreshold = samplingRate * 25 / 44100;
+	}
+
+	public void setSamplingRate(int samplingRate) {
+		this.samplingRate = samplingRate;
+	}
+
+	public void setDataFormat(int dataFormat) {
+		this.audioEncoding = dataFormat;
 	}
 
 	public void start() {
@@ -44,15 +65,21 @@ public class Stackmat {
 
 	class RecordTask extends AsyncTask<Void, Integer, Void> {
 		private int bufferLen;
+		private byte[] bufferByte;
+		private short[] bufferShort;
+
 		@Override
 		protected Void doInBackground(Void... params) {
 			isRecording = true;
 			state = 0;
 			invSign = -1;
 			try {
-				int bufferSize = AudioRecord.getMinBufferSize(samplingRate, channelConfig, audioEncoding);
+				int bufferSize = AudioRecord.getMinBufferSize(samplingRate, channelConfig, audioEncoding) * 2;
+				Log.w("dct", "buff size "+bufferSize);
 				record = new AudioRecord(MediaRecorder.AudioSource.MIC, samplingRate, channelConfig, audioEncoding, bufferSize);
-				short[] buffer = new short[bufferSize];
+				if (audioEncoding == AudioFormat.ENCODING_PCM_8BIT)
+					bufferByte = new byte[bufferSize];
+				else bufferShort = new short[bufferSize];
 				record.startRecording();
 				byte[] temp = new byte[90];
 				int tlen = 0;
@@ -60,17 +87,20 @@ public class Stackmat {
 				byte lastBit = 0;
 				int count = 0;
 				while (isRecording) {
-					bufferLen = record.read(buffer, 0, bufferSize);
+					bufferLen = audioEncoding == AudioFormat.ENCODING_PCM_8BIT ? record.read(bufferByte, 0, bufferSize) : record.read(bufferShort, 0, bufferSize);
 					ArrayList<Integer> bufferList = new ArrayList<>();
 					int max = 0, min = 255;
 					for(int c = 0; c < bufferLen; c++) {
-						sample = (buffer[c] >> 8) & 0xff;
+						sample = audioEncoding == AudioFormat.ENCODING_PCM_8BIT ? bufferByte[c] & 0xff : (bufferShort[c] >> 8) & 0xff;
 						bufferList.add(sample);
 						if (sample > max) max = sample;
 						if (sample < min) min = sample;
 					}
 					switchThreshold = (max - min) * 3 / 10;
-					if (switchThreshold < 10) switchThreshold = 10;
+					if (switchThreshold < 5) switchThreshold = 5;
+					sampleArray = new Integer[bufferList.size()];
+					bufferList.toArray(sampleArray);
+					publishProgress(-3);
 					for(int c = 0; c < bufferList.size(); c++) {
 						sample = bufferList.get(c);
 						if (count < newPeriod * 4) count++;
@@ -91,7 +121,7 @@ public class Stackmat {
 								if (tlen > 88) {
 									print(temp);
 									byte[] data = readPackage(temp);
-									if(data != null) {
+									if (data != null) {
 										int time = (data[1] - 48) * 60000 + (data[2] - 48) * 10000 + (data[3] - 48) * 1000
 												+ (data[4] - 48) * 100 + (data[5] - 48) * 10 + (milliTime ? data[6] - 48 : 0);
 										switch (state) {
@@ -117,7 +147,7 @@ public class Stackmat {
 										}
 										publishProgress(data[0] & 0xff, data[1] - 48, data[2] - 48, data[3] - 48,
 												data[4] - 48, data[5] - 48, data[6] - 48);
-									};
+									}
 								}
 								tlen = 0;
 							} else for (int i = 0; i < Math.round(count / signalLengthPerBit); i++) {
@@ -139,18 +169,35 @@ public class Stackmat {
 
 		@Override
 		protected void onProgressUpdate(Integer... values) {
-			if (values[0] == -2) dct.setTimerText("---");
-			else if(values[0] == -1) dct.save(values[1]);
-			else {
-				if (values[0] == 'A') dct.setTimerColor(0xff00ff00);
-				else if (values[0] == 'C') dct.setTimerColor(0xffff0000);
-				else dct.setTimerColor(APP.colors[1]);
-				StringBuilder sb = new StringBuilder();
-				if (values[1] > 0) sb.append(values[1] + ":");
-				if (values[1] > 0 || values[2] > 0) sb.append(values[2]);
-				sb.append(values[3] + "." + values[4] + values[5]);
-				if (milliTime) sb.append(values[6]);
-				dct.setTimerText(sb.toString());
+			if (activity instanceof MainActivity) {
+				MainActivity dct = (MainActivity) activity;
+				if (values[0] == -2) dct.setTimerText("---");
+				else if(values[0] == -1) dct.save(values[1]);
+				else if (values[0] >= 0) {
+					if (values[0] == 'A') dct.setTimerColor(0xff00ff00);
+					else if (values[0] == 'C') dct.setTimerColor(0xffff0000);
+					else dct.setTimerColor(APP.colors[1]);
+					StringBuilder sb = new StringBuilder();
+					if (values[1] > 0) sb.append(values[1]).append(':');
+					if (values[1] > 0 || values[2] > 0) sb.append(values[2]);
+					sb.append(values[3]).append('.').append(values[4]).append(values[5]);
+					if (milliTime) sb.append(values[6]);
+					dct.setTimerText(sb.toString());
+				}
+			} else if (activity instanceof TestActivity) {
+				TestActivity act = (TestActivity) activity;
+				if (values[0] == -3) act.drawWave(sampleArray);
+				else if (values[0] == -2) act.displayTime(' ', "OFF");
+				else if (values[0] >= 0) {
+					StringBuilder sb = new StringBuilder();
+					//int info = values[0];
+					//sb.append('[').append((char) info).append("] ");
+					if (values[1] > 0) sb.append(values[1]).append(':');
+					if (values[1] > 0 || values[2] > 0) sb.append(values[2]);
+					sb.append(values[3]).append('.').append(values[4]).append(values[5]);
+					if (milliTime) sb.append(values[6]);
+					act.displayTime(values[0], sb.toString());
+				}
 			}
 		}
 		

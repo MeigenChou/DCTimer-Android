@@ -49,19 +49,23 @@ public class Cube222 {
                 Utils.circle(ps, 0, 1, 3, 2);	//U
                 break;
             case 1:
-                c = ps[0]; ps[0] = ps[4] + 2; ps[4] = ps[5] + 1; ps[5] = ps[1] + 2; ps[1] = c + 1;   //R
+                Utils.circle(ps, 0, 4, 5, 1, new int[] {2, 1, 2, 1});   //R
+                //c = ps[0]; ps[0] = ps[4] + 2; ps[4] = ps[5] + 1; ps[5] = ps[1] + 2; ps[1] = c + 1;
                 break;
             case 2:
-                c = ps[0]; ps[0] = ps[2] + 1; ps[2] = ps[6] + 2; ps[6] = ps[4] + 1; ps[4] = c + 2;   //F
+                Utils.circle(ps, 0, 2, 6, 4, new int[] {1, 2, 1, 2});   //F
+                //c = ps[0]; ps[0] = ps[2] + 1; ps[2] = ps[6] + 2; ps[6] = ps[4] + 1; ps[4] = c + 2;   //F
                 break;
             case 3:
                 Utils.circle(ps, 4, 6, 7, 5);	//D
                 break;
             case 4:
-                c = ps[2]; ps[2] = ps[3] + 1; ps[3] = ps[7] + 2; ps[7] = ps[6] + 1; ps[6] = c + 2;   //L
+                Utils.circle(ps, 2, 3, 7, 6, new int[] {1, 2, 1, 2});   //L
+                //c = ps[2]; ps[2] = ps[3] + 1; ps[3] = ps[7] + 2; ps[7] = ps[6] + 1; ps[6] = c + 2;   //L
                 break;
             case 5:
-                c = ps[1]; ps[1] = ps[5] + 2; ps[5] = ps[7] + 1; ps[7] = ps[3] + 2; ps[3] = c + 1;   //B
+                Utils.circle(ps, 1, 5, 7, 3, new int[] {2, 1, 2, 1});   //B
+                //c = ps[1]; ps[1] = ps[5] + 2; ps[5] = ps[7] + 1; ps[7] = ps[3] + 2; ps[3] = c + 1;   //B
                 break;
         }
     }

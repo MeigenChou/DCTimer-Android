@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    tools:context=".activity.TestActivity">
+
+    <com.dctimer.widget.CustomToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:contentInsetStartWithNavigation="0dp"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#fff">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sample_rate"
+                    android:textColor="#333"
+                    android:textSize="17sp"/>
+
+                <Spinner
+                    android:id="@+id/sp_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/sampling_rate"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/data_format"
+                    android:textSize="17sp"
+                    android:textColor="#333" />
+
+                <Spinner
+                    android:id="@+id/sp_format"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/data_format"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_record"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:text="start"
+                android:visibility="gone"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:text="@string/status"
+                android:textSize="15sp"
+                android:textColor="@color/colorAccent" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="28sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/tv_l"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dp"
+                    android:background="@drawable/round_bg"
+                    android:gravity="center"
+                    android:text="L"
+                    android:visibility="gone"
+                    android:textSize="15sp"
+                    android:textColor="#333" />
+
+                <TextView
+                    android:id="@+id/tv_r"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/round_bg"
+                    android:gravity="center"
+                    android:text="R"
+                    android:visibility="gone"
+                    android:textSize="15sp"
+                    android:textColor="#333" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_red"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:background="@drawable/round_red"
+                        android:visibility="invisible" />
+
+                    <TextView
+                        android:id="@+id/tv_green"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/round_green"
+                        android:visibility="invisible" />
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/img_wave"
+                android:layout_width="match_parent"
+                android:layout_height="120dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

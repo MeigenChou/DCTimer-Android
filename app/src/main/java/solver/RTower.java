@@ -44,11 +44,11 @@ public class RTower {
                 Utils.idxToOri(arr, i, 7, true);
                 switch (j) {
                     case 0: Utils.circle(arr, 0, 3, 2, 1); break;	//Uw
-                    case 1: Utils.circle(arr, 1, 2, 5, 6);
-                        arr[1] += 2; arr[2]++; arr[5] += 2; arr[6]++;
+                    case 1: Utils.circle(arr, 1, 2, 5, 6, new int[] {2, 1, 2, 1});
+                        //arr[1] += 2; arr[2]++; arr[5] += 2; arr[6]++;
                         break;	//R
-                    case 2:Utils.circle(arr, 2, 3, 4, 5);
-                        arr[2] += 2; arr[3]++; arr[4] += 2; arr[5]++;
+                    case 2:Utils.circle(arr, 2, 3, 4, 5, new int[] {2, 1, 2, 1});
+                        //arr[2] += 2; arr[3]++; arr[4] += 2; arr[5]++;
                         break;	//F
                 }
                 eom[i][j] = (short) Utils.oriToIdx(arr, 7, true);

@@ -203,7 +203,7 @@ public class ColorSchemeView extends View {
 				canvas.drawPath(path, mPaint);
 				mPaint.setStyle(Style.FILL);
 				canvas.drawText("U", mWidth * 0.375f, mWidth * 0.145f, mPaint);
-				canvas.drawText("F-L", mWidth * 0.375f, mWidth * 0.395f, mPaint);
+				canvas.drawText("F", mWidth * 0.375f, mWidth * 0.395f, mPaint);
 			}
 			break;
 		case 2:

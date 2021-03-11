@@ -184,11 +184,19 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void getLastId() {
-        Cursor c = db.query(TBL_NAME[15], null, null, null, null, null, null);
+        Cursor c = db.query(TBL_NAME[15], new String[] {"id"}, null, null, null, null, null);
+        lastId = 1;
         if (c.getCount() != 0) {
-            c.moveToLast();
-            lastId = c.getInt(0);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                int id = c.getInt(0);
+                if (id > lastId) lastId = id;
+                c.moveToNext();
+            }
+            //c.moveToLast();
+            //lastId = c.getInt(0);
         }
+        Log.w("dct", "lastid "+lastId);
         c.close();
     }
 

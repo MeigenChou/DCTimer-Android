@@ -121,7 +121,6 @@ public class GraphActivity extends AppCompatActivity {
         String[] items = getResources().getStringArray(R.array.item_date_range);
         weekText = getResources().getStringArray(R.array.item_week);
         monthText = getResources().getStringArray(R.array.item_month);
-        Log.w("dct", "month " + Arrays.toString(monthText));
         for (int i = 0; i < items.length; i++) {
             tabLayout.addTab(tabLayout.newTab().setText(items[i]));
         }
@@ -429,7 +428,7 @@ public class GraphActivity extends AppCompatActivity {
         canvas.drawRect(0, 0, width, height, p);
         p.setColor(0xffdddddd);
         p.setStrokeWidth(APP.dpi);
-        int fontSize = (int) (APP.dpi * 15);
+        int fontSize = APP.getPixel(15);
         canvas.drawLine(0, height - fontSize, width, height - fontSize, p);
         for (int i=0; i<bins; i++) {
             float x = (float) i * width / bins;
@@ -457,12 +456,12 @@ public class GraphActivity extends AppCompatActivity {
         p.setTextSize(fontSize);
         for (int i=0; i<bins; i++) {
             float x = (float) i * width / bins;
-            canvas.drawText(getDateText(i), x + APP.dpi, height - APP.dpi * 2, p);
+            canvas.drawText(getDateText(i), x + APP.dpi, height - APP.getPixel(2), p);
         }
         if (select >= 0 && data[select] > 0) {
             p.setTextAlign(Paint.Align.CENTER);
             int h = rectHeight * data[select] / maxValue;
-            canvas.drawText(String.valueOf(data[select]), (select + 0.5f) * width / bins, height - fontSize - h - APP.dpi * 2, p);
+            canvas.drawText(String.valueOf(data[select]), (select + 0.5f) * width / bins, height - fontSize - h - APP.getPixel(2), p);
         }
 
         graph.invalidate();

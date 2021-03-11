@@ -32,9 +32,9 @@ public class CubeRU {
                 Utils.idxToOri(arr, i, 6, true);
                 if (j == 0) Utils.circle(arr, 0, 3, 2, 1);
                 else {
-                    Utils.circle(arr, 1, 2, 4, 5);
-                    arr[1] = (arr[1] + 1) % 3; arr[2] = (arr[2] + 2) % 3;
-                    arr[4] = (arr[4] + 1) % 3; arr[5] = (arr[5] + 2) % 3;
+                    Utils.circle(arr, 1, 2, 4, 5, new int[] {1, 2, 1, 2});
+                    //arr[1] = (arr[1] + 1) % 3; arr[2] = (arr[2] + 2) % 3;
+                    //arr[4] = (arr[4] + 1) % 3; arr[5] = (arr[5] + 2) % 3;
                 }
                 com[i][j] = (short) Utils.oriToIdx(arr, 6, true);
             }

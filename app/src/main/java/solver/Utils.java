@@ -90,6 +90,14 @@ public class Utils {
         int temp = arr[a]; arr[a] = arr[b]; arr[b] = arr[c]; arr[c] = arr[d]; arr[d] = temp;
     }
 
+    public static void circle(int[] arr, int a, int b, int c, int d, int[] ori) {
+        int temp = arr[a];
+        arr[a] = arr[b] + ori[0];
+        arr[b] = arr[c] + ori[1];
+        arr[c] = arr[d] + ori[2];
+        arr[d] = temp + ori[3];
+    }
+
     public static void swap(int[] arr, int a, int b, int c, int d) {
         int temp = arr[a]; arr[a] = arr[b]; arr[b] = temp;
         temp = arr[c]; arr[c] = arr[d]; arr[d] = temp;

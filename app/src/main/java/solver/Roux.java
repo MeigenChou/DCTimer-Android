@@ -157,20 +157,20 @@ public class Roux {
             case 1:
                 Utils.circle(n, 4, 5, 6, 7); break;
             case 2:
-                Utils.circle(n, 0, 4, 7, 3);
-                n[0] += 2; n[4]++; n[7] += 2; n[3]++;
+                Utils.circle(n, 0, 4, 7, 3, new int[] {2, 1, 2, 1});
+                //n[0] += 2; n[4]++; n[7] += 2; n[3]++;
                 break;
             case 3:
-                Utils.circle(n, 1, 2, 6, 5);
-                n[1]++; n[2] += 2; n[6]++; n[5] += 2;
+                Utils.circle(n, 1, 2, 6, 5, new int[] {1, 2, 1, 2});
+                //n[1]++; n[2] += 2; n[6]++; n[5] += 2;
                 break;
             case 4:
-                Utils.circle(n, 2, 3, 7, 6);
-                n[2]++; n[3] += 2; n[7]++; n[6] += 2;
+                Utils.circle(n, 2, 3, 7, 6, new int[] {1, 2, 1, 2});
+                //n[2]++; n[3] += 2; n[7]++; n[6] += 2;
                 break;
             case 5:
-                Utils.circle(n, 0, 1, 5, 4);
-                n[0]++; n[1] += 2; n[5]++; n[4] += 2;
+                Utils.circle(n, 0, 1, 5, 4, new int[] {1, 2, 1, 2});
+                //n[0]++; n[1] += 2; n[5]++; n[4] += 2;
                 break;
         }
         c = 0;
@@ -229,8 +229,8 @@ public class Roux {
                 break;
             case 1: //r
             case 2: //R
-                Utils.circle(n, 1, 2, 4, 5);
-                n[1]++; n[2] += 2; n[4]++; n[5] += 2;
+                Utils.circle(n, 1, 2, 4, 5, new int[] {1, 2, 1, 2});
+                //n[1]++; n[2] += 2; n[4]++; n[5] += 2;
                 break;
         }
         c = 0; q = 2;

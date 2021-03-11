@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#00AAFF</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#448AFF</color>
     <color name="rippleGray">#ddd</color>
     <color name="darkPress">#222</color>
 

@@ -33,7 +33,6 @@ public class Stats {
     }
 
     public void calcAvg() {
-        Log.w("dct", "avg len "+avg1.length + " res len "+result.length());
         if (avg1.length <= result.length()) {
             avg1 = new int[result.length() * 3 / 2];
             avg2 = new int[result.length() * 3 / 2];

@@ -212,6 +212,7 @@
     <array name="opt_enter_time">
         <item>计时器</item>
         <item>手动输入</item>
+        <item>Stackmat</item>
     </array>
 
     <array name="opt_solve_222">

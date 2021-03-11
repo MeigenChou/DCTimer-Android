@@ -3,8 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_refresh"
+        android:id="@+id/action_back"
+        android:orderInCategory="101"
+        android:icon="@drawable/ic_left"
+        android:title="back"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_forward"
         android:orderInCategory="102"
+        android:icon="@drawable/ic_right"
+        android:title="forward"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="103"
         android:icon="@drawable/ic_refresh"
         android:title="@string/btn_refresh"
         app:showAsAction="always" />

@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:title="@string/menu_lab">
         <menu>
             <item
                 android:id="@+id/nav_import_export"
                 android:title="@string/action_import_export"
                 android:icon="@drawable/ic_import_export" />
+
+            <item
+                android:id="@+id/nav_stackmat"
+                android:title="@string/action_stackmat"
+                android:icon="@drawable/ic_timer" />
 
             <item
                 android:id="@+id/nav_smartcube"
@@ -20,7 +26,7 @@
         </menu>
     </item>
 
-    <item android:title="@string/menu_website" >
+    <item android:title="@string/menu_website">
         <menu>
             <item
                 android:id="@+id/nav_algorithm"
@@ -29,12 +35,20 @@
             <item
                 android:id="@+id/nav_algcubing"
                 android:title="alg.cubing.net" />
+
+            <item
+                android:id="@+id/nav_wca"
+                android:title="World Cube Association" />
+
+            <item
+                android:id="@+id/nav_cubing"
+                android:title="Cubing China" />
         </menu>
     </item>
 
     <item android:title="@string/menu_more">
         <menu>
-            <!-- <item
+            <!--<item
                 android:id="@+id/nav_mail"
                 android:title="@string/menu_feedback"
                 android:icon="@drawable/ic_email" /> -->

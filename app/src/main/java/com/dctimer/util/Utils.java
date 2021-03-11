@@ -612,7 +612,7 @@ public class Utils {
             }
         }
         int[] color = {Color.WHITE, Color.RED, 0xff009900, Color.YELLOW, 0xffff9900, Color.BLUE, Color.GRAY};
-        Bitmap bitmap = Bitmap.createBitmap((int) (APP.dpi * 245), (int) (APP.dpi * 183), Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(APP.getPixel(245), APP.getPixel(183), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(bitmap);
         c.drawColor(0);
         Paint p = new Paint();

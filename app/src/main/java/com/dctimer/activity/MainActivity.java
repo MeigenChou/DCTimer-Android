@@ -412,6 +412,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (sensorManager != null && sensor != null) {
             sensorManager.registerListener(mSensorEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
+        if (stackmat != null) {
+            stackmat.setSamplingRate(samplingRate);
+            stackmat.setDataFormat(dataFormat);
+            stackmat.start();
+        }
     }
 
     @Override
@@ -419,6 +424,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onPause();
         if (sensorManager != null && sensor != null) {
             sensorManager.unregisterListener(mSensorEventListener, sensor);
+        }
+        if (stackmat != null) {
+            stackmat.stop();
+            //stackmat = null;
         }
     }
 
@@ -675,11 +684,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (ContextCompat.checkSelfPermission(context, PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED) {
                         new ImportExportDialog().newInstance().show(getSupportFragmentManager(), "ImportExport");
-                    } else ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, 3);
+                    } else ActivityCompat.requestPermissions(this, PERMISSIONS, 3);
                 } else new ImportExportDialog().newInstance().show(getSupportFragmentManager(), "ImportExport");
                 break;
+            case R.id.nav_stackmat:
+                if (Build.VERSION.SDK_INT > 22) {
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.RECORD_AUDIO },
+                                8);
+                        break;
+                    }
+                }
+                Intent intent = new Intent(context, TestActivity.class);
+                startActivity(intent);
+                break;
             case R.id.nav_algorithm:    //公式库
-                Intent intent = new Intent(context, WebActivity.class);
+                intent = new Intent(context, WebActivity.class);
                 String web = "http://algdb.net";
                 intent.putExtra("web", web);
                 intent.putExtra("title", "AlgDb.net");
@@ -690,6 +711,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 web = "https://alg.cubing.net";
                 intent.putExtra("web", web);
                 intent.putExtra("title", "alg.cubing.net");
+                startActivity(intent);
+                break;
+            case R.id.nav_wca:
+                intent = new Intent(context, WebActivity.class);
+                web = "https://www.worldcubeassociation.org/";
+                intent.putExtra("web", web);
+                intent.putExtra("title", "World Cube Association");
+                startActivity(intent);
+                break;
+            case R.id.nav_cubing:
+                intent = new Intent(context, WebActivity.class);
+                web = "https://cubingchina.com/";
+                intent.putExtra("web", web);
+                intent.putExtra("title", getString(R.string.menu_cubing));
                 startActivity(intent);
                 break;
             case R.id.nav_test:
@@ -796,13 +831,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 scanDevice();
             } else if (requestCode == 7) {  //Stackmat
                 startStackmat();
+            } else if (requestCode == 8) {
+                Intent intent = new Intent(this, TestActivity.class);
+                startActivity(intent);
             }
         }
     }
 
     private void startStackmat() {
         if (stackmat == null) {
-            stackmat = new Stackmat(this);
+            stackmat = new Stackmat(this, samplingRate, dataFormat);
         }
         setTimerText("---");
         stackmat.start();
@@ -1265,7 +1303,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         stAdapter.setText(position, itemStr[0][i]);
                         if (i < 2) {
                             bluetoothTools.disconnect();
-                            if (stackmat != null) stackmat.stop();
+                            if (stackmat != null) {
+                                stackmat.stop();
+                                stackmat = null;
+                            }
                             if (i == 0)
                                 setTimerText("0" + (decimalMark == 0 ? "." : ",") + (timerAccuracy == 0 ? "00" : "000"));
                             else setTimerText("IMPORT");
@@ -1604,11 +1645,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case 33:    //n阶
                 int[] cs = {sp.getInt("csn1", Color.YELLOW), sp.getInt("csn2", Color.BLUE), sp.getInt("csn3", Color.RED),
                         sp.getInt("csn4", Color.WHITE), sp.getInt("csn5", 0xff009900), sp.getInt("csn6", 0xffff9900)};
-                colorSchemeView = new ColorSchemeView(this, (int) (dpi * 290), cs, 1);
+                colorSchemeView = new ColorSchemeView(this, APP.getPixel(290), cs, 1);
                 AlertDialog dialog = new AlertDialog.Builder(context).setTitle(getString(R.string.scheme_cube)).setView(colorSchemeView)
                         .setNegativeButton(R.string.btn_close, null).setNeutralButton(R.string.scheme_reset, null).show();
                 WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-                params.width = (int) (dpi * 320);
+                params.width = APP.getPixel(320);
                 dialog.getWindow().setAttributes(params);
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(0xffff0000);
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
@@ -1630,7 +1671,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dialog = new AlertDialog.Builder(context).setTitle(getString(R.string.scheme_pyrm)).setView(colorSchemeView)
                         .setNegativeButton(R.string.btn_close, null).setNeutralButton(R.string.scheme_reset, null).show();
                 params = dialog.getWindow().getAttributes();
-                params.width = (int) (dpi * 320);
+                params.width = APP.getPixel(320);
                 dialog.getWindow().setAttributes(params);
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(0xffff0000);
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
@@ -1650,7 +1691,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dialog = new AlertDialog.Builder(context).setTitle(getString(R.string.scheme_sq)).setView(colorSchemeView)
                         .setNegativeButton(R.string.btn_close, null).setNeutralButton(R.string.scheme_reset, null).show();
                 params = dialog.getWindow().getAttributes();
-                params.width = (int) (dpi * 320);
+                params.width = APP.getPixel(320);
                 dialog.getWindow().setAttributes(params);
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(0xffff0000);
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
@@ -1670,7 +1711,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dialog = new AlertDialog.Builder(context).setTitle(getString(R.string.scheme_skewb)).setView(colorSchemeView)
                         .setNegativeButton(R.string.btn_close, null).setNeutralButton(R.string.scheme_reset, null).show();
                 params = dialog.getWindow().getAttributes();
-                params.width = (int) (dpi * 320);
+                params.width = APP.getPixel(320);
                 dialog.getWindow().setAttributes(params);
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(0xffff0000);
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
@@ -2257,7 +2298,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         edit.remove("multp");	edit.remove("minxc");	edit.remove("simss");
         edit.remove("l1len");	edit.remove("l2len");   edit.remove("sside");
         edit.remove("pside");   edit.remove("rside");   edit.remove("group");
-        edit.remove("decim");
+        edit.remove("decim");   edit.remove("dform");
         edit.remove("hidscr");	edit.remove("ttsize");	edit.remove("stsize");
         edit.remove("cube2l");	edit.remove("scrgry");	edit.remove("selses");
         edit.remove("ismulp");	edit.remove("svsize");
@@ -2327,9 +2368,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setStatsLabel() {
         StringBuilder sb = new StringBuilder();
-        sb.append(result.getSolved()).append('/').append(result.length()).append('\n');
+        sb.append(result.getSolved()).append('/').append(result.length()).append("\n");
+        sb.append("best: ").append(result.getBestTime()).append("\n");
         sb.append(avg1Type == 0 ? "ao" : "mo").append(avg1len).append(": ");
-        sb.append(result.getRollingAvg1(result.length() - 1)).append('\n');
+        sb.append(result.getRollingAvg1(result.length() - 1)).append("\n");
         sb.append(avg2Type == 0 ? "ao" : "mo").append(avg2len).append(": ");
         sb.append(result.getRollingAvg2(result.length() - 1));
         tvStat.setText(sb.toString());
@@ -2453,6 +2495,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) (imageSize * dpi), (int) (imageSize * 3 * dpi) / 4);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        params.setMargins(0, 0, 0, APP.getPixel(5));
         scrambleView.setLayoutParams(params);
     }
 
@@ -2979,6 +3022,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String date = result.getString(5);
         String comment = result.getString(6);
         String solution = result.getString(13);
+        int id = result.getId(p);
+        Log.w("dct", "id: "+id);
         if (date == null) date = "";
         if (multiPhase > 0) {   //TODO 显示各分段成绩
 
@@ -3087,7 +3132,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void delete(int num) {
-        result.delete(num);
+        int res = result.delete(num);
+        if (res != 0) Toast.makeText(context, R.string.delete_fail, Toast.LENGTH_SHORT).show();
         btnSessionMean.setText(getString(R.string.session_mean, result.getSessionMean()));
         result.calcAvg();
         if (multiPhase > 0) result.calcMpMean();

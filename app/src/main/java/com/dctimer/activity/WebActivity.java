@@ -109,9 +109,20 @@ public class WebActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_refresh) {
-            webView.reload();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                webView.reload();
+                return true;
+            case R.id.action_back:
+                if (webView.canGoBack()) {
+                    webView.goBack();
+                }
+                return true;
+            case R.id.action_forward:
+                if (webView.canGoForward()) {
+                    webView.goForward();
+                }
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

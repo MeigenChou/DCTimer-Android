@@ -24,7 +24,7 @@
     <string name="action_import_export">Import/Export database</string>
     <string name="action_share">Share</string>
     <string name="action_exit">Exit</string>
-    <string name="action_stackmat">Use Stackmat timer</string>
+    <string name="action_stackmat">Stackmat timer</string>
     <string name="action_smartcube">Smart cube</string>
     <string name="action_scramble">Scramble detail</string>
 
@@ -95,6 +95,7 @@
     <string name="cube_not_connected">" is not connected"</string>
     <string name="ble_not_supported">BLE not supported</string>
     <string name="search_hint">Search time or comment</string>
+    <string name="delete_fail">Delete result failed.</string>
     <!-- Stats -->
     <string name="detail_avg">"Detailed statistics: Average of %1$d"</string>
     <string name="detail_mean">"Detailed statistics: Mean of %1$d"</string>
@@ -153,6 +154,8 @@
     <string name="side_b">B (blue)</string>
     <string name="petrus_s2">Solve Petrus S2</string>
     <string name="roux_s2">Solve Roux S2</string>
+    <string name="sample_rate">Sampling rate</string>
+    <string name="data_format">Data format</string>
     <!-- Others -->
     <string name="cur_scramble">Current scramble</string>
     <string name="scramble_len">"Length: "</string>
@@ -191,6 +194,7 @@
     <string name="menu_help">Help</string>
     <string name="menu_about">About</string>
     <string name="menu_website">Websites</string>
+    <string name="menu_cubing">Cubing China</string>
     <string name="about_msg">"Version: %1$s\nCopyright © 2012-2021 MeigenChou"</string>
     <string name="feedback_title">Feedback of DCTimer</string>
     <string name="language">en</string>
