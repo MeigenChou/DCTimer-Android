@@ -1,7 +1,6 @@
 package com.dctimer.activity;
 
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,6 +11,7 @@ import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -29,18 +29,15 @@ import android.widget.TextView;
 import com.dctimer.APP;
 import com.dctimer.R;
 import com.dctimer.model.Result;
-import com.dctimer.util.Stats;
 import com.dctimer.util.StringUtils;
 import com.dctimer.util.Utils;
 import com.dctimer.widget.CustomToolbar;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.dctimer.APP.colors;
 import static com.dctimer.APP.dm;
 
 public class GraphActivity extends AppCompatActivity {
@@ -67,6 +64,7 @@ public class GraphActivity extends AppCompatActivity {
     private int[] data;
     private int bins;
     private int select = -1;
+    private int uiMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,16 +83,16 @@ public class GraphActivity extends AppCompatActivity {
         setContentView(R.layout.activity_graph);
 
         LinearLayout layout = findViewById(R.id.layout);
-        layout.setBackgroundColor(colors[0]);
-        int grey = Utils.greyScale(colors[0]);
+        layout.setBackgroundColor(APP.getBackgroundColor());
+        int gray = Utils.grayScale(APP.getBackgroundColor());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {   //6.0
-            if (grey > 200) {
+            if (gray > 200) {
                 window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             } else {
                 window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { //5.0
-            if (grey > 200) {
+            if (gray > 200) {
                 window.setStatusBarColor(0x44000000);
             } else {
                 window.setStatusBarColor(0);
@@ -109,14 +107,14 @@ public class GraphActivity extends AppCompatActivity {
 //        if (graphType == 1) toolbar.setTitle(R.string.action_histogram);
 //        else if (graphType == 2) toolbar.setTitle(R.string.action_graph);
         setSupportActionBar(toolbar);
-        toolbar.setBackgroundColor(colors[0]);
+        toolbar.setBackgroundColor(APP.getBackgroundColor());
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
-        toolbar.setItemColor(colors[1]);
+        toolbar.setItemColor(APP.getTextColor());
         tabLayout = findViewById(R.id.tablayout);
         String[] items = getResources().getStringArray(R.array.item_date_range);
         weekText = getResources().getStringArray(R.array.item_week);
@@ -187,9 +185,22 @@ public class GraphActivity extends AppCompatActivity {
 
             }
         });
+        uiMode = getResources().getConfiguration().uiMode;
     }
 
     public void onConfigurationChanged(Configuration newConfig) {
+        if (newConfig.uiMode != uiMode) {
+            uiMode = newConfig.uiMode;
+            if ((uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
+                Log.w("dct", "深色模式");
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                recreate();
+            } else {
+                Log.w("dct", "浅色模式");
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                recreate();
+            }
+        }
         super.onConfigurationChanged(newConfig);
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         ViewGroup.LayoutParams lp = graph.getLayoutParams();
@@ -424,9 +435,9 @@ public class GraphActivity extends AppCompatActivity {
         Paint p = new Paint();
         p.setStyle(Paint.Style.FILL);
         p.setAntiAlias(true);
-        p.setColor(0xffffffff);
+        p.setColor(getResources().getColor(R.color.colorBackground));
         canvas.drawRect(0, 0, width, height, p);
-        p.setColor(0xffdddddd);
+        p.setColor(getResources().getColor(R.color.colorGray1));
         p.setStrokeWidth(APP.dpi);
         int fontSize = APP.getPixel(15);
         canvas.drawLine(0, height - fontSize, width, height - fontSize, p);
@@ -445,7 +456,7 @@ public class GraphActivity extends AppCompatActivity {
             int h = rectHeight * data[select] / maxValue;
             canvas.drawRect((float) select * width / bins, height - fontSize - h, (float) (select + 1) * width / bins, height - fontSize, p);
         }
-        p.setColor(0xff333333);
+        p.setColor(getResources().getColor(R.color.colorText));
         p.setStyle(Paint.Style.STROKE);
         for (int i=0; i<bins; i++) {
             int h = rectHeight * data[i] / maxValue;

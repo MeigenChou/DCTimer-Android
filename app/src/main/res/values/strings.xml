@@ -73,6 +73,8 @@
     <string name="eight_sec">8 seconds</string>
     <string name="twelve_sec">12 seconds</string>
     <string name="background_color">Background color</string>
+    <string name="light_mode">Light</string>
+    <string name="dark_mode">Dark</string>
     <!-- Message -->
     <string name="exit_tip">Press again to exit.</string>
     <string name="copy_success">Copy to clipboard successfully.</string>
@@ -96,6 +98,8 @@
     <string name="ble_not_supported">BLE not supported</string>
     <string name="search_hint">Search time or comment</string>
     <string name="delete_fail">Delete result failed.</string>
+    <string name="new_session_best">"New session best: "</string>
+    <string name="new_average_best">"New average best: "</string>
     <!-- Stats -->
     <string name="detail_avg">"Detailed statistics: Average of %1$d"</string>
     <string name="detail_mean">"Detailed statistics: Mean of %1$d"</string>
@@ -182,6 +186,12 @@
     <string name="month_format">MMM yyyy</string>
     <string name="quarter_format">Q%2$d %1$d</string>
     <string name="year_format">yyyy</string>
+    <string name="face_top">"turn the top face "</string>
+    <string name="face_bottom">"turn the bottom face "</string>
+    <string name="face_left">"turn the left face "</string>
+    <string name="face_right">"turn the right face "</string>
+    <string name="face_front">"turn the front face "</string>
+    <string name="face_back">"turn the back face "</string>
     <!-- Share content -->
     <string name="share_c0">"I have finished timing with DCTimer, "</string>
     <string name="share_c1">"I have finished timing %2$s scramble %1$d times with DCTimer, single best: %3$s, average: %4$s, "</string>

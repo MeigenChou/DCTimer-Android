@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="#fff">
+        android:background="@color/colorBackground">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sample_rate"
-                    android:textColor="#333"
+                    android:textColor="@color/colorText"
                     android:textSize="17sp"/>
 
                 <Spinner
@@ -67,7 +67,7 @@
                     android:layout_weight="1"
                     android:text="@string/data_format"
                     android:textSize="17sp"
-                    android:textColor="#333" />
+                    android:textColor="@color/colorText" />
 
                 <Spinner
                     android:id="@+id/sp_format"
@@ -108,7 +108,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="10dp"
                     android:textSize="28sp"
-                    android:textColor="#333"/>
+                    android:textColor="@color/colorText"/>
 
                 <TextView
                     android:id="@+id/tv_l"
@@ -121,7 +121,7 @@
                     android:text="L"
                     android:visibility="gone"
                     android:textSize="15sp"
-                    android:textColor="#333" />
+                    android:textColor="@color/colorText" />
 
                 <TextView
                     android:id="@+id/tv_r"
@@ -135,7 +135,7 @@
                     android:text="R"
                     android:visibility="gone"
                     android:textSize="15sp"
-                    android:textColor="#333" />
+                    android:textColor="@color/colorText" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"

@@ -71,6 +71,8 @@
     <string name="eight_sec">8秒</string>
     <string name="twelve_sec">12秒</string>
     <string name="background_color">背景颜色</string>
+    <string name="light_mode">浅色</string>
+    <string name="dark_mode">深色</string>
     <!-- 提示 -->
     <string name="exit_tip">再按一次退出程序</string>
     <string name="copy_success">已复制到剪贴板</string>
@@ -94,6 +96,8 @@
     <string name="ble_not_supported">当前设备不支持蓝牙BLE</string>
     <string name="search_hint">搜索时间或注释</string>
     <string name="delete_fail">删除成绩失败</string>
+    <string name="new_session_best">新单次最好：</string>
+    <string name="new_average_best">新最好平均：</string>
     <!-- 统计 -->
     <string name="detail_avg">详细成绩：%1$d次去尾平均</string>
     <string name="detail_mean">详细成绩：%1$d次平均</string>
@@ -179,6 +183,12 @@
     <string name="month_format">yyyy年M月</string>
     <string name="quarter_format">%1$d年第%2$d季度</string>
     <string name="year_format">yyyy年</string>
+    <string name="face_top">顶面</string>
+    <string name="face_bottom">底面</string>
+    <string name="face_left">左面</string>
+    <string name="face_right">右面</string>
+    <string name="face_front">前面</string>
+    <string name="face_back">后面</string>
     <!-- 分享内容 -->
     <string name="share_c0">我刚刚用DCTimer完成了测速，</string>
     <string name="share_c1">"我刚刚完成了%1$d次%2$s打乱测速，单次最快%3$s，平均%4$s，"</string>

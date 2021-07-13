@@ -23,7 +23,7 @@
             android:layout_weight="1"
             android:textSize="18sp"
             android:maxLines="2"
-            android:textColor="#000" />
+            android:textColor="@color/colorText" />
 
         <TextView
             android:id="@+id/tv_status"
@@ -47,6 +47,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:background="#ddd"
+        android:background="@color/colorGray1"
         android:visibility="gone" />
 </RelativeLayout>

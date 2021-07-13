@@ -15,7 +15,7 @@
             android:layout_height="match_parent"
             android:minWidth="44dp"
             android:gravity="center"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:textSize="16sp" />
 
         <!-- <View
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/item_background"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:textSize="16sp"
             style="?android:attr/borderlessButtonStyle" />
 
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/item_background"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:textSize="16sp"
             android:visibility="gone"
             style="?android:attr/borderlessButtonStyle" />
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/item_background"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:textSize="16sp"
             android:visibility="gone"
             style="?android:attr/borderlessButtonStyle" />
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/item_background"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:textSize="16sp"
             android:visibility="gone"
             style="?android:attr/borderlessButtonStyle" />
@@ -102,7 +102,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/item_background"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:textSize="16sp"
             android:visibility="gone"
             style="?android:attr/borderlessButtonStyle" />
@@ -120,7 +120,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/item_background"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:textSize="16sp"
             android:visibility="gone"
             style="?android:attr/borderlessButtonStyle"
@@ -139,7 +139,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/item_background"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:textSize="16sp"
             android:visibility="gone" />
     </LinearLayout>
@@ -149,5 +149,5 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:background="#ddd"/>
+        android:background="@color/colorGray1"/>
 </RelativeLayout>

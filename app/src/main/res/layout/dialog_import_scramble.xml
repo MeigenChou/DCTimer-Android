@@ -21,7 +21,7 @@
             android:layout_weight="1"
             android:text="@string/scramble_type"
             android:textSize="17sp"
-            android:textColor="#000"/>
+            android:textColor="@color/colorText" />
 
         <Spinner
             android:id="@+id/sp_type"
@@ -39,6 +39,6 @@
         android:imeOptions="actionDone|flagNoExtractUi"
         android:minHeight="40dip"
         android:padding="3dip"
-        android:textColor="#000" />
+        android:textColor="@color/colorText" />
 
 </LinearLayout>

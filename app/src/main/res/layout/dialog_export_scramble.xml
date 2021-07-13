@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/scramble_num"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:textSize="16sp" />
 
         <EditText
@@ -28,7 +28,7 @@
             android:layout_height="40dip"
             android:layout_weight="1"
             android:digits="0123456789"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:inputType="number"
             android:maxLength="3"
             android:imeOptions="actionDone|flagNoExtractUi"
@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/scramble_path"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:textSize="16sp" />
 
         <EditText
@@ -58,7 +58,7 @@
             android:layout_weight="1"
             android:inputType="text"
             android:imeOptions="actionDone|flagNoExtractUi"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:padding="3dip" />
 
         <ImageButton
@@ -81,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/scramble_filename"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:textSize="16sp" />
 
         <EditText
@@ -92,7 +92,7 @@
             android:layout_weight="1"
             android:inputType="text"
             android:imeOptions="actionDone|flagNoExtractUi"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:padding="3dip"
             android:text="@string/default_filename" />
     </LinearLayout>

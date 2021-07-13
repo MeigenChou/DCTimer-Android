@@ -5,7 +5,6 @@ import java.util.List;
 import com.dctimer.R;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.*;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
@@ -83,7 +82,7 @@ public class TextAdapter extends BaseAdapter {
 		else holder.textView.setText(mArrayData[position]);
 		if (column == 1) {
 			if (position == selectedItem)
-				holder.textView.setBackgroundColor(Color.WHITE);
+				holder.textView.setBackgroundColor(mContext.getResources().getColor(R.color.colorGray5));
 			else holder.textView.setBackgroundResource(R.drawable.list_item_bgcolor);
 		} else {
 			if (position == selectedItem)

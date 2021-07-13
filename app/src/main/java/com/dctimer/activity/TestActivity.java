@@ -2,6 +2,7 @@ package com.dctimer.activity;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -9,6 +10,7 @@ import android.media.AudioFormat;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -41,6 +43,7 @@ public class TestActivity extends AppCompatActivity {
     private static int[] samplingRates = {8000, 11025, 16000, 22050, 24000, 32000, 44100};
     private Bitmap bitmap;
     private Canvas canvas;
+    private int uiMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,16 +61,16 @@ public class TestActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_test);
         LinearLayout layout = findViewById(R.id.layout);
-        layout.setBackgroundColor(APP.colors[0]);
-        int grey = Utils.greyScale(APP.colors[0]);
+        layout.setBackgroundColor(APP.getBackgroundColor());
+        int gray = Utils.grayScale(APP.getBackgroundColor());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {   //6.0
-            if (grey > 200) {
+            if (gray > 200) {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             } else {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { //5.0
-            if (grey > 200) {
+            if (gray > 200) {
                 getWindow().setStatusBarColor(0x44000000);
             } else {
                 getWindow().setStatusBarColor(0);
@@ -76,14 +79,14 @@ public class TestActivity extends AppCompatActivity {
 
         CustomToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setBackgroundColor(APP.colors[0]);
+        toolbar.setBackgroundColor(APP.getBackgroundColor());
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
-        toolbar.setItemColor(APP.colors[1]);
+        toolbar.setItemColor(APP.getTextColor());
         sp = getSharedPreferences("dctimer", Activity.MODE_PRIVATE);
 
         spRate = findViewById(R.id.sp_rate);
@@ -143,8 +146,27 @@ public class TestActivity extends AppCompatActivity {
         tvGreen = findViewById(R.id.tv_green);
         bitmap = Bitmap.createBitmap(APP.dm.widthPixels, APP.getPixel(120), Bitmap.Config.ARGB_8888);
         canvas = new Canvas(bitmap);
+        uiMode = getResources().getConfiguration().uiMode;
         stackmat = new Stackmat(this, APP.samplingRate, APP.dataFormat);
         stackmat.start();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        Log.w("dct", "configure change " + newConfig.uiMode);
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.uiMode != uiMode) {
+            uiMode = newConfig.uiMode;
+            if ((uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
+                Log.w("dct", "深色模式");
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                recreate();
+            } else {
+                Log.w("dct", "浅色模式");
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                recreate();
+            }
+        }
     }
 
     @Override
@@ -158,11 +180,11 @@ public class TestActivity extends AppCompatActivity {
         Paint p = new Paint();
         p.setStyle(Paint.Style.FILL);
         p.setStrokeWidth(2);
-        p.setColor(-1);
+        p.setColor(getResources().getColor(R.color.colorBackground));
         int wid = APP.dm.widthPixels;
         int hei = APP.getPixel(120);
         canvas.drawRect(0, 0, wid, hei, p);
-        p.setColor(0xff333333);
+        p.setColor(getResources().getColor(R.color.colorText));
         int last = 0;
         int len = data.length;
         for (int i=0; i<len; i++) {

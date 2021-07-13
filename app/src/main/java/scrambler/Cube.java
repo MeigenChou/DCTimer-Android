@@ -161,6 +161,14 @@ public class Cube {
                         case 'f': seq[count] = 20;  k = 1;  break;
                         case 'b': seq[count] = 8;   k = 1;  break;
                     }
+                    if (s[i].contains("top") || s[i].contains("顶") || s[i].contains("頂")) seq[count] = 12;
+                    if (s[i].contains("bottom") || s[i].contains("底")) seq[count] = 0;
+                    if (s[i].contains("left") || s[i].contains("左")) seq[count] = 4;
+                    if (s[i].contains("right") || s[i].contains("右")) seq[count] = 16;
+                    if (s[i].contains("front") || s[i].contains("前")) seq[count] = 20;
+                    if (s[i].contains("back") || s[i].contains("后") || s[i].contains("後")) seq[count] = 8;
+                    if (s[i].contains("180 deg") || s[i].contains("180度")) seq[count]++;
+                    else if (s[i].contains("counter") || s[i].contains("逆")) seq[count] += 2;
                     if (s[i].length() > 1) {
                         switch (s[i].charAt(1)) {
                             case '\'': seq[count] += 2; break;

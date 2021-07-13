@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.media.AudioFormat;
 import android.util.DisplayMetrics;
 
@@ -40,7 +41,7 @@ public class APP extends Application {
     public static String[][] itemStr = new String[17][];
 
     public static int scrambleIdx;
-    public static int[] colors = new int[5];
+    public static int[] colors = new int[7];
     public static boolean wca;
     public static boolean showImage;
     public static boolean monoFont;
@@ -94,6 +95,7 @@ public class APP extends Application {
     public static boolean darkList;
     public static int samplingRate;
     public static int dataFormat;
+    public static int uiMode = -1;
 
     @Override
     public void onCreate() {
@@ -197,8 +199,10 @@ public class APP extends Application {
         colors[0] = sp.getInt("cl0", 0xff2196F3);	// 背景颜色
         colors[1] = sp.getInt("cl1", 0xffffffff);	// 文字颜色
         colors[2] = sp.getInt("cl2", 0xffff00ff);	//最快单次颜色
-        colors[3] = sp.getInt("cl3", 0xffff0000);	//最慢单次颜色
+        colors[3] = sp.getInt("cl3", 0xffee3333);	//最慢单次颜色
         colors[4] = sp.getInt("cl4", 0xff009900);	//最快平均颜色
+        colors[5] = sp.getInt("cl5", 0xff263238);   //背景颜色（深色）
+        colors[6] = sp.getInt("cl6", 0xffffffff);   //文字颜色（深色）
         picPath = sp.getString("picpath", "");	//背景图片路径
         opacity = sp.getInt("opac", 35);	//背景不透明度
         if (opacity < 20) opacity = 20;
@@ -231,12 +235,27 @@ public class APP extends Application {
         fullScreen = false; screenOn = false; vibrateType = 0;
         vibrateTime = 2; screenOri = 0;
         colors[0] = 0xff2196F3;	colors[1] = 0xffffffff;	colors[2] = 0xffff00ff;
-        colors[3] = 0xffff0000;	colors[4] = 0xff009900;
+        colors[3] = 0xffee3333;	colors[4] = 0xff009900; colors[5] = 0xff263238;
+        colors[6] = 0xffffffff;
         for (int i = 0; i < 4; i++) swipeType[i] = i + 1;
         samplingRate = 44100; dataFormat = AudioFormat.ENCODING_PCM_8BIT;
     }
 
     public static int getPixel(int dp) {
         return (int) (dpi * dp);
+    }
+
+    public static int getBackgroundColor() {
+        if ((uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
+            return colors[5];
+        }
+        return colors[0];
+    }
+
+    public static int getTextColor() {
+        if ((uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
+            return colors[6];
+        }
+        return colors[1];
     }
 }

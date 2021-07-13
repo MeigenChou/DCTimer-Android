@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="#333" />
+            android:textColor="@color/colorText" />
 
         <TextView
             android:id="@+id/tv_comment"
@@ -31,7 +31,7 @@
             android:singleLine="true"
             android:ellipsize="middle"
             android:textSize="14sp"
-            android:textColor="#333" />
+            android:textColor="@color/colorText" />
 
         <TextView
             android:id="@+id/tv_date"
@@ -51,11 +51,11 @@
         android:layout_marginTop="2dp"
         android:layout_marginBottom="12dp"
         android:textSize="12sp"
-        android:textColor="#333"/>
+        android:textColor="@color/colorText"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#ddd"
+        android:background="@color/colorGray1"
         android:layout_alignParentBottom="true" />
 </RelativeLayout>

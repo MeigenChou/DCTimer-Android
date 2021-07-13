@@ -26,6 +26,7 @@ import android.os.*;
 import android.provider.MediaStore;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -35,10 +36,12 @@ import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -51,10 +54,10 @@ import com.dctimer.R;
 import com.dctimer.adapter.*;
 import com.dctimer.database.SessionManager;
 import com.dctimer.dialog.*;
+import com.dctimer.model.DCTTimer;
 import com.dctimer.model.SmartCube;
 import com.dctimer.model.Result;
 import com.dctimer.model.Stackmat;
-import com.dctimer.model.Timer;
 import com.dctimer.util.*;
 import com.dctimer.view.*;
 import com.dctimer.widget.*;
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public Vibrator vibrator;
     public Scrambler currentScramble;
     public Scrambler nextScramble;
-    public Timer timer;
+    public DCTTimer timer;
     public Result result;
     public SessionManager sessionManager;
     private List<Integer> searchResult = new ArrayList<>();
@@ -187,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         app = APP.getInstance();
         sp = super.getSharedPreferences("dctimer", Activity.MODE_PRIVATE);
         //edit = sp.edit();
+        uiMode = getResources().getConfiguration().uiMode;
         dm = getResources().getDisplayMetrics();
         dpi = dm.density;
         fontScale = dm.scaledDensity;
@@ -240,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         if (useBgcolor) {
-            setBackground(colors[0]);
+            setBackgroundColor();
         } else setBackground();
 
         RadioGroup radioTab = findViewById(R.id.radio_tab);
@@ -270,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         btnScramble = findViewById(R.id.bt_scramble);    //打乱按钮
         btnScramble.setOnClickListener(mOnClickListener);
         pbScramble = findViewById(R.id.progress);
-        pbScramble.getIndeterminateDrawable().setColorFilter(colors[1], PorterDuff.Mode.SRC_IN);
+        pbScramble.getIndeterminateDrawable().setColorFilter(APP.getTextColor(), PorterDuff.Mode.SRC_IN);
         btnLeft = findViewById(R.id.bt_left);
         btnLeft.setOnClickListener(mOnClickListener);
         btnRight = findViewById(R.id.bt_right);
@@ -359,7 +363,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //rvSetting.setOnItemClickListener(mOnItemListener);
 
         currentScramble = new Scrambler(sp);
-        timer = new Timer(this);
+        currentScramble.setContext(context);
+        timer = new DCTTimer(this);
 
         //进度条
         progressDialog = new ProgressDialog(this);
@@ -393,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onInit(int i) {
                 if (i == TextToSpeech.SUCCESS) {
                     //Log.w("tts", "tts init");
-                } else Log.e("tts", "tts失败");
+                } else Log.e("dct", "tts失败");
             }
         });
         setScramble();
@@ -422,6 +427,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         super.onPause();
+        if (timer.getTimerState() == DCTTimer.RUNNING) {
+            timer.timeEnd = SystemClock.uptimeMillis();
+            timer.count();
+            setVisibility(true);
+            timer.setTimerState(0);
+            if (!screenOn) releaseWakeLock();
+        }
         if (sensorManager != null && sensor != null) {
             sensorManager.unregisterListener(mSensorEventListener, sensor);
         }
@@ -449,8 +461,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        Log.w("dct", "configure change " + newConfig.uiMode);
         super.onConfigurationChanged(newConfig);
-        //Log.w("dct", "旋转屏幕");
+        if (newConfig.uiMode != uiMode) {
+            uiMode = newConfig.uiMode;
+            if ((uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
+                Log.w("dct", "深色模式");
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                recreate();
+            } else {
+                Log.w("dct", "浅色模式");
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                recreate();
+            }
+        }
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int tvHeight = (int) (dm.heightPixels - 76 * dpi) / 2;
         tvScramble.setHeight(tvHeight);
@@ -466,7 +490,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {   //按返回键
-        if (timer.getTimerState() == Timer.RUNNING) {
+        if (timer.getTimerState() == DCTTimer.RUNNING) {
             timer.timeEnd = SystemClock.uptimeMillis();
             timer.count();
             setVisibility(true);
@@ -474,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             save((int) timer.time);
             timer.setTimerState(0);
             if (!screenOn) releaseWakeLock();
-        } else if (timer.getTimerState() == Timer.INSPECTING) {
+        } else if (timer.getTimerState() == DCTTimer.INSPECTING) {
             timer.stopInspect();
             setTimerText("0" + (decimalMark == 0 ? "." : ",") + (timerAccuracy == 0 ? "00" : "000"));
             setVisibility(true);
@@ -628,7 +652,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //c.drawColor(0);
                 Paint p = new Paint();
                 p.setAntiAlias(true);
-                Graph.drawHist(result, dip300, p, c);
+                Graph.drawHist(context, result, dip300, p, c);
                 iv.setImageBitmap(bm);
                 new AlertDialog.Builder(context).setView(view).setNegativeButton(R.string.btn_close, null).show();
                 break;
@@ -646,7 +670,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 c = new Canvas(bm);
                 p = new Paint();
                 p.setAntiAlias(true);
-                Graph.drawGraph(result, dip300, p, c);
+                Graph.drawGraph(context, result, dip300, p, c);
                 iv.setImageBitmap(bm);
                 new AlertDialog.Builder(context).setView(view)
                         .setNegativeButton(R.string.btn_close, null).show();
@@ -910,7 +934,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void moveCube(SmartCube cube, int move, int time) {
         cube.applyMove(move, time, currentScramble.getCubeState());
-        if (timer.getTimerState() == Timer.READY) {
+        if (timer.getTimerState() == DCTTimer.READY) {
             if (canStart) {
                 canStart = false;
                 runOnUiThread(new Runnable() {
@@ -929,7 +953,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void markScrambled() {
         setTimerColor(0xff00ff00);
-        timer.setTimerState(Timer.READY);
+        timer.setTimerState(DCTTimer.READY);
         canStart = true;
     }
 
@@ -937,14 +961,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public void onScrambled(SmartCube cube) {
             Log.w("dct", "已打乱");
-            if (timer.getTimerState() != Timer.RUNNING) {
+            if (timer.getTimerState() != DCTTimer.RUNNING) {
                 cube.markScrambled();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         setTimerColor(0xff00ff00);
                         tvMulPhase.setText("");
-                        timer.setTimerState(Timer.READY);
+                        timer.setTimerState(DCTTimer.READY);
                         canStart = true;
                     }
                 });
@@ -953,7 +977,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public void onSolved(final SmartCube cube) {
-            if (timer.getTimerState() == Timer.RUNNING) {
+            if (timer.getTimerState() == DCTTimer.RUNNING) {
                 cube.calcResult();
                 cube.markSolved();
                 runOnUiThread(new Runnable() {
@@ -966,7 +990,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         tvMulPhase.setText(String.format(Locale.getDefault(), "%d moves\n%.1f tps", cube.getMovesCount(), cube.getMovesCount() * 1000f / timeRes));
                         Log.w("dct", "成绩 "+timeRes);
                         if (!wca || currentScramble.isBlindfoldScramble()) { penaltyTime = 0; isDNF = false;}
-                        timer.setTimerState(Timer.READY);
+                        timer.setTimerState(DCTTimer.READY);
                         save(timeRes);
                     }
                 });
@@ -1183,10 +1207,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
                     case MotionEvent.ACTION_MOVE:
                         int x = (int) event.getX(), y = (int) event.getY();
-                        if (timer.getTimerState() == Timer.READY) {
+                        if (timer.getTimerState() == DCTTimer.READY) {
                             int delX = Math.abs(x - startX), delY = Math.abs(y - startY);
                             if (delX > dip40 || delY > dip40) {
-                                setTimerColor(colors[1]);
+                                setTimerColor(APP.getTextColor());
                                 isSwipe = true;
                                 if (freezeTime > 0)
                                     timer.stopFreeze();
@@ -1209,7 +1233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     case MotionEvent.ACTION_OUTSIDE:
 //                  case MotionEvent.ACTION_CANCEL:
                         timer.stopFreeze();
-                        setTimerColor(colors[1]);
+                        setTimerColor(APP.getTextColor());
                         break;
                 }
             } else {
@@ -1240,7 +1264,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
                     case MotionEvent.ACTION_CANCEL:
                         timer.stopFreeze();
-                        setTimerColor(colors[1]);
+                        setTimerColor(APP.getTextColor());
                         break;
                 }
             }
@@ -1311,7 +1335,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 setTimerText("0" + (decimalMark == 0 ? "." : ",") + (timerAccuracy == 0 ? "00" : "000"));
                             else setTimerText("IMPORT");
                             tvMulPhase.setText("");
-                            timer.setTimerState(Timer.READY);
+                            timer.setTimerState(DCTTimer.READY);
                         } else if (i < 4) {
                             if (Build.VERSION.SDK_INT > 22) {
                                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO)
@@ -1651,7 +1675,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
                 params.width = APP.getPixel(320);
                 dialog.getWindow().setAttributes(params);
-                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(0xffff0000);
+                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorRed));
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {    //配色复位
@@ -1673,7 +1697,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 params = dialog.getWindow().getAttributes();
                 params.width = APP.getPixel(320);
                 dialog.getWindow().setAttributes(params);
-                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(0xffff0000);
+                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorRed));
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -1693,7 +1717,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 params = dialog.getWindow().getAttributes();
                 params.width = APP.getPixel(320);
                 dialog.getWindow().setAttributes(params);
-                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(0xffff0000);
+                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorRed));
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -1713,7 +1737,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 params = dialog.getWindow().getAttributes();
                 params.width = APP.getPixel(320);
                 dialog.getWindow().setAttributes(params);
-                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(0xffff0000);
+                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorRed));
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -1753,16 +1777,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case 41:    //背景颜色
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
                 View dialogLayout = LayoutInflater.from(context).inflate(R.layout.dialog_color_picker, null);
+                RadioGroup rgMode = dialogLayout.findViewById(R.id.rg_mode);
                 final LineColorPicker colorPicker = dialogLayout.findViewById(R.id.color_picker_primary);
                 final LineColorPicker colorPicker2 = dialogLayout.findViewById(R.id.color_picker_primary_2);
                 final TextView dialogTitle = dialogLayout.findViewById(R.id.dialog_title);
+                //RadioButton rbLight = dialogLayout.findViewById(R.id.rb_light);
+                //RadioButton rbDark = dialogLayout.findViewById(R.id.rb_dark);
+                final int[] color = {0, colors[0], colors[5]};
+                rgMode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                        int[] baseColors = ColorPalette.getBaseColors(context);
+                        switch (i) {
+                            case R.id.rb_light:
+                                color[0] = 0;
+                                color[2] = colorPicker2.getColor();
+                                //color[1] = colors[0];
+                                break;
+                            case R.id.rb_dark:
+                                color[0] = 1;
+                                color[1] = colorPicker2.getColor();
+                                //color[2] = colors[5];
+                                break;
+                        }
+                        for (int c : baseColors) {
+                            for (int c2 : ColorPalette.getColors(context, c)) {
+                                if ((color[0] == 0 && c2 == color[1]) || (color[0] == 1 && c2 == color[2])) {
+                                    colorPicker.setSelectedColor(c);
+                                    colorPicker2.setColors(ColorPalette.getColors(context, c));
+                                    colorPicker2.setSelectedColor(c2);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+
                 dialogTitle.setText(R.string.background_color);
                 //((CardView) dialogLayout.findViewById(R.id.dialog_card)).setCardBackgroundColor(-1);
                 colorPicker2.setOnColorChangedListener(new OnColorChangedListener() {
                     @Override
                     public void onColorChanged(int c) {
                         dialogTitle.setBackgroundColor(c);
-                        if (Utils.greyScale(c) > 200)
+                        if (Utils.grayScale(c) > 200)
                             dialogTitle.setTextColor(0xff212121);
                         else dialogTitle.setTextColor(-1);
                         //chooser.onColorChanged(c);
@@ -1801,42 +1858,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         alertDialog.setOnDismissListener(null);
                         //Log.w("dct", "背景颜色 "+Integer.toHexString(colorPicker2.getColor()));
                         //chooser.onColorSelected(colorPicker2.getColor());
-                        colors[0] = colorPicker2.getColor();
-                        if (useBgcolor)
-                            setBackground(colors[0]);
+                        if (color[0] == 0)
+                            color[1] = colorPicker2.getColor();
+                        else color[2] = colorPicker2.getColor();
+                        //int color = colorPicker2.getColor();
+                        colors[0] = color[1];
+                        setPref("cl0", color[1]);
+                        colors[5] = color[2];
+                        setPref("cl5", color[2]);
+                        if (useBgcolor) {
+                            setBackgroundColor();
+                        }
                         //useBgcolor = true;
-                        setPref("cl0", colors[0]);
-                        setPref("bgcolor", true);
                         dialog.dismiss();
                     }
                 });
                 dialogBuilder.show();
                 break;
             case 42:    //文字颜色
-                new ColorPickerDialog(context, colors[1], -1, new OnColorPickerListener() {
+                new ColorPickerDialog(context, new int[] {colors[1], colors[6]}, new int[] {-1, -1}, false, new OnColorPickerListener() {
                     @Override
                     public void onColorCancel(ColorPickerDialog dialog) { }
 
                     @Override
-                    public void onColorChange(ColorPickerDialog dialog, int color) { }
+                    public void onColorChange(ColorPickerDialog dialog, int[] color) { }
 
                     @Override
-                    public void onColorConfirm(ColorPickerDialog dialog, int color) {
+                    public void onColorConfirm(ColorPickerDialog dialog, int[] color) {
                         //Log.w("dct", "选择颜色 "+Integer.toHexString(color));
-                        colors[1] = color;
-                        setPref("cl1", color);
+                        Log.w("dct", "light="+Integer.toHexString(color[0])+", dark="+Integer.toHexString(color[1]));
+                        colors[1] = color[0];
+                        colors[6] = color[1];
+                        setPref("cl1", color[0]);
+                        setPref("cl6", color[1]);
                         setTextsColor();
                         setIconColor();
-                        pbScramble.getIndeterminateDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
                     }
 
                     @Override
-                    public void onColorReset(ColorPickerDialog dialog, int color) {
-                        colors[1] = color;
+                    public void onColorReset(ColorPickerDialog dialog, int[] color) {
+                        colors[1] = color[0];
+                        colors[6] = color[1];
                         delPref("cl1");
+                        delPref("cl6");
                         setTextsColor();
                         setIconColor();
-                        pbScramble.getIndeterminateDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
                     }
                 }).show();
                 break;
@@ -1853,79 +1919,79 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case 44:    //显示背景图
                 if (useBgcolor) {
                     setBackground();
-                } else setBackground(colors[0]);
+                } else setBackgroundColor();
                 useBgcolor = !useBgcolor;
                 //Log.w("dct", ""+useBgcolor);
                 stAdapter.setCheck(position, !useBgcolor);
                 setPref("bgcolor", useBgcolor);
                 break;
             case 46:    //最快单次颜色
-                new ColorPickerDialog(context, colors[2], 0xffff00ff, new OnColorPickerListener() {
+                new ColorPickerDialog(context, new int[] {colors[2]}, new int[] {0xffff00ff}, true, new OnColorPickerListener() {
                     @Override
                     public void onColorCancel(ColorPickerDialog dialog) { }
 
                     @Override
-                    public void onColorChange(ColorPickerDialog dialog, int color) { }
+                    public void onColorChange(ColorPickerDialog dialog, int[] color) { }
 
                     @Override
-                    public void onColorConfirm(ColorPickerDialog dialog, int color) {
+                    public void onColorConfirm(ColorPickerDialog dialog, int[] color) {
                         //Log.w("dct", "选择颜色 "+Integer.toHexString(color));
-                        colors[2] = color;
-                        setPref("cl2", color);
+                        colors[2] = color[0];
+                        setPref("cl2", colors[2]);
                         resAdapter.notifyDataSetChanged();
                     }
 
                     @Override
-                    public void onColorReset(ColorPickerDialog dialog, int color) {
-                        colors[2] = color;
+                    public void onColorReset(ColorPickerDialog dialog, int[] color) {
+                        colors[2] = color[0];
                         delPref("cl2");
                         resAdapter.notifyDataSetChanged();
                     }
                 }).show();
                 break;
             case 47:    //最慢单次颜色
-                new ColorPickerDialog(context, colors[3], 0xffff0000, new OnColorPickerListener() {
+                new ColorPickerDialog(context, new int[] {colors[3]}, new int[] {0xffee3333}, true, new OnColorPickerListener() {
                     @Override
                     public void onColorCancel(ColorPickerDialog dialog) { }
 
                     @Override
-                    public void onColorChange(ColorPickerDialog dialog, int color) { }
+                    public void onColorChange(ColorPickerDialog dialog, int[] color) { }
 
                     @Override
-                    public void onColorConfirm(ColorPickerDialog dialog, int color) {
+                    public void onColorConfirm(ColorPickerDialog dialog, int[] color) {
                         //Log.w("dct", "选择颜色 "+Integer.toHexString(color));
-                        colors[3] = color;
-                        setPref("cl3", color);
+                        colors[3] = color[0];
+                        setPref("cl3", colors[3]);
                         resAdapter.notifyDataSetChanged();
                     }
 
                     @Override
-                    public void onColorReset(ColorPickerDialog dialog, int color) {
-                        colors[3] = color;
+                    public void onColorReset(ColorPickerDialog dialog, int[] color) {
+                        colors[3] = color[0];
                         delPref("cl3");
                         resAdapter.notifyDataSetChanged();
                     }
                 }).show();
                 break;
             case 48:    //最快平均颜色
-                new ColorPickerDialog(context, colors[4], 0xff009900, new OnColorPickerListener() {
+                new ColorPickerDialog(context, new int[] {colors[4]}, new int[] {0xff009900}, true, new OnColorPickerListener() {
                     @Override
                     public void onColorCancel(ColorPickerDialog dialog) { }
 
                     @Override
-                    public void onColorChange(ColorPickerDialog dialog, int color) { }
+                    public void onColorChange(ColorPickerDialog dialog, int[] color) { }
 
                     @Override
-                    public void onColorConfirm(ColorPickerDialog dialog, int color) {
+                    public void onColorConfirm(ColorPickerDialog dialog, int[] color) {
                         //Log.w("dct", "选择颜色 "+Integer.toHexString(color));
-                        colors[4] = color;
-                        setPref("cl4", color);
+                        colors[4] = color[0];
+                        setPref("cl4", colors[4]);
                         resAdapter.notifyDataSetChanged();
                     }
 
                     @Override
-                    public void onColorReset(ColorPickerDialog dialog, int color) {
-                        colors[4] = color;
+                    public void onColorReset(ColorPickerDialog dialog, int[] color) {
+                        colors[4] = color[0];
                         delPref("cl4");
                         resAdapter.notifyDataSetChanged();
                     }
@@ -2040,7 +2106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //tvTest.setText(String.format(Locale.getDefault(), "%.3f", acc));
                 if (lastAcc != 0) {
                     if (Math.abs(acc - lastAcc) > sensitivity && dropToStop) {
-                        if (timer.getTimerState() == Timer.RUNNING && timer.time > 200) {   //停止计时
+                        if (timer.getTimerState() == DCTTimer.RUNNING && timer.time > 200) {   //停止计时
                             setVisibility(true);
                             timer.timeEnd = SystemClock.uptimeMillis();
                             timer.count();
@@ -2163,7 +2229,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onClick(DialogInterface arg0, int arg1) {
                         APP.resetPref();
                         removePref();
-                        setBackground(colors[0]);
+                        setBackgroundColor();
                         //setPrimaryDark();
                         setViews();
                         setTextsColor();
@@ -2266,7 +2332,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 case 25: int prog = (int) msg.obj;
                     tvScramble.setText(getString(R.string.initializing) + " (" + (36 + prog / 44809) + "%) ..."); break;
                 case 26:
-                    if (timer.getTimerState() == Timer.STOP || timer.getTimerState() == Timer.READY)
+                    if (timer.getTimerState() == DCTTimer.STOP || timer.getTimerState() == DCTTimer.READY)
                         btnScramble.setVisibility(View.VISIBLE);
                     pbScramble.setVisibility(View.GONE);
                     btnLeft.setEnabled(true);
@@ -2338,7 +2404,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //打乱显示
         //tvScramble.setTextSize(scrambleSize);
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(tvScramble, 10, scrambleSize, 2, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
-        tvScramble.setTextColor(colors[1]);
+        tvScramble.setTextColor(APP.getTextColor());
         if (monoFont) setScrambleFont();
 
         //打乱状态
@@ -2346,7 +2412,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //计时器
         tvTimer.setTextSize(timerSize);
         setTimerFont();
-        setTimerColor(colors[1]);
+        setTimerColor(APP.getTextColor());
         if (enterTime == 0) {
             setTimerText("0" + (decimalMark == 0 ? "." : ",") + (timerAccuracy == 0 ? "00" : "000"));
         } else if (enterTime == 1)
@@ -2362,19 +2428,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //统计简要
         tvStat.setVisibility(showStat ? View.VISIBLE : View.GONE);
         //tvStat.setTextSize(TypedValue.COMPLEX_UNIT_SP, 21);
-        tvStat.setTextColor(colors[1]);
+        tvStat.setTextColor(APP.getTextColor());
         setStatsLabel();
     }
 
     private void setStatsLabel() {
         StringBuilder sb = new StringBuilder();
-        sb.append(result.getSolved()).append('/').append(result.length()).append("\n");
-        sb.append("best: ").append(result.getBestTime()).append("\n");
+        sb.append(result.getSolved()).append('/').append(result.length()).append("<br>");
+        if (result.isSessionBest()) sb.append("<b><u>");
+        sb.append("best: ").append(result.getBestTime());
+        if (result.isSessionBest()) sb.append("</u></b>");
+        sb.append("<br>");
+        if (result.isAvgBest(0)) sb.append("<b><u>");
         sb.append(avg1Type == 0 ? "ao" : "mo").append(avg1len).append(": ");
-        sb.append(result.getRollingAvg1(result.length() - 1)).append("\n");
+        sb.append(result.getRollingAvg1(result.length() - 1));
+        if (result.isAvgBest(0)) sb.append("</u></b>");
+        sb.append("<br>");
+        if (result.isAvgBest(1)) sb.append("<b><u>");
         sb.append(avg2Type == 0 ? "ao" : "mo").append(avg2len).append(": ");
         sb.append(result.getRollingAvg2(result.length() - 1));
-        tvStat.setText(sb.toString());
+        if (result.isAvgBest(1)) sb.append("</u></b>");
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            tvStat.setText(Html.fromHtml(sb.toString(), Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            tvStat.setText(Html.fromHtml(sb.toString()));
+        }
+
     }
 
     private void setVisibility(boolean v) {	//设置控件的隐藏 TODO
@@ -2392,20 +2471,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             scrambleView.setVisibility(vi);
     }
 
-    public void setBackground(int color) {
+    public void setBackgroundColor() {
+        int color = APP.getBackgroundColor();
         frame.setBackgroundColor(color);
         //tabHost.setBackgroundColor(color);
         //toolbar.setBackgroundColor(color);
-        int grey = Utils.greyScale(color);
+        int gray = Utils.grayScale(color);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {   //6.0
-            if (grey > 200) {
+            if (gray > 200) {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             } else {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             }
             //getWindow().setNavigationBarColor(color);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { //5.0
-            if (grey > 200) {
+            if (gray > 200) {
                 getWindow().setStatusBarColor(0x44000000);
             } else {
                 getWindow().setStatusBarColor(0);
@@ -2420,10 +2500,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             frame.setBackgroundDrawable(Utils.getBackgroundDrawable(context, bitmap, opacity));
         } catch (Exception e) {
             e.printStackTrace();
-            setBackground(colors[0]);
+            setBackgroundColor();
             //Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
         } catch (OutOfMemoryError e) {
-            setBackground(colors[0]);
+            setBackgroundColor();
             //Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -2500,20 +2580,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setTextsColor() {
-        setTimerColor(colors[1]);
-        tvScramble.setTextColor(colors[1]);
-        tvStat.setTextColor(colors[1]);
-        btnScramble.setTextColor(colors[1]);
+        int color = APP.getTextColor();
+        setTimerColor(color);
+        tvScramble.setTextColor(color);
+        tvStat.setTextColor(color);
+        btnScramble.setTextColor(color);
         //toolbar.setTitleTextColor(colors[1]);
     }
 
     private void setIconColor() {
-        rbTimer.setColor(colors[1]);
-        rbResult.setColor(colors[1]);
-        rbSetting.setColor(colors[1]);
-        toolbar.setItemColor(colors[1]);
-        btnLeft.getDrawable().setColorFilter(colors[1], PorterDuff.Mode.SRC_IN);
-        btnRight.getDrawable().setColorFilter(colors[1], PorterDuff.Mode.SRC_IN);
+        int color = APP.getTextColor();
+        rbTimer.setColor(color);
+        rbResult.setColor(color);
+        rbSetting.setColor(color);
+        toolbar.setItemColor(color);
+        btnLeft.getDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        btnRight.getDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        pbScramble.getIndeterminateDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
     }
 
     private void setScramble() {
@@ -2553,7 +2636,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         } else if ((idx == -1 && (idx2 < 2 || (idx2 > 2 && idx2 < 8) || idx2 == 10 || idx2 == 15 || idx2 == 17)) ||
                 (idx == 0 && idx2 < 2) ||
-                (idx == 1) ||
+                (idx == 1 && idx2 != 25) ||
                 (idx == 2 && idx2 == 5) ||
                 idx == 8 ||
                 (idx == 11 && (idx2 > 1 && idx2 < 5 || idx2 == 6 || idx2 == 8)) ||
@@ -2663,6 +2746,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void getNextScramble(boolean resetLen) {  //生成下一个打乱
         scrambleState = SCRAMBLING_NEXT;
         nextScramble = new Scrambler(sp);
+        nextScramble.setContext(context);
         if (!resetLen) nextScramble.setScrambleLen(currentScramble.getScrambleLen());
         nextScramble.generateScramble(scrambleIdx, resetLen);
         Log.w("dct", "next scramble: "+ nextScramble.getScramble());
@@ -2749,7 +2833,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setTimerColor(0xff00ff00);
             return;
         }
-        if (timer.getTimerState() == Timer.RUNNING) {
+        if (timer.getTimerState() == DCTTimer.RUNNING) {
             if (mpCount != 0) {
                 if (vibrateType == 1 || vibrateType == 3)
                     vibrator.vibrate(VIBRATE_TIME[vibrateTime]);
@@ -2774,11 +2858,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 setVisibility(true);
             }
-        } else if (timer.getTimerState() != Timer.STOP) {
+        } else if (timer.getTimerState() != DCTTimer.STOP) {
 //            if (enterTime == 1) {
 //                setTimerColor(0xff00ff00);
 //            }
-            if (freezeTime == 0 || (wca && !currentScramble.isBlindfoldScramble() && timer.getTimerState() == Timer.READY)) {
+            if (freezeTime == 0 || (wca && !currentScramble.isBlindfoldScramble() && timer.getTimerState() == DCTTimer.READY)) {
                 setTimerColor(0xff00ff00);
                 canStart = true;
             } else {
@@ -2794,7 +2878,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void touchUp() {
         //Log.w("dct", "timer state "+timer.state);
-        if (timer.getTimerState() == Timer.READY) {    //准备开始
+        if (timer.getTimerState() == DCTTimer.READY) {    //准备开始
             if (isSwipe) {
                 //Log.w("dct", "is swipe");
                 switch (gesture) {
@@ -2880,7 +2964,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     dialog.show(getSupportFragmentManager(), "CubeState");
                 }
             } else if (enterTime == 1) { //手动输入成绩
-                tvTimer.setTextColor(colors[1]);
+                tvTimer.setTextColor(APP.getTextColor());
                 inputTime();
             } else if (enterTime == 0) {
                 if (freezeTime ==0 || canStart) {    //可以开始计时
@@ -2900,15 +2984,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else {
                     //Log.w("dct", "other");
                     timer.stopFreeze();
-                    setTimerColor(colors[1]);
+                    setTimerColor(APP.getTextColor());
                 }
             }
-        } else if (timer.getTimerState() == Timer.RUNNING) {
+        } else if (timer.getTimerState() == DCTTimer.RUNNING) {
             if (mpCount !=0) {
                 mpCount--;
-                setTimerColor(colors[1]);
+                setTimerColor(APP.getTextColor());
             }
-        } else if (timer.getTimerState() == Timer.INSPECTING) {
+        } else if (timer.getTimerState() == DCTTimer.INSPECTING) {
             if (freezeTime ==0 || canStart) {
                 //tvAssist.setText("");
                 timer.timeStart = SystemClock.uptimeMillis();
@@ -2927,7 +3011,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             if (!wca || currentScramble.isBlindfoldScramble()) { penaltyTime = 0; isDNF = false;}
             save((int) timer.time);
-            timer.setTimerState(Timer.READY);
+            timer.setTimerState(DCTTimer.READY);
             if (!screenOn) releaseWakeLock();
         }
     }
@@ -3005,6 +3089,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (sortType == 0)
             //rvResult.scrollToPosition(resAdapter.getCount() - 1);
             lvResult.setSelection(resAdapter.getCount() - 1);
+        if (result.isSessionBest()) {
+            Snackbar.make(frame, getString(R.string.new_session_best) + result.getBestTime(), Snackbar.LENGTH_SHORT).show();
+        } else if (result.isAvgBest(0)) {
+            Snackbar.make(frame, getString(R.string.new_average_best) + result.getBestAvg1(), Snackbar.LENGTH_SHORT).show();
+        } else if(result.isAvgBest(1)) {
+            Snackbar.make(frame, getString(R.string.new_average_best) + result.getBestAvg2(), Snackbar.LENGTH_SHORT).show();
+        }
         sessionManager.setPuzzle(sessionIdx, scrambleIdx);
         newScramble();
         setStatsLabel();
@@ -3163,7 +3254,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tvNum.setMinWidth(Math.round(dpi * 44));
         tvNum.setText("#");
         tvNum.setTextSize(16);
-        tvNum.setTextColor(0xff666666);
+        tvNum.setTextColor(getResources().getColor(R.color.colorGray2));
         tvNum.setGravity(Gravity.CENTER);
         llTitle.addView(tvNum);
         String[] title;
@@ -3183,7 +3274,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //llTitle.addView(v);
             TextView tv = new TextView(context);
             tv.setLayoutParams(new LinearLayout.LayoutParams(0, -1, 1));
-            tv.setTextColor(0xff000000);
+            tv.setTextColor(getResources().getColor(R.color.colorText));
             tv.setGravity(Gravity.CENTER);
             tv.setText(text);
             tv.setTextSize(16);

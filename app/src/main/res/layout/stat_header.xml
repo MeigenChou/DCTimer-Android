@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="#333"/>
+            android:textColor="@color/colorText"/>
 
         <TextView
             android:id="@+id/text_acc"
@@ -24,7 +24,7 @@
             android:layout_weight="1"
             android:gravity="right"
             android:textSize="16sp"
-            android:textColor="#666"/>
+            android:textColor="@color/colorGray2"/>
     </LinearLayout>
 
     <View
@@ -32,5 +32,5 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:background="#ddd" />
+        android:background="@color/colorGray1" />
 </RelativeLayout>

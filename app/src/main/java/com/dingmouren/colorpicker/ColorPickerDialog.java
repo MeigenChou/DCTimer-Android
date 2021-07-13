@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,9 +28,10 @@ import com.dctimer.R;
  */
 
 public class ColorPickerDialog {
-    private static final String TAG = ColorPickerDialog.class.getName();
+    //private static final String TAG = ColorPickerDialog.class.getName();
 
     private  AlertDialog mAlertDialog;
+    private Context context;
     private final boolean mIsSupportAlpha;
     private final OnColorPickerListener mListener;
     private final ViewGroup mViewContainer;
@@ -41,7 +45,10 @@ public class ColorPickerDialog {
     private TextView tvColor;
     private final float[] mCurrentHSV = new float[3];
     private int mAlpha;
-    private int defColor = 0xff000000;
+    private int[] initColor;
+    private int[] defColor;
+    private int index;
+    private boolean title;
     private Button btnRed;
     private Button btnPurple;
     private Button btnBlue;
@@ -55,8 +62,9 @@ public class ColorPickerDialog {
      * @param color 默认颜色
      * @param listener
      */
-    public ColorPickerDialog(final Context context, int color, int defColor, OnColorPickerListener listener) {
-        this(context, color, defColor, false, listener);
+    public ColorPickerDialog(Context context, int[] color, int[] defColor, boolean title, OnColorPickerListener listener) {
+        //this.context = context;
+        this(context, color, defColor, title, false, listener);
     }
 
     /**
@@ -67,17 +75,21 @@ public class ColorPickerDialog {
      * @param isSupportAlpha 颜色是否支持透明度
      * @param listener 取色器的监听器
      */
-    public ColorPickerDialog(final Context context, int color, int defColor, boolean isSupportAlpha, OnColorPickerListener listener) {
+    public ColorPickerDialog(Context context, int[] color, int[] defColor, boolean title, boolean isSupportAlpha, OnColorPickerListener listener) {
+        this.context = context;
         this.mIsSupportAlpha = isSupportAlpha;
         this.mListener = listener;
+        this.initColor = color;
         this.defColor = defColor;
+        this.title = title;
+        index = 0;
 
         if (!isSupportAlpha) {
-            color = color | 0xff000000;
+            color[0] = color[0] | 0xff000000;
         }
 
-        Color.colorToHSV(color, mCurrentHSV);
-        mAlpha = Color.alpha(color);
+        Color.colorToHSV(color[0], mCurrentHSV);
+        mAlpha = Color.alpha(color[0]);
 
         final View view = LayoutInflater.from(context).inflate(R.layout.color_picker_dialog,null);
         mViewHue = view.findViewById(R.id.img_hue);
@@ -89,7 +101,7 @@ public class ColorPickerDialog {
         mAlphaCursor = view.findViewById(R.id.alpha_Cursor);
         mViewAlphaBottom = view.findViewById(R.id.img_alpha_bottom);
         tvColor = view.findViewById(R.id.tv_color);
-        tvColor.setText(getColorString(color));
+        tvColor.setText(getColorString(color[0]));
         btnRed = view.findViewById(R.id.btn_red);
         btnRed.setOnClickListener(mOnClickListener);
         btnPurple = view.findViewById(R.id.btn_purple);
@@ -102,6 +114,28 @@ public class ColorPickerDialog {
         btnYellow.setOnClickListener(mOnClickListener);
         btnOrange = view.findViewById(R.id.btn_orange);
         btnOrange.setOnClickListener(mOnClickListener);
+        RadioGroup rbMode = view.findViewById(R.id.rg_mode);
+        LinearLayout layout = view.findViewById(R.id.layout_mode);
+        if (color.length > 1) layout.setVisibility(View.VISIBLE);
+        rbMode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i) {
+                    case R.id.rb_light:
+                        index = 0;
+                        break;
+                    case R.id.rb_dark:
+                        index = 1;
+                        break;
+                }
+                int color = initColor[index];
+                tvColor.setText(getColorString(color));
+                Color.colorToHSV(color, mCurrentHSV);
+                mViewPlate.setHue(getHue());
+                moveHueCursor();
+                movePlateCursor();
+            }
+        });
 
         {
             mViewAlphaBottom.setVisibility(mIsSupportAlpha ? View.VISIBLE : View.GONE);
@@ -137,11 +171,11 @@ public class ColorPickerDialog {
                     mViewPlate.setHue(colorHue);
 
                     moveHueCursor();
-                    int color = getColor();
+                    int[] color = getColor();
                     if (mListener != null) {
                         mListener.onColorChange(ColorPickerDialog.this, color);
                     }
-                    tvColor.setText(getColorString(color));
+                    tvColor.setText(getColorString(color[index]));
                     //updateAlphaView();
 
                     return true;
@@ -163,8 +197,8 @@ public class ColorPickerDialog {
                     final  int alpha = Math.round(255.f - (255.f / mViewAlphaBottom.getMeasuredHeight() * y));
                     ColorPickerDialog.this.setAlpha(alpha);
                     moveAlphaCursor();
-                    int color = ColorPickerDialog.this.getColor();
-                    int alphaColor = alpha << 24 | color & 0x00ffffff;
+                    int[] color = ColorPickerDialog.this.getColor();
+                    int alphaColor = alpha << 24 | color[index] & 0x00ffffff;
                     if (mListener != null) {
                         mListener.onColorChange(ColorPickerDialog.this, getColor());
                     }
@@ -190,11 +224,11 @@ public class ColorPickerDialog {
                     setColorSat(x / mViewPlate.getMeasuredWidth());//颜色深浅
                     setColorVal(1f - (y / mViewPlate.getMeasuredHeight()));//颜色明暗
                     movePlateCursor();
-                    int color = getColor();
+                    int[] color = getColor();
                     if (mListener != null) {
                         mListener.onColorChange(ColorPickerDialog.this, color);
                     }
-                    tvColor.setText(getColorString(color));
+                    tvColor.setText(getColorString(color[index]));
                     return true;
                 }
                 return false;
@@ -207,7 +241,9 @@ public class ColorPickerDialog {
      */
     private void initAlerDialog(Context context, View view) {
         mAlertDialog = new AlertDialog.Builder(context).create();
-        mAlertDialog.setTitle(context.getResources().getString(R.string.select_color));
+        if (title)
+            mAlertDialog.setTitle(context.getResources().getString(R.string.select_color));
+
         mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -330,9 +366,10 @@ public class ColorPickerDialog {
     /**
      * 获取int颜色
      */
-    private int getColor() {
+    private int[] getColor() {
         final int argb = Color.HSVToColor(mCurrentHSV);
-        return mAlpha << 24 | (argb & 0x00ffffff);
+        initColor[index] = mAlpha << 24 | (argb & 0x00ffffff);
+        return initColor;
     }
 
     /**
@@ -362,7 +399,7 @@ public class ColorPickerDialog {
 
     public ColorPickerDialog show() {
         mAlertDialog.show();
-        mAlertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(0xffff0000);
+        mAlertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(context.getResources().getColor(R.color.colorRed));
         return this;
     }
 

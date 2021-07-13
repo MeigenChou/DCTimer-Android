@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.dctimer.R;
 import com.dctimer.activity.MainActivity;
 import com.dctimer.model.SmartCube;
-import com.dctimer.model.Timer;
 import com.dctimer.util.Utils;
 
 public class CubeStateDialog extends DialogFragment {

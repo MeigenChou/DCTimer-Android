@@ -85,6 +85,7 @@
         <item>ZZLL</item>
         <item>3-cycle edges</item>
         <item>3-cycle corners</item>
+        <item>3x3 for noobs</item>
     </array>
 
     <array name="item_444">
@@ -507,5 +508,11 @@
     <array name="data_format">
         <item>8 bit</item>
         <item>16 bit</item>
+    </array>
+
+    <array name="item_suff">
+        <item>clockwise by 90 degrees</item>
+        <item>by 180 degrees</item>
+        <item>counterclockwise by 90 degrees</item>
     </array>
 </resources>

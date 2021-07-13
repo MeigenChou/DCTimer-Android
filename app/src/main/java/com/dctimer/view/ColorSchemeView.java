@@ -288,49 +288,49 @@ public class ColorSchemeView extends View {
 		case MotionEvent.ACTION_UP:
 			if (downInPosition > 0) {
 				final int dip = downInPosition;
-				new ColorPickerDialog(context, colors[dip - 1], defColors[dip - 1], new OnColorPickerListener() {
+				new ColorPickerDialog(context, new int[] {colors[dip - 1]}, defColors, true, new OnColorPickerListener() {
 					@Override
 					public void onColorCancel(ColorPickerDialog dialog) { }
 
 					@Override
-					public void onColorChange(ColorPickerDialog dialog, int color) { }
+					public void onColorChange(ColorPickerDialog dialog, int[] color) { }
 
 					@Override
-					public void onColorConfirm(ColorPickerDialog dialog, int color) {
-						colors[dip - 1] = color;
+					public void onColorConfirm(ColorPickerDialog dialog, int[] color) {
+						colors[dip - 1] = color[0];
 						invalidate();
 						switch (cubeType) {
 							case 1:
-								context.setPref("csn"+dip, color);
+								context.setPref("csn" + dip, color[0]);
 								break;
 							case 2:
-								context.setPref("csp"+dip, color);
+								context.setPref("csp" + dip, color[0]);
 								break;
 							case 3:
-								context.setPref("csq"+dip, color);
+								context.setPref("csq" + dip, color[0]);
 								break;
 							case 4:
-								context.setPref("csw"+dip, color);
+								context.setPref("csw" + dip, color[0]);
 								break;
 						}
 					}
 
 					@Override
-					public void onColorReset(ColorPickerDialog dialog, int color) {
-						colors[dip - 1] = color;
+					public void onColorReset(ColorPickerDialog dialog, int[] color) {
+						colors[dip - 1] = color[dip - 1];
 						invalidate();
 						switch (cubeType) {
 							case 1:
-								context.delPref("csn"+dip);
+								context.delPref("csn" + dip);
 								break;
 							case 2:
-								context.delPref("csp"+dip);
+								context.delPref("csp" + dip);
 								break;
 							case 3:
-								context.delPref("csq"+dip);
+								context.delPref("csq" + dip);
 								break;
 							case 4:
-								context.delPref("csw"+dip);
+								context.delPref("csw" + dip);
 								break;
 						}
 					}

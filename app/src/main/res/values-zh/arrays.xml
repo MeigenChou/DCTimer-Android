@@ -85,6 +85,7 @@
         <item>ZZLL训练</item>
         <item>三循环棱块</item>
         <item>三循环角块</item>
+        <item>傻瓜</item>
     </array>
 
     <array name="item_444">
@@ -171,6 +172,7 @@
     <array name="item_skewb">
         <item>随机状态</item>
         <item>R U L B</item>
+        <item>L2L</item>
     </array>
 
     <array name="item_relay">
@@ -424,5 +426,11 @@
         <item>"10"</item>
         <item>"11"</item>
         <item>"12"</item>
+    </array>
+
+    <array name="item_suff">
+        <item>顺时针转90度</item>
+        <item>转180度</item>
+        <item>逆时针转90度</item>
     </array>
 </resources>

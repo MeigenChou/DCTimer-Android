@@ -85,6 +85,7 @@
         <item>ZZLL</item>
         <item>三循環邊塊</item>
         <item>三循環角塊</item>
+        <item>傻瓜</item>
     </array>
 
     <array name="item_444">
@@ -424,5 +425,11 @@
         <item>"10"</item>
         <item>"11"</item>
         <item>"12"</item>
+    </array>
+
+    <array name="item_suff">
+        <item>順時針轉90度</item>
+        <item>轉180度</item>
+        <item>逆時針轉90度</item>
     </array>
 </resources>

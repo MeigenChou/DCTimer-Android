@@ -15,9 +15,8 @@
         android:layout_height="?android:attr/actionBarSize"
         android:background="?attr/colorPrimary"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:contentInsetStartWithNavigation="0dp"
-        app:popupTheme="@style/AppTheme.PopupOverlay" />
+        android:theme="@style/AppTheme.NoActionBar"
+        app:contentInsetStartWithNavigation="0dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_detail"
@@ -25,7 +24,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scrollbars="vertical"
-        android:background="#fff"
+        android:background="@color/colorBackground"
         app:fastScrollEnabled="true"
         app:fastScrollHorizontalThumbDrawable="@drawable/thumb_drawable"
         app:fastScrollHorizontalTrackDrawable="@drawable/line_drawable"

@@ -16,14 +16,13 @@
         android:background="?attr/colorPrimary"
         app:navigationIcon="?attr/homeAsUpIndicator"
         android:theme="@style/AppTheme.AppBarOverlay"
-        app:contentInsetStartWithNavigation="0dp"
-        app:popupTheme="@style/AppTheme.PopupOverlay" />
+        app:contentInsetStartWithNavigation="0dp" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tablayout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="#fff"
+        android:background="@color/colorBackground"
         app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
         app:tabGravity="fill"
         app:tabMode="fixed"
@@ -34,7 +33,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@color/colorBackground"
         android:orientation="horizontal">
 
         <ImageButton
@@ -59,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="-"
-            android:textColor="#333"/>
+            android:textColor="@color/colorText"/>
 
         <Button
             android:id="@+id/bt_end"
@@ -82,7 +81,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="#fff">
+        android:background="@color/colorBackground">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -93,7 +92,7 @@
                 android:id="@+id/graph"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#ddd"/>
+                android:background="@color/colorGray1"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -109,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/num_of_solve"
-                    android:textColor="#333"
+                    android:textColor="@color/colorText"
                     android:textSize="15sp"/>
 
                 <TextView
@@ -133,7 +132,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/stat_mean"
-                    android:textColor="#333"
+                    android:textColor="@color/colorText"
                     android:textSize="15sp"/>
 
                 <TextView
@@ -157,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/stat_best"
-                    android:textColor="#333"
+                    android:textColor="@color/colorText"
                     android:textSize="15sp"/>
 
                 <TextView
@@ -181,7 +180,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/stat_worst"
-                    android:textColor="#333"
+                    android:textColor="@color/colorText"
                     android:textSize="15sp"/>
 
                 <TextView

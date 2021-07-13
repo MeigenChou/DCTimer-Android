@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#fff">
+    android:background="@color/colorBackground">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#ddd"
+        android:background="@color/colorGray1"
         android:visibility="gone"/>
 
     <LinearLayout
@@ -33,7 +33,7 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:textSize="15sp"
-            android:textColor="#333"
+            android:textColor="@color/colorText"
             android:hint="@string/search_hint" />
 
         <ImageButton
@@ -104,7 +104,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#ddd" />
+        android:background="@color/colorGray1" />
 
     <LinearLayout
         android:id="@+id/ll_title"
@@ -115,7 +115,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#ddd" />
+        android:background="@color/colorGray1" />
 
     <ListView
         android:id="@+id/list_res"
@@ -141,7 +141,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#ddd" />
+        android:background="@color/colorGray1" />
 
     <Button
         android:id="@+id/btn_session_mean"

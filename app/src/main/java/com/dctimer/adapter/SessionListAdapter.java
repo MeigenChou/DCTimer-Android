@@ -238,7 +238,7 @@ public class SessionListAdapter extends RecyclerView.Adapter<SessionListAdapter.
         holder.textView.setText(name);
         if (select == i) {
             holder.textView.setTextColor(0xff0088ff);
-        } else holder.textView.setTextColor(0xff000000);
+        } else holder.textView.setTextColor(parent.getResources().getColor(R.color.colorText));
         int puzzle = session.getPuzzle();
         int idx = puzzle >> 5;
         int sub = puzzle & 31;

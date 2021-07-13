@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@color/colorBackground"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:textSize="18sp"
-                android:textColor="#000"
+                android:textColor="@color/colorText"
                 android:textStyle="bold"
                 android:text="@string/enter_time"/>
 
@@ -38,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="#ddd"
+                android:background="@color/colorGray1"
                 android:visibility="gone"/>
         </RelativeLayout>
 
@@ -53,7 +53,7 @@
             android:enabled="false"
             android:maxLength="13"
             android:textSize="17sp"
-            android:textColor="#333" />
+            android:textColor="@color/colorText" />
 
         <RadioGroup
             android:id="@+id/rg_penalty"
@@ -70,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/no_penalty"
-                android:textColor="#333" />
+                android:textColor="@color/colorText" />
 
             <RadioButton
                 android:id="@+id/rb_plus2"
@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dip"
                 android:text="@string/penalty_plus2"
-                android:textColor="#333" />
+                android:textColor="@color/colorText" />
 
             <RadioButton
                 android:id="@+id/rb_dnf"
@@ -86,13 +86,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dip"
                 android:text="@string/penalty_dnf"
-                android:textColor="#333" />
+                android:textColor="@color/colorText" />
         </RadioGroup>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#cdcdcd" />
+            android:background="@color/colorGray1" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -107,13 +107,13 @@
                 android:background="@drawable/text_style"
                 android:text="1"
                 android:textSize="20sp"
-                android:textColor="#000"
+                android:textColor="@color/colorText"
                 style="?android:attr/borderlessButtonStyle"/>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#cdcdcd" />
+                android:background="@color/colorGray1" />
 
             <Button
                 android:id="@+id/bt_2"
@@ -123,13 +123,13 @@
                 android:background="@drawable/text_style"
                 android:text="2"
                 android:textSize="20sp"
-                android:textColor="#000"
+                android:textColor="@color/colorText"
                 style="?android:attr/borderlessButtonStyle"/>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#cdcdcd" />
+                android:background="@color/colorGray1" />
 
             <Button
                 android:id="@+id/bt_3"
@@ -139,13 +139,13 @@
                 android:background="@drawable/text_style"
                 android:text="3"
                 android:textSize="20sp"
-                android:textColor="#000"
+                android:textColor="@color/colorText"
                 style="?android:attr/borderlessButtonStyle"/>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#cdcdcd" />
+                android:background="@color/colorGray1" />
 
             <ImageButton
                 android:id="@+id/bt_bs"
@@ -160,7 +160,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#cdcdcd" />
+            android:background="@color/colorGray1" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -175,13 +175,13 @@
                 android:background="@drawable/text_style"
                 android:text="4"
                 android:textSize="20sp"
-                android:textColor="#000"
+                android:textColor="@color/colorText"
                 style="?android:attr/borderlessButtonStyle"/>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#cdcdcd" />
+                android:background="@color/colorGray1" />
 
             <Button
                 android:id="@+id/bt_5"
@@ -191,13 +191,13 @@
                 android:background="@drawable/text_style"
                 android:text="5"
                 android:textSize="20sp"
-                android:textColor="#000"
+                android:textColor="@color/colorText"
                 style="?android:attr/borderlessButtonStyle"/>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#cdcdcd" />
+                android:background="@color/colorGray1" />
 
             <Button
                 android:id="@+id/bt_6"
@@ -207,13 +207,13 @@
                 android:background="@drawable/text_style"
                 android:text="6"
                 android:textSize="20sp"
-                android:textColor="#000"
+                android:textColor="@color/colorText"
                 style="?android:attr/borderlessButtonStyle"/>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#cdcdcd" />
+                android:background="@color/colorGray1" />
 
             <Button
                 android:id="@+id/bt_clear"
@@ -224,7 +224,7 @@
                 android:text="@string/btn_clear"
                 android:textAllCaps="false"
                 android:textSize="18sp"
-                android:textColor="#000"
+                android:textColor="@color/colorText"
                 style="?android:attr/borderlessButtonStyle"/>
         </LinearLayout>
 
@@ -237,7 +237,7 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="3"
-                android:background="#cdcdcd" />
+                android:background="@color/colorGray1" />
 
             <View
                 android:layout_width="0dp"
@@ -263,13 +263,13 @@
                     android:background="@drawable/text_style"
                     android:text="7"
                     android:textSize="20sp"
-                    android:textColor="#000"
+                    android:textColor="@color/colorText"
                     style="?android:attr/borderlessButtonStyle"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#cdcdcd" />
+                    android:background="@color/colorGray1" />
 
                 <Button
                     android:id="@+id/bt_colon"
@@ -278,14 +278,14 @@
                     android:background="@drawable/text_style"
                     android:text=":"
                     android:textSize="20sp"
-                    android:textColor="#000"
+                    android:textColor="@color/colorText"
                     style="?android:attr/borderlessButtonStyle"/>
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#cdcdcd" />
+                android:background="@color/colorGray1" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -300,13 +300,13 @@
                     android:background="@drawable/text_style"
                     android:text="8"
                     android:textSize="20sp"
-                    android:textColor="#000"
+                    android:textColor="@color/colorText"
                     style="?android:attr/borderlessButtonStyle"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#cdcdcd" />
+                    android:background="@color/colorGray1" />
 
                 <Button
                     android:id="@+id/bt_0"
@@ -315,14 +315,14 @@
                     android:background="@drawable/text_style"
                     android:text="0"
                     android:textSize="20sp"
-                    android:textColor="#000"
+                    android:textColor="@color/colorText"
                     style="?android:attr/borderlessButtonStyle"/>
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#cdcdcd" />
+                android:background="@color/colorGray1" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -337,13 +337,13 @@
                     android:background="@drawable/text_style"
                     android:text="9"
                     android:textSize="20sp"
-                    android:textColor="#000"
+                    android:textColor="@color/colorText"
                     style="?android:attr/borderlessButtonStyle"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#cdcdcd" />
+                    android:background="@color/colorGray1" />
 
                 <Button
                     android:id="@+id/bt_dot"
@@ -352,7 +352,7 @@
                     android:background="@drawable/text_style"
                     android:text="."
                     android:textSize="20sp"
-                    android:textColor="#000"
+                    android:textColor="@color/colorText"
                     style="?android:attr/borderlessButtonStyle"/>
             </LinearLayout>
 

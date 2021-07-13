@@ -7,12 +7,14 @@ import java.util.Random;
 import solver.*;
 import cs.min2phase.Tools;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.*;
 import android.graphics.Paint.Align;
 import android.util.Log;
 
 import com.dctimer.APP;
+import com.dctimer.R;
 import com.dctimer.util.StringUtils;
 
 import static scrambler.MegaScramble.*;
@@ -53,7 +55,7 @@ public class Scrambler {
     private String hint;
     private static short[][] defaultLength = {
             {0, 15, 15, 0, 0, 0, 0, 0, 0, 0, 0},   //2x2
-            {25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0},    //3x3
+            {25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 25},    //3x3
             {40, 40, 40, 8, 40, 0}, //4x4
             {60, 60, 8},    //5x5
             {80, 80, 80, 8},    //6x6
@@ -62,7 +64,7 @@ public class Scrambler {
             {0, 15, 0},    //pyr
             {40, 20, 0, 0, 0},  //sq1
             {0, 0, 0, 0},   //clock
-            {0, 15},    //skewb
+            {0, 15, 0},    //skewb
             {0, 25, 0, 0, 0, 40, 25, 40, 40, 40, 120, 140, 140, 140},   //lmn
             {25, 25},   //cmetrick
             {0, 10},    //gear
@@ -82,6 +84,7 @@ public class Scrambler {
     static String[] cubesuff2 = {"", "'"};
 
     private SharedPreferences pref;
+    private Context context;
     public int imageType;
     public int scrambleLen = 0;
     private cs.min2phase.Search cube3 = new cs.min2phase.Search();
@@ -94,6 +97,10 @@ public class Scrambler {
     public Scrambler(SharedPreferences sp) {
         this.pref = sp;
         //scrambleList = new ArrayList<>();
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     public String getScramble() {
@@ -584,6 +591,15 @@ public class Scrambler {
                 imageType = scr.startsWith("Error") ? 0 : 3;
                 scrambleList.add(scr);
                 break;
+            case 57:    //傻瓜
+                if (context != null) {
+                    scr = megascramble(new String[][] {{context.getString(R.string.face_top), context.getString(R.string.face_bottom)}, {context.getString(R.string.face_left), context.getString(R.string.face_right)}, {context.getString(R.string.face_front), context.getString(R.string.face_back)}}, context.getResources().getStringArray(R.array.item_suff), scrambleLen, ", ");
+                }
+                else scr = megascramble(new String[][] {{"turn the top face ", "turn the bottom face "}, {"turn the right face ", "turn the left face "}, {"turn the front face ", "turn the back face "}}, new String[] {"clockwise by 90 degrees", "by 180 degrees", "counterclockwise by 90 degrees"}, scrambleLen, ", ");
+                if (scr.charAt(0) == 't') scr = "T" + scr.substring(1);
+                imageType = 3;
+                scrambleList.add(scr);
+                break;
             case 64: //4阶
                 scr = scrambleCube(4); imageType = 4;
                 scrambleList.add(scr);
@@ -748,6 +764,11 @@ public class Scrambler {
                 break;
             case 321:
                 scr = megascramble(new String[][] {{"R"}, {"U"}, {"L"}, {"B"}}, cubesuff2, scrambleLen);
+                imageType = TYPE_SKW;
+                scrambleList.add(scr);
+                break;
+            case 322:   //L2L
+                scr = Skewb.scrambleL2L();
                 imageType = TYPE_SKW;
                 scrambleList.add(scr);
                 break;
@@ -1317,7 +1338,7 @@ public class Scrambler {
                     c.drawRect(stx + sp + (j + 2) * a, sty + sp * 2 + (5 + i) * a, stx + sp + (j + 3) * a, sty + sp * 2 + (6 + i) * a, p);
                 }
         } else if (imageType == TYPE_SKW) { //斜转
-            int[] img = Skewb.image(scramble);
+            int[] img = SkewbFCN.image(scramble);
             if (img == null) return;
             drawSkewb(img, width, p, c);
         } else if (imageType == TYPE_15P || imageType == TYPE_15PB) {   //15 puzzle
@@ -1454,7 +1475,7 @@ public class Scrambler {
                 } else if (scrambleIdx == 6) {
                     drawSQ1(scrambleList.get(scrambleIdx), width, p, c);
                 } else if (scrambleIdx == 7) {
-                    int[] img = Skewb.image(scrambleList.get(scrambleIdx));
+                    int[] img = SkewbFCN.image(scrambleList.get(scrambleIdx));
                     if (img == null) return;
                     drawSkewb(img, width, p, c);
                 } else if (scrambleIdx == 8) {
@@ -1471,7 +1492,7 @@ public class Scrambler {
             } else if (scrambleIdx == 9) {
                 drawSQ1(scrambleList.get(scrambleIdx), width, p, c);
             } else if (scrambleIdx == 10) {
-                int[] img = Skewb.image(scrambleList.get(scrambleIdx));
+                int[] img = SkewbFCN.image(scrambleList.get(scrambleIdx));
                 if (img == null) return;
                 drawSkewb(img, width, p, c);
             } else if (scrambleIdx == 11) {

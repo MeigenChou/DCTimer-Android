@@ -13,10 +13,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:theme="@style/AppTheme.AppBarOverlay"
+        android:theme="@style/AppTheme.NoActionBar"
         android:background="@color/transparent"
-        app:contentInsetStartWithNavigation="0dp"
-        app:popupTheme="@style/AppTheme.PopupOverlay" >
+        app:contentInsetStartWithNavigation="0dp" >
 
         <RadioGroup
             android:id="@+id/radio_tab"

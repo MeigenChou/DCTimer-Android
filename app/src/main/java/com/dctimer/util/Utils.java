@@ -36,12 +36,12 @@ import android.widget.Toast;
 public class Utils {
     static String ego = "012PHUTLSA";
 
-    public static int greyScale(int color) {
+    public static int grayScale(int color) {
         int red = (color >>> 16) & 0xff;
         int green = (color >>> 8) & 0xff;
         int blue = color & 0xff;
-        int grey = red * 299 + green * 587 + blue * 114;
-        return grey / 1000;
+        int gray = red * 299 + green * 587 + blue * 114;
+        return gray / 1000;
     }
 
     public static int getVersion(Context context) {

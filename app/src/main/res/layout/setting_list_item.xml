@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="17sp"
-                android:textColor="#000"/>
+                android:textColor="@color/colorText"/>
 
             <TextView
                 android:id="@+id/list_detail"
@@ -54,6 +54,6 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#ddd"
+        android:background="@color/colorGray1"
         android:visibility="gone" />
 </RelativeLayout>

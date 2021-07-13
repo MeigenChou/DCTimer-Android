@@ -1,5 +1,7 @@
 package scrambler;
 
+import android.util.Log;
+
 import java.util.Random;
 
 import static scrambler.Scrambler.cubesuff;
@@ -60,28 +62,28 @@ public class MegaScramble {
         return sb.toString();
     }
 
-    static String megascramble(String[][] turns, String[] suffixes, int len) {
+    static String megascramble(String[][] turns, String[] suffixes, int len, String separator) {
         int[] donemoves = new int[turns[0].length];
         int lastaxis = -1;
-        int j, k;
         StringBuilder scr = new StringBuilder();
-        for (j = 0; j < len; j++) {
+        for (int j = 0; j < len; j++) {
             int done = 0;
             do {
                 int first = r.nextInt(turns.length);
                 int second = r.nextInt(turns[first].length);
                 if (first != lastaxis || donemoves[second] == 0) {
+                    if (j != 0) scr.append(separator);
                     if (first == lastaxis) {
                         donemoves[second] = 1;
-                        if (suffixes == null) scr.append(turns[first][second]).append(' ');
-                        else scr.append(turns[first][second]).append(rndEl(suffixes)).append(' ');
+                        if (suffixes == null) scr.append(turns[first][second]);
+                        else scr.append(turns[first][second]).append(rndEl(suffixes));
                     } else {
-                        for (k = 0; k < turns[first].length; k++)
+                        for (int k = 0; k < turns[first].length; k++)
                             donemoves[k] = 0;
                         lastaxis = first;
                         donemoves[second] = 1;
-                        if (suffixes == null) scr.append(turns[first][second]).append(' ');
-                        else scr.append(turns[first][second]).append(rndEl(suffixes)).append(' ');
+                        if (suffixes == null) scr.append(turns[first][second]);
+                        else scr.append(turns[first][second]).append(rndEl(suffixes));
                     }
                     done = 1;
                 }
@@ -90,19 +92,22 @@ public class MegaScramble {
         return scr.toString();
     }
 
+    static String megascramble(String[][] turns, String[] suffixes, int len) {
+        return megascramble(turns, suffixes, len, " ");
+    }
+
     static String megascramble(String[][][] turns, String[] suffixes, int scrambleLen) {
         int[] donemoves = new int[turns[0].length];
         int lastaxis;
-        int j, k;
         StringBuilder scr = new StringBuilder();
         lastaxis = -1;
-        for (j = 0; j < scrambleLen; j++) {
+        for (int j = 0; j < scrambleLen; j++) {
             int done = 0;
             do {
                 int first = r.nextInt(turns.length);
                 int second = r.nextInt(turns[first].length);
                 if (first != lastaxis) {
-                    for (k = 0; k < turns[first].length; k++)
+                    for (int k = 0; k < turns[first].length; k++)
                         donemoves[k] = 0;
                     lastaxis = first;
                 }

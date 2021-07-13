@@ -176,7 +176,7 @@ public class Stackmat {
 				else if (values[0] >= 0) {
 					if (values[0] == 'A') dct.setTimerColor(0xff00ff00);
 					else if (values[0] == 'C') dct.setTimerColor(0xffff0000);
-					else dct.setTimerColor(APP.colors[1]);
+					else dct.setTimerColor(APP.getTextColor());
 					StringBuilder sb = new StringBuilder();
 					if (values[1] > 0) sb.append(values[1]).append(':');
 					if (values[1] > 0 || values[2] > 0) sb.append(values[2]);

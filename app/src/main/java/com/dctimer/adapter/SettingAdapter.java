@@ -340,7 +340,7 @@ public class SettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 vh.detailView.setVisibility(View.GONE);
             } else {
                 //Log.w("setting", "seek");
-                vh.layoutCell.setBackgroundResource(R.color.item_background);
+                vh.layoutCell.setBackgroundResource(R.color.colorBackground);
                 vh.checkAccessory.setVisibility(View.GONE);
                 vh.seekAccessory.setVisibility(View.VISIBLE);
                 int max = (int) map.get("max");

@@ -6,7 +6,7 @@ package com.dingmouren.colorpicker;
 
 public interface OnColorPickerListener {
     void onColorCancel(ColorPickerDialog dialog);
-    void onColorChange(ColorPickerDialog dialog, int color);
-    void onColorConfirm(ColorPickerDialog dialog, int color);
-    void onColorReset(ColorPickerDialog dialog, int color);
+    void onColorChange(ColorPickerDialog dialog, int[] color);
+    void onColorConfirm(ColorPickerDialog dialog, int[] color);
+    void onColorReset(ColorPickerDialog dialog, int[] color);
 }

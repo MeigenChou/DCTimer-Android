@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.dctimer"
         minSdkVersion 14
-        targetSdkVersion 28
-        versionCode 41
-        versionName "1.2.2"
+        targetSdkVersion 29
+        versionCode 42
+        versionName "1.2.3"
     }
     buildTypes {
         release {

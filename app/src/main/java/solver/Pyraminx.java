@@ -48,7 +48,7 @@ public class Pyraminx {
         for (int l = 0; l < 12; l++)
             if (search(p, t, l, -1, seq)) {
                 if (l < 2) return "error";
-                if (l < 4) {
+                if (l < 5) {
                     continue;
                 }
                 StringBuilder sol = new StringBuilder();

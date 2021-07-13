@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/scramble_path"
-            android:textColor="#000"
+            android:textColor="@color/colorText"
             android:textSize="16sp" />
 
         <ImageButton
@@ -62,6 +62,6 @@
         android:imeOptions="actionDone|flagNoExtractUi"
         android:paddingLeft="5dip"
         android:paddingRight="5dip"
-        android:textColor="#000"
+        android:textColor="@color/colorText"
         android:gravity="top" />
 </LinearLayout>

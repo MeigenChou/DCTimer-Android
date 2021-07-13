@@ -10,20 +10,20 @@
         android:layout_width="0dip"
         android:layout_height="fill_parent"
         android:layout_weight="4"
-        android:background="#f4f4f4"
+        android:background="@color/colorGray4"
         android:scrollbars="none"
         android:divider="@null"
-        android:cacheColorHint="#f4f4f4" />
+        android:cacheColorHint="@color/colorGray4" />
 
     <ListView
         android:id="@+id/list2"
         android:layout_width="0dip"
         android:layout_height="fill_parent"
         android:layout_weight="5"
-        android:background="#ffffff"
-        android:divider="#dcdcdc"
+        android:background="@color/colorGray5"
+        android:divider="@color/colorGray1"
         android:dividerHeight="1px"
-        android:cacheColorHint="#ffffff"
+        android:cacheColorHint="@color/colorGray5"
         android:scrollbars="none" />
 
 </LinearLayout>

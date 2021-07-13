@@ -8,12 +8,12 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="#f5f5f5" />
+        android:background="@color/colorGray3" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#ddd"
+        android:background="@color/colorGray1"
         android:visibility="gone" />
 
     <TextView
@@ -24,6 +24,6 @@
         android:layout_marginRight="15dp"
         android:layout_marginTop="10dp"
         android:text="@string/stat_list"
-        android:textColor="#666"
+        android:textColor="@color/colorGray2"
         android:textSize="14sp" />
 </LinearLayout>

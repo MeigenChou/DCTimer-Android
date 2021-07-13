@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_header"
-    android:background="#44AAFF"
+    android:background="@color/colorHeader"
     android:layout_width="match_parent"
     android:layout_height="96dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark" >

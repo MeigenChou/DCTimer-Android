@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/time"
-            android:textColor="#333" />
+            android:textColor="@color/colorText" />
 
         <View
             android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
             android:id="@+id/tv_trend1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#333" />
+            android:textColor="@color/colorText" />
 
         <View
             android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
             android:id="@+id/tv_trend2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#333" />
+            android:textColor="@color/colorText" />
 
         <View
             android:layout_width="wrap_content"

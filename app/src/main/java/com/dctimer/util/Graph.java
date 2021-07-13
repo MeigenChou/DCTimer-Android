@@ -1,10 +1,12 @@
 package com.dctimer.util;
 
+import android.content.Context;
 import android.graphics.*;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.FontMetrics;
 
 import com.dctimer.APP;
+import com.dctimer.R;
 import com.dctimer.model.Result;
 
 import java.util.ArrayList;
@@ -53,7 +55,7 @@ public class Graph {
 		return sb.toString();
 	}
 	
-	public static void drawHist(Result result, int width, Paint p, Canvas c) {
+	public static void drawHist(Context context, Result result, int width, Paint p, Canvas c) {
 		int[] bins = new int[14];
 		long start;
 		long end;
@@ -87,6 +89,7 @@ public class Graph {
 		p.setTextSize(width / 24f);
 		p.setTextAlign(Align.RIGHT);
 		p.setStrokeWidth(APP.dpi);
+		p.setColor(context.getResources().getColor(R.color.colorText));
 		int wBase = getWidth(p, timeToString(end, divi < 1000)) + 8;
 		c.drawLine(wBase, 0, wBase, width * 1.2f, p);
 		float wBar = width * 1.2f / (bins.length + 1);
@@ -113,11 +116,10 @@ public class Graph {
 				float y1 = (i + 0.5f) * wBar;
 				float y2 = (i + 1.5f) * wBar;
 				int height = bins[i] * (width - wBase - 4) / maxValue;
-				p.setStyle(Paint.Style.FILL);
-				p.setColor(0xfff9f9f9);
-				c.drawRect(wBase + height, y1, wBase, y2, p);
+				//p.setStyle(Paint.Style.FILL);
+				//p.setColor(context.getResources().getColor(R.color.colorBackground));
+				//c.drawRect(wBase + height, y1, wBase, y2, p);
 				p.setStyle(Paint.Style.STROKE);
-				p.setColor(Color.BLACK);
 				c.drawRect(wBase + height, y1, wBase, y2, p);
 				p.setStyle(Paint.Style.FILL);
 				float y = (i + 1f) * wBar + fontHeight / 2 - fm.bottom;
@@ -130,7 +132,7 @@ public class Graph {
 		}
 	}
 
-	public static void drawGraph(Result result, int width, Paint p, Canvas c) {
+	public static void drawGraph(Context context, Result result, int width, Paint p, Canvas c) {
 		long up, down, mean;
 		int blk, divi;
 		if (result.length() == 0 || result.getMinIdx() == -1 || result.getMinIdx() == result.getMaxIdx()) {
@@ -167,7 +169,7 @@ public class Graph {
 			c.drawLine(wBase, y, width - 1, y, p);
 		}
 
-		p.setColor(0xff333333);
+		p.setColor(context.getResources().getColor(R.color.colorText));
 		for (int i = 0; i <= blk; i++) {
 			int value = (int) (up - i * divi);
 			float y = i * wBar + width / 48f + fontHeight / 2 - fm.bottom;
@@ -266,7 +268,7 @@ public class Graph {
 		}
 
 		//总平均
-		p.setColor(0xbbff0000);
+		p.setColor(0xbbee3333);
 		//float y = (float) ((double)(up - mean) / divi * wBar + wBase/9.);
 		float y = ((float) (up - mean) / divi * wBar + width / 48f);
 		p.setPathEffect(new DashPathEffect(new float[] {4 * APP.dpi, 4 * APP.dpi}, 0));

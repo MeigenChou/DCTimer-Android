@@ -401,7 +401,13 @@ public class Result {
     }
 
     public String getBestTime() {
+        if (getMaxIdx() < 0) return "-";
         return getTimeAt(getMinIdx(), false);
+    }
+
+    public boolean isSessionBest() {
+        if (length < 2) return false;
+        return getMinIdx() == length - 1;
     }
 
     public int getMaxIdx() {
@@ -409,6 +415,7 @@ public class Result {
     }
 
     public String getWorstTime() {
+        if (getMaxIdx() < 0) return "-";
         return getTimeAt(getMaxIdx(), false);
     }
 
@@ -471,6 +478,11 @@ public class Result {
     public String getBestAvg2() {
         if (stats.bestAvgIdx[1] == -1) return "N/A";
         return StringUtils.timeToString(stats.bestAvg[1]);
+    }
+
+    public boolean isAvgBest(int i) {
+        if (length == 0) return false;
+        return stats.bestAvgIdx[i] == length - 1;
     }
 
     public int getMpMinIdx(int idx) {

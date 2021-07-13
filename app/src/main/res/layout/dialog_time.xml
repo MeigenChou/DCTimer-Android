@@ -11,14 +11,14 @@
         android:id="@+id/tv_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#666"
+        android:textColor="@color/colorGray2"
         android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#000"
+        android:textColor="@color/colorText"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -37,7 +37,7 @@
                 android:id="@+id/tv_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#333"
+                android:textColor="@color/colorText"
                 android:textSize="16sp" />
 
             <TextView
@@ -45,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:textColor="#333"
+                android:textColor="@color/colorText"
                 android:textSize="15sp" />
 
             <ImageView
@@ -69,7 +69,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/no_penalty"
-                    android:textColor="#333"
+                    android:textColor="@color/colorText"
                     android:textSize="15sp" />
 
                 <RadioButton
@@ -78,7 +78,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
                     android:text="@string/penalty_plus2"
-                    android:textColor="#333"
+                    android:textColor="@color/colorText"
                     android:textSize="15sp" />
 
                 <RadioButton
@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
                     android:text="@string/penalty_dnf"
-                    android:textColor="#333"
+                    android:textColor="@color/colorText"
                     android:textSize="15sp" />
             </RadioGroup>
 
@@ -106,7 +106,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/comment"
-                    android:textColor="#333"
+                    android:textColor="@color/colorText"
                     android:textSize="16sp"
                     android:visibility="gone"/>
 
@@ -118,7 +118,7 @@
                     android:layout_weight="1"
                     android:inputType="text"
                     android:imeOptions="actionDone|flagNoExtractUi"
-                    android:textColor="#333"
+                    android:textColor="@color/colorText"
                     android:paddingLeft="3dip"
                     android:paddingRight="3dip" />
             </LinearLayout>
@@ -139,7 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:textColor="#333" />
+                android:textColor="@color/colorText" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -108,15 +108,15 @@ public class TimesAdapter extends BaseAdapter {
             holder.textView.setText(String.valueOf(pos + 1));
             if (pos == result.getMinIdx()) holder.textView.setTextColor(APP.colors[2]);
             else if (pos == result.getMaxIdx()) holder.textView.setTextColor(APP.colors[3]);
-            else holder.textView.setTextColor(0xff000000);
+            else holder.textView.setTextColor(dct.getResources().getColor(R.color.colorText));
             //单次成绩
             holder.button[0].setText(result.getTimeAt(pos, false));
             if (pos == result.getMinIdx()) //单次最快
                 holder.button[0].setTextColor(APP.colors[2]);
             else if (pos == result.getMaxIdx())    //单次最慢
                 holder.button[0].setTextColor(APP.colors[3]);
-            else holder.button[0].setTextColor(0xff000000);
-            if (position == highlight) holder.button[0].setBackgroundColor(0xffeeeeee);
+            else holder.button[0].setTextColor(dct.getResources().getColor(R.color.colorText));
+            if (position == highlight) holder.button[0].setBackgroundColor(dct.getResources().getColor(R.color.colorGray3));
             else holder.button[0].setBackgroundResource(R.drawable.item_background);
             holder.button[0].setTag(position);
             holder.button[0].setOnClickListener(new View.OnClickListener() {
@@ -138,17 +138,17 @@ public class TimesAdapter extends BaseAdapter {
                             holder.button[i].setTextColor(APP.colors[2]);
                         } else if (pos == result.getMpMaxIdx(i - 1)) {
                             holder.button[i].setTextColor(APP.colors[3]);
-                        } else holder.button[i].setTextColor(0xff000000);
+                        } else holder.button[i].setTextColor(dct.getResources().getColor(R.color.colorText));
                     } else {
                         holder.button[i].setBackgroundResource(R.drawable.item_background);
                         if (i == 1) {
                             holder.button[i].setText(StringUtils.timeToString(result.getAvg1(pos)));
                             if (pos == result.getBestAvgIdx(0)) holder.button[i].setTextColor(APP.colors[4]);
-                            else holder.button[i].setTextColor(0xff000000);
+                            else holder.button[i].setTextColor(dct.getResources().getColor(R.color.colorText));
                         } else if (i == 2) {
                             holder.button[i].setText(StringUtils.timeToString(result.getAvg2(pos)));
                             if (pos == result.getBestAvgIdx(1)) holder.button[i].setTextColor(APP.colors[4]);
-                            else holder.button[i].setTextColor(0xff000000);
+                            else holder.button[i].setTextColor(dct.getResources().getColor(R.color.colorText));
                         }
                     }
                     holder.button[i].setTag(position);

@@ -1,5 +1,6 @@
 package com.dctimer.model;
 
+import java.util.Timer;
 import java.util.TimerTask;
 
 import com.dctimer.APP;
@@ -10,7 +11,7 @@ import com.dctimer.util.StringUtils;
 import android.annotation.SuppressLint;
 import android.os.*;
 
-public class Timer {
+public class DCTTimer {
     private int inspectionState;	//1-观察中 2-+2 3-DNF
     private int timerState = 0;	//0-就绪 1-计时中 2-观察中 3-停止
     public static final int READY = 0;
@@ -19,7 +20,7 @@ public class Timer {
     public static final int STOP = 3;
 
     public long time, timeStart, timeEnd;
-    private java.util.Timer myTimer;
+    private Timer mTimer;
     private TimerTask timerTask = null;
     private FreezeThread freezeThread = null;
     private MainActivity dct;
@@ -29,10 +30,10 @@ public class Timer {
     private boolean eightSec;
     private boolean twelveSec;
 
-    public Timer(MainActivity dct) {
+    public DCTTimer(MainActivity dct) {
         this.dct = dct;
         handler = new TimeHandler();
-        myTimer = new java.util.Timer();
+        mTimer = new Timer();
     }
 
     public int getTimerState() {
@@ -65,7 +66,7 @@ public class Timer {
         if (timerState == INSPECTING) {
             timerTask.cancel();
             timerTask = null;
-            dct.setTimerColor(APP.colors[1]);
+            dct.setTimerColor(APP.getTextColor());
         }
         timerState = READY;
     }
@@ -78,16 +79,16 @@ public class Timer {
                 dct.setTimerColor(0xffff0000);
                 timerTask = new InspectTask();
                 eightSec = twelveSec = false;
-                myTimer.schedule(timerTask, 0, 200);
+                mTimer.schedule(timerTask, 0, 200);
             } else {
                 if (APP.wca && timerTask != null) {
                     timerTask.cancel();
                     timerTask = null;
                 }
                 timerState = RUNNING;
-                dct.setTimerColor(APP.colors[1]);
+                dct.setTimerColor(APP.getTextColor());
                 timerTask = new ClockTask();
-                myTimer.schedule(timerTask, 0, 17);
+                mTimer.schedule(timerTask, 0, 17);
             }
         } else if (timerState == RUNNING) {
             timerState = STOP;
