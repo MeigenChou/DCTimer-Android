@@ -34,7 +34,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class Utils {
-    static String ego = "012PHUTLSA";
+    static String ego = "PHUTLSA";
 
     public static int grayScale(int color) {
         int red = (color >>> 16) & 0xff;
