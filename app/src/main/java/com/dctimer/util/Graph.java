@@ -188,7 +188,7 @@ public class Graph {
 		float rsp = (width - 8f - wBase) / (result.length() - 1);
 		//count = 0;
 		float lastx = -1, lasty = -1;
-		p.setColor(0xff779977);
+		p.setColor(0xff778877);
 		p.setStyle(Paint.Style.FILL);
 		p.setStrokeWidth(APP.dpi * 1.5f);
 		ArrayList<float[]> best = new ArrayList<>();

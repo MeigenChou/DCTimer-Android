@@ -162,7 +162,7 @@ public class Cross {
                                     cc++;
                                 }
                             }
-                Log.w("dct", d+1+"\t"+cc);
+                //Log.w("dct", d+1+"\t"+cc);
             }
         }
         ini = true;
@@ -409,7 +409,7 @@ public class Cross {
         StringBuilder sb = new StringBuilder("\n");
         for (int i = 0; i < 6; i++)
             if (((face >> i) & 1) != 0) {
-                sb.append("\nXCross(").append(color[face]).append("): ");
+                sb.append("\nXCross(").append(color[i]).append("): ");
                 sb.append(xcross(scramble, i));
             }
         return sb.toString();

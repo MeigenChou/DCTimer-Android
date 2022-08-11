@@ -209,6 +209,7 @@
     <array name="item_skewb">
         <item>random state</item>
         <item>U L R B</item>
+        <item>L2L</item>
     </array>
 
     <array name="item_relay">
@@ -251,6 +252,7 @@
         <item>Timer</item>
         <item>Typing</item>
         <item>Stackmat</item>
+        <item>Bluetooth device</item>
     </array>
 
     <array name="opt_solve_222">

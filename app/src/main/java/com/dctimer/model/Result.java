@@ -49,7 +49,7 @@ public class Result {
         else offset = 0;
         cursor = db.getResult(sid);
         length = cursor.getCount();
-        Log.w("dct", "成绩 "+length);
+        Log.w("dct", "成绩数: "+length);
         if (length == 0) {
             result = new int[24];
             penalty = new byte[24];

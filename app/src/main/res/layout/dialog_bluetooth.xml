@@ -43,6 +43,38 @@
             android:layout_height="24dp" />
     </LinearLayout>
 
+    <RadioGroup
+        android:id="@+id/rg_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_giiker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Giiker"
+            android:textSize="15sp"
+            android:textColor="@color/colorText" />
+
+        <RadioButton
+            android:id="@+id/rb_gani"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gan 356i(1)"
+            android:textSize="15sp"
+            android:textColor="@color/colorText"/>
+
+        <RadioButton
+            android:id="@+id/rb_gantimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gan timer"
+            android:textSize="15sp"
+            android:textColor="@color/colorText"/>
+    </RadioGroup>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_device"
         android:layout_width="match_parent"

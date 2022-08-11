@@ -49,6 +49,7 @@
     <string name="connected">已连接</string>
     <string name="not_connected">未连接</string>
     <string name="disconnect">断开连接</string>
+    <string name="connect_fail">连接失败</string>
     <string name="status">状态</string>
     <string name="select_device">选择设备</string>
     <!-- 设置 -->
@@ -202,7 +203,7 @@
     <string name="menu_about">关于</string>
     <string name="menu_website">相关网站</string>
     <string name="menu_cubing">粗饼网</string>
-    <string name="about_msg">"版本：%1$s\n版权所有 © 2012-2021 MeigenChou"</string>
+    <string name="about_msg">"版本：%1$s\n版权所有 © 2012—2022 MeigenChou\nAll rights reserved."</string>
     <string name="feedback_title">DCTimer反馈</string>
     <string name="language">cn</string>
 </resources>

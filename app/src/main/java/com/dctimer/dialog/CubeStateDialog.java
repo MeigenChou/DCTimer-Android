@@ -78,7 +78,7 @@ public class CubeStateDialog extends DialogFragment {
                 }
             }
         });
-        buidler.setTitle(cube.getName()).setView(view).setNegativeButton(R.string.btn_close, null);
+        buidler.setTitle("SmartCube").setView(view).setNegativeButton(R.string.btn_close, null);
         return buidler.create();
     }
 

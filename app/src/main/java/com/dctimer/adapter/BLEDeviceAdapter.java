@@ -5,26 +5,25 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dctimer.R;
 import com.dctimer.activity.MainActivity;
-import com.dctimer.model.SmartCube;
+import com.dctimer.model.BLEDevice;
 
 import java.util.List;
 
-public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDeviceAdapter.ViewHolder> {
+public class BLEDeviceAdapter extends RecyclerView.Adapter<BLEDeviceAdapter.ViewHolder> {
     private MainActivity context;
-    private List<SmartCube> list;
+    private List<BLEDevice> list;
 
-    public BluetoothDeviceAdapter(MainActivity context, List<SmartCube> list) {
+    public BLEDeviceAdapter(MainActivity context, List<BLEDevice> list) {
         this.context = context;
         this.list = list;
     }
 
-    public void setList(List<SmartCube> list) {
+    public void setList(List<BLEDevice> list) {
         this.list = list;
     }
 
@@ -60,7 +59,7 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int i) {
-        SmartCube cube = list.get(i);
+        BLEDevice cube = list.get(i);
         holder.tvName.setText(cube.getName());
         int connect = cube.getConnected();
         if (connect == 0) {

@@ -100,23 +100,25 @@ public class StatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (type == 3) {
-            if (position < 4) {
+            if (position < 5) {
                 Header head = (Header) holder;
                 if (position == 0) {
-                    head.textTitle.setText(R.string.stat_session_mean);
+                    head.textTitle.setText(R.string.stat_solve);
                 } else if (position == 1) {
-                    head.textTitle.setText(R.string.stat_session_avg);
+                    head.textTitle.setText(R.string.stat_session_mean);
                 } else if (position == 2) {
+                    head.textTitle.setText(R.string.stat_session_avg);
+                } else if (position == 3) {
                     head.textTitle.setText(R.string.stat_best);
                 } else {
                     head.textTitle.setText(R.string.stat_worst);
                 }
                 head.textAcc.setText(stat[position]);
-                head.divider.setVisibility(position == 3 ? View.GONE : View.VISIBLE);
-            } else if (position == 4) {
+                head.divider.setVisibility(position == 4 ? View.GONE : View.VISIBLE);
+            } else if (position == 5) {
                 //divider
             } else {
-                position -= 5;
+                position -= 6;
                 ViewHolder vh = (ViewHolder) holder;
                 String[] details = detailList.get(position);
                 vh.textView.setText(details[0]);
@@ -156,15 +158,15 @@ public class StatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        if (type == 3) return len + 5;
+        if (type == 3) return len + 6;
         return len + 4;
     }
 
     @Override
     public int getItemViewType(int position) {
         if (type == 3) {
-            if (position < 4) return 0;
-            else if (position == 4) return 1;
+            if (position < 5) return 0;
+            else if (position == 5) return 1;
             return 2;
         } else if (position < 3) return 0;
         else if (position == 3) return 1;

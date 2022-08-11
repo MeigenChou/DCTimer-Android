@@ -371,47 +371,47 @@ public class Scrambler {
                     if (j < scrambleLen) sb.append("\n");
                 }
                 scr = sb.toString(); imageType = TYPE_REL; break;
-            case 0: //2阶
+            case 0: //2阶-随机状态
                 scr = Cube222.scramble();
                 imageType = 2;
                 scrambleList.add(scr);
                 hint = solve222(scr);
                 break;
-            case 1:
+            case 1: //3-gen
                 scr = scrambleCube(2);
                 imageType = 2;
                 scrambleList.add(scr);
                 hint = solve222(scr);
                 break;
-            case 2:
+            case 2: //6-gen
                 scr = megascramble(new String[][][] {{{"U", "D"}}, {{"R", "L"}}, {{"F", "B"}}}, cubesuff, scrambleLen);
                 imageType = 2;
                 scrambleList.add(scr);
                 //hint = "\n" + Cube2l.solveFirstLayer(scr, APP.solve222);
                 break;
-            case 3:
-            case 4:
-            case 5:
+            case 3: //CLL
+            case 4: //EG1
+            case 5: //EG2
                 scr = Cube222.scrambleEG(category - 3); imageType = 2;
                 scrambleList.add(scr);
                 break;
-            case 6:
+            case 6: //PBL
                 scr = Cube222.scramblePBL(); imageType = 2;
                 scrambleList.add(scr);
                 break;
-            case 7:
+            case 7: //EG
                 scr = Cube222.scrambleEG(APP.egtype, APP.egolls); imageType = 2;
                 scrambleList.add(scr);
                 break;
-            case 8:
+            case 8: //TCLL+
                 scr = Cube222.scrambleTCLL(1); imageType = 2;
                 scrambleList.add(scr);
                 break;
-            case 9:
+            case 9: //TCLL-
                 scr = Cube222.scrambleTCLL(2); imageType = 2;
                 scrambleList.add(scr);
                 break;
-            case 10:
+            case 10:    //无连色
                 scr = Cube222.scrambleNobar(); imageType = 2;
                 scrambleList.add(scr);
                 break;
@@ -441,7 +441,7 @@ public class Scrambler {
                 imageType = 3;
                 scrambleList.add(scr);
                 hint = solve333(scr);
-                Log.w("dct", "求解 "+hint);
+                //Log.w("dct", "求解"+scr+": "+hint);
                 break;
             case 34:    //F2L
                 scr = cube3.solution(cubeState = Tools.randomCrossSolved());

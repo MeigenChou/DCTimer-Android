@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -32,6 +33,8 @@ import scrambler.Scrambler;
 
 public class ResultDialog extends DialogFragment {
     private EditText etComment;
+    private TextView tvSolution;
+    private ImageView imgArrow;
     private int num;
     private String time;
     private String scramble;
@@ -40,6 +43,7 @@ public class ResultDialog extends DialogFragment {
     private String comment;
     private String solution;
     private int puzzle;
+    private boolean expandSol;
 
     public static ResultDialog newInstance(int num, String time, String scramble, String date, int penalty, String comment, String solution, int puzzle) {
         ResultDialog dialog = new ResultDialog();
@@ -74,8 +78,11 @@ public class ResultDialog extends DialogFragment {
         TextView tvDate = view.findViewById(R.id.tv_date);
         TextView tvScramble = view.findViewById(R.id.tv_scramble);
         etComment = view.findViewById(R.id.et_comment);
-        Button btnSolution = view.findViewById(R.id.bt_solution);
-        TextView tvSolution = view.findViewById(R.id.tv_solution);
+        Button btnCopy = view.findViewById(R.id.btn_copy);
+        //Button btnSolution = view.findViewById(R.id.bt_solution);
+        LinearLayout llSolution = view.findViewById(R.id.ll_sol);
+        tvSolution = view.findViewById(R.id.tv_solution);
+        imgArrow = view.findViewById(R.id.iv_arrow);
         tvNum.setText("#" + (num + 1));
         tvTime.setText(time);
         tvScramble.setText(scramble);
@@ -112,10 +119,24 @@ public class ResultDialog extends DialogFragment {
         if (!TextUtils.isEmpty(solution))
             tvSolution.setText(solution);
         else {
-            btnSolution.setVisibility(View.GONE);
-            tvSolution.setVisibility(View.GONE);
+            //btnSolution.setVisibility(View.GONE);
+            llSolution.setVisibility(View.GONE);
         }
-        btnSolution.setOnClickListener(new View.OnClickListener() {
+        tvSolution.setVisibility(View.GONE);
+        llSolution.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                expandSol = !expandSol;
+                if (expandSol) {
+                    tvSolution.setVisibility(View.VISIBLE);
+                    imgArrow.setImageResource(R.drawable.ic_arrow_up);
+                } else {
+                    tvSolution.setVisibility(View.GONE);
+                    imgArrow.setImageResource(R.drawable.ic_arrow_down);
+                }
+            }
+        });
+        /*btnSolution.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), WebActivity.class);
@@ -123,6 +144,14 @@ public class ResultDialog extends DialogFragment {
                         + "&setup=" + scramble.trim().replace('\'', '-').replace(' ', '_');
                 intent.putExtra("web", web);
                 startActivity(intent);
+            }
+        });*/
+        btnCopy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).copyScramble(scramble);
+                }
             }
         });
         buidler.setView(view).setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
@@ -159,7 +188,7 @@ public class ResultDialog extends DialogFragment {
                     }
                 }
             }
-        }).setNegativeButton(R.string.delete_time, new DialogInterface.OnClickListener() {
+        }).setNeutralButton(R.string.delete_time, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialogInterface, int i) {
                 Utils.hideKeyboard(etComment);
@@ -168,14 +197,7 @@ public class ResultDialog extends DialogFragment {
                     ((MainActivity) getActivity()).delete(num, true);
                 }
             }
-        }).setNeutralButton(R.string.copy_scramble, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).copyScramble(scramble);
-                }
-            }
-        });
+        }).setNegativeButton(R.string.btn_close, null);
         return buidler.create();
     }
 }

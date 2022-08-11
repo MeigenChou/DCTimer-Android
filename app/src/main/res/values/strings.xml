@@ -50,7 +50,7 @@
     <string name="num_of_solve">"Number of solves: "</string>
     <string name="connected">Connected</string>
     <string name="not_connected">Not connected</string>
-
+    <string name="connect_fail">Connect failed</string>
     <string name="disconnect">Disconnect</string>
     <string name="status">Status</string>
     <string name="select_device">Select device</string>
@@ -205,7 +205,7 @@
     <string name="menu_about">About</string>
     <string name="menu_website">Websites</string>
     <string name="menu_cubing">Cubing China</string>
-    <string name="about_msg">"Version: %1$s\nCopyright © 2012-2021 MeigenChou"</string>
+    <string name="about_msg">"Version: %1$s\nCopyright © 2012—2022 MeigenChou\nAll rights reserved."</string>
     <string name="feedback_title">Feedback of DCTimer</string>
     <string name="language">en</string>
 </resources>

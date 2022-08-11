@@ -30,7 +30,7 @@
         <menu>
             <item
                 android:id="@+id/nav_algorithm"
-                android:title="AlgDB" />
+                android:title="Speed Cube Database" />
 
             <item
                 android:id="@+id/nav_algcubing"

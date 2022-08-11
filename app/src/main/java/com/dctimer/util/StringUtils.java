@@ -224,10 +224,11 @@ public class StringUtils {
             sb.append(String.format(avg2Type == 0 ? context.getString(R.string.stat_best_avg) : context.getString(R.string.stat_best_mean), avg2len))
                     .append(result.getBestAvg2()).append("\r\n");
         if (detail != null) {
-            detail[0] = timeToString(result.sessionMean()) + " (σ = " + result.getSessionSD() + ")";
-            detail[1] = sessionAvg;
-            detail[2] = result.getTimeAt(result.getMinIdx(), false);
-            detail[3] = result.getTimeAt(result.getMaxIdx(), false);
+            detail[0] = result.getSolved() + "/" + result.length();
+            detail[1] = timeToString(result.sessionMean()) + " (σ = " + result.getSessionSD() + ")";
+            detail[2] = sessionAvg;
+            detail[3] = result.getTimeAt(result.getMinIdx(), false);
+            detail[4] = result.getTimeAt(result.getMaxIdx(), false);
         }
         sb.append(context.getString(R.string.stat_list));
         int maxLen = Math.min(result.length(), 10000);

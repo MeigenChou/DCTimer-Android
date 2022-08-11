@@ -10,6 +10,7 @@ import android.util.DisplayMetrics;
 
 import com.dctimer.database.DBHelper;
 import com.dctimer.database.SessionManager;
+import com.dctimer.model.BLEDevice;
 import com.dctimer.model.Result;
 
 import java.util.List;
@@ -92,10 +93,10 @@ public class APP extends Application {
     public static String statDetail;
     public static boolean dropToStop;
     public static double sensitivity;
-    public static boolean darkList;
     public static int samplingRate;
     public static int dataFormat;
     public static int uiMode = -1;
+    public static int bleDeviceType;
 
     @Override
     public void onCreate() {
@@ -192,7 +193,7 @@ public class APP extends Application {
         solvePyr = sp.getInt("pyrv", 0);    //Pyraminx V求解
         solverType[4] = sp.getInt("cface", 1);
         megaColorScheme = sp.getInt("minxc", 1);	//五魔配色
-        darkList = sp.getBoolean("dark", false);
+        //darkList = sp.getBoolean("dark", false);
         timerFont = sp.getInt("tfont", 3);	// 计时器字体
         timerSize = sp.getInt("ttsize", 60);	//计时器大小
         if (timerSize < 50 || timerSize > 120) timerSize = 60;
@@ -230,7 +231,7 @@ public class APP extends Application {
         promptToSave = true; avg1Type = 0; avg2Type = 0;
         avg1len = 5; avg2len = 12; selectSession = false;
         solve333 = 0; solveSq1 = 0; solve222 = 0; solvePyr = 0;
-        megaColorScheme = 1; darkList = false; timerFont = 3;
+        megaColorScheme = 1; timerFont = 3;
         timerSize = 60; useBgcolor = true; opacity = 35;
         fullScreen = false; screenOn = false; vibrateType = 0;
         vibrateTime = 2; screenOri = 0;

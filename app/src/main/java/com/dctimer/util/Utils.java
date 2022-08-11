@@ -27,6 +27,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
@@ -34,7 +35,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class Utils {
-    static String ego = "PHUTLSA";
+    static String egOllAll = "PHUTLSA";
 
     public static int grayScale(int color) {
         int red = (color >>> 16) & 0xff;
@@ -50,7 +51,7 @@ public class Utils {
             PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
             return info.versionCode;
         } catch (Exception e) {
-            return 39;
+            return 43;
         }
     }
 
@@ -60,7 +61,7 @@ public class Utils {
             PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
             return info.versionName;
         } catch (Exception e) {
-            return "1.2";
+            return "1.3";
         }
     }
 
@@ -150,25 +151,28 @@ public class Utils {
         else return p;
     }
 
-    public static Bitmap getBitmap(String path) {
+    public static Bitmap getBitmap(DisplayMetrics dm, String path) {
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, opts);
-        int width = APP.dm.widthPixels;
-        int height = APP.dm.heightPixels;
-        int scaleWidth = opts.outWidth / width;
-        int scaleHeight = opts.outHeight / height;
-        int scale = Math.min(scaleWidth, scaleHeight);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        Log.w("dct", "wid"+width+","+height);
+        Log.w("dct", "pic"+opts.outWidth+", "+opts.outHeight);
+        float scaleWidth = (float) opts.outWidth / width;
+        float scaleHeight = (float) opts.outHeight / height;
+        float scale = Math.min(scaleWidth, scaleHeight);
+        Log.w("dct", "sc"+scale);
         opts.inJustDecodeBounds = false;
         if (scale > 1) {
-            opts.inSampleSize = scale;
+            opts.inSampleSize = (int) scale;
         } else opts.inSampleSize = 1;
         return BitmapFactory.decodeFile(path, opts);
     }
 
-    public static Bitmap getBackgroundBitmap(Bitmap bitmap) {
-        int width = APP.dm.widthPixels;
-        int height = APP.dm.heightPixels;
+    public static Bitmap getBackgroundBitmap(DisplayMetrics dm, Bitmap bitmap) {
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
         float scaleWidth = (float) bitmap.getWidth() / width;
         float scaleHeight = (float) bitmap.getHeight() / height;
         float scale = Math.min(scaleWidth, scaleHeight);
@@ -178,9 +182,9 @@ public class Utils {
                 (int) ((bitmap.getHeight() - height * scale) / 2), (int) (width * scale), (int) (height * scale), matrix, true);
     }
 
-    public static Drawable getBackgroundDrawable(Context context, Bitmap scaleBitmap, int opacity) {
-        int width = APP.dm.widthPixels;
-        int height = APP.dm.heightPixels;
+    public static Drawable getBackgroundDrawable(Context context, DisplayMetrics dm, Bitmap scaleBitmap, int opacity) {
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
         Bitmap newBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
         Canvas canvas = new Canvas(newBitmap);
         canvas.drawColor(0);
@@ -264,7 +268,7 @@ public class Utils {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 7; i++)
             if (egIdx[i + 3])
-                sb.append(ego.charAt(i));
+                sb.append(egOllAll.charAt(i));
         egolls = sb.toString();
     }
 

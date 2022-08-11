@@ -10,17 +10,21 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.dctimer.R;
 import com.dctimer.activity.MainActivity;
 import com.dctimer.aes.Decrypt;
+import com.dctimer.model.BLEDevice;
 import com.dctimer.model.SmartCube;
+import com.dctimer.model.SmartTimer;
 
 import java.util.*;
 
-import static com.dctimer.APP.enterTime;
+import static com.dctimer.APP.bleDeviceType;
 
 public class BluetoothTools {
-    public static final String UUID_SUFFIX = "-0000-1000-8000-00805f9b34fb";
+    private static final String UUID_SUFFIX = "-0000-1000-8000-00805f9b34fb";
     public static final UUID SERVICE_UUID = UUID.fromString("0000180a" + UUID_SUFFIX);
     public static final UUID SERVICE_UUID_GAN = UUID.fromString("0000fff0" + UUID_SUFFIX);
     public static final UUID SERVICE_UUID_GIIKER = UUID.fromString("0000aadb" + UUID_SUFFIX);
@@ -35,14 +39,22 @@ public class BluetoothTools {
     public static final UUID CHARACTER_UUID_F5 = UUID.fromString("0000fff5" + UUID_SUFFIX);
     public static final UUID CHARACTER_UUID_F6 = UUID.fromString("0000fff6" + UUID_SUFFIX);
     public static final UUID CHARACTER_UUID_F7 = UUID.fromString("0000fff7" + UUID_SUFFIX);
+    private static final String UUID_GAN_V2_SUFFIX = "-cd67-11e9-a32f-2a2ae2dbcce4";
+    public static final UUID CHARACTER_UUID_V2_READ = UUID.fromString("28be4cb6" + UUID_GAN_V2_SUFFIX);
+    public static final UUID CHARACTER_UUID_V2_WRITE = UUID.fromString("28be4a4a" + UUID_GAN_V2_SUFFIX);
 
     private MainActivity context;
     private BluetoothAdapter bluetoothAdapter;
     private boolean mScanning;
     private Set<String> addressMap;
-    private List<SmartCube> cubeList;
-    private SmartCube cube;
-    private SmartCube.StateChangedCallback callback;
+    private List<BLEDevice> cubeList;
+    //private BLEDevice bleDevice;
+    private int connectedIndex;
+    private SmartCube smartCube;
+    private SmartTimer smartTimer;
+    //private SmartCube cube;
+    private SmartCube.StateChangedCallback stateChangedCallback;
+    private SmartTimer.TimeChangedCallback timeChangedCallback;
     private BluetoothGatt mBluetoothGatt;
     private BluetoothGattService service;
     private List<Integer> preMoves = new ArrayList<>();
@@ -70,24 +82,31 @@ public class BluetoothTools {
         mScanning = false;
     }
 
+
+
     public SmartCube getCube() {
-        return cube;
+        return smartCube;
     }
 
-    public void setCubeStateChangeCallback(SmartCube.StateChangedCallback callback) {
-        this.callback = callback;
+    public void setCubeStateChangedCallback(SmartCube.StateChangedCallback callback) {
+        this.stateChangedCallback = callback;
+    }
+
+    public void setTimeChangedCallback(SmartTimer.TimeChangedCallback callback) {
+        this.timeChangedCallback = callback;
     }
 
     @TargetApi(18)
     private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(BluetoothDevice bluetoothDevice, int i, byte[] bytes) {
-            Log.w("dct", "发现设备 "+bluetoothDevice.getName());
             if (bluetoothDevice.getName() == null) return;
+            Log.w("dct", "发现设备 "+bluetoothDevice.getName());
             if (addressMap.contains(bluetoothDevice.getAddress())) return;
-            SmartCube cube = new SmartCube(bluetoothDevice.getName(), bluetoothDevice.getAddress());
+            //SmartCube cube = new SmartCube(bluetoothDevice.getName(), bluetoothDevice.getAddress());
+            BLEDevice device = new BLEDevice(bluetoothDevice.getName(), bluetoothDevice.getAddress());
             addressMap.add(bluetoothDevice.getAddress());
-            cubeList.add(cube);
+            cubeList.add(device);
             context.refreshCubeList(cubeList);
         }
     };
@@ -112,26 +131,24 @@ public class BluetoothTools {
         }
     }
 
-    public void addCube(BluetoothDevice bluetoothDevice) {
-        if (bluetoothDevice.getName() == null) return;
-        if (addressMap.contains(bluetoothDevice.getAddress())) return;
-        SmartCube cube = new SmartCube(bluetoothDevice.getName(), bluetoothDevice.getAddress());
-        addressMap.add(bluetoothDevice.getAddress());
-        cubeList.add(cube);
-    }
-
     @TargetApi(18)
-    public void connectCube(int pos) {
+    public void connectDevice(int pos) {
         if (mScanning) {
             bluetoothAdapter.stopLeScan(mLeScanCallback);
             context.showScanButton();
         }
-        cube = cubeList.get(pos);
-        String address = cube.getAddress();
+        connectedIndex = pos;
+        BLEDevice bleDevice = cubeList.get(pos);
+        String address = bleDevice.getAddress();
         BluetoothDevice device = bluetoothAdapter.getRemoteDevice(address);
-        int connect = cube.getConnected();
+        int connect = bleDevice.getConnected();
         if (connect == 0) {
-            cube.setConnected(2);
+            bleDevice.setConnected(2);
+            if (bleDeviceType == BLEDevice.TYPE_GAN_TIMER) {
+                smartTimer = new SmartTimer();
+            } else {
+                smartCube = new SmartCube();
+            }
             context.refreshCubeList();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 mBluetoothGatt = device.connectGatt(context, false, mBluetoothGattCallback, BluetoothDevice.TRANSPORT_LE);
@@ -145,7 +162,7 @@ public class BluetoothTools {
             mBluetoothGatt.disconnect();
             mBluetoothGatt = null;
         }
-        cube = null;
+        smartCube = null;
     }
 
     @TargetApi(18)
@@ -155,10 +172,15 @@ public class BluetoothTools {
             if (newState == BluetoothGatt.STATE_CONNECTED) {
                 Log.w("dct", "设备已连接");
                 context.dismissDialog();
-                if (cube != null) {
-                    cube.setConnected(1);
-                    cube.setType(enterTime == 2 ? SmartCube.GAN_CUBE : SmartCube.GIIKER_CUBE);
-                    cube.setStateChangedCallback(callback);
+                BLEDevice bleDevice = cubeList.get(connectedIndex);
+                bleDevice.setConnected(1);
+                if (bleDeviceType == BLEDevice.TYPE_GAN_ROBOT) {
+
+                } else if (bleDeviceType == BLEDevice.TYPE_GAN_TIMER) {
+                    smartTimer.setTimeChangedCallback(timeChangedCallback);
+                } else {
+                    smartCube.setType(bleDeviceType);
+                    smartCube.setStateChangedCallback(stateChangedCallback);
                 }
                 gatt.discoverServices();
             }
@@ -166,24 +188,45 @@ public class BluetoothTools {
                 Log.w("dct", "连接断开");
                 gatt.close();
                 //mBluetoothGatt = null;
-                if (cube != null) {
-                    cube.setConnected(0);
-                    context.disconnectHint(cube);
-                }
+                BLEDevice bleDevice = cubeList.get(connectedIndex);
+                bleDevice.setConnected(0);
+                context.disconnectHint(bleDevice);
             }
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            if (enterTime == 2)
+            if (bleDeviceType == BLEDevice.TYPE_GAN_TIMER)
+                service = gatt.getService(SERVICE_UUID_GAN);
+            else if (bleDeviceType == BLEDevice.TYPE_GANI_CUBE)
                 service = gatt.getService(SERVICE_UUID);
             else service = gatt.getService(SERVICE_UUID_RW);
-            if (service == null)
+            if (service == null) {
                 Log.e("dct", "service为null");
-            else if (enterTime == 2) {
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, context.getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else if (bleDeviceType == BLEDevice.TYPE_GAN_TIMER) {
+                BluetoothGattCharacteristic timeChr = service.getCharacteristic(CHARACTER_UUID_F2);
+                if (timeChr == null) {
+                    Log.e("dct", "获取时间失败");
+                } else {
+                    Log.w("dct", "chr: "+timeChr);
+                    gatt.readCharacteristic(timeChr);
+                }
+            } else if (bleDeviceType == BLEDevice.TYPE_GANI_CUBE) {
                 BluetoothGattCharacteristic chr = service.getCharacteristic(CHARACTER_UUID_VERSION);
                 if (chr == null) {
                     Log.e("dct", "获取设备版本失败");
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, context.getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } else {
                     gatt.readCharacteristic(chr);
                 }
@@ -236,7 +279,7 @@ public class BluetoothTools {
                 Log.w("dct", "valhex "+Arrays.toString(valhex));
                 String cubeState = Utils.parseGiikerState(valhex);
                 Log.w("dct", "state " + cubeState);
-                cube.setCubeState(cubeState);
+                smartCube.setCubeState(cubeState);
                 if (gatt.setCharacteristicNotification(characteristic, true)) {
                     for (BluetoothGattDescriptor descriptor: characteristic.getDescriptors()) {
                         if ((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
@@ -259,7 +302,7 @@ public class BluetoothTools {
             if (uuid.equals(CHARACTER_UUID_VERSION)) {
                 int version = (value[0] & 0xff) << 16 | (value[1] & 0xff) << 8 | (value[2] & 0xff);
                 Log.w("dct", "版本号 "+version);
-                cube.setVersion(version);
+                smartCube.setVersion(version);
                 if (version > 0x10007 && (version & 0xfffe00) == 0x010000) {
                     //BluetoothGattService service = mBluetoothGatt.getService(SERVICE_UUID);
                     if (service == null) Log.e("dct", "service为null");
@@ -269,7 +312,7 @@ public class BluetoothTools {
                     }
                 } else Log.e("dct", "不支持的版本");
             } else if (uuid.equals(CHARACTER_UUID_HARDWARE)) {
-                byte[] key = Decrypt.getKey(cube.getVersion(), value);
+                byte[] key = Decrypt.getKey(smartCube.getVersion(), value);
                 if (key == null) Log.e("dct", "不支持的硬件");
                 else {
                     Log.w("dct", "key "+ StringUtils.binaryArray(key));
@@ -282,21 +325,29 @@ public class BluetoothTools {
                     }
                 }
             } else if (uuid.equals(CHARACTER_UUID_F2)) {
-                //Log.w("dct", "cube state " + StringUtils.binaryArray(value));
-                value = Decrypt.decode(value);
-                Log.w("dct", "cube decode "+StringUtils.binaryArray(value));
-                String state = Utils.getCubeState(value);
-                Log.w("dct", "state "+state);
-                int check = cube.setCubeState(state);
-                Log.w("dct", "check "+check);
-                if (check != 0) {
-                    cube.setCubeState("UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
-                }
-                Log.w("dct", "facelet " + cube.getCubeState());
-                if (service == null) Log.e("dct", "service为null");
-                else {
-                    BluetoothGattCharacteristic chf7 = service.getCharacteristic(CHARACTER_UUID_F7);
-                    gatt.readCharacteristic(chf7);
+                //Log.w("dct", "f2 value: " + StringUtils.binaryArray(value));
+                if (bleDeviceType == BLEDevice.TYPE_GANI_CUBE) {
+                    value = Decrypt.decode(value);
+                    Log.w("dct", "cube decode "+StringUtils.binaryArray(value));
+                    String state = Utils.getCubeState(value);
+                    Log.w("dct", "state "+state);
+                    int check = smartCube.setCubeState(state);
+                    Log.w("dct", "check "+check);
+                    if (check != 0) {
+                        smartCube.setCubeState("UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
+                    }
+                    Log.w("dct", "facelet " + smartCube.getCubeState());
+                    if (service == null) Log.e("dct", "service为null");
+                    else {
+                        BluetoothGattCharacteristic chf7 = service.getCharacteristic(CHARACTER_UUID_F7);
+                        gatt.readCharacteristic(chf7);
+                    }
+                } else {
+                    smartTimer.updateTime(value);
+                    if (service != null) {
+                        BluetoothGattCharacteristic chf2 = service.getCharacteristic(CHARACTER_UUID_F2);
+                        gatt.readCharacteristic(chf2);
+                    }
                 }
             } else if (uuid.equals(CHARACTER_UUID_F3)) {
                 //Log.w("dct", "f3 data "+StringUtils.binaryArray(value));
@@ -337,9 +388,12 @@ public class BluetoothTools {
                     StringBuilder sb = new StringBuilder();
                     for (int i=0; i<6; i++) {
                         int m = value[13 + i];
-                        sb.append("URFDLB".charAt(m/3)).append(" 2'".charAt(m%3)).append(" ");
-                        if (i >= 6 - moves) {
-                            preMoves.add(m);
+                        //Log.w("dct", "move: "+m);
+                        if (m >= 0) {
+                            sb.append("URFDLB".charAt(m/3)).append(" 2'".charAt(m%3)).append(" ");
+                            if (i >= 6 - moves) {
+                                preMoves.add(m);
+                            }
                         }
                     }
                     //Log.w("dct", "move data "+sb.toString());
@@ -364,7 +418,7 @@ public class BluetoothTools {
                     for (int i = 0; i < preMoves.size(); i++) {
                         int move = preMoves.get(i);
                         int time = timeOffset[start++];
-                        context.moveCube(cube, move, time);
+                        context.moveCube(smartCube, move, time);
                     }
                     preMoves.clear();
                 }
@@ -381,8 +435,8 @@ public class BluetoothTools {
                 //Log.w("dct", "f7 decode "+StringUtils.binaryArray(decode));
                 //String address = gatt.getDevice().getAddress();
                 Log.w("dct", "电池电量 "+decode[7]);
-                if (cube != null)
-                    cube.setBatteryValue(decode[7]);
+                if (smartCube != null)
+                    smartCube.setBatteryValue(decode[7]);
                 else Log.e("dct", "cube为null");
                 //BluetoothGattService service = mBluetoothGatt.getService(SERVICE_UUID_GAN);
                 if (service == null) Log.e("dct", "service为null");
@@ -418,8 +472,8 @@ public class BluetoothTools {
                 //Log.w("dct", "valhex "+Arrays.toString(valhex));
                 String cubeState = Utils.parseGiikerState(valhex);
                 Log.w("dct", "state " + cubeState);
-                int check = cube.setCubeState(cubeState);
-                if (check != 0) cube.setCubeState("UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
+                int check = smartCube.setCubeState(cubeState);
+                if (check != 0) smartCube.setCubeState("UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
 //                StringBuilder sb = new StringBuilder();
 //                for (int i = 32; i < Math.min(40, valhex.length); i += 2) {
 //                    sb.append("BDLURF".charAt(valhex[i] - 1)).append(" 2'".charAt((valhex[i + 1] - 1) % 7)).append(' ');
@@ -435,7 +489,7 @@ public class BluetoothTools {
                     time = (int) (timeNow - lastTime);
                     if (time > 65535) time = 65535;
                 }
-                context.moveCube(cube, move, time);
+                context.moveCube(smartCube, move, time);
                 lastTime = timeNow;
             }
         }

@@ -40,6 +40,20 @@
                 android:textColor="@color/colorText"
                 android:textSize="16sp" />
 
+            <Button
+                android:id="@+id/btn_copy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="20dp"
+                android:minHeight="20dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/copy_scramble"
+                android:background="@color/transparent"
+                android:textSize="15sp"
+                android:textColor="@drawable/button_text_style"
+                android:textAllCaps="false"
+                />
+
             <TextView
                 android:id="@+id/tv_scramble"
                 android:layout_width="match_parent"
@@ -123,16 +137,29 @@
                     android:paddingRight="3dip" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/bt_solution"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/ll_sol"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minWidth="20dp"
-                android:background="@color/transparent"
-                android:text="@string/btn_solution"
-                android:textSize="15sp"
-                android:textColor="@drawable/button_text_style"
-                android:textAllCaps="false" />
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/btn_solution"
+                    android:textSize="15sp"
+                    android:textColor="@drawable/button_text_style" />
+
+                <ImageView
+                    android:id="@+id/iv_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_down"/>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_solution"

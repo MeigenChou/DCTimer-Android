@@ -54,10 +54,7 @@ import com.dctimer.R;
 import com.dctimer.adapter.*;
 import com.dctimer.database.SessionManager;
 import com.dctimer.dialog.*;
-import com.dctimer.model.DCTTimer;
-import com.dctimer.model.SmartCube;
-import com.dctimer.model.Result;
-import com.dctimer.model.Stackmat;
+import com.dctimer.model.*;
 import com.dctimer.util.*;
 import com.dctimer.view.*;
 import com.dctimer.widget.*;
@@ -156,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private Stackmat stackmat;
     private BluetoothTools bluetoothTools;
-    private BluetoothDeviceAdapter adapter;
+    private BLEDeviceAdapter adapter;
     //private SmartCube cube;
 
     private static final String[] PERMISSIONS = { android.Manifest.permission.WRITE_EXTERNAL_STORAGE };
@@ -187,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         setContentView(R.layout.activity_main);
         context = this;
-        app = APP.getInstance();
+        app = getInstance();
         sp = super.getSharedPreferences("dctimer", Activity.MODE_PRIVATE);
         //edit = sp.edit();
         uiMode = getResources().getConfiguration().uiMode;
@@ -196,12 +193,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fontScale = dm.scaledDensity;
         dip300 = Math.round(dpi * 300);
         dip40 = Math.round(dpi * 40);
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            getWindowManager().getDefaultDisplay().getRealMetrics(dm);
+        } else getWindowManager().getDefaultDisplay().getMetrics(dm);
+        //Log.w("dct", dm.widthPixels+"x"+dm.heightPixels);
         //System.out.println(dpi+", "+dm.widthPixels);
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             defaultPath = Environment.getExternalStorageDirectory().getPath() + "/DCTimer/";
         }
         dataPath = getFilesDir().getParent() + "/databases/";
+        //Log.w("dct", "path: "+context.getFilesDir().getPath());
+        //Log.e("dct", "ext path: "+context.getExternalFilesDir(null).getPath());
         app.readPref(sp);
         StringUtils.scrambleItems = getResources().getStringArray(R.array.item_scr);
         StringUtils.scrambleSubitems = new String[StringUtils.scrambleItems.length][];
@@ -274,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         btnScramble = findViewById(R.id.bt_scramble);    //打乱按钮
         btnScramble.setOnClickListener(mOnClickListener);
         pbScramble = findViewById(R.id.progress);
-        pbScramble.getIndeterminateDrawable().setColorFilter(APP.getTextColor(), PorterDuff.Mode.SRC_IN);
+        pbScramble.getIndeterminateDrawable().setColorFilter(getTextColor(), PorterDuff.Mode.SRC_IN);
         btnLeft = findViewById(R.id.bt_left);
         btnLeft.setOnClickListener(mOnClickListener);
         btnRight = findViewById(R.id.bt_right);
@@ -407,7 +409,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         bluetoothTools = new BluetoothTools(this);
-        bluetoothTools.setCubeStateChangeCallback(cubeStateChangeCallback);
+        bluetoothTools.setCubeStateChangedCallback(cubeStateChangeCallback);
+        bluetoothTools.setTimeChangedCallback(timeChangedCallback);
         //getBluetoothAdapter();
     }
 
@@ -725,9 +728,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_algorithm:    //公式库
                 intent = new Intent(context, WebActivity.class);
-                String web = "http://algdb.net";
+                String web = "https://www.speedcubedb.com/";
                 intent.putExtra("web", web);
-                intent.putExtra("title", "AlgDb.net");
+                intent.putExtra("title", "Speed Cube Database");
                 startActivity(intent);
                 break;
             case R.id.nav_algcubing: //alg.cubing
@@ -872,14 +875,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void scanDevice() {
         bluetoothTools.startScan();
-        View v = LayoutInflater.from(this).inflate(R.layout.dialog_device, null);
+        View v = LayoutInflater.from(this).inflate(R.layout.dialog_bluetooth, null);
         btnScan = v.findViewById(R.id.btn_scan);
         btnScan.setOnClickListener(mOnClickListener);
         pbScan = v.findViewById(R.id.progress);
         RecyclerView rvDevice = v.findViewById(R.id.rv_device);
-        adapter = new BluetoothDeviceAdapter(this, new ArrayList<SmartCube>());
+        adapter = new BLEDeviceAdapter(this, new ArrayList<BLEDevice>());
         rvDevice.setLayoutManager(new LinearLayoutManager(this));
         rvDevice.setAdapter(adapter);
+        RadioGroup rg = v.findViewById(R.id.rg_type);
+        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i) {
+                    case R.id.rb_gani:
+                        bleDeviceType = BLEDevice.TYPE_GANI_CUBE;
+                        break;
+                    case R.id.rb_giiker:
+                        bleDeviceType = BLEDevice.TYPE_GIIKER_CUBE;
+                        break;
+                    case R.id.rb_gantimer:
+                        bleDeviceType = BLEDevice.TYPE_GAN_TIMER;
+                        break;
+                }
+            }
+        });
+        RadioButton rb;
+        switch (bleDeviceType) {
+            case BLEDevice.TYPE_GANI_CUBE:
+                rb = v.findViewById(R.id.rb_gani);
+                break;
+            case BLEDevice.TYPE_GIIKER_CUBE:
+                rb = v.findViewById(R.id.rb_giiker);
+                break;
+            default:
+                rb = v.findViewById(R.id.rb_gantimer);
+                break;
+        }
+        rb.setChecked(true);
         dialog = new AlertDialog.Builder(this).setView(v)
                 .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
                     @Override
@@ -897,7 +930,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }, 20000);
     }
 
-    public void refreshCubeList(List<SmartCube> list) {
+    public void refreshCubeList(List<BLEDevice> list) {
         adapter.setList(list);
         adapter.notifyDataSetChanged();
     }
@@ -912,7 +945,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void connectCube(int pos) {
-        bluetoothTools.connectCube(pos);
+        bluetoothTools.connectDevice(pos);
     }
 
     public void dismissDialog() {
@@ -921,13 +954,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         canStart = false;
     }
 
-    public void disconnectHint(final SmartCube cube) {
+    public void disconnectHint(final BLEDevice device) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (adapter != null)
                     adapter.notifyDataSetChanged();
-                Toast.makeText(context, cube.getName() + getString(R.string.cube_not_connected), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, device.getName() + getString(R.string.cube_not_connected), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -995,6 +1028,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
             }
+        }
+    };
+
+    private SmartTimer.TimeChangedCallback timeChangedCallback = new SmartTimer.TimeChangedCallback() {
+        @Override
+        public void onTimeChanged(final int time, final int lastTime) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setTimerText(StringUtils.timeToString(time));
+                    if (time == 0)
+                        timer.setTimerState(DCTTimer.READY);
+                    else if (time == lastTime) {
+                        if (timer.getTimerState() == DCTTimer.RUNNING) {
+                            timer.setTimerState(DCTTimer.STOP);
+                            save(time);
+                        }
+                    } else {
+                        timer.setTimerState(DCTTimer.RUNNING);
+                    }
+                }
+            });
+
+//            if (time == 0) {
+//                timer.setTimerState(DCTTimer.READY);
+//
+//            }
         }
     };
 
@@ -1336,7 +1396,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             else setTimerText("IMPORT");
                             tvMulPhase.setText("");
                             timer.setTimerState(DCTTimer.READY);
-                        } else if (i < 4) {
+                        } else if (i == 2) {
                             if (Build.VERSION.SDK_INT > 22) {
                                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO)
                                         != PackageManager.PERMISSION_GRANTED) {
@@ -1345,8 +1405,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             7);
                                 } else startStackmat();
                             } else startStackmat();
-                        }
-                        else {
+                        } else {
+                            if (stackmat != null) {
+                                stackmat.stop();
+                                stackmat = null;
+                            }
                             if (Build.VERSION.SDK_INT < 18 || !getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
                                 Toast.makeText(context, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
                                 return;
@@ -2495,9 +2558,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setBackground() {
         try {
-            Bitmap bm = Utils.getBitmap(picPath);
-            bitmap = Utils.getBackgroundBitmap(bm);
-            frame.setBackgroundDrawable(Utils.getBackgroundDrawable(context, bitmap, opacity));
+            Bitmap bm = Utils.getBitmap(dm, picPath);
+            bitmap = Utils.getBackgroundBitmap(dm, bm);
+            frame.setBackgroundDrawable(Utils.getBackgroundDrawable(context, dm, bitmap, opacity));
         } catch (Exception e) {
             e.printStackTrace();
             setBackgroundColor();
@@ -2958,10 +3021,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
                 }
                 isSwipe = false;
-            } else if(enterTime > 3) { //蓝牙魔方
-                if (bluetoothTools.getCube() != null) {
-                    CubeStateDialog dialog = CubeStateDialog.newInstance(bluetoothTools.getCube());
-                    dialog.show(getSupportFragmentManager(), "CubeState");
+            } else if(enterTime == 3) { //蓝牙设备
+                if (bleDeviceType == BLEDevice.TYPE_GANI_CUBE || bleDeviceType == BLEDevice.TYPE_GIIKER_CUBE) {
+                    if (bluetoothTools.getCube() != null) {
+                        CubeStateDialog dialog = CubeStateDialog.newInstance(bluetoothTools.getCube());
+                        dialog.show(getSupportFragmentManager(), "CubeState");
+                    }
                 }
             } else if (enterTime == 1) { //手动输入成绩
                 tvTimer.setTextColor(APP.getTextColor());
@@ -3140,6 +3205,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void copyScramble(String scramble) {
         android.content.ClipboardManager clip = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         clip.setPrimaryClip(ClipData.newPlainText("text", scramble));
+        Toast.makeText(context, R.string.copy_success, Toast.LENGTH_SHORT).show();
     }
 
     public void showAvgDetail(final int type, int pos) {
@@ -3179,7 +3245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }).setNeutralButton(R.string.btn_detail, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(context, DetailActivity.class);
-                        String[] stats = new String[4];
+                        String[] stats = new String[5];
                         ArrayList<Integer> trimIdx = new ArrayList<>();
                         switch (type) {
                             case 1: //滚动平均1

@@ -10,14 +10,7 @@ import cs.min2phase.CubieCube;
 import cs.min2phase.Util;
 
 public class SmartCube implements Serializable {
-    public static final int UNKNOWN = 0;
-    public static final int GIIKER_CUBE = 1;
-    public static final int GAN_CUBE = 2;
-    public static final int GO_CUBE = 3;
-    private String name;
-    private String address;
     private int type;
-    private int connected;
     private int version;
     private String cubeState;
     private int batteryValue;
@@ -30,27 +23,9 @@ public class SmartCube implements Serializable {
     private List<Integer> moveList;
     private StateChangedCallback callback;
 
-    public SmartCube(String name, String address) {
-        this.name = name;
-        this.address = address;
+    public SmartCube() {
         rawData = new ArrayList<>();
         cc = new CubieCube();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public int getType() {
@@ -59,14 +34,6 @@ public class SmartCube implements Serializable {
 
     public void setType(int type) {
         this.type = type;
-    }
-
-    public int getConnected() {
-        return connected;
-    }
-
-    public void setConnected(int connected) {
-        this.connected = connected;
     }
 
     public String getCubeState() {
@@ -158,7 +125,7 @@ public class SmartCube implements Serializable {
                 }
             } else moveList.add(move);
         }
-        if (type == GAN_CUBE)
+        if (type == BLEDevice.TYPE_GANI_CUBE)
             result = (int) (result / 0.95);
     }
 
